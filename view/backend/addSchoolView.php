@@ -102,10 +102,10 @@
 				</div>
 			</a>
 
-			<a href="indexAdmin.php?action=editSchool">
+			<a href="indexAdmin.php?action=moderatSchool">
 				<div class="itemHomeAdmin">
 					<i class="far fa-edit"></i>
-					<span>Editer une Art School</span>
+					<span>Modérer les Art Schools</span>
 				</div>
 			</a>
 		</article>

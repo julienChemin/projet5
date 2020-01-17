@@ -22,6 +22,30 @@ abstract class ReportManager extends AbstractManager
 		return $result;
 	}
 
+	public function getNbReport(int $idComment)
+	{
+		if ($idComment > 0) {
+			return $this->sql('
+				SELECT nbReport 
+				FROM ' . static::$TABLE_NAME . ' 
+				WHERE id = :idComment',
+				[':idComment' => $idComment]);
+		}
+	}
+
+	public function setNbReport(int $idComment, int $nbReport)
+	{
+		if ($idComment > 0 && $nbReport >= 0) {
+			$this->sql('
+				UPDATE ' . static::$TABLE_NAME . '  
+				SET nbReport = :nbReport
+				WHERE id = :idComment',
+				[':idComment' => $idComment, ':nbReport' => $nbReport]);
+
+			return $this;
+		}
+	}
+
 	public function setReport(int $idComment, int $idAuthor, int $nbReportBefore, int $reason)
 	{
 		if ($idComment > 0 && $nbReportBefore >= 0 && $idAuthor > 0) {
@@ -61,6 +85,18 @@ abstract class ReportManager extends AbstractManager
 		}
 	}
 
+	public function deleteReportsFromComment(int $idComment)
+	{
+		if ($idComment > 0) {
+			$this->sql('
+				DELETE FROM as_reported_comments 
+				WHERE idComment = :idComment',
+				[':idComment' => $idComment]);
+
+			return $this;
+		}
+	}
+
 	public function reportExists(int $id)
 	{
 		if ($id > 0) {
@@ -75,42 +111,6 @@ abstract class ReportManager extends AbstractManager
 			} else {
 				return false;
 			}
-		}
-	}
-
-	public function getNbReport(int $idComment)
-	{
-		if ($idComment > 0) {
-			return $this->sql('
-				SELECT nbReport 
-				FROM ' . static::$TABLE_NAME . ' 
-				WHERE id = :idComment',
-				[':idComment' => $idComment]);
-		}
-	}
-
-	public function setNbReport(int $idComment, int $nbReport)
-	{
-		if ($idComment > 0 && $nbReport >= 0) {
-			$this->sql('
-				UPDATE ' . static::$TABLE_NAME . '  
-				SET nbReport = :nbReport
-				WHERE id = :idComment',
-				[':idComment' => $idComment, ':nbReport' => $nbReport]);
-
-			return $this;
-		}
-	}
-
-	public function deleteReportsFromComment(int $idComment)
-	{
-		if ($idComment > 0) {
-			$this->sql('
-				DELETE FROM as_reported_comments 
-				WHERE idComment = :idComment',
-				[':idComment' => $idComment]);
-
-			return $this;
 		}
 	}
 }

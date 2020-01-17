@@ -9,7 +9,7 @@ class UserManager extends AbstractManager
 	public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\User';
 	public static $TABLE_NAME = 'as_users';
 	public static $TABLE_PK = 'id';
-	public static $TABLE_CHAMPS ='id, name, password, mail, school, temporaryPassword, beingReset, nbWarning, isBan, dateBan, isAdmin, isModerator';
+	public static $TABLE_CHAMPS ='id, name, password, mail, school, temporaryPassword, beingReset, nbWarning, isBan, dateBan, isAdmin, isModerator, isActive';
 
 	public function add(User $user)
 	{
@@ -18,6 +18,8 @@ class UserManager extends AbstractManager
 			VALUES (:name, :mail, :school, :password, :isAdmin, :isModerator)', 
 			[':name' => $user->getName(), ':mail' => $user->getMail(), ':school' => $user->getSchool(), 
 			':password' => $user->getPassword(), ':isAdmin' => intval($user->getIsAdmin()), ':isModerator' => intval($user->getIsModerator())]);
+
+		return $this;
 	}
 
 	public function getUserByName(string $name)
@@ -55,44 +57,121 @@ class UserManager extends AbstractManager
 		}
 	}
 
-	public function getUserBySchool(string $school)
+	public function getUsersBySchool(string $school, string $grade = null)
 	{
 		if (strlen($school) > 0) {
-			$q = $this->sql('
-				SELECT ' . static::$TABLE_CHAMPS . ' 
-				FROM ' . static::$TABLE_NAME . ' 
-				WHERE school = :school',
-				[':school' => $school]);
-
+			if ($school === 'allSchool') {
+				//every school
+				if ($grade === 'admin') {
+					//admins and moderator
+					$q = $this->sql('
+						SELECT ' . static::$TABLE_CHAMPS . ' 
+						FROM ' . static::$TABLE_NAME . ' 
+						WHERE isAdmin = true
+							OR isModerator = true');
+				} elseif ($grade === 'user') {
+					//users except admins and moderators
+					$q = $this->sql('
+						SELECT ' . static::$TABLE_CHAMPS . ' 
+						FROM ' . static::$TABLE_NAME . ' 
+						WHERE isAdmin = false
+							AND isModerator = false');
+				} else {
+					//all users
+					$q = $this->sql('
+						SELECT ' . static::$TABLE_CHAMPS . ' 
+						FROM ' . static::$TABLE_NAME);
+				}
+			} else {
+				//only school $school
+				if ($grade === 'admin') {
+					//admins and moderators of school $school
+					$q = $this->sql('
+						SELECT ' . static::$TABLE_CHAMPS . ' 
+						FROM ' . static::$TABLE_NAME . ' 
+						WHERE school = :school
+							AND (isAdmin = true
+							OR isModerator = true)',
+						[':school' => $school]);
+				} elseif ($grade === 'user') {
+					//users of school $school except admins and moderators
+					$q = $this->sql('
+						SELECT ' . static::$TABLE_CHAMPS . ' 
+						FROM ' . static::$TABLE_NAME . ' 
+						WHERE school = :school
+							AND isAdmin = false
+							AND isModerator = false',
+						[':school' => $school]);
+				} else {
+					//all users of school $school
+					$q = $this->sql('
+						SELECT ' . static::$TABLE_CHAMPS . ' 
+						FROM ' . static::$TABLE_NAME . ' 
+						WHERE school = :school',
+						[':school' => $school]);
+				}
+			}
 			$result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
 			$q->closeCursor();
-			
+					
 			return $result;
 		}
 	}
 
-	public function setIsAdminByElem(string $elem, $elemValue, bool $isAdmin)
+	public function updateById(int $id, string $elem, $value)
 	{
 		switch ($elem) {
-			case 'id' :
+			case 'grade' :
 				$this->sql('
 					UPDATE ' . static::$TABLE_NAME . ' 
-					SET isAdmin = :isAdmin 
-					WHERE id = :id',
-					[':isAdmin' => intval($isAdmin), ':id' => $elemValue]);
-
-				return $this;
+					SET isAdmin = :isAdmin, isModerator = :isModerator 
+					WHERE id = :id', 
+					[':isAdmin' => intval($value['isAdmin']), ':isModerator' => intval($value['isModerator']), ':id' => $id]);
 			break;
-			case 'name' :
+			case 'isActive' :
 				$this->sql('
 					UPDATE ' . static::$TABLE_NAME . ' 
-					SET isAdmin = :isAdmin 
-					WHERE name = :name',
-					[':isAdmin' => intval($isAdmin), ':name' => $elemValue]);
-
-				return $this;
+					SET isActive = :isActive 
+					WHERE id = :id', 
+					[':isActive' => intval($value), ':id' => $id]);
+			break;
+			case 'school' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET school = :school 
+					WHERE id = :id', 
+					[':school' => $value, ':id' => $id]);
 			break;
 		}
+		return $this;
+	}
+
+	public function updateByName(string $name, string $elem, $value)
+	{
+		switch ($elem) {
+			case 'grade' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET isAdmin = :isAdmin, isModerator = :isModerator 
+					WHERE name = :name', 
+					[':isAdmin' => intval($value['isAdmin']), ':isModerator' => intval($value['isModerator']), ':name' => $name]);
+			break;
+			case 'isActive' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET isActive = :isActive 
+					WHERE name = :name', 
+					[':isActive' => intval($value), ':name' => $name]);
+			break;
+			case 'school' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET school = :school 
+					WHERE name = :name', 
+					[':school' => $value, ':name' => $name]);
+			break;
+		}
+		return $this;
 	}
 
 	public function nameExists(string $name)

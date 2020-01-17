@@ -9,10 +9,10 @@
 		<meta name="description" content="Art-school est un site qui répertorie des artistes en cours d'études">
 
 		<meta name="twitter:title" content="Art-school">
-		<meta name="twitter:description" content="'École d'Art' est un site qui répertorie des artistes en cours d'études">
+		<meta name="twitter:description" content="Art-school est un site qui répertorie des artistes en cours d'études">
 		<meta name="twitter:image" content="images/a.jpeg">
 
-		<meta property="og:title" content="École d'Art" />
+		<meta property="og:title" content="Art-school" />
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content="julienchemin.fr/projet5/art-school.html" />
 		<meta property="og:image" content="images/a.jpeg" />
@@ -31,7 +31,7 @@
 	</head>
 	<body>
 		<?php 
-		if (isset(Chemin\ArtSchool\Model\Backend::$isConnected) && Chemin\ArtSchool\Model\Backend::$isConnected) {
+		if (isset($_SESSION['grade']) && ($_SESSION['grade'] === 'admin'  || $_SESSION['grade'] === 'moderator')) {
 			require('backend/navbar.php');
 		} else {
 			require('frontend/navbar.php');
@@ -50,25 +50,30 @@
 						?>
 						<script src="public/js/slide.js"></script>
 						<?php
-						break;
+					break;
 					case 'forgetPassword' :
 						?>
 						<script src="public/js/forgetPassword.js"></script>
 						<?php
-						break;
+					break;
 					case 'addSchool' :
 						?>
 						<script src="public/js/addSchool.js"></script>
 						<?php
-						break;
-					case 'editSchool' :
+					break;
+					case 'moderatSchool' :
 						?>
-						<script src="public/js/editSchool.js"></script>
+						<script src="public/js/moderatSchool.js"></script>
 						<?php
-						break;
+					break;
+					case 'modal' :
+						?>
+						<script src="public/js/modal.js"></script>
+						<?php
+					break;
 					default :
 						throw new Exception('L\'option indiqué n\'existe pas.');
-						break;
+					break;
 				}
 			}
 		}

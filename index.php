@@ -22,14 +22,23 @@ $frontend = new Frontend();
 
 try {
 	if (isset($_GET['action'])) {
-		/*switch ($_GET['action']) {
-			case 'posts' :
-				
-				break;
+		switch ($_GET['action']) {
+			case 'resetPassword' :
+				$frontend->resetPassword();
+			break;
+			case 'disconnect' :
+				$frontend->disconnect();
+			break;
+			case 'signUp' :
+				$frontend->signUp();
+			break;
+			case 'signIn' :
+				$frontend->signIn();
+			break;
 			default :
 				//"action" value is unknow
 				throw new Exception('L\'action renseignée est inexistante.');
-		}*/
+		}
 	} else {
 		//"action" undefined
 		$frontend->home();

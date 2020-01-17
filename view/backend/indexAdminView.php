@@ -1,11 +1,11 @@
 <section id="homeAdmin" class="container">
 	<?php
-	if (isset($_SESSION['grade'])) {
+	if (isset($_SESSION['grade']) && ($_SESSION['grade'] === 'admin'  || $_SESSION['grade'] === 'moderator')) {
 		// is connected
 		?>
 		<article id="menuHome">
 			<?php
-			if ($_SESSION['pseudo'] === 'Julien Chemin') {
+			if ($_SESSION['school'] === 'allSchool') {
 				?>
 				<a href="indexAdmin.php?action=addSchool">
 					<div class="itemHomeAdmin">
@@ -14,11 +14,20 @@
 					</div>
 				</a>
 				<?php
+			} elseif ($_SESSION['grade'] === 'admin') {
+				?>
+				<a href="indexAdmin.php?action=moderatSchool">
+					<div class="itemHomeAdmin">
+						<i class="fas fa-school"></i>
+						<span>Modérer mon Art School</span>
+					</div>
+				</a>
+				<?php
 			}
 
 			if ($_SESSION['grade'] === 'admin') {
 				?>
-				<a href="#">
+				<a href="indexAdmin.php?action=moderatAdmin">
 					<div class="itemHomeAdmin">
 						<i class="fas fa-user-cog"></i>
 						<span>Modération des comptes administrateurs / modérateurs</span>
@@ -28,7 +37,7 @@
 			}
 			?>
 		
-			<a href="#">
+			<a href="indexAdmin.php?action=moderatUsers">
 				<div class="itemHomeAdmin">
 					<i class="fas fa-list-ul"></i>
 					<span>Consulter la liste des élèves</span>

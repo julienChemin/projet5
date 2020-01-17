@@ -25,16 +25,34 @@ try {
 		switch ($_GET['action']) {
 			case 'resetPassword' :
 				$Backend->resetPassword();
-				break;
+			break;
 			case 'disconnect' :
 				$Backend->disconnect();
-				break;
+			break;
 			case 'addSchool' :
 				$Backend->addSchool();
-				break;
+			break;
+			case 'moderatSchool' :
+				$Backend->moderatSchool();
+			break;
 			case 'editSchool' :
 				$Backend->editSchool();
-				break;
+			break;
+			case 'moderatAdmin' :
+				$Backend->moderatAdmin();
+			break;
+			case 'moderatUsers' :
+				$Backend->moderatUsers();
+			break;
+			case 'editGrade' :
+				$Backend->editGrade();
+			break;
+			case 'toggleIsActive' :
+				$Backend->toggleIsActive();
+			break;
+			case 'delete' :
+				$Backend->delete();
+			break;
 			default :
 				//"action" value is unknow
 				throw new Exception('L\'action renseignée est inexistante.');

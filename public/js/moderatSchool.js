@@ -1,4 +1,4 @@
-if (document.getElementById('editSchool')) {
+if (document.getElementById('moderatSchool')) {
 	let arrBlockSchoolDiv = document.querySelectorAll('.blockSchool > div:nth-child(2)');
 	let arrArrowDown = document.querySelectorAll('.fa-caret-square-down');
 	let arrArrowUp = document.querySelectorAll('.fa-caret-square-up');
@@ -19,9 +19,9 @@ if (document.getElementById('editSchool')) {
 
 	//display msg
 	if (document.querySelector('.msg')) {
-		let blockOne = document.querySelector('#editSchool form');
+		let blockOne = document.querySelector('#moderatSchool form');
 		let msg = document.querySelector('.msg').parentNode;
-		let btnOk = document.getElementById('editSchoolBtnOk');
+		let btnOk = document.getElementById('moderatSchool');
 
 		blockOne.style.display = 'none';
 		msg.style.display = 'flex';

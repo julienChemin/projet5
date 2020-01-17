@@ -15,7 +15,8 @@ class User
 			$isBan,
 			$dateBan,
 			$isAdmin,
-			$isModerator;
+			$isModerator,
+			$isActive;
 
 	public function __construct(array $data = null)
 	{
@@ -94,6 +95,11 @@ class User
 	public function getIsModerator()
 	{
 		return $this->isModerator;
+	}
+
+	public function getIsActive()
+	{
+		return $this->isActive;
 	}
 
 	//SETTERS
@@ -179,6 +185,12 @@ class User
 	public function setIsModerator(bool $isModerator)
 	{
 		$this->isModerator = $isModerator;
+		return $this;
+	}
+
+	public function setIsActive(bool $isActive)
+	{
+		$this->isActive = $isActive;
 		return $this;
 	}
 }

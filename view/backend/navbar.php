@@ -7,10 +7,20 @@
 		<nav>
 			<ul>
 				<?php
-				if ($_SESSION['pseudo'] === 'Julien Chemin') {
+				if ($_SESSION['school'] === 'allSchool') {
 					?>
 					<li>
 						<a href="indexAdmin.php?action=addSchool">
+							<i class="fas fa-school"></i>
+						</a>
+					</li>
+
+					<hr class="hrNavbar">
+					<?php
+				} elseif ($_SESSION['grade'] === 'admin') {
+					?>
+					<li>
+						<a href="indexAdmin.php?action=moderatSchool">
 							<i class="fas fa-school"></i>
 						</a>
 					</li>
@@ -22,7 +32,7 @@
 				if ($_SESSION['grade'] === 'admin') {
 					?>
 					<li>
-						<a href="#">
+						<a href="indexAdmin.php?action=moderatAdmin">
 							<i class="fas fa-user-cog"></i>
 						</a>
 					</li>
@@ -33,7 +43,7 @@
 				?>
 				
 				<li>
-					<a href="#">
+					<a href="indexAdmin.php?action=moderatUsers">
 						<i class="fas fa-list-ul"></i>
 					</a>
 				</li>

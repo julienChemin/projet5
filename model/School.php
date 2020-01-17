@@ -10,6 +10,7 @@ class School
 			$nameAdmin,
 			$code,
 			$nbEleve,
+			$nbActiveAccount,
 			$dateInscription,
 			$dateDeadline,
 			$logo;
@@ -61,6 +62,11 @@ class School
 	public function getNbEleve()
 	{
 		return $this->nbEleve;
+	}
+
+	public function getNbActiveAccount()
+	{
+		return $this->nbActiveAccount;
 	}
 
 	public function getDateInscription()
@@ -123,6 +129,14 @@ class School
 	{
 		if ($nbEleve > 0) {
 			$this->nbEleve = $nbEleve;
+			return $this;
+		}
+	}
+
+	public function setNbActiveAccount(int $nbActiveAccount)
+	{
+		if ($nbActiveAccount >= 0) {
+			$this->nbActiveAccount = $nbActiveAccount;
 			return $this;
 		}
 	}
