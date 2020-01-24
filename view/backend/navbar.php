@@ -7,9 +7,9 @@
 		<nav>
 			<ul>
 				<?php
-				if ($_SESSION['school'] === 'allSchool') {
+				if ($_SESSION['school'] === ALL_SCHOOL) {
 					?>
-					<li>
+					<li title="Ajout / édition des établissements">
 						<a href="indexAdmin.php?action=addSchool">
 							<i class="fas fa-school"></i>
 						</a>
@@ -17,9 +17,9 @@
 
 					<hr class="hrNavbar">
 					<?php
-				} elseif ($_SESSION['grade'] === 'admin') {
+				} elseif ($_SESSION['grade'] === ADMIN) {
 					?>
-					<li>
+					<li title="Modérer mon établissement">
 						<a href="indexAdmin.php?action=moderatSchool">
 							<i class="fas fa-school"></i>
 						</a>
@@ -29,9 +29,9 @@
 					<?php
 				}
 
-				if ($_SESSION['grade'] === 'admin') {
+				if ($_SESSION['grade'] === ADMIN) {
 					?>
-					<li>
+					<li title="Modérer l'administration">
 						<a href="indexAdmin.php?action=moderatAdmin">
 							<i class="fas fa-user-cog"></i>
 						</a>
@@ -42,10 +42,16 @@
 				}
 				?>
 				
-				<li>
+				<li title="Modérer les utilisateurs">
 					<a href="indexAdmin.php?action=moderatUsers">
 						<i class="fas fa-list-ul"></i>
 					</a>
+				</li>
+
+				<hr class="hrNavbar">
+
+				<li title="Vers ArtSchool">
+					<a href="index.php"><i class="fas fa-external-link-square-alt"></i></a>
 				</li>
 
 				<hr class="hrNavbar">
@@ -58,7 +64,7 @@
 
 				<hr class="hrNavbar">
 
-				<li>
+				<li title="Deconnection">
 					<a href="indexAdmin.php?action=disconnect">
 						<i class="fas fa-power-off"></i>
 					</a>

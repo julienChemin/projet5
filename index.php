@@ -16,24 +16,33 @@ spl_autoload_register(function($class)
 	}
 });
 
-$frontend = new Frontend();
+const ALL_SCHOOL = 'allSchool';
+const NO_SCHOOL = 'noSchool';
+const ADMIN = 'admin';
+const MODERATOR = 'moderator';
+const STUDENT = 'student';
+const USER = 'user';
 
 /*---------------------------------*/
 
 try {
+	$Frontend = new Frontend();
+	//verify information in $_SESSION (information can be modified by an administrator)
+	$Frontend->verifyInformation();
+	
 	if (isset($_GET['action'])) {
 		switch ($_GET['action']) {
 			case 'resetPassword' :
-				$frontend->resetPassword();
+				$Frontend->resetPassword();
 			break;
 			case 'disconnect' :
-				$frontend->disconnect();
+				$Frontend->disconnect();
 			break;
 			case 'signUp' :
-				$frontend->signUp();
+				$Frontend->signUp();
 			break;
 			case 'signIn' :
-				$frontend->signIn();
+				$Frontend->signIn();
 			break;
 			default :
 				//"action" value is unknow
@@ -41,8 +50,8 @@ try {
 		}
 	} else {
 		//"action" undefined
-		$frontend->home();
+		$Frontend->home();
 	}
 } catch (Exception $e) {
-	$frontend->error($e->getMessage());
+	$Frontend->error($e->getMessage());
 }

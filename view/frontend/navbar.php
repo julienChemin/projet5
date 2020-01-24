@@ -9,11 +9,11 @@
 				<?php
 				if (!isset($_SESSION['grade'])) {
 					?>
-					<li>
+					<li title="Se connecter">
 						<a href="index.php?action=signIn">Se connecter</a>
 					</li>
 
-					<li>
+					<li title="S'inscrire">
 						<a href="index.php?action=signUp">S'inscrire</a>
 					</li>
 					<?php
@@ -23,9 +23,19 @@
 						<?=$_SESSION['pseudo']?>
 					</li>
 
+					<?php
+					if ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {
+						?>
+						<li title="vers l'interface d'administration">
+							<a href="indexAdmin.php"><i class="fas fa-external-link-square-alt"></i></a>
+						</li>
+						<?php
+					}
+					?>
+
 					<hr class="hrNavbar">
 
-					<li>
+					<li title="Deconnection">
 						<a href="index.php?action=disconnect">
 							<i class="fas fa-power-off"></i>
 						</a>

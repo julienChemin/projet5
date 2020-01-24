@@ -1,11 +1,11 @@
 <section id="homeAdmin" class="container">
 	<?php
-	if (isset($_SESSION['grade']) && ($_SESSION['grade'] === 'admin'  || $_SESSION['grade'] === 'moderator')) {
+	if (isset($_SESSION['grade']) && ($_SESSION['grade'] === ADMIN  || $_SESSION['grade'] === MODERATOR)) {
 		// is connected
 		?>
 		<article id="menuHome">
 			<?php
-			if ($_SESSION['school'] === 'allSchool') {
+			if ($_SESSION['school'] === ALL_SCHOOL) {
 				?>
 				<a href="indexAdmin.php?action=addSchool">
 					<div class="itemHomeAdmin">
@@ -14,7 +14,7 @@
 					</div>
 				</a>
 				<?php
-			} elseif ($_SESSION['grade'] === 'admin') {
+			} elseif ($_SESSION['grade'] === ADMIN) {
 				?>
 				<a href="indexAdmin.php?action=moderatSchool">
 					<div class="itemHomeAdmin">
@@ -25,7 +25,7 @@
 				<?php
 			}
 
-			if ($_SESSION['grade'] === 'admin') {
+			if ($_SESSION['grade'] === ADMIN) {
 				?>
 				<a href="indexAdmin.php?action=moderatAdmin">
 					<div class="itemHomeAdmin">

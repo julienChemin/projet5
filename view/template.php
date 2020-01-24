@@ -31,7 +31,7 @@
 	</head>
 	<body>
 		<?php 
-		if (isset($_SESSION['grade']) && ($_SESSION['grade'] === 'admin'  || $_SESSION['grade'] === 'moderator')) {
+		if (defined('BACKEND') && isset($_SESSION['grade']) && ($_SESSION['grade'] === ADMIN  || $_SESSION['grade'] === MODERATOR)) {
 			require('backend/navbar.php');
 		} else {
 			require('frontend/navbar.php');

@@ -16,11 +16,21 @@ spl_autoload_register(function($class)
 	}
 });
 
-$Backend = new Backend();
+const BACKEND = true;
+const ALL_SCHOOL = 'allSchool';
+const NO_SCHOOL = 'noSchool';
+const ADMIN = 'admin';
+const MODERATOR = 'moderator';
+const STUDENT = 'student';
+const USER = 'user';
 
 /*---------------------------------*/
 
 try {
+	$Backend = new Backend();
+	//verify information in $_SESSION (information can be modified by an administrator)
+	$Backend->verifyInformation();
+
 	if (isset($_GET['action'])) {
 		switch ($_GET['action']) {
 			case 'resetPassword' :

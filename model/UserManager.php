@@ -60,7 +60,7 @@ class UserManager extends AbstractManager
 	public function getUsersBySchool(string $school, string $grade = null)
 	{
 		if (strlen($school) > 0) {
-			if ($school === 'allSchool') {
+			if ($school === ALL_SCHOOL) {
 				//every school
 				if ($grade === 'admin') {
 					//admins and moderator

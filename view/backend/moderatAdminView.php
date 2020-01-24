@@ -2,7 +2,7 @@
 	<article id="moderatAdmin">
 		<?php
 		if (isset($data['users'])) {
-			if ($_SESSION['school'] === 'allSchool') {
+			if ($_SESSION['school'] === ALL_SCHOOL) {
 				if (!empty($data['schools'])) {
 					//display all schools for webmaster
 					foreach ($data['schools'] as $school) {
@@ -81,6 +81,10 @@
 											<th>
 												Enlever les droits de modérateur
 											</th>
+
+											<th>
+												Supprimer
+											</th>
 										</tr>
 
 										<?php
@@ -98,6 +102,10 @@
 
 													<td>
 														<i class="far fa-minus-square toNormalUser" schoolname="<?=$school->getName()?>"></i>
+													</td>
+
+													<td>
+														<i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
 													</td>
 												</tr>
 												<?php
@@ -130,7 +138,7 @@
 					</div>
 					<?php
 				}
-			} elseif ($_SESSION['grade'] === 'admin') {
+			} elseif ($_SESSION['grade'] === ADMIN) {
 				//display user's school
 				$school = $data['schools'];
 				if ($school->getName() === $_SESSION['school']) {
@@ -211,6 +219,10 @@
 										<th>
 											Enlever les droits de modérateur
 										</th>
+
+										<th>
+											Supprimer
+										</th>
 									</tr>
 
 									<?php
@@ -228,6 +240,10 @@
 
 												<td>
 													<i class="far fa-minus-square toNormalUser" schoolname="<?=$school->getName()?>"></i>
+												</td>
+
+												<td>
+													<i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
 												</td>
 											</tr>
 											<?php

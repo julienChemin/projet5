@@ -4,17 +4,21 @@ namespace Chemin\ArtSchool\Model;
 
 class Backend
 {
-	public function __construct()
+	public function verifyInformation()
 	{
-		if (isset($_SESSION['grade']) && ($_SESSION['grade'] === 'admin'  || $_SESSION['grade'] === 'moderator')) {
+		if (isset($_SESSION['grade']) && ($_SESSION['grade'] === ADMIN  || $_SESSION['grade'] === MODERATOR)) {
 			$SchoolManager = new SchoolManager();
 			$UserManager = new UserManager();
-			if(!($SchoolManager->nameExists($_SESSION['school'])) || !($UserManager->exists($_SESSION['id']))) {
+			if((!$SchoolManager->nameExists($_SESSION['school']) && !($_SESSION['school'] === ALL_SCHOOL))
+			|| !$UserManager->nameExists($_SESSION['pseudo'])) {
+				//if user name don't exist or if school name don't exist and isn't "allSchool" 
 				session_destroy();
 				if (isset($_COOKIE['artSchoolAdminId'])) {
 					$this->useCookieToSignIn();
 				} else {
-					throw new \Exception('Veuillez vous reconnecter pour mettre à jour vos informations. Cocher la case "rester connecté" lors de la connection peu vous éviter ce genre de désagrément');
+					throw new \Exception("Certaines informations lié a votre compte ne sont plus valide,
+					 veuillez vous reconnecter pour mettre à jour ces informations.
+					 Cocher la case 'rester connecté' lors de la connection peu vous éviter ce genre de désagrément");
 				}
 			}
 		} elseif (isset($_COOKIE['artSchoolAdminId'])) {
@@ -28,26 +32,72 @@ class Backend
 
 	public function useCookieToSignIn()
 	{
-		$UserManager = new UserManager();
-		if ($UserManager->exists($_COOKIE['artSchoolAdminId'])) {
-			$user = $UserManager->getOneById($_COOKIE['artSchoolAdminId']);
+		$cookie = explode("-", $_COOKIE['artSchoolAdminId']);
 
-			$_SESSION['id'] = $user->getId();
-			$_SESSION['pseudo'] = $user->getName();
-			$_SESSION['school'] = $user->getSchool();
-			if ($user->getIsAdmin()) {
-				$_SESSION['grade'] = 'admin';
-			} elseif ($user->getIsModerator()) {
-				$_SESSION['grade'] = 'moderator';
+		if (count($cookie) === 2) {
+			$UserManager = new UserManager();
+
+			$userId = htmlspecialchars($cookie[0]);
+			$userPassword = htmlspecialchars($cookie[1]);
+
+			if ($UserManager->exists($userId)) {
+				$user = $UserManager->getOneById($userId);
+
+				if ($user->getPassword() === $userPassword) {
+					$SchoolManager = new SchoolManager();
+
+					if(!$SchoolManager->nameExists($user->getSchool()) && !($user->getSchool() === ALL_SCHOOL)) {
+						//if school name don't exist and isn't "allSchool"
+						$this->cookieDestroy();
+						throw new \Exception("Le nom de l'établissement scolaire auquel vous êtes affilié n'existe pas / plus.
+							Un message d'erreur a été envoyé à un administrateur du site et sera traité dans les plus brefs délais.
+							Merci de votre compréhension");
+					} else {
+						$this->connect($user);
+					}
+				} else {
+					$this->disconnect();
+				}
+			} else {
+				$this->disconnect();
 			}
 		} else {
-			if (isset($_SESSION)) {
-				session_destroy();
-			}
-			if (isset($_COOKIE['artSchoolAdminId'])) {
-				setcookie('artSchoolAdminId', '', time()-3600, null, null, false, true);
-			}
-			header('Location: indexAdmin.php');
+			$this->disconnect();
+		}
+	}
+
+	public function connect(User $user)
+	{
+		$_SESSION['id'] = $user->getId();
+		$_SESSION['pseudo'] = $user->getName();
+		$_SESSION['school'] = $user->getSchool();
+
+		if ($user->getIsAdmin()) {
+			$_SESSION['grade'] = ADMIN;
+		} elseif ($user->getIsModerator()) {
+			$_SESSION['grade'] = MODERATOR;
+		}
+	}
+
+	public function disconnect()
+	{
+		if (isset($_SESSION)) {
+			session_destroy();
+		}
+
+		$this->cookieDestroy();
+
+		header('Location: indexAdmin.php');
+	}
+
+	public function cookieDestroy()
+	{
+		if (isset($_COOKIE['artSchoolId'])) {
+			setcookie('artSchoolId', '', time()-3600, null, null, false, true);
+		}
+
+		if (isset($_COOKIE['artSchoolAdminId'])) {
+			setcookie('artSchoolAdminId', '', time()-3600, null, null, false, true);
 		}
 	}
 
@@ -55,6 +105,7 @@ class Backend
 	{
 		//if user is not connected and try to connect
 		if (isset($_POST['ConnectPseudoAdmin']) && isset($_POST['ConnectPasswordAdmin'])) {
+
 			$UserManager = new UserManager();
 			$userExist = $UserManager->nameExists($_POST['ConnectPseudoAdmin']);
 
@@ -63,28 +114,13 @@ class Backend
 				$passwordIsOk = $UserManager->checkPassword($user, $_POST['ConnectPasswordAdmin']);
 
 				if ($passwordIsOk) {
-					$isAdmin = $user->getIsAdmin();
-					$isModerator = $user->getIsModerator();
-
-					if ($isAdmin) {
+					if ($user->getIsAdmin() || $user->getIsModerator()) {
 						if (isset($_POST['stayConnect'])) {
 							//if user want to stay connect
-							setcookie('artSchoolAdminId', $user->getId(), time()+(365*24*3600), null, null, false, true);
+							setcookie('artSchoolAdminId', $user->getId() . '-' . $user->getPassword(), time()+(365*24*3600), null, null, false, true);
 						}
-						$_SESSION['id'] = $user->getId();
-						$_SESSION['pseudo'] = $user->getName();
-						$_SESSION['school'] = $user->getSchool();
-						$_SESSION['grade'] = 'admin';
-						header('Location: indexAdmin.php');
-					} elseif ($isModerator){
-						if (isset($_POST['stayConnect'])) {
-							//if user want to stay connect
-							setcookie('artSchoolAdminId', $user->getId(), time()+(365*24*3600), null, null, false, true);
-						}
-						$_SESSION['id'] = $user->getId();
-						$_SESSION['pseudo'] = $user->getName();
-						$_SESSION['school'] = $user->getSchool();
-						$_SESSION['grade'] = 'moderator';
+						$this->connect($user);
+						
 						header('Location: indexAdmin.php');
 					} else {
 						$message = 'Vous devez etre administrateur ou modérateur pour accéder a cette espace';
@@ -107,9 +143,9 @@ class Backend
 				$UserManager->setTemporaryPassword($temporaryPassword, $user->getId());
 
 				$subject = 'Recuperation de mot de passe';
-				$content = 'Bonjour ' . $user->getName() . ', vous avez demande a reinitialiser votre mot de passe.
-					En suivant ce lien vous serez redirige vers une page pour modifier votre mot de passe : 
-					http://julienchemin.fr/projet5/indexAdmin.php?action=resetPassword&key=' . $temporaryPassword . '&id=' . $user->getId();
+				$content = "Bonjour " . $user->getName() . ", vous avez demande a reinitialiser votre mot de passe.<br><br>
+					En suivant <a style='text-decoration: underline;' href='http://julienchemin.fr/projet5/indexAdmin.php?action=resetPassword&key=" . $temporaryPassword . "&id=" . $user->getId() . "'>ce lien</a> vous serez redirige vers une page pour modifier votre mot de passe.<br><br>
+					Si le lien ne fonctionne pas, rendez vous a l'adresse suivante : <br>http://julienchemin.fr/projet5/indexAdmin.php?action=resetPassword&key=" . $temporaryPassword . "&id=" . $user->getId() . "<br><br>L'equipe d'ArtSchool vous remercie.";
 				$content = wordwrap($content, 70, "\r\n");
 				$headers = array('From' => '"Art-School"<julchemin@orange.fr>', 
 					'Content-Type' => 'text/html; charset=utf-8');
@@ -138,7 +174,17 @@ class Backend
 			$user = $UserManager->getOneById($_GET['id']);
 
 			if (isset($_GET['wrongPassword'])) {
-				$message = "Vous devez entrer deux mot de passe identiques";
+				switch ($_GET['wrongPassword']) {
+					case 1 :
+						$message = "Vous devez entrer deux mot de passe identiques";
+					break;
+					case 2 :
+						$message = "Le nouveau mot de passe doit être différent de l'ancien";
+					break;
+					default :
+						$message = "Il y a eu une erreur au niveau de mot de passe";
+
+				}
 			}
 
 			if (! $user->getBeingReset()) {
@@ -153,43 +199,32 @@ class Backend
 		// check form data
 		} else if (isset($_POST['newPassword']) && isset($_POST['confirmNewPassword'])) {
 			if ($_POST['newPassword'] === $_POST['confirmNewPassword']) {
-				//new password is ok
 				$UserManager = new UserManager();
+				$user = $UserManager->getOneById($_POST['id']);
 
-				$UserManager->setPassword(password_hash($_POST['newPassword'], PASSWORD_DEFAULT), $_POST['id']);
+				if (!password_verify($_POST['newPassword'], $user->getPassword())) {
+					//new password is correct
+					$UserManager->setPassword(password_hash($_POST['newPassword'], PASSWORD_DEFAULT), $_POST['id']);
 
-				$message = "Le mot de passe a bien été modifié.";
+					$message = "Le mot de passe a bien été modifié.";
+				} else {
+					//new password is the same as the old one
+					header('Location: indexAdmin.php?action=resetPassword&key=' . $_POST['key'] . '&id=' . $_POST['id'] . '&wrongPassword=2');
+				}
 			} else {
 				//new password is wrong
-				header('Location: indexAdmin.php?action=resetPassword&key=' . $_POST['key'] . '&id=' . $_POST['id'] . '&wrongPassword=true');
+				header('Location: indexAdmin.php?action=resetPassword&key=' . $_POST['key'] . '&id=' . $_POST['id'] . '&wrongPassword=1');
 			}
 			RenderView::render('template.php', 'backend/resetPasswordView.php', ['message' => $message]);
 		} else {
-			throw new Exception("Pour réinitialiser votre mot de passe, vous devez passer directement par le lien qui vous a été envoyé par mail");
+			throw new \Exception("Pour réinitialiser votre mot de passe, vous devez passer directement par le lien qui vous a été envoyé par mail");
 		}
 		
 	}
 
-	public function disconnect()
-	{
-		if (isset($_SESSION)) {
-			session_destroy();
-		}
-
-		if (isset($_COOKIE['artSchoolId'])) {
-			setcookie('artSchoolId', '', time()-3600, null, null, false, true);
-		}
-
-		if (isset($_COOKIE['artSchoolAdminId'])) {
-			setcookie('artSchoolAdminId', '', time()-3600, null, null, false, true);
-		}
-
-		header('Location: indexAdmin.php');
-	}
-
 	public function addSchool()
 	{
-		if ($_SESSION['school'] === 'allSchool') {
+		if ($_SESSION['school'] === ALL_SCHOOL) {
 			if (isset($_GET['option']) && $_GET['option'] === 'add') {
 				//if form to add school is filled
 				if (isset($_POST['adminPassword'])) {
@@ -213,7 +248,7 @@ class Backend
 					}
 
 					//verify if school name is already use
-					if ($SchoolManager->nameExists($_POST['schoolName']) || $_POST['schoolName'] === 'allSchool') {
+					if ($SchoolManager->nameExists($_POST['schoolName']) || $_POST['schoolName'] === ALL_SCHOOL) {
 						$schoolNameIsOk = false;
 						$message = "Ce nom d'établissement existe déja";
 					} else {
@@ -280,7 +315,7 @@ class Backend
 
 	public function moderatSchool()
 	{
-		if ($_SESSION['grade'] === 'admin') {
+		if ($_SESSION['grade'] === ADMIN) {
 			$SchoolManager = new SchoolManager();
 
 			$schools = $SchoolManager->getSchoolByName($_SESSION['school']);
@@ -297,8 +332,8 @@ class Backend
 
 	public function editSchool()
 	{
-		if ($_SESSION['grade'] === 'admin' 
-		&& ($_SESSION['school'] === 'allSchool' || (!empty($_POST['schoolName']) && $_POST['schoolName'] === $_SESSION['school']))) {
+		if ($_SESSION['grade'] === ADMIN 
+		&& ($_SESSION['school'] === ALL_SCHOOL || (!empty($_POST['schoolName']) && $_POST['schoolName'] === $_SESSION['school']))) {
 			$UserManager = new UserManager();
 			$SchoolManager = new SchoolManager();
 
@@ -306,7 +341,7 @@ class Backend
 				//editing school information
 				switch ($_POST['elem']) {
 					case 'name' :
-						if ($_POST['editName'] !== 'allSchool' && !$SchoolManager->nameExists($_POST['editName'])) {
+						if ($_POST['editName'] !== ALL_SCHOOL && !$SchoolManager->nameExists($_POST['editName'])) {
 							$schoolName = htmlspecialchars($_POST['schoolName']);
 							$newSchoolName = htmlspecialchars($_POST['editName']);
 
@@ -385,7 +420,7 @@ class Backend
 
 	public function moderatAdmin()
 	{
-		if ($_SESSION['grade'] === 'admin') {
+		if ($_SESSION['grade'] === ADMIN) {
 			$UserManager = new UserManager();
 			$users = $UserManager->getUsersBySchool($_SESSION['school'], 'admin');
 
@@ -393,30 +428,27 @@ class Backend
 			$schools = $SchoolManager->getSchoolByName($_SESSION['school']);
 
 
-			if ($_SESSION['school'] === 'allSchool') {
+			if ($_SESSION['school'] === ALL_SCHOOL) {
 				//order users by school
 				$arrUsersBySchool = [];
 
 				foreach ($users as $user) {
-					if ($user->getSchool() !== 'allSchool') {
+					if ($user->getSchool() !== ALL_SCHOOL) {
 						$arrUsersBySchool[$user->getSchool()][] = $user;
-					}
-				}
 
-				//count nb moderator order by school
-				foreach ($schools as $school) {
-					$nbModerator = 0;
+						//count nb moderator order by school
+						if (!isset($arrNbModerator[$user->getSchool()])) {
+							$arrNbModerator[$user->getSchool()] = 0;
+						}
 
-					foreach ($arrUsersBySchool[$school->getName()] as $user) {
 						if ($user->getIsModerator()) {
-							$nbModerator++;
+							$arrNbModerator[$user->getSchool()] += 1;
 						}
 					}
-					$arrNbModerator[$school->getName()] = $nbModerator;
 				}
 				RenderView::render('template.php', 'backend/moderatAdminView.php', 
 					['users' => $arrUsersBySchool, 'schools' => $schools, 'nbModerator' => $arrNbModerator, 'option' => ['modal']]);
-			} elseif ($_SESSION['grade'] === 'admin') {
+			} elseif ($_SESSION['grade'] === ADMIN) {
 				$nbModerator = 0;
 
 				foreach ($users as $user) {
@@ -434,25 +466,25 @@ class Backend
 
 	public function moderatUsers()
 	{
-		if (isset($_SESSION['grade']) && ($_SESSION['grade'] === 'admin' || $_SESSION['grade'] === 'moderator')) {
+		if (isset($_SESSION['grade']) && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) {
 			$UserManager = new UserManager();
 			$users = $UserManager->getUsersBySchool($_SESSION['school'], 'user');
 
 			$SchoolManager = new SchoolManager();
 			$schools = $SchoolManager->getSchoolByName($_SESSION['school']);
 
-			if ($_SESSION['school'] === 'allSchool') {
+			if ($_SESSION['school'] === ALL_SCHOOL) {
 				//order users by school
 				$arrUsersBySchool = [];
 				$arrIsActive = [];
 
 				foreach ($users as $user) {
-					if ($user->getSchool() !== 'allSchool') {
+					if ($user->getSchool() !== ALL_SCHOOL) {
 						if ($user->getIsActive()) {
-							$arrUsersBySchool[$user->getSchool()]['active'] = $user;
+							$arrUsersBySchool[$user->getSchool()]['active'][] = $user;
 							
 						} else {
-							$arrUsersBySchool[$user->getSchool()]['inactive'] = $user;
+							$arrUsersBySchool[$user->getSchool()]['inactive'][] = $user;
 						}
 					}
 				}
@@ -555,7 +587,7 @@ class Backend
 	public function toggleIsActive()
 	{
 		if (!empty($_GET['userName']) && !empty($_GET['schoolName'])) {
-			if ($_SESSION['school'] === 'allSchool' || $_SESSION['school'] === $_GET['schoolName']) {
+			if ($_SESSION['school'] === ALL_SCHOOL || $_SESSION['school'] === $_GET['schoolName']) {
 				$SchoolManager = new SchoolManager();
 				$UserManager = new UserManager();
 
@@ -563,32 +595,32 @@ class Backend
 				$userExist = $UserManager->nameExists($_GET['userName']);
 
 				if ($schoolExist && $userExist) {
+					$user = $UserManager->getUserByName($_GET['userName']);
 					$school = $SchoolManager->getSchoolByName($_GET['schoolName']);
 					$nbActiveAccount = $school->getNbActiveAccount();
 					$nbEleve = $school->getNbEleve();
 
-					if ($nbActiveAccount < $nbEleve) {
-						$user = $UserManager->getUserByName($_GET['userName']);
-
-						if ($user->getIsActive()) {
-							//account is active
-							$UserManager->updateByName($_GET['userName'], 'isActive', false);
-							//nb active account - 1
-							$SchoolManager->updateByName($_GET['schoolName'], 'nbActiveAccount', $nbActiveAccount - 1);
-						} else {
-							//account is inactive
+					if ($user->getIsActive()) {
+						//account is active
+						$UserManager->updateByName($_GET['userName'], 'isActive', false);
+						//nb active account - 1
+						$SchoolManager->updateByName($_GET['schoolName'], 'nbActiveAccount', $nbActiveAccount - 1);
+					} else {
+						//account is inactive
+						if ($nbActiveAccount < $nbEleve) {
 							$UserManager->updateByName($_GET['userName'], 'isActive', true);
 							//nb active account + 1
 							$SchoolManager->updateByName($_GET['schoolName'], 'nbActiveAccount', $nbActiveAccount + 1);
-						}
-
-						if (isset($_SERVER['HTTP_REFERER'])) {
-							header('Location: ' . $_SERVER['HTTP_REFERER']);
 						} else {
-							header('Location: indexAdmin.php');
+							throw new \Exception("Il est impossible d'effectuer cette action, 
+								vous avez atteint le nombre maximum de compte utilisateur actif");
 						}
+					}
+
+					if (isset($_SERVER['HTTP_REFERER'])) {
+						header('Location: ' . $_SERVER['HTTP_REFERER']);
 					} else {
-						throw new \Exception("Il est impossible d'effectuer cette action, vous avez atteint le nombre maximum de compte utilisateur actif");
+						header('Location: indexAdmin.php');
 					}
 				} else {
 					throw new \Exception("Les informations renseignées sont incorrectes");
@@ -609,7 +641,7 @@ class Backend
 				break;
 				case 'user' :
 					if (!empty($_GET['userName']) && !empty($_GET['schoolName'])) {
-						if ($_SESSION['school'] === 'allSchool' || $_SESSION['school'] === $_GET['schoolName']) {
+						if ($_SESSION['school'] === ALL_SCHOOL || $_SESSION['school'] === $_GET['schoolName']) {
 							$SchoolManager = new SchoolManager();
 							$UserManager = new UserManager();
 
@@ -618,20 +650,26 @@ class Backend
 
 							if ($schoolExist && $userExist) {
 								$user = $UserManager->getUserByName($_GET['userName']);
-								if (!$user->getIsAdmin() && !$user->getIsModerator()) {
+								if (!$user->getIsAdmin()) {
 									//delete reports related to this account
 
-									//delete content publish by this account
+									//delete content publish by this account and reports related to this content
 
-									//if account is active, nb active account -1
-									if ($user->getIsActive()) {
+									//if account is active and not moderator, nb active account -1
+									if ($user->getIsActive() && !$user->getIsModerator()) {
 										$school = $SchoolManager->getSchoolByName($_GET['schoolName']);
 										$SchoolManager->updateByName($_GET['schoolName'], 'nbActiveAccount', $school->getNbActiveAccount() - 1);
 									}
 									//delete account
 									$UserManager->delete($user->getId());
+
+									if (isset($_SERVER['HTTP_REFERER'])) {
+										header('Location: ' . $_SERVER['HTTP_REFERER']);
+									} else {
+										header('Location: indexAdmin.php');
+									}
 								} else {
-									throw new \Exception("Vous ne pouvez pas supprimer un compte administrateur / modérateur");
+									throw new \Exception("Vous ne pouvez pas supprimer un compte administrateur");
 								}
 							} else {
 								throw new \Exception("Les informations renseignées sont incorrectes");
@@ -652,6 +690,6 @@ class Backend
 
 	public function error(string $error_msg)
 	{
-		RenderView::render('template.php', 'frontend/errorView.php', ['error_msg' => $error_msg]);
+		RenderView::render('template.php', 'backend/errorView.php', ['error_msg' => $error_msg]);
 	}
 }

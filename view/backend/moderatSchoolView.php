@@ -2,7 +2,7 @@
 	<article id="moderatSchool">
 		<?php
 		if (!empty($data['schools'])) {
-			if ($_SESSION['school'] === 'allSchool') {
+			if ($_SESSION['school'] === ALL_SCHOOL) {
 				//consulting all school
 				foreach ($data['schools'] as $school) {
 					?>
@@ -138,7 +138,7 @@
 					</div>
 					<?php
 				}
-			} elseif ($_SESSION['grade'] === 'admin') {
+			} elseif ($_SESSION['grade'] === ADMIN) {
 				//consulting user school
 				$school = $data['schools'];
 				if ($school->getName() === $_SESSION['school']) {

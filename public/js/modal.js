@@ -11,7 +11,8 @@ btnCancel.addEventListener('click', function(){
 if (document.getElementById('moderatAdmin')) {
 	let linksToModo = document.querySelectorAll('.toModerator');
 	let linksToAdmin = document.querySelectorAll('.toAdmin');
-	let linksToNormalUser = document.querySelectorAll('.toNormalUser'); 
+	let linksToNormalUser = document.querySelectorAll('.toNormalUser');
+	let linksToDelete = document.querySelectorAll('.toDelete'); 
 
 	let pathToModo = '&isAdmin=false&isModerator=true';
 	let pathToAdmin = '&isAdmin=true&isModerator=false';
@@ -49,6 +50,17 @@ if (document.getElementById('moderatAdmin')) {
 			btnConfirm.href = "indexAdmin.php?action=editGrade&userName=" + name + "&schoolName=" + schoolName + pathToNormalUser;
 		});
 	}
+
+	for (let i=0;i<linksToDelete.length;i++) {
+		linksToDelete[i].addEventListener('click', function(){
+			let name = linksToDelete[i].parentNode.parentNode.childNodes[1].textContent;
+			let schoolName = linksToDelete[i].getAttribute('schoolname');
+
+			modal.style.display = 'flex';
+			textModal.textContent = "Supprimer définitivement le compte de " + name + "  ?";
+			btnConfirm.href = "indexAdmin.php?action=delete&elem=user&userName=" + name + "&schoolName=" + schoolName;
+		});
+	}
 }
 
 //moderatUsersView
@@ -74,7 +86,7 @@ if (document.getElementById('moderatUsers')) {
 	for (let i=0;i<linksToActive.length;i++) {
 		linksToActive[i].addEventListener('click', function(){
 			let name = linksToActive[i].parentNode.parentNode.childNodes[1].textContent;
-			let schoolName = linksToModo[i].getAttribute('schoolname');
+			let schoolName = linksToActive[i].getAttribute('schoolname');
 
 			modal.style.display = 'flex';
 			textModal.textContent = "Activer le compte de " + name + "  ?";
@@ -85,7 +97,7 @@ if (document.getElementById('moderatUsers')) {
 	for (let i=0;i<linksToInactive.length;i++) {
 		linksToInactive[i].addEventListener('click', function(){
 			let name = linksToInactive[i].parentNode.parentNode.childNodes[1].textContent;
-			let schoolName = linksToModo[i].getAttribute('schoolname');
+			let schoolName = linksToInactive[i].getAttribute('schoolname');
 
 			modal.style.display = 'flex';
 			textModal.textContent = "Désactiver le compte de " + name + "  ?";

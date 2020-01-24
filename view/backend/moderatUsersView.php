@@ -2,7 +2,7 @@
 	<article id="moderatUsers">
 		<?php
 		if (isset($data['users'])) {
-			if ($_SESSION['school'] === 'allSchool') {
+			if ($_SESSION['school'] === ALL_SCHOOL) {
 				if (!empty($data['schools'])) {
 					//display all schools for webmaster
 					foreach ($data['schools'] as $school) {
@@ -64,7 +64,7 @@
 												</td>
 
 												<td>
-													<i class="far fa-trash-alt toDelete" schoolname="<?=$school->getName()?>" ></i>
+													<i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
 												</td>
 											</tr>
 											<?php
@@ -115,7 +115,7 @@
 												</td>
 
 												<td>
-													<i class="far fa-trash-alt toDelete" schoolname="<?=$school->getName()?>" ></i>
+													<i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
 												</td>
 											</tr>
 											<?php
@@ -148,7 +148,7 @@
 					</div>
 					<?php
 				}
-			} elseif ($_SESSION['grade'] === 'admin' || $_SESSION['grade'] === 'moderator') {
+			} elseif ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {
 				//display user's school
 				$school = $data['schools'];
 				if ($school->getName() === $_SESSION['school']) {
@@ -211,7 +211,7 @@
 												</td>
 
 												<td>
-													<i class="far fa-trash-alt toDelete" schoolname="<?=$school->getName()?>" ></i>
+													<i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
 												</td>
 											</tr>
 											<?php
@@ -264,7 +264,7 @@
 												</td>
 
 												<td>
-													<i class="far fa-trash-alt toDelete" schoolname="<?=$school->getName()?>" ></i>
+													<i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
 												</td>
 											</tr>
 											<?php

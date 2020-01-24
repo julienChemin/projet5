@@ -24,7 +24,7 @@ class SchoolManager extends AbstractManager
 	public function getSchoolByName(string $name)
 	{
 		if (strlen($name) > 0) {
-			if ($name === 'allSchool') {
+			if ($name === ALL_SCHOOL) {
 				$q = $this->sql(
 				'SELECT ' . static::$TABLE_CHAMPS . ' 
 				FROM ' . static::$TABLE_NAME . ' 

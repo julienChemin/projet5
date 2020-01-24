@@ -36,7 +36,7 @@
 
 			<p id="postAffiliationCode">
 				<label for="affiliationCode">Code d'affiliation</label>
-				<input type="text" name="affiliationCode" required="">
+				<input type="text" name="affiliationCode">
 			</p>
 
 			<p>

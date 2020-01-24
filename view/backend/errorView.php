@@ -20,7 +20,7 @@ $arrMessage = explode(".", $message);
 		}
 		?>
 
-		<p><a href="index.php">Retourner sur la page d'accueil</a></p>
+		<p><a href="indexAdmin.php">Retourner sur la page d'accueil</a></p>
 	</div>	
 </section>
 

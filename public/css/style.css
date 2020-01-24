@@ -161,6 +161,9 @@ td{
 	border: solid 1.5px #CF8B3F;
 	padding: 15px;
 }
+td i{
+	font-size: 0.7em;
+}
 tr:nth-child(2n + 1){
 	background-color: #161617;
 }
@@ -172,8 +175,11 @@ tr:nth-child(2n + 1){
 
 	margin-top: 100px;
 }
-#msg span{
+#msg p{
 	font-size: 1.5em;
+}
+#msg a, .msg a{
+	text-decoration: underline;
 }
 .textCenter{
 	text-align: center;
@@ -391,7 +397,7 @@ form > div{
 
 #formConnect > div > p:first-child, #formConnect > div > p:nth-child(2){
 	display: flex;
-	justify-content: space-around;
+	justify-content: space-between;
 }
 
 #buttonForgetPassword, #buttonCancel{
@@ -511,7 +517,7 @@ form > div{
 	display: flex;
 	flex-direction: column;
 
-	width: 45%;
+	width: 80%;
 	margin: 40px 0;
 }
 .blockSchool > div{
@@ -612,6 +618,8 @@ form > div{
 /*table admin*/
 #moderatAdmin .blockSchool > div:nth-child(2) > table:first-child td:first-child{
 	width: 80%;
+	color: white;
+	font-weight: normal;
 }
 #moderatAdmin .blockSchool > div:nth-child(2) > table:first-child td:nth-child(2){
 	width: 20%;
@@ -619,12 +627,17 @@ form > div{
 /*table moderator*/
 #moderatAdmin .blockSchool > div:nth-child(2) > table:nth-child(2) td:first-child{
 	width: 60%;
+	color: white;
+	font-weight: normal;
 }
 #moderatAdmin .blockSchool > div:nth-child(2) > table:nth-child(2) td:nth-child(2){
-	width: 20%;
+	width: 13.33%;
 }
 #moderatAdmin .blockSchool > div:nth-child(2) > table:nth-child(2) td:nth-child(3){
-	width: 20%;
+	width: 13.33%;
+}
+#moderatAdmin .blockSchool > div:nth-child(2) > table:nth-child(2) td:nth-child(4){
+	width: 13.33%;
 }
 
 /* ------------------------ MODERAT USERS ------------------------ */
@@ -643,9 +656,6 @@ form > div{
 	flex-wrap: wrap;
 
 	width: 100%;
-}
-#moderatUsers .blockSchool{
-	width: 80%;
 }
 #moderatUsers .blockSchool > div:nth-child(2){
 	flex-wrap: wrap;
@@ -668,6 +678,8 @@ form > div{
 /*table active - inactive users*/
 #moderatUsers .blockSchool > div:nth-child(2) > table td:first-child{
 	width: 60%;
+	color: white;
+	font-weight: normal;
 }
 #moderatUsers .blockSchool > div:nth-child(2) > table td:nth-child(2){
 	width: 13.33%;
