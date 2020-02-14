@@ -31,6 +31,7 @@ class Frontend
 	public function verifyInformation()
 	{
 		if (isset($_SESSION['pseudo'])) {
+			//user is connect, verif SESSION info
 			$SchoolManager = new SchoolManager();
 			$UserManager = new UserManager();
 			if((!$SchoolManager->nameExists($_SESSION['school']) && !($_SESSION['school'] === ALL_SCHOOL))
@@ -46,6 +47,7 @@ class Frontend
 				}
 			}
 		} elseif (isset($_COOKIE['artSchoolId']) || isset($_COOKIE['artSchoolAdminId'])) {
+			//user is not connect, looking for cookie
 			$this->useCookieToSignIn();
 		}
 	}
@@ -197,9 +199,9 @@ class Frontend
 			}
 			
 			if (isset($message)) {
-				RenderView::render('template.php', 'frontend/signUpView.php', ['message' => $message]);
+				RenderView::render('template.php', 'frontend/signUpView.php', ['option' => ['signUp'], 'message' => $message]);
 			} else {
-				RenderView::render('template.php', 'frontend/signUpView.php');
+				RenderView::render('template.php', 'frontend/signUpView.php', ['option' => ['signUp']]);
 			}
 		} else {
 			header('Location: index.php');
@@ -266,9 +268,9 @@ class Frontend
 			}
 
 			if (isset($message)) {
-				RenderView::render('template.php', 'frontend/signInView.php', ['option' => ['forgetPassword'], 'message' => $message]);
+				RenderView::render('template.php', 'frontend/signInView.php', ['option' => ['forgetPassword', 'signIn'], 'message' => $message]);
 			} else {
-				RenderView::render('template.php', 'frontend/signInView.php', ['option' => ['forgetPassword']]);
+				RenderView::render('template.php', 'frontend/signInView.php', ['option' => ['forgetPassword', 'signIn']]);
 			}
 		} else {
 			header('Location: index.php');
@@ -280,55 +282,77 @@ class Frontend
 		//form for reset password
 		if (isset($_GET['key']) && isset($_GET['id'])) {
 			$UserManager = new UserManager();
-			$user = $UserManager->getOneById($_GET['id']);
+			if ($UserManager->exists($_GET['id'])) {
+				$user = $UserManager->getOneById($_GET['id']);
+				$temporaryPassword = $user->getTemporaryPassword();
 
-			if (isset($_GET['wrongPassword'])) {
-				switch ($_GET['wrongPassword']) {
-					case 1 :
-						$message = "Vous devez entrer deux mot de passe identiques";
-					break;
-					case 2 :
-						$message = "Le nouveau mot de passe doit être différent de l'ancien";
-					break;
-					default :
-						$message = "Il y a eu une erreur au niveau de mot de passe";
+				if ($temporaryPassword === $_GET['key']) {
+					if ($user->getBeingReset()) {
+						if (isset($_GET['wrongPassword'])) {
+							switch ($_GET['wrongPassword']) {
+								case 1 :
+									$message = "Vous devez entrer deux mot de passe identiques";
+								break;
+								case 2 :
+									$message = "Le nouveau mot de passe doit être différent de l'ancien";
+								break;
+								default :
+									$message = "Il y a eu une erreur au niveau de mot de passe";
+							}
+						}
 
+						if (isset($message)) {
+							RenderView::render('template.php', 'frontend/resetPasswordView.php', ['user' => $user, 'message' => $message]);
+						} else {
+							RenderView::render('template.php', 'frontend/resetPasswordView.php', ['user' => $user]);
+						}
+					} else {
+						throw new \Exception("Ce lien pour réinitialiser votre mot de passe n'est pas valide");
+					}
+				} else {
+					throw new \Exception("Les informations renseignées sont incorrectes");
 				}
-			}
-
-			if (! $user->getBeingReset()) {
-				$message = "Pour réinitialiser votre mot de passe, vous devez passer directement par le lien qui vous a été envoyé par mail";
-			}
-
-			if (isset($message)) {
-				RenderView::render('template.php', 'frontend/resetPasswordView.php', ['user' => $user, 'message' => $message]);
 			} else {
-				RenderView::render('template.php', 'frontend/resetPasswordView.php', ['user' => $user]);
+				throw new \Exception("Les informations renseignées sont incorrectes");
 			}
 		// check form data
 		} else if (isset($_POST['newPassword']) && isset($_POST['confirmNewPassword'])) {
 			if ($_POST['newPassword'] === $_POST['confirmNewPassword']) {
 				$UserManager = new UserManager();
-				$user = $UserManager->getOneById($_POST['id']);
 
-				if (!password_verify($_POST['newPassword'], $user->getPassword())) {
-					//new password is correct
-					$UserManager->setPassword(password_hash($_POST['newPassword'], PASSWORD_DEFAULT), $_POST['id']);
+				if ($UserManager->exists($_POST['id'])) {
+					$user = $UserManager->getOneById($_POST['id']);
+					$temporaryPassword = $user->getTemporaryPassword();
 
-					$message = "Le mot de passe a bien été modifié.";
+					if ($temporaryPassword === $_POST['key']) {
+						if ($user->getBeingReset()) {
+							if (!password_verify($_POST['newPassword'], $user->getPassword())) {
+								//new password is correct
+								$UserManager->setPassword(password_hash($_POST['newPassword'], PASSWORD_DEFAULT), $user->getId());
+
+								$message = "Le mot de passe a bien été modifié.";
+								
+								RenderView::render('template.php', 'frontend/resetPasswordView.php', ['message' => $message]);
+							} else {
+								//new password is the same as the old one
+								header('Location: index.php?action=resetPassword&key=' . $_POST['key'] . '&id=' . $_POST['id'] . '&wrongPassword=2');
+							}
+						} else {
+							throw new \Exception("Ce lien pour réinitialiser votre mot de passe n'est pas valide");
+						}
+					} else {
+						throw new \Exception("Les informations renseignées sont incorrectes");
+					}
 				} else {
-					//new password is the same as the old one
-					header('Location: index.php?action=resetPassword&key=' . $_POST['key'] . '&id=' . $_POST['id'] . '&wrongPassword=2');
+					throw new \Exception("Les informations renseignées sont incorrectes");
 				}
 			} else {
 				//new password is wrong
 				header('Location: index.php?action=resetPassword&key=' . $_POST['key'] . '&id=' . $_POST['id'] . '&wrongPassword=1');
 			}
-			RenderView::render('template.php', 'frontend/resetPasswordView.php', ['message' => $message]);
 		} else {
-			throw new \Exception("Pour réinitialiser votre mot de passe, vous devez passer directement par le lien qui vous a été envoyé par mail");
-		}
-		
+			throw new \Exception("Ce lien pour réinitialiser votre mot de passe n'est pas valide");
+		}	
 	}
 
 	public function error(string $error_msg)

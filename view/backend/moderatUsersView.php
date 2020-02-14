@@ -6,9 +6,15 @@
 				if (!empty($data['schools'])) {
 					//display all schools for webmaster
 					foreach ($data['schools'] as $school) {
+						if ($school->getIsActive()) {
+							$classIsActive = "";
+						} else {
+							$classIsActive = "inactiveSchool";
+						}
 						?>
+
 						<div class="blockSchool">
-							<div>
+							<div class="<?=$classIsActive?>">
 								<div>
 									<figure>
 										<img src='<?=$school->getLogo()?>'>
@@ -19,6 +25,11 @@
 									<h1>
 										<?=$school->getName()?>
 									</h1>
+								</div>
+
+								<div>
+									<i class="far fa-caret-square-down"></i>
+									<i class="far fa-caret-square-up"></i>
 								</div>
 							</div>
 
@@ -152,9 +163,15 @@
 				//display user's school
 				$school = $data['schools'];
 				if ($school->getName() === $_SESSION['school']) {
+					if ($school->getIsActive()) {
+						$classIsActive = "";
+					} else {
+						$classIsActive = "inactiveSchool";
+					}
 					?>
+
 					<div class="blockSchool">
-						<div>
+						<div class="<?=$classIsActive?>">
 							<div>
 								<figure>
 									<img src='<?=$school->getLogo()?>'>

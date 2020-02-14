@@ -32,12 +32,21 @@
 				</p>
 			</div>
 
-			<hr>
+			<div>
+				<hr>
 
-			<p id="postAffiliationCode">
-				<label for="affiliationCode">Code d'affiliation</label>
-				<input type="text" name="affiliationCode">
-			</p>
+				<p id="postIsAffiliated">
+					<input type="checkbox" name="isAffiliated" id="isAffiliated">
+					<label for="isAffiliated">Lié le compte a un établissement scolaire</label>
+				</p>
+
+				<p id="postAffiliationCode">
+					<label for="affiliationCode">Code d'affiliation</label>
+					<input type="text" name="affiliationCode">
+				</p>
+
+				<hr>
+			</div>
 
 			<p>
 				<input type="submit" name="submit" value="Valider">

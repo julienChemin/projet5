@@ -5,9 +5,15 @@
 			if ($_SESSION['school'] === ALL_SCHOOL) {
 				//consulting all school
 				foreach ($data['schools'] as $school) {
+					if ($school->getIsActive()) {
+						$classIsActive = "";
+					} else {
+						$classIsActive = "inactiveSchool";
+					}
 					?>
+					
 					<div class="blockSchool">
-						<div>
+						<div class="<?=$classIsActive?>">
 							<div>
 								<figure>
 									<img src='<?=$school->getLogo()?>'>
@@ -15,9 +21,9 @@
 							</div>
 
 							<div>
-								<h2>
+								<h1>
 									<?=$school->getName()?>
-								</h2>
+								</h1>
 							</div>
 
 							<div>
@@ -81,11 +87,11 @@
 
 								<tr>
 									<td>
-										Nombre d'élèves
+										Nombre de comptes
 									</td>
 
 									<td>
-										<?=$school->getNbEleve()?>
+										Disponible - <?=$school->getNbEleve()?> | Actif - <?=$school->getNbActiveAccount()?>
 									</td>
 
 									<td>
@@ -130,6 +136,39 @@
 										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=dateDeadline">
 											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
 											<input type="submit" name="submit" value="Modifier">
+										</form>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										Établissement
+									</td>
+
+									<td>
+										<?php
+										if ($school->getIsActive()) {
+											echo 'Actif';
+										} else {
+											echo 'Inactif';
+										}
+										?>
+									</td>
+
+									<td>
+										<?php
+										if ($school->getIsActive()) {
+											$value = "Désactiver";
+											$elem = "toInactive";
+										} else {
+											$value = "Activer";
+											$elem = "toActive";
+										}
+										?>
+
+										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=<?=$elem?>">
+											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
+											<input type="submit" name="submit" value="<?=$value?>">
 										</form>
 									</td>
 								</tr>
@@ -142,9 +181,15 @@
 				//consulting user school
 				$school = $data['schools'];
 				if ($school->getName() === $_SESSION['school']) {
+					if ($school->getIsActive()) {
+						$classIsActive = "";
+					} else {
+						$classIsActive = "inactiveSchool";
+					}
 					?>
+
 					<div class="blockSchool">
-						<div>
+						<div class="<?=$classIsActive?>">
 							<div>
 								<figure>
 									<img src='<?=$school->getLogo()?>'>
@@ -152,14 +197,9 @@
 							</div>
 
 							<div>
-								<h2>
+								<h1>
 									<?=$school->getName()?>
-								</h2>
-							</div>
-
-							<div>
-								<i class="far fa-caret-square-down"></i>
-								<i class="far fa-caret-square-up"></i>
+								</h1>
 							</div>
 						</div>
 
@@ -218,17 +258,17 @@
 
 								<tr>
 									<td>
-										Nombre d'élèves
+										Nombre de comptes
 									</td>
 
 									<td>
-										<?=$school->getNbEleve()?>
+										Disponible - <?=$school->getNbEleve()?> | Actif - <?=$school->getNbActiveAccount()?>
 									</td>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=nbEleve">
+										<form method="POST" action="indexAdmin.php?action=schoolHistory">
 											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Modifier">
+											<input type="submit" name="submit" value="Consulter">
 										</form>
 									</td>
 								</tr>
@@ -264,10 +304,30 @@
 									</td>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=dateDeadline">
+										<form method="POST" action="indexAdmin.php?action=schoolHistory">
 											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Modifier">
+											<input type="submit" name="submit" value="Consulter">
 										</form>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										Établissement
+									</td>
+
+									<td>
+										<?php
+										if ($school->getIsActive()) {
+											echo 'Actif';
+										} else {
+											echo 'Inactif';
+										}
+										?>
+									</td>
+
+									<td>
+										-
 									</td>
 								</tr>
 							</table>

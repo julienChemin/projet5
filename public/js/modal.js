@@ -61,6 +61,34 @@ if (document.getElementById('moderatAdmin')) {
 			btnConfirm.href = "indexAdmin.php?action=delete&elem=user&userName=" + name + "&schoolName=" + schoolName;
 		});
 	}
+
+	//form add moderator
+	let forms = document.querySelectorAll('.formAddModerator');
+	let linksAdd = document.querySelectorAll('.formAddModerator > p:first-of-type');
+	let formContent = document.querySelectorAll('.formAddModerator > div:first-of-type');
+	let btnCancel = document.querySelectorAll('.formAddModerator input[type="button"]')
+
+	for (let i=0; i<forms.length;i++) {
+		linksAdd[i].addEventListener('click', function(){
+			formContent[i].style.height = "300px";
+			forms[i].style.padding = "50px 100px";
+		});
+
+		btnCancel[i].addEventListener('click', function(){
+			formContent[i].style.height = "0px";
+			forms[i].style.padding = "0px";
+		});
+	}
+
+	//message box
+	let msgBox = document.querySelectorAll('.blockMsg');
+	let btnClose = document.querySelectorAll('.blockMsg .fa-times');
+
+	for (let i=0; i<btnClose.length;i++) {
+		btnClose[i].addEventListener('click', function(){
+			msgBox[i].style.display = "none";
+		});
+	}
 }
 
 //moderatUsersView
@@ -90,7 +118,7 @@ if (document.getElementById('moderatUsers')) {
 
 			modal.style.display = 'flex';
 			textModal.textContent = "Activer le compte de " + name + "  ?";
-			btnConfirm.href = "indexAdmin.php?action=toggleIsActive&userName=" + name + "&schoolName=" + schoolName;
+			btnConfirm.href = "indexAdmin.php?action=toggleUserIsActive&userName=" + name + "&schoolName=" + schoolName;
 		});
 	}
 
@@ -101,7 +129,7 @@ if (document.getElementById('moderatUsers')) {
 
 			modal.style.display = 'flex';
 			textModal.textContent = "Désactiver le compte de " + name + "  ?";
-			btnConfirm.href = "indexAdmin.php?action=toggleIsActive&userName=" + name + "&schoolName=" + schoolName;
+			btnConfirm.href = "indexAdmin.php?action=toggleUserIsActive&userName=" + name + "&schoolName=" + schoolName;
 		});
 	}
 

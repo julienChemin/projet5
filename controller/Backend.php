@@ -7,6 +7,7 @@ class Backend
 	public function verifyInformation()
 	{
 		if (isset($_SESSION['grade']) && ($_SESSION['grade'] === ADMIN  || $_SESSION['grade'] === MODERATOR)) {
+			//user is connect as admin or moderator
 			$SchoolManager = new SchoolManager();
 			$UserManager = new UserManager();
 			if((!$SchoolManager->nameExists($_SESSION['school']) && !($_SESSION['school'] === ALL_SCHOOL))
@@ -21,9 +22,14 @@ class Backend
 					 Cocher la case 'rester connecté' lors de la connection peu vous éviter ce genre de désagrément");
 				}
 			}
+		} elseif (isset($_SESSION['grade']) && $_SESSION['grade'] !== ADMIN  && $_SESSION['grade'] !== MODERATOR) {
+			//user is connect but not as admin or moderator
+			header('Location: index.php');
 		} elseif (isset($_COOKIE['artSchoolAdminId'])) {
+			//user is not connect, looking for cookie
 			$this->useCookieToSignIn();
 		} else {
+			//home
 			if (isset($_GET['action']) && $_GET['action'] != 'resetPassword') {
 				header('Location: indexAdmin.php');
 			}
@@ -160,9 +166,9 @@ class Backend
 		}
 
 		if (isset($message)) {
-			RenderView::render('template.php', 'backend/indexAdminView.php', ['option' => ['forgetPassword'], 'message' => $message]);
+			RenderView::render('template.php', 'backend/indexAdminView.php', ['option' => ['forgetPassword', 'signIn'], 'message' => $message]);
 		} else {
-			RenderView::render('template.php', 'backend/indexAdminView.php', ['option' => ['forgetPassword']]);
+			RenderView::render('template.php', 'backend/indexAdminView.php', ['option' => ['forgetPassword', 'signIn']]);
 		}
 	}
 
@@ -171,55 +177,78 @@ class Backend
 		//form for reset password
 		if (isset($_GET['key']) && isset($_GET['id'])) {
 			$UserManager = new UserManager();
-			$user = $UserManager->getOneById($_GET['id']);
 
-			if (isset($_GET['wrongPassword'])) {
-				switch ($_GET['wrongPassword']) {
-					case 1 :
-						$message = "Vous devez entrer deux mot de passe identiques";
-					break;
-					case 2 :
-						$message = "Le nouveau mot de passe doit être différent de l'ancien";
-					break;
-					default :
-						$message = "Il y a eu une erreur au niveau de mot de passe";
+			if ($UserManager->exists($_GET['id'])) {
+				$user = $UserManager->getOneById($_GET['id']);
+				$temporaryPassword = $user->getTemporaryPassword();
 
+				if ($temporaryPassword === $_GET['key']) {
+					if ($user->getBeingReset()) {
+						if (isset($_GET['wrongPassword'])) {
+							switch ($_GET['wrongPassword']) {
+								case 1 :
+									$message = "Vous devez entrer deux mot de passe identiques";
+								break;
+								case 2 :
+									$message = "Le nouveau mot de passe doit être différent de l'ancien";
+								break;
+								default :
+									$message = "Il y a eu une erreur au niveau de mot de passe";
+							}
+						}
+
+						if (isset($message)) {
+							RenderView::render('template.php', 'backend/resetPasswordView.php', ['user' => $user, 'message' => $message]);
+						} else {
+							RenderView::render('template.php', 'backend/resetPasswordView.php', ['user' => $user]);
+						}
+					} else {
+						throw new \Exception("Pour réinitialiser votre mot de passe, vous devez passer directement par le lien qui vous a été envoyé par mail");
+					}
+				} else {
+					throw new \Exception("Les informations renseignées sont incorrectes");
 				}
-			}
-
-			if (! $user->getBeingReset()) {
-				$message = "Pour réinitialiser votre mot de passe, vous devez passer directement par le lien qui vous a été envoyé par mail";
-			}
-
-			if (isset($message)) {
-				RenderView::render('template.php', 'backend/resetPasswordView.php', ['user' => $user, 'message' => $message]);
 			} else {
-				RenderView::render('template.php', 'backend/resetPasswordView.php', ['user' => $user]);
+				throw new \Exception("Les informations renseignées sont incorrectes");
 			}
 		// check form data
 		} else if (isset($_POST['newPassword']) && isset($_POST['confirmNewPassword'])) {
 			if ($_POST['newPassword'] === $_POST['confirmNewPassword']) {
 				$UserManager = new UserManager();
-				$user = $UserManager->getOneById($_POST['id']);
 
-				if (!password_verify($_POST['newPassword'], $user->getPassword())) {
-					//new password is correct
-					$UserManager->setPassword(password_hash($_POST['newPassword'], PASSWORD_DEFAULT), $_POST['id']);
+				if ($UserManager->exists($_POST['id'])) {
+					$user = $UserManager->getOneById($_POST['id']);
+					$temporaryPassword = $user->getTemporaryPassword();
 
-					$message = "Le mot de passe a bien été modifié.";
+					if ($temporaryPassword === $_POST['key']) {
+						if ($user->getBeingReset()) {
+							if (!password_verify($_POST['newPassword'], $user->getPassword())) {
+								//new password is correct
+								$UserManager->setPassword(password_hash($_POST['newPassword'], PASSWORD_DEFAULT), $user->getId());
+
+								$message = "Le mot de passe a bien été modifié.";
+
+								RenderView::render('template.php', 'backend/resetPasswordView.php', ['message' => $message]);
+							} else {
+								//new password is the same as the old one
+								header('Location: indexAdmin.php?action=resetPassword&key=' . $_POST['key'] . '&id=' . $_POST['id'] . '&wrongPassword=2');
+							}
+						} else {
+							throw new \Exception("Ce lien pour réinitialiser votre mot de passe n'est pas valide");
+						}
+					} else {
+						throw new \Exception("Les informations renseignées sont incorrectes");
+					}
 				} else {
-					//new password is the same as the old one
-					header('Location: indexAdmin.php?action=resetPassword&key=' . $_POST['key'] . '&id=' . $_POST['id'] . '&wrongPassword=2');
+					throw new \Exception("Les informations renseignées sont incorrectes");
 				}
 			} else {
 				//new password is wrong
 				header('Location: indexAdmin.php?action=resetPassword&key=' . $_POST['key'] . '&id=' . $_POST['id'] . '&wrongPassword=1');
 			}
-			RenderView::render('template.php', 'backend/resetPasswordView.php', ['message' => $message]);
 		} else {
-			throw new \Exception("Pour réinitialiser votre mot de passe, vous devez passer directement par le lien qui vous a été envoyé par mail");
+			throw new \Exception("Ce lien pour réinitialiser votre mot de passe n'est pas valide");
 		}
-		
 	}
 
 	public function addSchool()
@@ -285,6 +314,7 @@ class Backend
 								"isModerator" => false]));
 
 							$deadline = date('Y/m/d H:m:s', strtotime('+' . $_POST['schoolDuration'] . 'month', time()));
+							$formatedDateDeadline = date('%d/%m/%Y à H:m.s', strtotime('+' . $_POST['schoolDuration'] . 'month', time()));
 
 							$SchoolManager->add(new School([
 								'idAdmin' => $SchoolManager->getLastInsertId(), 
@@ -294,6 +324,13 @@ class Backend
 								'nbEleve' => htmlspecialchars($_POST['schoolNbEleve']), 
 								'dateDeadline' => $deadline, 
 								'logo' => 'public/images/question-mark.png']));
+
+							//first history entry
+							$HistoryManager = new HistoryManager();
+							$HistoryManager->addEntry(new HistoryEntry([
+								'idSchool' => $SchoolManager->getLastInsertId(),
+								'category' => 'activityPeriod',
+								'entry' => "Bienvenue sur ArtSchool ! Vous vous êtes inscrit pour une période de " . $_POST['schoolDuration'] . " mois. L'abonnement prendra fin le " . $formatedDateDeadline]));
 
 							$message = "L'établissement a bien été ajouté";
 						} else {
@@ -321,9 +358,9 @@ class Backend
 			$schools = $SchoolManager->getSchoolByName($_SESSION['school']);
 
 			if (isset($schools)) {
-				RenderView::render('template.php', 'backend/moderatSchoolView.php', ['option' => ['moderatSchool'], 'schools' => $schools]);
+				RenderView::render('template.php', 'backend/moderatSchoolView.php', ['option' => ['buttonToggleSchool'], 'schools' => $schools]);
 			} else {
-				RenderView::render('template.php', 'backend/moderatSchoolView.php', ['option' => ['moderatSchool']]);
+				RenderView::render('template.php', 'backend/moderatSchoolView.php', ['option' => ['buttonToggleSchool']]);
 			}
 		} else {
 			header('Location: indexAdmin.php');
@@ -338,73 +375,169 @@ class Backend
 			$SchoolManager = new SchoolManager();
 
 			if (!empty($_POST['elem'])) {
-				//editing school information
-				switch ($_POST['elem']) {
-					case 'name' :
-						if ($_POST['editName'] !== ALL_SCHOOL && !$SchoolManager->nameExists($_POST['editName'])) {
-							$schoolName = htmlspecialchars($_POST['schoolName']);
-							$newSchoolName = htmlspecialchars($_POST['editName']);
+				//consulting form to edit school information
+				if ($SchoolManager->nameExists($_POST['schoolName'])) {
+					switch ($_POST['elem']) {
+						case 'name' :
+							if ($_POST['editName'] !== ALL_SCHOOL && !$SchoolManager->nameExists($_POST['editName'])) {
+								//edit school name in user info
+								$users = $UserManager->getUsersBySchool($_POST['schoolName']);
+								foreach ($users as $user) {
+									$UserManager->updateById($user->getId(), 'school', $_POST['editName']);
+								}
 
-							//edit school name in user info
-							$users = $UserManager->getUsersBySchool($schoolName);
-							foreach ($users as $user) {
-								$UserManager->updateById($user->getId(), 'school', $newSchoolName);
-							}
+								//edit school name
+								$SchoolManager->updateByName($_POST['schoolName'], 'name', $_POST['editName']);
 
-							//edit school name
-							$SchoolManager->updateByName($schoolName, 'name', $newSchoolName);
+								//MAJ school name in session
+								if ($_SESSION['school'] !== ALL_SCHOOL) {
+									$_SESSION['school'] = $_POST['editName'];
+								}
 
-							$message = "Le nom de l'établissement à été modifié";
-						} else {
-							$message = "Ce nom est déja utilisé";
-						}
-					break;
-					case 'admin' :
-						if ($UserManager->nameExists($_POST['editAdmin'])) {
-							$newAdmin = $UserManager->getUserByName($_POST['editAdmin']);
-							$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
+								//add history entry
+								$school = $SchoolManager->getSchoolByName($_POST['editName']);
+								$HistoryManager = new HistoryManager();
+								$HistoryManager->addEntry(new HistoryEntry([
+									'idSchool' => $school->getId(),
+									'category' => 'profil',
+									'entry' => $_SESSION['pseudo'] . ' a modifié le nom de votre établissement en "' . $_POST['editName'] . '"']));
 
-							if ($school->getName() === $newAdmin->getSchool()) {
-								$UserManager->updateByName($newAdmin->getName(), 'grade', ['isAdmin' => true, 'isModerator' => false]);
-
-								$SchoolManager->updateByName($_POST['schoolName'], 'idAdmin', $newAdmin->getId())
-											->updateByName($_POST['schoolName'], 'nameAdmin', $newAdmin->getName());
-
-								$message = "L'administrateur de l'établissement à été modifié";
+								$message = "Le nom de l'établissement a été modifié";
 							} else {
-								$message = "Cette personne ne fait pas parti de cet établissement";
+								$message = "Ce nom est déja utilisé";
 							}
-						} else {
-							$message = "Ce nom d'utilisateur ne correspond à aucun compte éxistant";
-						}
-					break;
-					case 'code' :
-						$SchoolManager->updateByName($_POST['schoolName'], 'code', $_POST['editCode']);
+						break;
+						case 'admin' :
+							if ($UserManager->nameExists($_POST['editAdmin'])) {
+								$newAdmin = $UserManager->getUserByName($_POST['editAdmin']);
+								$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
 
-						$message = "Le code d'affiliation a été modifié";
-					break;
-					case 'nbEleve' :
-						$SchoolManager->updateByName($_POST['schoolName'], 'nbEleve', $_POST['editNbEleve']);
+								if ($school->getName() === $newAdmin->getSchool()) {
+									if ($newAdmin->getIsActive()) {
+										$UserManager->updateByName($newAdmin->getName(), 'grade', ['isAdmin' => true, 'isModerator' => false]);
 
-						$message = "Le nombre d'élèves a été modifié<br><br>Important : Le forfait à payer chaque mois étant basé sur le nombre de comptes actifs, si le nombre d'élèves indiqué est inférieur au nombre de comptes actifs, pensez à faire désactiver les comptes des élèves ne faisant plus parti de votre établissement.";
-					break;
-					case 'logo' :
-						$SchoolManager->updateByName($_POST['schoolName'], 'logo', $_POST['editLogo']);
+										$SchoolManager->updateByName($_POST['schoolName'], 'idAdmin', $newAdmin->getId())
+													->updateByName($_POST['schoolName'], 'nameAdmin', $newAdmin->getName());
 
-						$message = "Le logo de votre établissement a été modifié";
-					break;
-					case 'dateDeadline' :
-						$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
-						$dateDeadline = \DateTime::createFromFormat("d/m/Y", $school->getDateDeadline());
-						$strDeadline = $dateDeadline->format('Y/m/d');
-						$newDeadline = date('Y/m/d H:m:s', strtotime('+' . $_POST['editDateDeadline'] . 'month', strtotime($strDeadline)));
+										//add history entry
+										$HistoryManager = new HistoryManager();
+										$HistoryManager->addEntry(new HistoryEntry([
+											'idSchool' => $school->getId(),
+											'category' => 'profil',
+											'entry' => $_SESSION['pseudo'] . ' a remplacé l\'administrateur principal par "' . $newAdmin->getName() . '"']));
 
-						$SchoolManager->updateByName($_POST['schoolName'], 'dateDeadline', $newDeadline);
+										$message = "L'administrateur de l'établissement a été modifié";
+									} else {
+										$message = "Ce compte est inactif";
+									}
+								} else {
+									$message = "Cette personne ne fait pas parti de cet établissement";
+								}
+							} else {
+								$message = "Ce nom d'utilisateur ne correspond à aucun compte éxistant";
+							}
+						break;
+						case 'code' :
+							$codeExist = $SchoolManager->affiliationCodeExists($_POST['editCode'])["exist"];
+							if (!$codeExist) {
+								$SchoolManager->updateByName($_POST['schoolName'], 'code', $_POST['editCode']);
 
-						$message = "La date d'échéance a été modifié";
-					break;
-					default :
-						$message = "Les informations renseignées sont incorrectes";
+								//add history entry
+								$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
+								$HistoryManager = new HistoryManager();
+								$HistoryManager->addEntry(new HistoryEntry([
+									'idSchool' => $school->getId(),
+									'category' => 'profil',
+									'entry' => $_SESSION['pseudo'] . ' a modifié le code d\'affiliation en "' . $_POST['editCode'] . '"']));
+
+								$message = "Le code d'affiliation a été modifié";
+							} else {
+								$message = "Veuillez choisir un autre code";
+							}
+						break;
+						case 'nbEleve' :
+							if ($_SESSION['school'] === ALL_SCHOOL) {
+								$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
+
+								if ($school->getNbActiveAccount() <= $_POST['editNbEleve']) {
+									$SchoolManager->updateByName($_POST['schoolName'], 'nbEleve', $_POST['editNbEleve']);
+
+									//add history entry
+									$HistoryManager = new HistoryManager();
+									$HistoryManager->addEntry(new HistoryEntry([
+										'idSchool' => $school->getId(),
+										'category' => 'profil',
+										'entry' => 'Le nombre maximum de compte affilié à votre établissement est passé à ' . $_POST['editNbEleve']]));
+
+									$message = "Le nombre d'élèves a été modifié";
+								} else {
+									$message = "Le nombre de compte(s) actif(s) pour cette établissement est supérieur au nombre de compte(s) disponible(s) que vous annoncez";
+								}
+							} else {
+								$message = "Vous n'avez pas accès à cette option";
+							}
+						break;
+						case 'logo' :
+							$SchoolManager->updateByName($_POST['schoolName'], 'logo', $_POST['editLogo']);
+
+							//add history entry
+							$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
+							$HistoryManager = new HistoryManager();
+							$HistoryManager->addEntry(new HistoryEntry([//////////////////////////////////////////
+								'idSchool' => $school->getId(),
+								'category' => 'profil',
+								'entry' => $_SESSION['pseudo'] . ' a modifié le logo de l\'établissement']));
+
+							$message = "Le logo de votre établissement a été modifié";
+						break;
+						case 'dateDeadline' :
+							$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
+							$dateDeadline = \DateTime::createFromFormat("d/m/Y", $school->getDateDeadline());
+							$strDeadline = $dateDeadline->format('Y/m/d');
+							$newDeadline = date('Y/m/d H:m:s', strtotime('+' . $_POST['editDateDeadline'] . 'month', strtotime($strDeadline)));
+
+							$SchoolManager->updateByName($_POST['schoolName'], 'dateDeadline', $newDeadline);
+
+							$message = "La date d'échéance a été modifié";
+						break;
+						case 'toActive' :
+							if ($_SESSION['school'] === ALL_SCHOOL) {
+								$users = $UserManager->getUsersBySchool($_POST['schoolName'], 'admin');
+
+								foreach ($users as $user) {
+									$UserManager->updateByName($user->getName(), 'isActive', true);
+								}
+
+								$SchoolManager->updateByName($_POST['schoolName'], 'isActive', true)
+											->updateByName($_POST['schoolName'], 'nbEleve', $_POST['editNbEleve']);
+
+								$message = "L'établissement a été activé";
+							} else {
+								throw new \Exception("Vous ne pouvez pas accéder a cette page");
+							}
+						break;
+						case 'toInactive' :
+							if ($_SESSION['school'] === ALL_SCHOOL) {
+								$users = $UserManager->getUsersBySchool($_POST['schoolName']);
+
+								foreach ($users as $user) {
+									$UserManager->updateByName($user->getName(), 'isActive', false);
+								}
+
+								$SchoolManager->updateByName($_POST['schoolName'], 'isActive', false)
+											->updateByName($_POST['schoolName'], 'nbEleve', 0)
+											->updateByName($_POST['schoolName'], 'nbActiveAccount', 0);
+
+								$message = "L'établissement a été désactivé";
+							} else {
+								throw new \Exception("Vous ne pouvez pas accéder a cette page");
+							}
+						break;
+						default :
+							$message = "Les informations renseignées sont incorrectes";
+					}
+				} else {
+					throw new \Exception("Le nom de l'établissement renseigné n'existe pas");
 				}
 			}
 
@@ -422,11 +555,59 @@ class Backend
 	{
 		if ($_SESSION['grade'] === ADMIN) {
 			$UserManager = new UserManager();
-			$users = $UserManager->getUsersBySchool($_SESSION['school'], 'admin');
-
 			$SchoolManager = new SchoolManager();
-			$schools = $SchoolManager->getSchoolByName($_SESSION['school']);
 
+			if (isset($_GET['option'], $_POST['schoolName']) && $_GET['option'] === 'addModerator') {
+				//add new moderator
+				if ($_SESSION['school'] === $_POST['schoolName'] || $_SESSION['school'] === ALL_SCHOOL) {
+					//verify if school is active
+					$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
+
+					if ($school->getIsActive()) {
+						$schoolIsActive = true;
+					} else {
+						$schoolIsActive = false;
+						$message = "Vous ne pouvez pas ajouter de modérateur, cet établissement n'est pas actif";
+					}
+
+					//verify if user name is already use
+					if ($UserManager->nameExists($_POST['moderatorName'])) {
+						$userNameIsOk = false;
+						$message = "Ce nom d'utilisateur existe déja";
+					} else {
+						$userNameIsOk = true;
+					}
+
+					//verify if user mail is already use
+					if ($UserManager->mailExists($_POST['moderatorMail'])) {
+						$userMailIsOk = false;
+						$message = "Il existe déja un compte associé a cette adresse mail";
+					} else {
+						$userMailIsOk = true;
+					}
+
+					if ($userNameIsOk && $userMailIsOk && $schoolIsActive) {
+						if ($_POST['moderatorPassword'] === $_POST['moderatorConfirmPassword']) {
+							$UserManager->add(new User([
+								"name" => $_POST['moderatorName'], 
+								"mail" => $_POST['moderatorMail'], 
+								"password" => password_hash($_POST['moderatorPassword'], PASSWORD_DEFAULT), 
+								"school" => $_POST['schoolName'], 
+								"isAdmin" => false, 
+								"isModerator" => true]));
+
+							$message = "Le modérateur a bien été ajouté";
+						} else {
+							$message = "Les mots de passe ne correspondent pas";
+						}
+					}
+				} else {
+					$message = "Une erreur s'est glissée dans le formulaire, veuillez réessayer";
+				}
+			}
+
+			$users = $UserManager->getUsersBySchool($_SESSION['school'], 'admin');
+			$schools = $SchoolManager->getSchoolByName($_SESSION['school']);
 
 			if ($_SESSION['school'] === ALL_SCHOOL) {
 				//order users by school
@@ -446,8 +627,15 @@ class Backend
 						}
 					}
 				}
-				RenderView::render('template.php', 'backend/moderatAdminView.php', 
-					['users' => $arrUsersBySchool, 'schools' => $schools, 'nbModerator' => $arrNbModerator, 'option' => ['modal']]);
+
+				if (isset($message)) {
+					RenderView::render('template.php', 'backend/moderatAdminView.php', 
+						['users' => $arrUsersBySchool, 'schools' => $schools, 'nbModerator' => $arrNbModerator, 'message' => $message,
+						 'option' => ['modal', 'buttonToggleSchool']]);
+				} else {
+					RenderView::render('template.php', 'backend/moderatAdminView.php', 
+						['users' => $arrUsersBySchool, 'schools' => $schools, 'nbModerator' => $arrNbModerator, 'option' => ['modal', 'buttonToggleSchool']]);
+				}
 			} elseif ($_SESSION['grade'] === ADMIN) {
 				$nbModerator = 0;
 
@@ -456,8 +644,14 @@ class Backend
 						$nbModerator++;
 					}
 				}
-				RenderView::render('template.php', 'backend/moderatAdminView.php', 
-					['users' => $users, 'schools' => $schools, 'nbModerator' => $nbModerator, 'option' => ['modal']]);
+				
+				if (isset($message)) {
+					RenderView::render('template.php', 'backend/moderatAdminView.php', 
+						['users' => $users, 'schools' => $schools, 'nbModerator' => $nbModerator, 'message' => $message, 'option' => ['modal', 'buttonToggleSchool']]);
+				} else {
+					RenderView::render('template.php', 'backend/moderatAdminView.php', 
+						['users' => $users, 'schools' => $schools, 'nbModerator' => $nbModerator, 'option' => ['modal', 'buttonToggleSchool']]);
+				}
 			}
 		} else {
 			throw new \Exception("Cette page est réservé aux administrateurs");
@@ -503,7 +697,7 @@ class Backend
 					}
 				}
 				RenderView::render('template.php', 'backend/moderatUsersView.php', 
-					['users' => $arrUsersBySchool, 'schools' => $schools, 'isActive' => $arrIsActive, 'option' => ['modal']]);
+					['users' => $arrUsersBySchool, 'schools' => $schools, 'isActive' => $arrIsActive, 'option' => ['modal', 'buttonToggleSchool']]);
 			} else {
 				$arrIsActive = [];
 				$nbAccount = count($users);
@@ -522,7 +716,7 @@ class Backend
 
 
 				RenderView::render('template.php', 'backend/moderatUsersView.php', 
-					['users' => $users, 'schools' => $schools, 'isActive' => $arrIsActive, 'option' => ['modal']]);
+					['users' => $users, 'schools' => $schools, 'isActive' => $arrIsActive, 'option' => ['modal', 'buttonToggleSchool']]);
 			}
 		} else {
 			throw new \Exception("Cette page est réservé aux administrateurs / modérateurs");
@@ -584,7 +778,7 @@ class Backend
 		}
 	}
 
-	public function toggleIsActive()
+	public function toggleUserIsActive()
 	{
 		if (!empty($_GET['userName']) && !empty($_GET['schoolName'])) {
 			if ($_SESSION['school'] === ALL_SCHOOL || $_SESSION['school'] === $_GET['schoolName']) {
@@ -627,6 +821,53 @@ class Backend
 				}
 			} else {
 				throw new \Exception("Vous ne pouvez pas modifié les informations d'un compte qui ne fait pas parti de votre établissement");
+			}
+		} else {
+			throw new \Exception("Les informations renseignées sont incorrectes");
+		}
+	}
+
+	public function toggleSchoolIsActive()
+	{
+		if (!empty($_POST['schoolName'])) {
+			if ($_SESSION['school'] === ALL_SCHOOL) {
+				$SchoolManager = new SchoolManager();
+
+				if ($SchoolManager->nameExist($_POST['schoolName'])) {
+					$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
+
+					if ($school->getIsActive()) {
+						$UserManager = new UserManager();
+						$users = $UserManager->getUsersBySchool($school->getName(), 'user');
+
+						//set all user account on this school to inactive
+						foreach ($users as $user) {
+							if ($user->getIsActive()) {
+								$UserManager->updateByName($user->getName(), 'isActive', false);
+							}
+						}
+
+						//set school as inactive
+						$SchoolManager->updateByName($_POST['schoolName'], 'isActive', false);
+
+						//set nb account to 0
+						$SchoolManager->updateByName($_POST['schoolName'], 'nbActiveAccount', 0);
+					} else {
+						if (!empty($_POST['nbEleve'])) {
+							//set school as active
+							$SchoolManager->updateByName($_POST['schoolName'], 'isActive', true);
+
+							//set nb account
+							$SchoolManager->updateByName($_POST['schoolName'], 'nbActiveAccount', intval($_POST['nbEleve']));
+						} else {
+							throw new \Exception("Les informations renseignées sont incorrectes");
+						}
+					}
+				} else {
+					throw new \Exception("Le nom de l'établissement que vous recherchez n'existe pas");
+				}
+			} else {
+				throw new \Exception("Vous ne pouvez pas accéder à cette page");
 			}
 		} else {
 			throw new \Exception("Les informations renseignées sont incorrectes");
@@ -684,8 +925,13 @@ class Backend
 				default :
 					throw new \Exception("Les informations renseignées sont incorrectes");
 			}
-
 		}
+	}
+
+	public function schoolHistory()
+	{
+		// to do
+		RenderView::render('template.php', 'backend/schoolHistoryView.php');
 	}
 
 	public function error(string $error_msg)

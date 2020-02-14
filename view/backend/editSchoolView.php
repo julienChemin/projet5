@@ -17,8 +17,8 @@
 						</p>
 
 						<p>
-							<input type="hidden" name="elem" value="<?=$_GET['elem']?>">
-							<input type="hidden" name="schoolName" value="<?=$_POST['schoolName']?>">
+							<input type="hidden" name="elem" value="<?=htmlspecialchars($_GET['elem'])?>">
+							<input type="hidden" name="schoolName" value="<?=htmlspecialchars($_POST['schoolName'])?>">
 						</p>
 					</form>
 					<?php
@@ -36,8 +36,8 @@
 						</p>
 
 						<p>
-							<input type="hidden" name="elem" value="<?=$_GET['elem']?>">
-							<input type="hidden" name="schoolName" value="<?=$_POST['schoolName']?>">
+							<input type="hidden" name="elem" value="<?=htmlspecialchars($_GET['elem'])?>">
+							<input type="hidden" name="schoolName" value="<?=htmlspecialchars($_POST['schoolName'])?>">
 						</p>
 					</form>
 					<?php
@@ -55,8 +55,8 @@
 						</p>
 
 						<p>
-							<input type="hidden" name="elem" value="<?=$_GET['elem']?>">
-							<input type="hidden" name="schoolName" value="<?=$_POST['schoolName']?>">
+							<input type="hidden" name="elem" value="<?=htmlspecialchars($_GET['elem'])?>">
+							<input type="hidden" name="schoolName" value="<?=htmlspecialchars($_POST['schoolName'])?>">
 						</p>
 					</form>
 					<?php
@@ -74,8 +74,8 @@
 						</p>
 
 						<p>
-							<input type="hidden" name="elem" value="<?=$_GET['elem']?>">
-							<input type="hidden" name="schoolName" value="<?=$_POST['schoolName']?>">
+							<input type="hidden" name="elem" value="<?=htmlspecialchars($_GET['elem'])?>">
+							<input type="hidden" name="schoolName" value="<?=htmlspecialchars($_POST['schoolName'])?>">
 						</p>
 					</form>
 					<?php
@@ -93,8 +93,8 @@
 						</p>
 
 						<p>
-							<input type="hidden" name="elem" value="<?=$_GET['elem']?>">
-							<input type="hidden" name="schoolName" value="<?=$_POST['schoolName']?>">
+							<input type="hidden" name="elem" value="<?=htmlspecialchars($_GET['elem'])?>">
+							<input type="hidden" name="schoolName" value="<?=htmlspecialchars($_POST['schoolName'])?>">
 						</p>
 					</form>
 					<?php
@@ -116,8 +116,45 @@
 						</p>
 
 						<p>
-							<input type="hidden" name="elem" value="<?=$_GET['elem']?>">
-							<input type="hidden" name="schoolName" value="<?=$_POST['schoolName']?>">
+							<input type="hidden" name="elem" value="<?=htmlspecialchars($_GET['elem'])?>">
+							<input type="hidden" name="schoolName" value="<?=htmlspecialchars($_POST['schoolName'])?>">
+						</p>
+					</form>
+					<?php
+				break;
+				case 'toActive' :
+					?>
+					<form method="POST" action="indexAdmin.php?action=editSchool">
+						<p>
+							<label for="editNbEleve">Pour activer l'établissement "<?=htmlspecialchars($_POST['schoolName'])?>", indiquez le nombre de compte(s) élève(s)</label>
+							<input type="text" name="editNbEleve" required="">
+						</p>
+
+						<p>
+							<input type="submit" name="valider" value="Valider">
+						</p>
+
+						<p>
+							<input type="hidden" name="elem" value="<?=htmlspecialchars($_GET['elem'])?>">
+							<input type="hidden" name="schoolName" value="<?=htmlspecialchars($_POST['schoolName'])?>">
+						</p>
+					</form>
+					<?php
+				break;
+				case 'toInactive' :
+					?>
+					<form method="POST" action="indexAdmin.php?action=editSchool">
+						<p>
+							<span>L'établissement "<?=htmlspecialchars($_POST['schoolName'])?>" va être désactivé</span>
+						</p>
+
+						<p>
+							<input type="submit" name="valider" value="Valider">
+						</p>
+
+						<p>
+							<input type="hidden" name="elem" value="<?=htmlspecialchars($_GET['elem'])?>">
+							<input type="hidden" name="schoolName" value="<?=htmlspecialchars($_POST['schoolName'])?>">
 						</p>
 					</form>
 					<?php

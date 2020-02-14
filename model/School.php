@@ -13,7 +13,8 @@ class School
 			$nbActiveAccount,
 			$dateInscription,
 			$dateDeadline,
-			$logo;
+			$logo,
+			$isActive;
 
 	public function __construct(array $data = null)
 	{
@@ -82,6 +83,11 @@ class School
 	public function getLogo()
 	{
 		return $this->logo;
+	}
+
+	public function getIsActive()
+	{
+		return $this->isActive;
 	}
 
 	//SETTERS
@@ -163,5 +169,11 @@ class School
 			$this->logo = $logoPath;
 			return $this;
 		}
+	}
+
+	public function setIsActive(bool $isActive)
+	{
+		$this->isActive = $isActive;
+		return $this;
 	}
 }

@@ -40,6 +40,9 @@ strong{
 i{
 	transform: scale(1.2);
 }
+ul{
+	padding: 0;
+}
 hr{
 	background : linear-gradient(to right, #161617, #FFC652, #161617);
 	border:none;
@@ -145,12 +148,25 @@ input[type="submit"], input[type="button"]{
 
 	cursor: pointer;
 }
-
 input[type="checkbox"]{
 	transform: scale(1.5);
 	margin: 10px;
 }
+button{
+	padding: 5px;
+	margin-left: 10px;
 
+	background-color: #222224;
+	color: #CF8B3F;
+
+	font-weight: bolder;
+	font-size: 1em;
+
+	border: solid 2px #CF8B3F;
+	border-radius: 10px;
+
+	cursor: pointer;
+}
 /* ------------------------ TABLE ------------------------ */
 table{
 	border-collapse: collapse;
@@ -188,16 +204,22 @@ tr:nth-child(2n + 1){
 /* ------------------------ NAVBAR ------------------------ */
 #navbar{
 	background-color: #010605;
-	height: 50px;
 }
 #navbar > .container{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+}
+#navbar > .container > div:first-child{
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
 
-	height: 100%;
+	width: 100%;
+	height: 50px;
 }
-#navbar > .container > span:nth-child(1){ /*logo*/
+#navbar > .container > div:first-child > span:nth-child(1){ /*logo*/
 	font-size: 1.5em;
 	margin-left: 10px;
 }
@@ -207,8 +229,6 @@ tr:nth-child(2n + 1){
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
-
-	margin-right: 10px;
 }
 #navbar li{
 	margin: 0 15px;
@@ -228,6 +248,60 @@ tr:nth-child(2n + 1){
 	background: linear-gradient(to right, #010605, #E0E7E6, #010605);
 
 	transform: rotate(90deg);
+}
+#pseudo{
+	cursor: pointer;
+}
+#pseudo i{
+	color: #CF8B3F;
+
+	margin-left: 15px;
+}
+/*menu*/
+#menuNavbar{
+	position: absolute;
+	top: 50px;
+	right: 0px;
+	z-index: 1000;
+
+	width: 0px;
+	overflow: hidden;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+#menuNavbar > div{
+	border: solid 1px #CF8B3F;
+	border-top: none;
+	border-radius: 10px;
+
+	width: 100%;
+
+	position: relative;
+	top: -400px;
+	transition: top 0.2s linear;
+	-webkit-transition: top 0.2s linear;
+	background: linear-gradient(180deg, #010605, #161617, #222224);
+}
+#menuNavbar ul{
+	flex-direction: column;
+	align-items: flex-end;
+
+	width: 100%;
+
+	font-size: 0.8em;
+}
+#menuNavbar li{
+	margin-bottom: 5px;
+}
+#menuNavbar a{
+	color: white;
+}
+#menuNavbar i{
+	color: #CF8B3F;
+	margin-left: 15px;
+	font-size: 0.8em;
 }
 
 /* ------------------------ HOME ------------------------ */
@@ -350,6 +424,20 @@ figure img{
 	display: flex;
 	justify-content: center;
 }
+#formSignUp > div > div:last-of-type{
+	flex-direction: column;
+}
+#formSignUp #postIsAffiliated{
+	display: inline;
+}
+#postAffiliationCode{
+	overflow: hidden;
+    height: 0px;
+    margin: 0px;
+
+    transition: height 0.2s linear, margin 0.2s linear;
+    -webkit-transition: height 0.2s linear, margin 0.2s linear;
+}
 #formSignUp p{
 	display: flex;
 	flex-direction: column;
@@ -358,6 +446,16 @@ figure img{
 	width: 170px;
 	align-self: center;
 }
+/*sign In*/
+#signIn #modal > div{
+	width: 300px;
+	height: 300px;
+}
+#signIn #modal > div > p:first-child{
+	font-size: 1.2em;
+	color: #CF8B3F;
+}
+
 /* --------------------------------------------------------------- ADMIN ---------------------------------------------------- */
 
 /* ------------------------ LOGIN FORM ------------------------ */
@@ -405,6 +503,15 @@ form > div{
 	text-decoration: underline;
 
 	margin-left: 10px;
+}
+/*modal for cookies rules*/
+#homeAdmin #modal > div{
+	width: 300px;
+	height: 300px;
+}
+#homeAdmin #modal > div > p:first-child{
+	font-size: 1.2em;
+	color: #CF8B3F;
 }
 
 /* ------------------------ MENU HOME ------------------------ */
@@ -487,6 +594,7 @@ form > div{
 	height: 100%;
 
 	transition: transform 0.2s ease;
+	-webkit-transition: transform 0.2s ease;
 }
 #formAddSchool > div{
 	justify-content: center;
@@ -513,6 +621,9 @@ form > div{
 
 	flex-wrap: wrap;
 }
+.inactiveSchool{
+	background-color : #932C25!important;
+}
 .blockSchool{
 	display: flex;
 	flex-direction: column;
@@ -524,8 +635,6 @@ form > div{
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-
-	width: 100%;
 }
 .blockSchool > div:first-child{/*block with icon and school name*/
 	background: linear-gradient(to bottom, #161617 10px, transparent, #161617 290px);
@@ -539,9 +648,6 @@ form > div{
 	display: flex;
 	justify-content: center;
 	align-items: center;
-}
-#moderatSchool .blockSchool > div:nth-child(2){
-	display: none;
 }
 .blockSchool figure{
 	height: 130px;
@@ -606,7 +712,7 @@ form > div{
 #moderatAdmin .blockSchool{
 	width: 80%;
 }
-#moderatAdmin .blockSchool > div:nth-child(2){
+.tableAdminModerator{
 	flex-wrap: wrap;
 }
 #moderatAdmin table{
@@ -616,30 +722,68 @@ form > div{
 	color: #CF8B3F;
 }
 /*table admin*/
-#moderatAdmin .blockSchool > div:nth-child(2) > table:first-child td:first-child{
+.tableAdminModerator > table:first-child td:first-child{
 	width: 80%;
 	color: white;
 	font-weight: normal;
 }
-#moderatAdmin .blockSchool > div:nth-child(2) > table:first-child td:nth-child(2){
+.tableAdminModerator > table:first-child td:nth-child(2){
 	width: 20%;
 }
 /*table moderator*/
-#moderatAdmin .blockSchool > div:nth-child(2) > table:nth-child(2) td:first-child{
+.tableAdminModerator > table:nth-child(2) td:first-child{
 	width: 60%;
 	color: white;
 	font-weight: normal;
 }
-#moderatAdmin .blockSchool > div:nth-child(2) > table:nth-child(2) td:nth-child(2){
+.tableAdminModerator > table:nth-child(2) td:nth-child(2){
 	width: 13.33%;
 }
-#moderatAdmin .blockSchool > div:nth-child(2) > table:nth-child(2) td:nth-child(3){
+.tableAdminModerator > table:nth-child(2) td:nth-child(3){
 	width: 13.33%;
 }
-#moderatAdmin .blockSchool > div:nth-child(2) > table:nth-child(2) td:nth-child(4){
+.tableAdminModerator > table:nth-child(2) td:nth-child(4){
 	width: 13.33%;
 }
+/*form add moderator*/
+.formAddModerator{
+	margin-top: 20px;
+	padding: 0px;
 
+	transition: padding 0.2s linear;
+	-webkit-transition: padding 0.2s linear;
+}
+.formAddModerator > p{
+	text-decoration: underline;
+	cursor: pointer;
+	font-size: 1.2em;
+}
+.formAddModerator > div:first-of-type{
+	width: auto;
+	height: 0px;
+
+    overflow: hidden;
+    transition: height 0.2s linear;
+    -webkit-transition: height 0.2s linear;
+}
+.formAddModerator > div:first-of-type > div:first-of-type{
+	display: flex;
+}
+.formAddModerator > div:first-of-type > div:first-of-type > p{
+	width: 50%;
+}
+.blockMsg{
+	font-size: 1.2em;
+	position: relative;
+}
+.blockMsg .fa-times{
+	position: absolute;
+	top: 10px;
+	right: 10px;
+
+	font-size: 0.7em;
+	cursor: pointer;
+}
 /* ------------------------ MODERAT USERS ------------------------ */
 #blockModeratUsers{
 	display: flex;
@@ -690,6 +834,11 @@ form > div{
 #moderatUsers .blockSchool > div:nth-child(2) > table td:nth-child(4){
 	width: 13.33%;
 }
+
+/* ------------------------ SCHOOL HISTORY ------------------------ */
+
+
+
 /*====================================================================================================================================
 															medium desktops laptops
 ====================================================================================================================================*/

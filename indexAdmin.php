@@ -57,11 +57,17 @@ try {
 			case 'editGrade' :
 				$Backend->editGrade();
 			break;
-			case 'toggleIsActive' :
-				$Backend->toggleIsActive();
+			case 'toggleUserIsActive' :
+				$Backend->toggleUserIsActive();
+			break;
+			case 'toggleSchoolIsActive' :
+				$Backend->toggleSchoolIsActive();
 			break;
 			case 'delete' :
 				$Backend->delete();
+			break;
+			case 'schoolHistory' :
+				$Backend->schoolHistory();
 			break;
 			default :
 				//"action" value is unknow

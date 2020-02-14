@@ -4,7 +4,25 @@
 		// is connected
 		?>
 		<article id="menuHome">
+			<a href="indexAdmin.php?action=moderatUsers">
+				<div class="itemHomeAdmin">
+					<i class="fas fa-list-ul"></i>
+					<span>Consulter la liste des élèves</span>
+				</div>
+			</a>
+
 			<?php
+			if ($_SESSION['grade'] === ADMIN) {
+				?>
+				<a href="indexAdmin.php?action=moderatAdmin">
+					<div class="itemHomeAdmin">
+						<i class="fas fa-user-cog"></i>
+						<span>Modération des comptes administrateurs / modérateurs</span>
+					</div>
+				</a>
+				<?php
+			}
+
 			if ($_SESSION['school'] === ALL_SCHOOL) {
 				?>
 				<a href="indexAdmin.php?action=addSchool">
@@ -24,25 +42,7 @@
 				</a>
 				<?php
 			}
-
-			if ($_SESSION['grade'] === ADMIN) {
-				?>
-				<a href="indexAdmin.php?action=moderatAdmin">
-					<div class="itemHomeAdmin">
-						<i class="fas fa-user-cog"></i>
-						<span>Modération des comptes administrateurs / modérateurs</span>
-					</div>
-				</a>
-				<?php
-			}
 			?>
-		
-			<a href="indexAdmin.php?action=moderatUsers">
-				<div class="itemHomeAdmin">
-					<i class="fas fa-list-ul"></i>
-					<span>Consulter la liste des élèves</span>
-				</div>
-			</a>
 		</article>
 
 		<aside id="slowSlide" class="sliderPosts">
@@ -182,6 +182,18 @@
 				</p>
 			</div>
 		</form>
+		<!--modal for rules of cookies-->
+		<div id="modal">
+			<div>
+				<p>En cochant "rester connecté", vous acceptez l'utilisation des cookies</p>
+				<p>Les cookies sont de petites quantités d’informations stockées dans des fichiers au sein même du navigateur de votre ordinateur.</p>
+				<p>Sur ArtSchool, les cookies servent uniquement à garder votre identifiant ainsi qu'une version encodé de votre mot de passe. Cela vous permet de rester connecté</p>
+				<div>
+					<button id="btnAcceptCookie">Accepter</button>
+					<button id="btnCancelCookie">Refuser</button>
+				</div>
+			</div>
+		</div>
 	<?php
 	}
 	?>

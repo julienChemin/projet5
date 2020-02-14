@@ -4,11 +4,25 @@
 		if (isset($data['users'])) {
 			if ($_SESSION['school'] === ALL_SCHOOL) {
 				if (!empty($data['schools'])) {
+					if (isset($data['message'])) {	
+						?>
+						<div class="blockStyleOne blockMsg">
+							<i class="fas fa-times orang"></i>
+							<p class="msg orang"><?=$data['message']?></p>
+						</div>
+						<?php
+					}
 					//display all schools for webmaster
 					foreach ($data['schools'] as $school) {
+						if ($school->getIsActive()) {
+							$classIsActive = "";
+						} else {
+							$classIsActive = "inactiveSchool";
+						}
 						?>
+
 						<div class="blockSchool">
-							<div>
+							<div class="<?=$classIsActive?>">
 								<div>
 									<figure>
 										<img src='<?=$school->getLogo()?>'>
@@ -20,9 +34,14 @@
 										<?=$school->getName()?>
 									</h1>
 								</div>
+
+								<div>
+									<i class="far fa-caret-square-down"></i>
+									<i class="far fa-caret-square-up"></i>
+								</div>
 							</div>
 
-							<div>
+							<div class="tableAdminModerator">
 								<table> 
 									<tr>
 										<th>
@@ -124,6 +143,47 @@
 									<?php
 								}
 								?>
+
+								<form class="formAddModerator" method="POST" action="indexAdmin.php?action=moderatAdmin&amp;option=addModerator">	
+									<p class="orang">Ajouter un modérateur >></p>
+
+									<div>
+										<hr>
+										<h2>Information sur le nouveau modérateur</h2>
+
+										<div>
+											<p>
+												<label for="moderatorName">Identifiant</label>
+												<input type="text" name="moderatorName" required="">
+											</p>
+
+											<p>
+												<label for="moderatorPassword">Mot de passe</label>
+												<input type="password" name="moderatorPassword" required="">
+											</p>
+
+											<p>
+												<label for="moderatorConfirmPassword">Confirmez le mot de passe</label>
+												<input type="password" name="moderatorConfirmPassword" required="">
+											</p>
+
+											<p>
+												<label for="moderatorMail">Adresse email</label>
+												<input type="email" name="moderatorMail" required="">
+											</p>
+										</div>
+
+										<div>
+											<p>
+												<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
+												<input type="submit" name="submit" value="Valider">
+												<input type="button" name="cancel" value="Annuler">
+											</p>
+										</div>
+
+										<hr>
+									</div>
+								</form>
 							</div>
 						</div>
 						<?php
@@ -142,9 +202,24 @@
 				//display user's school
 				$school = $data['schools'];
 				if ($school->getName() === $_SESSION['school']) {
+					if (isset($data['message'])) {	
+						?>
+						<div class="blockStyleOne blockMsg">
+							<i class="fas fa-times orang"></i>
+							<p class="msg orang"><?=$data['message']?></p>
+						</div>
+						<?php
+					}
+
+					if ($school->getIsActive()) {
+						$classIsActive = "";
+					} else {
+						$classIsActive = "inactiveSchool";
+					}
 					?>
+					
 					<div class="blockSchool">
-						<div>
+						<div class="<?=$classIsActive?>">
 							<div>
 								<figure>
 									<img src='<?=$school->getLogo()?>'>
@@ -158,7 +233,7 @@
 							</div>
 						</div>
 
-						<div>
+						<div class="tableAdminModerator">
 							<table> 
 								<tr>
 									<th>
@@ -263,6 +338,47 @@
 								<?php
 							}
 							?>
+
+							<form class="formAddModerator" method="POST" action="indexAdmin.php?action=moderatAdmin&amp;option=addModerator">
+								<p class="orang">Ajouter un modérateur >></p>
+
+								<div>
+									<hr>
+									<h2>Information sur le nouveau modérateur</h2>
+
+									<div>
+										<p>
+											<label for="moderatorName">Identifiant</label>
+											<input type="text" name="moderatorName" required="">
+										</p>
+
+										<p>
+											<label for="moderatorPassword">Mot de passe</label>
+											<input type="password" name="moderatorPassword" required="">
+										</p>
+
+										<p>
+											<label for="moderatorConfirmPassword">Confirmez le mot de passe</label>
+											<input type="password" name="moderatorConfirmPassword" required="">
+										</p>
+
+										<p>
+											<label for="moderatorMail">Adresse email</label>
+											<input type="email" name="moderatorMail" required="">
+										</p>
+									</div>
+
+									<div>
+										<p>
+											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
+											<input type="submit" name="submit" value="Valider">
+											<input type="button" name="cancel" value="Annuler">
+										</p>
+									</div>
+
+									<hr>
+								</div>
+							</form>
 						</div>
 					</div>
 					<?php

@@ -7,7 +7,7 @@ class SchoolManager extends AbstractManager
 	public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\School';
 	public static $TABLE_NAME = 'as_school';
 	public static $TABLE_PK = 'id';
-	public static $TABLE_CHAMPS ='id, idAdmin, name, nameAdmin, code, nbEleve, nbActiveAccount, DATE_FORMAT(dateInscription, "%d/%m/%Y") AS dateInscription, DATE_FORMAT(dateDeadline, "%d/%m/%Y") AS dateDeadline, logo';
+	public static $TABLE_CHAMPS ='id, idAdmin, name, nameAdmin, code, nbEleve, nbActiveAccount, DATE_FORMAT(dateInscription, "%d/%m/%Y") AS dateInscription, DATE_FORMAT(dateDeadline, "%d/%m/%Y") AS dateDeadline, logo, isActive';
 
 	public function add(School $school)
 	{
@@ -106,6 +106,13 @@ class SchoolManager extends AbstractManager
 					WHERE id = :id', 
 					[':dateDeadline' => $value, ':id' => $id]);
 			break;
+			case 'isActive' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET isActive = :isActive 
+					WHERE id = :id', 
+					[':isActive' => intval($value), ':id' => $id]);
+			break;
 		}
 		return $this;
 	}
@@ -168,6 +175,13 @@ class SchoolManager extends AbstractManager
 					SET dateDeadline = :dateDeadline 
 					WHERE name = :name', 
 					[':dateDeadline' => $value, ':name' => $name]);
+			break;
+			case 'isActive' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET isActive = :isActive 
+					WHERE name = :name', 
+					[':isActive' => intval($value), ':name' => $name]);
 			break;
 		}
 		return $this;

@@ -61,14 +61,24 @@
 						<script src="public/js/addSchool.js"></script>
 						<?php
 					break;
-					case 'moderatSchool' :
+					case 'buttonToggleSchool' :
 						?>
-						<script src="public/js/moderatSchool.js"></script>
+						<script src="public/js/buttonToggleSchool.js"></script>
 						<?php
 					break;
 					case 'modal' :
 						?>
 						<script src="public/js/modal.js"></script>
+						<?php
+					break;
+					case 'signUp' :
+						?>
+						<script src="public/js/signUp.js"></script>
+						<?php
+					break;
+					case 'signIn' :
+						?>
+						<script src="public/js/signIn.js"></script>
 						<?php
 					break;
 					default :
@@ -78,5 +88,6 @@
 			}
 		}
 		?>
+		<script src="public/js/navbar.js"></script>
 	</body>
 </html>
