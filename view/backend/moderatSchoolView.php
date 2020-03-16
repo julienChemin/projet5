@@ -266,7 +266,7 @@
 									</td>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=schoolHistory">
+										<form method="POST" action="indexAdmin.php?action=moderatUsers">
 											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
 											<input type="submit" name="submit" value="Consulter">
 										</form>

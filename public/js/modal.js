@@ -14,9 +14,9 @@ if (document.getElementById('moderatAdmin')) {
 	let linksToNormalUser = document.querySelectorAll('.toNormalUser');
 	let linksToDelete = document.querySelectorAll('.toDelete'); 
 
-	let pathToModo = '&isAdmin=false&isModerator=true';
-	let pathToAdmin = '&isAdmin=true&isModerator=false';
-	let pathToNormalUser = '&isAdmin=false&isModerator=false';
+	let pathToModo = '&toAdmin=false&toModerator=true';
+	let pathToAdmin = '&toAdmin=true&toModerator=false';
+	let pathToNormalUser = '&toAdmin=false&toModerator=false';
 
 	for (let i=0;i<linksToModo.length;i++) {
 		linksToModo[i].addEventListener('click', function(){
@@ -98,7 +98,7 @@ if (document.getElementById('moderatUsers')) {
 	let linksToInactive = document.querySelectorAll('.toInactive');
 	let linksToDelete = document.querySelectorAll('.toDelete');
 
-	let pathToModo = '&isAdmin=false&isModerator=true';
+	let pathToModo = '&toAdmin=false&toModerator=true';
 
 	for (let i=0;i<linksToModo.length;i++) {
 		linksToModo[i].addEventListener('click', function(){

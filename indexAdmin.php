@@ -69,6 +69,9 @@ try {
 			case 'schoolHistory' :
 				$Backend->schoolHistory();
 			break;
+			case 'getSchoolHistory' :
+				$Backend->getSchoolHistory();
+			break;
 			default :
 				//"action" value is unknow
 				throw new Exception('L\'action renseignée est inexistante.');

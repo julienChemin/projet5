@@ -128,6 +128,12 @@
 						</a>
 					</li>
 
+					<li>
+						<a href="indexAdmin.php?action=schoolHistory">
+							Historique<i class="fas fa-history"></i>
+						</a>
+					</li>
+
 					<hr>
 
 					<li>

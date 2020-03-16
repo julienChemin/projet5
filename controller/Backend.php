@@ -314,7 +314,7 @@ class Backend
 								"isModerator" => false]));
 
 							$deadline = date('Y/m/d H:m:s', strtotime('+' . $_POST['schoolDuration'] . 'month', time()));
-							$formatedDateDeadline = date('%d/%m/%Y à H:m.s', strtotime('+' . $_POST['schoolDuration'] . 'month', time()));
+							$formatedDateDeadline = date('d/m/Y', strtotime('+' . $_POST['schoolDuration'] . 'month', time()));
 
 							$SchoolManager->add(new School([
 								'idAdmin' => $SchoolManager->getLastInsertId(), 
@@ -330,7 +330,7 @@ class Backend
 							$HistoryManager->addEntry(new HistoryEntry([
 								'idSchool' => $SchoolManager->getLastInsertId(),
 								'category' => 'activityPeriod',
-								'entry' => "Bienvenue sur ArtSchool ! Vous vous êtes inscrit pour une période de " . $_POST['schoolDuration'] . " mois. L'abonnement prendra fin le " . $formatedDateDeadline]));
+								'entry' => "Bienvenue sur ArtSchool ! Vous vous êtes inscrit pour une période de " . $_POST['schoolDuration'] . " mois, avec " . $_POST['schoolNbEleve'] . " compte(s) affiliés a votre établissement. L'abonnement prendra fin le " . $formatedDateDeadline]));
 
 							$message = "L'établissement a bien été ajouté";
 						} else {
@@ -400,7 +400,7 @@ class Backend
 								$HistoryManager->addEntry(new HistoryEntry([
 									'idSchool' => $school->getId(),
 									'category' => 'profil',
-									'entry' => $_SESSION['pseudo'] . ' a modifié le nom de votre établissement en "' . $_POST['editName'] . '"']));
+									'entry' => $_SESSION['pseudo'] . ' a modifié le nom de votre établissement en : ' . $_POST['editName']]));
 
 								$message = "Le nom de l'établissement a été modifié";
 							} else {
@@ -424,7 +424,7 @@ class Backend
 										$HistoryManager->addEntry(new HistoryEntry([
 											'idSchool' => $school->getId(),
 											'category' => 'profil',
-											'entry' => $_SESSION['pseudo'] . ' a remplacé l\'administrateur principal par "' . $newAdmin->getName() . '"']));
+											'entry' => $_SESSION['pseudo'] . ' a remplacé l\'administrateur principal par : ' . $newAdmin->getName()]));
 
 										$message = "L'administrateur de l'établissement a été modifié";
 									} else {
@@ -448,7 +448,7 @@ class Backend
 								$HistoryManager->addEntry(new HistoryEntry([
 									'idSchool' => $school->getId(),
 									'category' => 'profil',
-									'entry' => $_SESSION['pseudo'] . ' a modifié le code d\'affiliation en "' . $_POST['editCode'] . '"']));
+									'entry' => $_SESSION['pseudo'] . ' a modifié le code d\'affiliation en : ' . $_POST['editCode']]));
 
 								$message = "Le code d'affiliation a été modifié";
 							} else {
@@ -483,7 +483,7 @@ class Backend
 							//add history entry
 							$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
 							$HistoryManager = new HistoryManager();
-							$HistoryManager->addEntry(new HistoryEntry([//////////////////////////////////////////
+							$HistoryManager->addEntry(new HistoryEntry([
 								'idSchool' => $school->getId(),
 								'category' => 'profil',
 								'entry' => $_SESSION['pseudo'] . ' a modifié le logo de l\'établissement']));
@@ -495,8 +495,16 @@ class Backend
 							$dateDeadline = \DateTime::createFromFormat("d/m/Y", $school->getDateDeadline());
 							$strDeadline = $dateDeadline->format('Y/m/d');
 							$newDeadline = date('Y/m/d H:m:s', strtotime('+' . $_POST['editDateDeadline'] . 'month', strtotime($strDeadline)));
+							$formatedNewDeadline = date('d/m/Y', strtotime('+' . $_POST['editDateDeadline'] . 'month', strtotime($strDeadline)));
 
 							$SchoolManager->updateByName($_POST['schoolName'], 'dateDeadline', $newDeadline);
+
+							//add history entry
+							$HistoryManager = new HistoryManager();
+							$HistoryManager->addEntry(new HistoryEntry([
+								'idSchool' => $school->getId(),
+								'category' => 'activityPeriod',
+								'entry' => 'La date de fin d\'abonnement a été repoussé jusqu\'au ' . $formatedNewDeadline]));
 
 							$message = "La date d'échéance a été modifié";
 						break;
@@ -511,7 +519,15 @@ class Backend
 								$SchoolManager->updateByName($_POST['schoolName'], 'isActive', true)
 											->updateByName($_POST['schoolName'], 'nbEleve', $_POST['editNbEleve']);
 
-								$message = "L'établissement a été activé";
+								//add history entry
+								$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
+								$HistoryManager = new HistoryManager();
+								$HistoryManager->addEntry(new HistoryEntry([
+									'idSchool' => $school->getId(),
+									'category' => 'activityPeriod',
+									'entry' => 'L\'établissement a été activé']));
+
+								$message = "L'établissement a été activé, avec " . $_POST['editNbEleve'] . " compte affilié maximum";
 							} else {
 								throw new \Exception("Vous ne pouvez pas accéder a cette page");
 							}
@@ -527,6 +543,14 @@ class Backend
 								$SchoolManager->updateByName($_POST['schoolName'], 'isActive', false)
 											->updateByName($_POST['schoolName'], 'nbEleve', 0)
 											->updateByName($_POST['schoolName'], 'nbActiveAccount', 0);
+
+								//add history entry
+								$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
+								$HistoryManager = new HistoryManager();
+								$HistoryManager->addEntry(new HistoryEntry([
+									'idSchool' => $school->getId(),
+									'category' => 'activityPeriod',
+									'entry' => 'L\'établissement a été désactivé']));
 
 								$message = "L'établissement a été désactivé";
 							} else {
@@ -595,6 +619,13 @@ class Backend
 								"school" => $_POST['schoolName'], 
 								"isAdmin" => false, 
 								"isModerator" => true]));
+
+							//add history entry
+							$HistoryManager = new HistoryManager();
+							$HistoryManager->addEntry(new HistoryEntry([
+								'idSchool' => $school->getId(),
+								'category' => 'account',
+								'entry' => $_SESSION['pseudo'] . ' a créé un compte modérateur : ' . $_POST['moderatorName']]));
 
 							$message = "Le modérateur a bien été ajouté";
 						} else {
@@ -725,45 +756,67 @@ class Backend
 
 	public function editGrade()
 	{
-		if (isset($_GET['userName'], $_GET['schoolName'], $_GET['isAdmin'], $_GET['isModerator'])) {
-			if ($_GET['isAdmin'] === 'true') {
-				$isAdmin = true;
+		if (isset($_GET['userName'], $_GET['schoolName'], $_GET['toAdmin'], $_GET['toModerator'])) {
+			if ($_GET['toAdmin'] === 'true') {
+				$toAdmin = true;
 			} else {
-				$isAdmin = false;
+				$toAdmin = false;
 			}
 
-			if ($_GET['isModerator'] === 'true') {
-				$isModerator = true;
+			if ($_GET['toModerator'] === 'true') {
+				$toModerator = true;
 			} else {
-				$isModerator = false;
+				$toModerator = false;
 			}
 
-			if (!($isAdmin && $isModerator)) {
-				$UserManager = new UserManager();
+			if (!($toAdmin && $toModerator)) {
+				$SchoolManager = new SchoolManager();
 
-				if ($isModerator) {
-					$user = $UserManager->getUserByName($_GET['userName']);
-					
-					if (!$user->getIsAdmin()) {
-						//normal user to moderator, nb active account -1
-						$SchoolManager = new SchoolManager();
+				if ($SchoolManager->nameExists($_GET['schoolName'])) {
+					$UserManager = new UserManager();
+
+					if ($UserManager->nameExists($_GET['userName'])) {
 						$school = $SchoolManager->getSchoolByName($_GET['schoolName']);
-						$nbActiveAccount = $school->getNbActiveAccount() - 1;
-						$SchoolManager->updateByName($_GET['schoolName'], 'nbActiveAccount', $nbActiveAccount);
-					}
-				} elseif (!$isModerator && !$isAdmin) {
-					//moderator to normal user, nb active account +1
-					$SchoolManager = new SchoolManager();
-					$school = $SchoolManager->getSchoolByName($_GET['schoolName']);
-					$nbActiveAccount = $school->getNbActiveAccount();
-					if ($nbActiveAccount < $school->getNbEleve()) {
-						$SchoolManager->updateByName($_GET['schoolName'], 'nbActiveAccount', $nbActiveAccount + 1);
-					} else {
-						throw new \Exception("Il est impossible d'effectuer cette action, vous avez atteint le nombre maximum de compte utilisateur actif");
-					}
-				}
+						$user = $UserManager->getUserByName($_GET['userName']);
 
-				$UserManager->updateByName($_GET['userName'], 'grade', ['isAdmin' => $isAdmin, 'isModerator' => $isModerator]);
+						if ($toModerator) {
+							if (!$user->getIsAdmin()) {
+								//normal user to moderator, nb active account -1
+								$nbActiveAccount = $school->getNbActiveAccount() - 1;
+								$SchoolManager->updateByName($school->getName(), 'nbActiveAccount', $nbActiveAccount);
+							}
+						} elseif (!$toModerator && !$toAdmin) {
+							//moderator to normal user, nb active account +1
+							$nbActiveAccount = $school->getNbActiveAccount();
+							if ($nbActiveAccount < $school->getNbEleve()) {
+								$SchoolManager->updateByName($school->getName(), 'nbActiveAccount', $nbActiveAccount + 1);
+							} else {
+								throw new \Exception("Il est impossible d'effectuer cette action, vous avez atteint le nombre maximum de compte utilisateur actif");
+							}
+						}
+
+						$UserManager->updateByName($user->getName(), 'grade', ['isAdmin' => $toAdmin, 'isModerator' => $toModerator]);
+
+						//add history entry
+						if ($toAdmin) {
+							$grade = "administrateur";
+						} elseif ($toModerator) {
+							$grade = "modérateur";
+						} else {
+							$grade = "utilisateur";
+						}
+
+						$HistoryManager = new HistoryManager();
+						$HistoryManager->addEntry(new HistoryEntry([
+							'idSchool' => $school->getId(),
+							'category' => 'account',
+							'entry' => $_SESSION['pseudo'] . ' a passé ' . $user->getName() . ' au grade : ' . $grade]));
+					} else {
+						throw new \Exception("Les informations renseignées sont incorrectes");
+					}
+				} else {
+					throw new \Exception("Les informations renseignées sont incorrectes");
+				}
 			} else {
 				throw new \Exception("Un utilisateur ne peut pas être à la fois modérateur et administrateur");
 			}
@@ -799,12 +852,24 @@ class Backend
 						$UserManager->updateByName($_GET['userName'], 'isActive', false);
 						//nb active account - 1
 						$SchoolManager->updateByName($_GET['schoolName'], 'nbActiveAccount', $nbActiveAccount - 1);
+						//add history entry
+						$HistoryManager = new HistoryManager();
+						$HistoryManager->addEntry(new HistoryEntry([
+							'idSchool' => $school->getId(),
+							'category' => 'account',
+							'entry' => $_SESSION['pseudo'] . ' a désactivé le compte de ' . $user->getName()]));
 					} else {
 						//account is inactive
 						if ($nbActiveAccount < $nbEleve) {
 							$UserManager->updateByName($_GET['userName'], 'isActive', true);
 							//nb active account + 1
 							$SchoolManager->updateByName($_GET['schoolName'], 'nbActiveAccount', $nbActiveAccount + 1);
+							//add history entry
+							$HistoryManager = new HistoryManager();
+							$HistoryManager->addEntry(new HistoryEntry([
+								'idSchool' => $school->getId(),
+								'category' => 'account',
+								'entry' => $_SESSION['pseudo'] . ' a activé le compte de ' . $user->getName()]));
 						} else {
 							throw new \Exception("Il est impossible d'effectuer cette action, 
 								vous avez atteint le nombre maximum de compte utilisateur actif");
@@ -827,56 +892,9 @@ class Backend
 		}
 	}
 
-	public function toggleSchoolIsActive()
-	{
-		if (!empty($_POST['schoolName'])) {
-			if ($_SESSION['school'] === ALL_SCHOOL) {
-				$SchoolManager = new SchoolManager();
-
-				if ($SchoolManager->nameExist($_POST['schoolName'])) {
-					$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
-
-					if ($school->getIsActive()) {
-						$UserManager = new UserManager();
-						$users = $UserManager->getUsersBySchool($school->getName(), 'user');
-
-						//set all user account on this school to inactive
-						foreach ($users as $user) {
-							if ($user->getIsActive()) {
-								$UserManager->updateByName($user->getName(), 'isActive', false);
-							}
-						}
-
-						//set school as inactive
-						$SchoolManager->updateByName($_POST['schoolName'], 'isActive', false);
-
-						//set nb account to 0
-						$SchoolManager->updateByName($_POST['schoolName'], 'nbActiveAccount', 0);
-					} else {
-						if (!empty($_POST['nbEleve'])) {
-							//set school as active
-							$SchoolManager->updateByName($_POST['schoolName'], 'isActive', true);
-
-							//set nb account
-							$SchoolManager->updateByName($_POST['schoolName'], 'nbActiveAccount', intval($_POST['nbEleve']));
-						} else {
-							throw new \Exception("Les informations renseignées sont incorrectes");
-						}
-					}
-				} else {
-					throw new \Exception("Le nom de l'établissement que vous recherchez n'existe pas");
-				}
-			} else {
-				throw new \Exception("Vous ne pouvez pas accéder à cette page");
-			}
-		} else {
-			throw new \Exception("Les informations renseignées sont incorrectes");
-		}
-	}
-
 	public function delete()
 	{
-		if  (!empty($_GET['elem'])) {
+		if (!empty($_GET['elem'])) {
 			switch ($_GET['elem']) {
 				case 'school' :
 				break;
@@ -891,6 +909,7 @@ class Backend
 
 							if ($schoolExist && $userExist) {
 								$user = $UserManager->getUserByName($_GET['userName']);
+								$school = $SchoolManager->getSchoolByName($_GET['schoolName']);
 								if (!$user->getIsAdmin()) {
 									//delete reports related to this account
 
@@ -898,11 +917,18 @@ class Backend
 
 									//if account is active and not moderator, nb active account -1
 									if ($user->getIsActive() && !$user->getIsModerator()) {
-										$school = $SchoolManager->getSchoolByName($_GET['schoolName']);
 										$SchoolManager->updateByName($_GET['schoolName'], 'nbActiveAccount', $school->getNbActiveAccount() - 1);
 									}
+
 									//delete account
 									$UserManager->delete($user->getId());
+
+									//add history entry
+									$HistoryManager = new HistoryManager();
+									$HistoryManager->addEntry(new HistoryEntry([
+										'idSchool' => $school->getId(),
+										'category' => 'account',
+										'entry' => $_SESSION['pseudo'] . ' a supprimé le compte de ' . $user->getName()]));
 
 									if (isset($_SERVER['HTTP_REFERER'])) {
 										header('Location: ' . $_SERVER['HTTP_REFERER']);
@@ -930,8 +956,63 @@ class Backend
 
 	public function schoolHistory()
 	{
-		// to do
-		RenderView::render('template.php', 'backend/schoolHistoryView.php');
+		$HistoryManager = new HistoryManager();
+		$SchoolManager = new SchoolManager();
+
+		if ($_SESSION['school'] === ALL_SCHOOL) {
+			$schools = $SchoolManager->getSchoolByName($_SESSION['school']);
+			
+			RenderView::render('template.php', 'backend/schoolHistoryView.php', ['schools' => $schools, 'option' => ['schoolHistory']]);
+		} else {
+			$school = $SchoolManager->getSchoolByName($_SESSION['school']);
+
+			$entries = $HistoryManager->getBySchool($school->getId());
+
+			RenderView::render('template.php', 'backend/schoolHistoryView.php', ['school' => $school, 'entries' => $entries, 'option' => ['schoolHistory']]);
+		}
+	}
+
+	public function getSchoolHistory()
+	{
+		if (!empty($_GET['school']) && ($_SESSION['school'] === ALL_SCHOOL || (!empty($_GET['schoolName']) && $_GET['schoolName'] === $_SESSION['school']))) {
+			$HistoryManager = new HistoryManager();
+			$SchoolManager = new SchoolManager();
+
+			if ($SchoolManager->exists($_GET['school'])) {
+				if (isset($_GET['offset'])) {
+					$offset = intval($_GET['offset']);
+				} else {
+					$offset = 0;
+				}
+					
+				if (!empty($_GET['sortBy']) && !empty($_GET['sortValue'])) {
+					if (!empty($_GET['thirdSortValue'])) {
+						//sort by category and date
+						$entries = $HistoryManager->getBySchool($_GET['school'], $offset, $_GET['sortBy'], 
+							$_GET['sortValue'], [$_GET['secondSortValue'], $_GET['thirdSortValue']]);
+					} elseif (!empty($_GET['secondSortValue'])) {
+						//sort by date
+						$entries = $HistoryManager->getBySchool($_GET['school'], $offset, $_GET['sortBy'], 
+							[$_GET['sortValue'], $_GET['secondSortValue']]);
+					} else {
+						//sort by category
+						$entries = $HistoryManager->getBySchool($_GET['school'], $offset, $_GET['sortBy'], 
+							$_GET['sortValue']);
+					}
+				} else {
+					//no sorting
+					$entries = $HistoryManager->getBySchool($_GET['school'], $offset);
+				}
+
+				$arrEntries = [];
+				for ($i=0; $i<count($entries); $i++) {
+					$arrEntries[$i][] = $entries[$i]->getDateEntry();
+					$arrEntries[$i][] = $entries[$i]->getEntry();
+				}
+				
+				echo json_encode($arrEntries);
+			}
+		}
 	}
 
 	public function error(string $error_msg)

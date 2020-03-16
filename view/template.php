@@ -43,12 +43,24 @@
 		</main>
 
 		<?php
+		require('footer.php');
+		
 		if (isset($data['option'])) {
 			foreach ($data['option'] as $option) {
 				switch ($option) {
 					case 'slide' :
 						?>
 						<script src="public/js/slide.js"></script>
+						<?php
+					break;
+					case 'modal' :
+						?>
+						<script src="public/js/modal.js"></script>
+						<?php
+					break;
+					case 'buttonToggleSchool' :
+						?>
+						<script src="public/js/buttonToggleSchool.js"></script>
 						<?php
 					break;
 					case 'forgetPassword' :
@@ -61,14 +73,10 @@
 						<script src="public/js/addSchool.js"></script>
 						<?php
 					break;
-					case 'buttonToggleSchool' :
+					case 'schoolHistory' :
 						?>
-						<script src="public/js/buttonToggleSchool.js"></script>
-						<?php
-					break;
-					case 'modal' :
-						?>
-						<script src="public/js/modal.js"></script>
+						<script src="public/js/ajax.js"></script>
+						<script src="public/js/schoolHistory.js"></script>
 						<?php
 					break;
 					case 'signUp' :

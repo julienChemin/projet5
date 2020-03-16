@@ -93,7 +93,11 @@ hr{
 	border: solid 2px #161617;
     border-radius: 5px;
     padding: 50px 100px;
+    margin-top: 20px;
     background-color: #161617;
+}
+.hide{
+	display: none;
 }
 
 /* ------------------------ FORM ------------------------ */
@@ -304,6 +308,57 @@ tr:nth-child(2n + 1){
 	font-size: 0.8em;
 }
 
+/* ------------------------ FOOTER ------------------------ */
+footer{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	width: 100%;
+	background-color: #161617;
+	padding: 70px 0px;
+}
+
+footer section{
+	width: 85%;
+}
+
+footer section > div{
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+
+	width: 100%;
+}
+
+footer article{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+
+	width: 30%;
+}
+
+footer article > *:nth-child(2){
+	align-self: flex-start;
+}
+
+footer ul{
+	list-style: none;
+}
+
+.hrFooter{
+	align-self: center;
+
+	width: 10%;
+	height: 1px;
+    border: none;
+
+	background: linear-gradient(to right, #161617, #E0E7E6, #161617);
+	transform: rotate(90deg);
+}
+
 /* ------------------------ HOME ------------------------ */
 
 #blockSearch{
@@ -468,7 +523,7 @@ form > div{
 }
 
 #homeAdmin, #resetPassword{
-	padding-top: 100px;
+	padding: 100px 0px;
 
 	display: flex;
 	justify-content: center;
@@ -552,7 +607,7 @@ form > div{
 }
 
 #slowSlide{
-	height: 200px;
+	height: 250px;
 }
 #slowSlide figure{
 	height: 150px;
@@ -567,7 +622,7 @@ form > div{
 	justify-content: center;
 	align-items: center;
 
-	padding-top: 100px;
+	padding: 100px 0px;
 }
 #blockModeratSchool > article{
 	width: 100%;
@@ -698,7 +753,7 @@ form > div{
 	justify-content: center;
 	align-items: center;
 
-	padding-top: 100px;
+	padding: 100px 0px;
 }
 #moderatAdmin{
 	display: flex;
@@ -790,7 +845,7 @@ form > div{
 	justify-content: center;
 	align-items: center;
 
-	padding-top: 100px;
+	padding: 100px 0px;
 }
 #moderatUsers{
 	display: flex;
@@ -836,8 +891,159 @@ form > div{
 }
 
 /* ------------------------ SCHOOL HISTORY ------------------------ */
+#blockSchoolHistory{
+	padding: 100px 0px;
+}
+#schoolHistory{
+	display: flex;
+	flex-direction: column;
+}
+#blockSchools{
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
+}
+#blockSchools .blockSchool{
+	width: 23%;
 
+	cursor: pointer;
+}
+#blockSchools .blockSchool > div:first-of-type > div:first-of-type{ /*logo*/
+	width: auto;
+	max-width: 98%;
+}
+#blockSchools .blockSchool > div:first-of-type{
+	flex-direction: column;
+}
+#blockSchools .blockSchool > div:first-of-type > div:nth-of-type(2){
+	height: auto;
+	width: 100%;
+}
+#blockEntries{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 
+	width: 100%;
+
+	background-color: #161617;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+.entry{
+	width: 90%;
+
+	display: flex;
+	flex-direction: column;
+
+	margin: 15px;
+	padding: 5px;
+	border :solid 1px #161617;
+	border-radius: 5px;
+	background-color: #222224;
+}
+.entry > span{
+	text-align: center;
+	width: 100%;
+}
+.entry > span:first-of-type{
+	text-align: left;
+}
+/*search form*/
+/*#blockSchool exist only for webmaster*/
+#schoolHistory form{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+
+	padding: 0px;
+	border:none;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
+}
+#blockSchools + div form{
+	display: none;
+}
+#schoolHistory form > div{
+	height: 0px;
+	overflow: hidden;
+	padding-top: 1px;
+
+	transition: 0.1s linear;
+	-webkit-transition: 0.1s linear;
+}
+
+#schoolHistory form > div:nth-of-type(2) > div > div{/*inputs date*/
+	display: flex;
+}
+#search{
+	height: 60px;
+	overflow: hidden;
+	display: flex;
+}
+#blockSchools + div #search{
+	display: none;
+}
+#search i{
+	cursor: pointer;
+	margin: 10px;
+	padding: 10px;
+
+	border :solid 1px #161617;
+	border-radius: 20px;
+
+	color: #CF8B3F;
+	background-color: #161617;
+
+	transition: 0.2s linear;
+	-webkit-transition: 0.2s linear;
+}
+#search i:hover{
+	border :solid 1px #CF8B3F;
+}
+#search button{
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 0px;
+
+	border:none;
+	margin-top: 65px;
+	padding: 10px;
+
+	color: white;
+
+	transition: 0.2s linear;
+	-webkit-transition: 0.2s linear;
+}
+#search button:hover{
+	color: #CF8B3F;
+}
+#search button:focus{
+	outline: none;
+}
+.buttonIsFocus{
+	background-color: #161617;
+	color: #CF8B3F!important;
+}
+.menuIsOpen{
+	border :solid 2px #CF8B3F!important;
+	border-radius: 10px!important;
+}
+.buttonIsDisplay{
+	margin-top: 15px!important;
+}
+.inputIsDisplay{
+	height: 50px!important;
+}
+#showMore{
+	width: 100%;
+	text-align: right;
+	cursor: pointer;
+}
+#blockSchools + div #showMore{
+	display: none;
+}
 
 /*====================================================================================================================================
 															medium desktops laptops

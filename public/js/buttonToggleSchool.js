@@ -1,4 +1,5 @@
-if (document.getElementById('moderatSchool') || document.getElementById('moderatAdmin') || document.getElementById('moderatUsers')) {
+if (document.getElementById('moderatSchool') || document.getElementById('moderatAdmin') 
+	|| document.getElementById('moderatUsers') || document.getElementById('schoolHistory')) {
 	let arrBlockSchoolDiv = document.querySelectorAll('.blockSchool > div:nth-child(2)');
 	let arrArrowDown = document.querySelectorAll('.fa-caret-square-down');
 	let arrArrowUp = document.querySelectorAll('.fa-caret-square-up');

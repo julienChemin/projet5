@@ -168,6 +168,13 @@ class Frontend
 											'isAdmin' => false, 
 											'isModerator' => false]));
 
+										//add history entry
+										$HistoryManager = new HistoryManager();
+										$HistoryManager->addEntry(new HistoryEntry([
+											'idSchool' => $school->getId(),
+											'category' => 'account',
+											'entry' => $_POST['pseudo'] . ' a créé un compte affilié à votre établissement']));
+
 										$message = "Le compte à bien été créé, vous pouvez maintenant <a href='index.php?action=signIn'>vous connecter</a>";
 									} else {
 										$message = "Il est impossible de créer un compte pour le moment, le nombre maximum de compte utilisateur pour cet établissement a été atteint. Veuillez contacter un responsable de cet établissement pour plus d'informations";
