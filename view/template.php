@@ -89,6 +89,16 @@
 						<script src="public/js/signIn.js"></script>
 						<?php
 					break;
+					case 'userProfile' :
+						if (isset($_SESSION['id']) && $data['user']->getId() === $_SESSION['id']) {
+							?>
+							<script src="public/js/ajax.js"></script>
+							<?php
+						}
+						?>
+						<script src="public/js/userProfile.js"></script>
+						<?php
+					break;
 					default :
 						throw new Exception('L\'option indiqué n\'existe pas.');
 					break;

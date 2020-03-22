@@ -1,14 +1,22 @@
 <footer>
 	<section>
 		<div>
-			<article id="linkList">
+			<article id="linksList">
 				<h3>Établissement inscrit sur ArtSchool</h3>
 
-				<ul>
-					<li><a href="">exemple 1</a></li>
-					<li><a href="">exemple 2</a></li>
-					<li><a href="">exemple 3</a></li>
-				</ul>
+				<div>
+					<ul>
+						<li><a href="">exemple 1</a></li>
+						<li><a href="">exemple 2</a></li>
+						<li><a href="">exemple 3</a></li>
+					</ul>
+
+					<ul>
+						<li><a href="">exemple 1</a></li>
+						<li><a href="">exemple 2</a></li>
+						<li><a href="">exemple 3</a></li>
+					</ul>
+				</div>
 			</article>
 
 			<hr class="hrFooter">
@@ -23,13 +31,13 @@
 
 			<hr class="hrFooter">
 
-			<article>
+			<article id="contact">
 				<h3>Contact</h3>
 
 				<ul>
-					<li><a href="">mail</a></li>
-					<li><a href="">exemple 2</a></li>
-					<li><a href="">exemple 3</a></li>
+					<li><a href="">icone</a></li>
+					<li><a href="">icone 2</a></li>
+					<li><a href="">icone 3</a></li>
 				</ul>
 			</article>
 		</div>

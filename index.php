@@ -44,6 +44,9 @@ try {
 			case 'signIn' :
 				$Frontend->signIn();
 			break;
+			case 'userProfile' :
+				$Frontend->userProfile();
+			break;
 			default :
 				//"action" value is unknow
 				throw new Exception('L\'action renseignée est inexistante.');

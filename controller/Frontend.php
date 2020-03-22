@@ -362,6 +362,23 @@ class Frontend
 		}	
 	}
 
+	public function userProfile()
+	{
+		if (!empty($_GET['userId'])) {
+			$UserManager = new UserManager();
+
+			if ($UserManager->exists($_GET['userId'])) {
+				$user = $UserManager->getOneById($_GET['userId']);
+
+				RenderView::render('template.php', 'frontend/userProfileView.php', ['user' => $user, 'option' => ['userProfile']]);
+			} else {
+				throw new \Exception("L'utilisateur recherché n'existe pas");
+			}
+		} else {
+			throw new \Exception("Les informations renseignées sont incorrectes");
+		}
+	}
+
 	public function error(string $error_msg)
 	{
 		RenderView::render('template.php', 'frontend/errorView.php', ['error_msg' => $error_msg]);

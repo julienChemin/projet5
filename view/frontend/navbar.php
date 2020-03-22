@@ -60,7 +60,7 @@
 				<div>
 					<ul>
 						<li>
-							<a href="#">
+							<a href="index.php?action=userProfile&userId=<?=$_SESSION['id']?>">
 							Profil<i class="far fa-address-card"></i>
 							</a>
 						</li>

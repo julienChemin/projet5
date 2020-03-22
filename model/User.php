@@ -16,7 +16,9 @@ class User
 			$dateBan,
 			$isAdmin,
 			$isModerator,
-			$isActive;
+			$isActive,
+			$profileBanner,
+			$profilePicture;
 
 	public function __construct(array $data = null)
 	{
@@ -100,6 +102,16 @@ class User
 	public function getIsActive()
 	{
 		return $this->isActive;
+	}
+
+	public function getProfileBanner()
+	{
+		return $this->profileBanner;
+	}
+
+	public function getProfilePicture()
+	{
+		return $this->profilePicture;
 	}
 
 	//SETTERS
@@ -192,5 +204,21 @@ class User
 	{
 		$this->isActive = $isActive;
 		return $this;
+	}
+
+	public function setProfileBanner(string $profileBanner)
+	{
+		if (strlen($profileBanner) > 0){
+			$this->profileBanner = $profileBanner;
+			return $this;
+		}
+	}
+
+	public function setProfilePicture(string $profilePicture)
+	{
+		if (strlen($profilePicture) > 0){
+			$this->profilePicture = $profilePicture;
+			return $this;
+		}
 	}
 }
