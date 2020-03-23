@@ -5,7 +5,8 @@
 		?>
 		<div id="blockMenuEditingTop">
 			<div id="contentMenuEditBanner" class="contentMenuEdit">
-				<form>
+				<form method="POST" action="index.php?action=upload&elem=banner" enctype="multipart/form-data">
+					<input type="hidden" name="userId" value="<?=$data['user']->getId()?>">
 					<p>
 						<label for="bannerPath">Adresse de l'image</label>
 						<input type="text" name="bannerPath" id="bannerPath">
@@ -22,7 +23,13 @@
 
 					<p>
 						<span>
-							<input type="checkbox" name="noBanner">
+							<?php
+							if ($data['user']->getNoBanner()) {
+								echo '<input type="checkbox" name="noBanner" id="noBanner" checked>';
+							} else {
+								echo '<input type="checkbox" name="noBanner" id="noBanner">';
+							}
+							?>
 							<label for="noBanner">Pas d'image de bannière</label>
 						</span>
 					</p>
@@ -92,28 +99,68 @@
 
 			<div id="contentMenuEditPseudo" class="contentMenuEdit">
 				<form>
-					<input type="radio" name="blockPseudoPosition" id="blockPseudoTop">
-					<label for="blockPseudoTop">
-						<img src="public/images/blockPseudoTop.jpg">
-					</label>
+					<div>
+						<input type="radio" name="blockPseudoPosition" id="blockPseudoTop">
+						<label for="blockPseudoTop">
+							<img src="public/images/blockPseudoTop.jpg">
+						</label>
 
-					<input type="radio" name="blockPseudoPosition" id="blockPseudoCenter">
-					<label for="blockPseudoCenter">
-						<img src="public/images/blockPseudoCenter.jpg">
-					</label>
-				
-					<input type="radio" name="blockPseudoPosition" id="blockPseudoBottom">
-					<label for="blockPseudoBottom">
-						<img src="public/images/blockPseudoBottom.jpg">
-					</label>
+						<input type="radio" name="blockPseudoPosition" id="blockPseudoCenter">
+						<label for="blockPseudoCenter">
+							<img src="public/images/blockPseudoCenter.jpg">
+						</label>
+					
+						<input type="radio" name="blockPseudoPosition" id="blockPseudoBottom">
+						<label for="blockPseudoBottom">
+							<img src="public/images/blockPseudoBottom.jpg">
+						</label>
+					</div>
 
 					<hr class="hrNavbar">
 
-					<p>
+					<div>
+						<input type="radio" name="pseudoPosition" id="pseudoLeft">
+						<label for="pseudoLeft">
+							<img src="public/images/pseudoLeft.jpg">
+						</label>
+
+						<input type="radio" name="pseudoPosition" id="pseudoCenter">
+						<label for="pseudoCenter">
+							<img src="public/images/pseudoCenter.jpg">
+						</label>
+					
+						<input type="radio" name="pseudoPosition" id="pseudoRight">
+						<label for="pseudoRight">
+							<img src="public/images/pseudoRight.jpg">
+						</label>
+					</div>
+
+					<hr class="hrNavbar">
+
+					<div>
+						<input type="radio" name="schoolPosition" id="schoolLeft">
+						<label for="schoolLeft">
+							<img src="public/images/schoolLeft.jpg">
+						</label>
+
+						<input type="radio" name="schoolPosition" id="schoolCenter">
+						<label for="schoolCenter">
+							<img src="public/images/schoolCenter.jpg">
+						</label>
+					
+						<input type="radio" name="schoolPosition" id="schoolRight">
+						<label for="schoolRight">
+							<img src="public/images/schoolRight.jpg">
+						</label>
+					</div>
+
+					<hr class="hrNavbar">
+
+					<div>
 						<button name="savePseudo" id="savePseudo">
 							<i class="fas fa-check"></i>
 						</button>
-					</p>
+					</div>
 				</form>
 			</div>
 
@@ -135,9 +182,12 @@
 
 	<div id="banner" class="editable">
 		<?php
-		if (!empty($data['user']->getProfileBanner())) {
+		if ($data['user']->getNoBanner()) {
+			echo '<img class="hide" src="' . $data['user']->getProfileBanner() . '" alt="banner picture">';
+		} else {
 			echo '<img src="' . $data['user']->getProfileBanner() . '" alt="banner picture">';
 		}
+
 		if ($data['user']->getId() === $_SESSION['id']) {
 			echo '<i class="fas fa-pencil-alt iconeEdit"></i>';
 		}

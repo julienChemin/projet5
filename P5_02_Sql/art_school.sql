@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  Dim 22 mars 2020 à 15:51
+-- Généré le :  lun. 23 mars 2020 à 20:41
 -- Version du serveur :  5.7.24
 -- Version de PHP :  7.2.14
 
@@ -205,6 +205,7 @@ CREATE TABLE IF NOT EXISTS `as_users` (
   `isActive` tinyint(1) NOT NULL DEFAULT '1',
   `profileBanner` varchar(355) NOT NULL,
   `profilePicture` varchar(355) NOT NULL DEFAULT 'public/images/question-mark.png',
+  `noBanner` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
@@ -212,21 +213,21 @@ CREATE TABLE IF NOT EXISTS `as_users` (
 -- Déchargement des données de la table `as_users`
 --
 
-INSERT INTO `as_users` (`id`, `name`, `mail`, `school`, `password`, `temporaryPassword`, `beingReset`, `nbWarning`, `isBan`, `dateBan`, `isAdmin`, `isModerator`, `isActive`, `profileBanner`, `profilePicture`) VALUES
-(1, 'Julien Chemin', 'julchemin@orange.fr', 'allSchool', '$2y$10$HXp7IAwJ/7.iat560IbwsOK9z7kQDyCTCqEH5pqS/5JZwwthbKHi2', '$2y$10$eS2rktF1OSnDs9eLz0H9ceD4KPaZuuUXZpmMXlXnrtWHOZ7gbQrP6', 0, 0, 0, NULL, 1, 0, 1, 'https://i.pinimg.com/originals/a1/c8/6e/a1c86efc93880425e6615d9ae5d76ff8.png', 'https://waifu.clan.su/_ld/1/36417721.jpg'),
-(2, 'school 1 admin 1', 'school1@admin1.fr', 'school 1', '$2y$10$XUkx5w1ZeA8o2fCZVA4jnugiINucVGgVojX7PFcHiUXZO6JfKbh4O', NULL, 0, 0, 0, NULL, 1, 0, 1, '', 'public/images/question-mark.png'),
-(3, 'school 2 admin 1', 'school2@admin1.fr', 'school 2', '$2y$10$osVD3E3cOBsNZAKgnyV/8uaL7wI5Y.V/G4GCO89ckBtGJ8nP6yCGu', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png'),
-(4, 'school 1 admin 2', 'school1@admin2.fr', 'school 1', '$2y$10$AMPHmJItKJDb/w5p93.RaemOPMOJOG1W9uOKpcl87ldcvA.jBH3pa', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png'),
-(5, 'school 1 moderator 1', 'school1@moderator1.fr', 'school 1', '$2y$10$DKQbFIdAh0ow1kfgDKBFhOiX8Gdy8Hc7ylI0yrGVyC8zC84Rm3l9e', NULL, 0, 0, 0, NULL, 0, 1, 1, '', '../../public/images/question-mark.png'),
-(6, 'school 1 user 1', 'school1@user1.fr', 'school 1', '$2y$10$9hRf3BcZJUr17hCBw133IOi66snjV6Du/bN/FtI5g2SX6hNuUqdJu', NULL, 0, 0, 0, NULL, 0, 0, 1, '', '../../public/images/question-mark.png'),
-(9, 'school 1 user inactif 1', 'school1@userinactif1.fr', 'school 1', '$2y$10$tVn4/UttJTo/ioodoijOceJIq5c6G1qWKXGHwL6Yrw6epGudMWJSG', NULL, 0, 0, 0, NULL, 0, 0, 0, '', '../../public/images/question-mark.png'),
-(11, 'noschool user 1', 'noschool@user1.fr', 'noSchool', '$2y$10$8nJej/tAJSkLXhxSPnvjIe2Kkrq3MYgtyBAdkeCGEt.Dgl5oF28Mq', NULL, 0, 0, 0, NULL, 0, 0, 1, '', '../../public/images/question-mark.png'),
-(12, 'no school admin 1', 'noschool@admin1.fr', 'noSchool', '$2y$10$GT4./enDDg41G6xCfl2El.lBgJIbCr3gyTRQcJSiDb9rPqVehWKQS', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png'),
-(13, 'school 2 moderator 1', 'school2@moderator1.fr', 'school 2', '$2y$10$g5M3SrNEpIy8sRmw.jXe7eb22aVE9MTFE6wpqlAjNSMZ7e4xhHXkq', NULL, 0, 0, 0, NULL, 0, 1, 1, '', '../../public/images/question-mark.png'),
-(14, 'school 2 moderator 2', 'school2@moderator2.fr', 'school 2', '$2y$10$QdI/YQtb3NKjH9Is5KIGouKJMucTGSbMdXKMjX9hgCFl.88zxXhpi', NULL, 0, 0, 0, NULL, 0, 1, 1, '', '../../public/images/question-mark.png'),
-(15, 'school 1 moderator 2', 'school1@moderator2.fr', 'school 1', '$2y$10$CerSWFudtNUvgOxlDj3gy..fXqZiF2cqvze28LMdP4f2e.kYx1pDm', NULL, 0, 0, 0, NULL, 0, 1, 1, '', '../../public/images/question-mark.png'),
-(16, 'school test admin 1', 'schooltest@admin1.fr', 'school test', '$2y$10$lYHijLF9fL1plpl.eOKZOO/RmaJHfBmy5V2nOyubgWYj/TLnwcwyW', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png'),
-(17, 'osef', 'osef@osef.fr', 'retest', '$2y$10$utsERJZtLXjgvSFR4pVm1O3/kNb20u4arWkYoHFz6wTknV/EQp3lS', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png');
+INSERT INTO `as_users` (`id`, `name`, `mail`, `school`, `password`, `temporaryPassword`, `beingReset`, `nbWarning`, `isBan`, `dateBan`, `isAdmin`, `isModerator`, `isActive`, `profileBanner`, `profilePicture`, `noBanner`) VALUES
+(1, 'Julien Chemin', 'julchemin@orange.fr', 'allSchool', '$2y$10$dwLFjJ4JY8QUbtFgpty55eTaVyaw/g1XXar1P09GhO6Lu00JzZa6G', '$2y$10$QUYa40nmjqPoRJotqkgg6e6ecBnmsCyH062RvSLiLlBGzOnPAQRie', 0, 0, 0, NULL, 1, 0, 1, 'public/images/Julien Cheminaa2851f23146faef4bb998a58740d0ce.jpg', 'https://waifu.clan.su/_ld/1/36417721.jpg', 0),
+(2, 'school 1 admin 1', 'school1@admin1.fr', 'school 1', '$2y$10$XUkx5w1ZeA8o2fCZVA4jnugiINucVGgVojX7PFcHiUXZO6JfKbh4O', NULL, 0, 0, 0, NULL, 1, 0, 1, '', 'public/images/question-mark.png', 1),
+(3, 'school 2 admin 1', 'school2@admin1.fr', 'school 2', '$2y$10$osVD3E3cOBsNZAKgnyV/8uaL7wI5Y.V/G4GCO89ckBtGJ8nP6yCGu', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png', 1),
+(4, 'school 1 admin 2', 'school1@admin2.fr', 'school 1', '$2y$10$AMPHmJItKJDb/w5p93.RaemOPMOJOG1W9uOKpcl87ldcvA.jBH3pa', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png', 1),
+(5, 'school 1 moderator 1', 'school1@moderator1.fr', 'school 1', '$2y$10$DKQbFIdAh0ow1kfgDKBFhOiX8Gdy8Hc7ylI0yrGVyC8zC84Rm3l9e', NULL, 0, 0, 0, NULL, 0, 1, 1, '', '../../public/images/question-mark.png', 1),
+(6, 'school 1 user 1', 'school1@user1.fr', 'school 1', '$2y$10$9hRf3BcZJUr17hCBw133IOi66snjV6Du/bN/FtI5g2SX6hNuUqdJu', NULL, 0, 0, 0, NULL, 0, 0, 1, '', '../../public/images/question-mark.png', 1),
+(9, 'school 1 user inactif 1', 'school1@userinactif1.fr', 'school 1', '$2y$10$tVn4/UttJTo/ioodoijOceJIq5c6G1qWKXGHwL6Yrw6epGudMWJSG', NULL, 0, 0, 0, NULL, 0, 0, 0, '', '../../public/images/question-mark.png', 1),
+(11, 'noschool user 1', 'noschool@user1.fr', 'noSchool', '$2y$10$8nJej/tAJSkLXhxSPnvjIe2Kkrq3MYgtyBAdkeCGEt.Dgl5oF28Mq', NULL, 0, 0, 0, NULL, 0, 0, 1, '', '../../public/images/question-mark.png', 1),
+(12, 'no school admin 1', 'noschool@admin1.fr', 'noSchool', '$2y$10$GT4./enDDg41G6xCfl2El.lBgJIbCr3gyTRQcJSiDb9rPqVehWKQS', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png', 1),
+(13, 'school 2 moderator 1', 'school2@moderator1.fr', 'school 2', '$2y$10$g5M3SrNEpIy8sRmw.jXe7eb22aVE9MTFE6wpqlAjNSMZ7e4xhHXkq', NULL, 0, 0, 0, NULL, 0, 1, 1, '', '../../public/images/question-mark.png', 1),
+(14, 'school 2 moderator 2', 'school2@moderator2.fr', 'school 2', '$2y$10$QdI/YQtb3NKjH9Is5KIGouKJMucTGSbMdXKMjX9hgCFl.88zxXhpi', NULL, 0, 0, 0, NULL, 0, 1, 1, '', '../../public/images/question-mark.png', 1),
+(15, 'school 1 moderator 2', 'school1@moderator2.fr', 'school 1', '$2y$10$CerSWFudtNUvgOxlDj3gy..fXqZiF2cqvze28LMdP4f2e.kYx1pDm', NULL, 0, 0, 0, NULL, 0, 1, 1, '', '../../public/images/question-mark.png', 1),
+(16, 'school test admin 1', 'schooltest@admin1.fr', 'school test', '$2y$10$lYHijLF9fL1plpl.eOKZOO/RmaJHfBmy5V2nOyubgWYj/TLnwcwyW', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png', 1),
+(17, 'osef', 'osef@osef.fr', 'retest', '$2y$10$utsERJZtLXjgvSFR4pVm1O3/kNb20u4arWkYoHFz6wTknV/EQp3lS', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png', 1);
 
 --
 -- Contraintes pour les tables déchargées

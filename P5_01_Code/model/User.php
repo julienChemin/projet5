@@ -18,7 +18,8 @@ class User
 			$isModerator,
 			$isActive,
 			$profileBanner,
-			$profilePicture;
+			$profilePicture,
+			$noBanner;
 
 	public function __construct(array $data = null)
 	{
@@ -112,6 +113,11 @@ class User
 	public function getProfilePicture()
 	{
 		return $this->profilePicture;
+	}
+
+	public function getNoBanner()
+	{
+		return $this->noBanner;
 	}
 
 	//SETTERS
@@ -220,5 +226,11 @@ class User
 			$this->profilePicture = $profilePicture;
 			return $this;
 		}
+	}
+
+	public function setNoBanner(bool $noBanner)
+	{
+		$this->noBanner = $noBanner;
+		return $this;
 	}
 }

@@ -47,6 +47,12 @@ try {
 			case 'userProfile' :
 				$Frontend->userProfile();
 			break;
+			case 'updateProfile' :
+				$Frontend->updateProfile();
+			break;
+			case 'upload' :
+				$Frontend->upload();
+			break;
 			default :
 				//"action" value is unknow
 				throw new Exception('L\'action renseignée est inexistante.');

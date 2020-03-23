@@ -688,12 +688,13 @@ figure img{
 	display: flex;
 	align-items: center;
 	
-	height: 80px;
+	min-height: 80px;
+	max-height: 160px;
 	width: 100%;
 
 	overflow: hidden;
 	position: absolute;
-	top: -80px;
+	top: -160px;
 	left: 0px;
 
 	transition: 0.1s linear;
@@ -747,6 +748,7 @@ figure img{
 }
 .contentMenuEdit form{
 	display: flex;
+	justify-content: flex-start;
     align-items: center;
     border : none;
     padding: 0;
@@ -765,6 +767,19 @@ figure img{
 	text-align: left;
 }
 /*menu edit pseudo*/
+#contentMenuEditPseudo > form{
+	flex-wrap: wrap;
+}
+#contentMenuEditPseudo > form > div{
+	width: auto;
+	height: 80px;
+	margin: 0 5px;
+	flex-direction: row;
+	align-items: center;
+}
+#contentMenuEditPseudo input[type="radio"]{
+	margin: 0;
+}
 #contentMenuEditPseudo label{
 	height: 80%;
     width: 125px;

@@ -51,14 +51,14 @@ buttonAbout.addEventListener('click', function(){
 if (document.getElementById('blockTabsEditProfile') !== null) {
 	function toggleMenuTop(content, blockMenuTop){
 		if (content === blockMenuTop.contentDisplay) {
-			content.style.top = "-80px";
+			content.style.top = "-160px";
 			blockMenuTop.contentDisplay = "";
 			setTimeout(function(){
 				blockMenuTop.elem.style.height = "0px";
 			}, 100);
 		} else {
 			if (blockMenuTop.contentDisplay !== "") {
-				blockMenuTop.contentDisplay.style.top = "-80px";
+				blockMenuTop.contentDisplay.style.top = "-160px";
 			}
 			blockMenuTop.elem.style.height = "80px";
 			blockMenuTop.contentDisplay = content;
@@ -85,7 +85,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			}
 
 			if (blockMenuEditingTop.contentDisplay !== "") {
-				blockMenuEditingTop.contentDisplay.style.top = "-80px";
+				blockMenuEditingTop.contentDisplay.style.top = "-160px";
 				blockMenuEditingTop.contentDisplay = "";
 				setTimeout(function(){
 					blockMenuEditingTop.elem.style.height = "0px";
@@ -108,9 +108,55 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	}
 
 	//menu edit banner
-	let buttonSaveBanner = document.getElementById('saveBanner');
-	buttonSaveBanner.addEventListener('click', function(e){
-		e.preventDefault();
+	let formBanner = document.querySelector('#contentMenuEditBanner > form');
+	let bannerImg = document.querySelector('#banner img');
+
+	formBanner.elements.bannerPath.addEventListener('change', function(e){
+		if (e.target.value.indexOf('<script') === -1) {
+			bannerImg.src = e.target.value;
+		} else {
+			e.target.value = "";
+		}
+	});
+
+	formBanner.elements.noBanner.addEventListener('change', function(e){
+		if (e.target.checked) {
+			bannerImg.classList.add('hide');
+		} else {
+			bannerImg.classList.remove('hide');
+		}
+	});
+
+	formBanner.elements.saveBanner.addEventListener('click', function(e){
+		if (formBanner.elements.bannerPath.value !== "") {
+			e.preventDefault();
+			let url = 'index.php?action=updateProfile&userId='+formBanner.elements.userId.value;
+			url += '&elem=profileBanner&value=';
+			url += formBanner.elements.bannerPath.value;
+			
+			ajaxGet(url, function(response){
+				toggleClass(buttonMenuEdit, 'menuIsOpen');
+				blockMenuEditingTop.contentDisplay.style.top = "-160px";
+				blockMenuEditingTop.contentDisplay = "";
+				setTimeout(function(){
+					blockMenuEditingTop.elem.style.height = "0px";
+				}, 100);
+			});
+		} else if (formBanner.elements.dlBanner.value === "") {
+			e.preventDefault();
+			let url = 'index.php?action=updateProfile&userId='+formBanner.elements.userId.value;
+			url += '&elem=noBanner&value=';
+			url += formBanner.elements.noBanner.checked;
+
+			ajaxGet(url, function(response){
+				toggleClass(buttonMenuEdit, 'menuIsOpen');
+				blockMenuEditingTop.contentDisplay.style.top = "-160px";
+				blockMenuEditingTop.contentDisplay = "";
+				setTimeout(function(){
+					blockMenuEditingTop.elem.style.height = "0px";
+				}, 100);
+			});
+		}
 	});
 
 	//menu edit picture profile

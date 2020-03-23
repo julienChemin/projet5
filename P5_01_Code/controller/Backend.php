@@ -146,7 +146,7 @@ class Backend
 				$user = $UserManager->getUserByMail($_POST['postMail']);
 
 				$temporaryPassword = password_hash($user->getName() . time(), PASSWORD_DEFAULT);
-				$UserManager->setTemporaryPassword($temporaryPassword, $user->getId());
+				$UserManager->updateById($user->getId(), 'temporaryPassword', $temporaryPassword);
 
 				$subject = 'Recuperation de mot de passe';
 				$content = "Bonjour " . $user->getName() . ", vous avez demande a reinitialiser votre mot de passe.<br><br>
@@ -224,7 +224,7 @@ class Backend
 						if ($user->getBeingReset()) {
 							if (!password_verify($_POST['newPassword'], $user->getPassword())) {
 								//new password is correct
-								$UserManager->setPassword(password_hash($_POST['newPassword'], PASSWORD_DEFAULT), $user->getId());
+								$UserManager->updateById($user->getId(), 'password', password_hash($_POST['newPassword'], PASSWORD_DEFAULT));
 
 								$message = "Le mot de passe a bien été modifié.";
 

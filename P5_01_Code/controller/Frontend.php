@@ -255,7 +255,7 @@ class Frontend
 					$user = $UserManager->getUserByMail($_POST['postMail']);
 
 					$temporaryPassword = password_hash($user->getName() . time(), PASSWORD_DEFAULT);
-					$UserManager->setTemporaryPassword($temporaryPassword, $user->getId());
+					$UserManager->updateById($user->getId(), 'temporaryPassword', $temporaryPassword);
 
 					$subject = 'Recuperation de mot de passe';
 					$content = "Bonjour " . $user->getName() . ", vous avez demande a reinitialiser votre mot de passe.<br><br>
@@ -335,7 +335,7 @@ class Frontend
 						if ($user->getBeingReset()) {
 							if (!password_verify($_POST['newPassword'], $user->getPassword())) {
 								//new password is correct
-								$UserManager->setPassword(password_hash($_POST['newPassword'], PASSWORD_DEFAULT), $user->getId());
+								$UserManager->updateById($user->getId(), 'password', password_hash($_POST['newPassword'], PASSWORD_DEFAULT));
 
 								$message = "Le mot de passe a bien été modifié.";
 								
@@ -376,6 +376,60 @@ class Frontend
 			}
 		} else {
 			throw new \Exception("Les informations renseignées sont incorrectes");
+		}
+	}
+
+	public function updateProfile()
+	{
+		if (!empty($_GET['userId']) && !empty($_GET['elem']) && isset($_GET['value'])) {
+			$UserManager = new UserManager();
+
+			if ($UserManager->exists($_GET['userId']) && $_GET['userId'] === $_SESSION['id']) {
+				switch ($_GET['elem']) {//switch useless?
+					case 'noBanner' :
+						if ($_GET['value'] === "true") {
+							$value = true;
+						} else {
+							$value = false;
+						}
+						$UserManager->updateById($_GET['userId'], $_GET['elem'], $value);
+					break;
+					case 'profileBanner' :
+						$UserManager->updateById($_GET['userId'], $_GET['elem'], $_GET['value']);
+					break;
+					case 'profilePicture' :
+						$UserManager->updateById($_GET['userId'], $_GET['elem'], $_GET['value']);
+					break;
+				}
+			}
+		}
+	}
+
+	public function upload()
+	{
+		if (!empty($_GET['elem'])) {
+			require('view/upload.php');
+
+			$UserManager = new UserManager();
+
+			if (!empty($final_path)) {
+				switch ($_GET['elem']) {
+					case 'banner' :
+						$UserManager->updateById($_SESSION['id'], 'profileBanner', $final_path);
+					break;
+					case 'picture' :
+						$UserManager->updateById($_SESSION['id'], 'profilePicture', $final_path);
+					break;
+					case 'content' :
+					break;
+				}
+			}
+
+			if (isset($_SERVER['HTTP_REFERER'])) {
+				header('Location: ' . $_SERVER['HTTP_REFERER']);
+			} else {
+				header('Location: indexAdmin.php');
+			}
 		}
 	}
 

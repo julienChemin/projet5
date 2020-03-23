@@ -9,7 +9,7 @@ class UserManager extends AbstractManager
 	public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\User';
 	public static $TABLE_NAME = 'as_users';
 	public static $TABLE_PK = 'id';
-	public static $TABLE_CHAMPS ='id, name, password, mail, school, temporaryPassword, beingReset, nbWarning, isBan, dateBan, isAdmin, isModerator, isActive, profileBanner, profilePicture';
+	public static $TABLE_CHAMPS ='id, name, password, mail, school, temporaryPassword, beingReset, nbWarning, isBan, dateBan, isAdmin, isModerator, isActive, profileBanner, profilePicture, noBanner';
 
 	public function add(User $user)
 	{
@@ -142,6 +142,41 @@ class UserManager extends AbstractManager
 					WHERE id = :id', 
 					[':school' => $value, ':id' => $id]);
 			break;
+			case 'password' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET password = :password, beingReset = false 
+					WHERE id = :id', 
+					[':password' => $value, ':id' => $id]);
+			break;
+			case 'temporaryPassword' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET temporaryPassword = :temporaryPassword, beingReset = true 
+					WHERE id = :id', 
+					[':temporaryPassword' => $value, ':id' => $id]);
+			break;
+			case 'profileBanner' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET profileBanner = :profileBanner 
+					WHERE id = :id', 
+					[':profileBanner' => $value, ':id' => $id]);
+			break;
+			case 'profilePicture' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET profilePicture = :profilePicture 
+					WHERE id = :id', 
+					[':profilePicture' => $value, ':id' => $id]);
+			break;
+			case 'noBanner' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET noBanner = :noBanner 
+					WHERE id = :id', 
+					[':noBanner' => intval($value), ':id' => $id]);
+			break;
 		}
 		return $this;
 	}
@@ -169,6 +204,41 @@ class UserManager extends AbstractManager
 					SET school = :school 
 					WHERE name = :name', 
 					[':school' => $value, ':name' => $name]);
+			break;
+			case 'password' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET password = :password, beingReset = false 
+					WHERE name = :name', 
+					[':password' => $value, ':name' => $name]);
+			break;
+			case 'temporaryPassword' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET temporaryPassword = :temporaryPassword, beingReset = true 
+					WHERE name = :name', 
+					[':temporaryPassword' => $value, ':name' => $name]);
+			break;
+			case 'profileBanner' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET profileBanner = :profileBanner 
+					WHERE name = :name', 
+					[':profileBanner' => $value, ':name' => $name]);
+			break;
+			case 'profilePicture' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET profilePicture = :profilePicture 
+					WHERE name = :name', 
+					[':profilePicture' => $value, ':name' => $name]);
+			break;
+			case 'noBanner' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET noBanner = :noBanner 
+					WHERE name = :name', 
+					[':noBanner' => intval($value), ':name' => $name]);
 			break;
 		}
 		return $this;
@@ -217,32 +287,6 @@ class UserManager extends AbstractManager
 	{
 		if (strlen($password) > 0) {
 			return password_verify($password, $user->getPassword());
-		}
-	}
-
-	public function setPassword(string $password, int $id)
-	{
-		if (strlen($password) > 0 && $id > 0) {
-			$this->sql('
-				UPDATE ' . static::$TABLE_NAME . ' 
-				SET password = :password, beingReset = false 
-				WHERE id = :id',
-				[':password' => $password, ':id' => $id]);
-
-			return $this;
-		}
-	}
-
-	public function setTemporaryPassword(string $temporaryPassword, int $id)
-	{
-		if (strlen($temporaryPassword) > 0 && $id > 0) {
-			$this->sql('
-				UPDATE ' . static::$TABLE_NAME . ' 
-				SET temporaryPassword = :temporaryPassword, beingReset = true 
-				WHERE id = :id',
-				[':temporaryPassword' => $temporaryPassword, ':id' => $id]);
-
-			return $this;
 		}
 	}
 }
