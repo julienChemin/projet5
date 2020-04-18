@@ -368,9 +368,11 @@ class Frontend
 			$UserManager = new UserManager();
 
 			if ($UserManager->exists($_GET['userId'])) {
+				$ProfileContentManager = new ProfileContentManager();
 				$user = $UserManager->getOneById($_GET['userId']);
+				$profileContent = $ProfileContentManager->getByUserId($user->getId());
 
-				RenderView::render('template.php', 'frontend/userProfileView.php', ['user' => $user, 'option' => ['userProfile']]);
+				RenderView::render('template.php', 'frontend/userProfileView.php', ['user' => $user, 'profileContent' => $profileContent, 'option' => ['userProfile', 'tinyMCE']]);
 			} else {
 				throw new \Exception("L'utilisateur recherché n'existe pas");
 			}
@@ -381,24 +383,113 @@ class Frontend
 
 	public function updateProfile()
 	{
-		if (!empty($_GET['userId']) && !empty($_GET['elem']) && isset($_GET['value'])) {
+		if (!empty($_GET['userId']) && !empty($_GET['elem'])) {
 			$UserManager = new UserManager();
 
 			if ($UserManager->exists($_GET['userId']) && $_GET['userId'] === $_SESSION['id']) {
-				switch ($_GET['elem']) {//switch useless?
-					case 'noBanner' :
-						if ($_GET['value'] === "true") {
-							$value = true;
-						} else {
-							$value = false;
-						}
-						$UserManager->updateById($_GET['userId'], $_GET['elem'], $value);
-					break;
+				switch ($_GET['elem']) {
 					case 'profileBanner' :
-						$UserManager->updateById($_GET['userId'], $_GET['elem'], $_GET['value']);
+						if (isset($_GET['noBanner'], $_GET['value'])) {
+							$infos = $_GET['value'] . ' ' . $_GET['noBanner'];
+							$UserManager->updateById($_GET['userId'], 'profileBannerInfo', $infos);
+						}
 					break;
 					case 'profilePicture' :
-						$UserManager->updateById($_GET['userId'], $_GET['elem'], $_GET['value']);
+						if (isset($_GET['orientation'], $_GET['size'], $_GET['value'])) {
+							$infos = $_GET['value'] . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
+							$UserManager->updateById($_GET['userId'], 'profilePictureInfo', $infos);
+						}
+					break;
+					case 'profileText' :
+						if (isset($_GET['block'], $_GET['pseudo'], $_GET['school'])) {
+							$infos = $_GET['block'] . ' ' . $_GET['pseudo'] . ' ' . $_GET['school'];
+							$UserManager->updateById($_GET['userId'], 'profileTextInfo', $infos);
+						}
+					break;
+					case 'content' :
+						$ProfileContentManager = new ProfileContentManager();
+
+						if (!empty($_POST['deleteBlock'])) {
+							//delete content
+							$ProfileContentManager->deleteByUserId($_SESSION['id'], $_POST['type'], $_POST['deleteBlock']);
+							$order = intval($_POST['deleteBlock']);
+							$contentToUpdate = $ProfileContentManager->getContentForDelete($_SESSION['id'], $_POST['type'], $_POST['deleteBlock']);
+
+							foreach ($contentToUpdate as $content) {
+								var_dump($content);
+								$newOrderContent = intval($content->getContentOrder())-1;
+								$ProfileContentManager->updateElem($content, 'contentOrder', $newOrderContent);
+							}
+						} else {
+							if (stripos($_POST['tinyMCEtextarea'], '&lt;script') === false) {
+								//add new content
+								if ($_POST['blockOrderValue'] === 'new') {
+									if ($_POST['newOrderValue'] === 'last') {
+										//new content go to last place
+										$order = $ProfileContentManager->getCount($_SESSION['id'], $_POST['type']) + 1;
+									} else {
+										//new content go to "newOrderValue" place
+										$order = intval($_POST['newOrderValue']);
+										$contentToUpdate = $ProfileContentManager->getContentForAdd($_SESSION['id'], $_POST['type'], $order);
+										foreach ($contentToUpdate as $content) {
+											$newOrderContent = intval($content->getContentOrder())+1;
+											$ProfileContentManager->updateElem($content, 'contentOrder', $newOrderContent);
+										}
+									}
+
+									$ProfileContentManager->add(new ProfileContent([
+										'userId' => $_SESSION['id'],
+										'tab' => $_POST['type'],
+										'size' => $_POST['sizeValue'],
+										'contentOrder' => $order,
+										'align' => $_POST['alignValue'],
+										'content' => $_POST['tinyMCEtextarea']]));
+								} else {
+									//edit content
+									if ($_POST['blockOrderValue'] === $_POST['newOrderValue']) {
+										//content keep his place number
+										$order = intval($_POST['newOrderValue']);
+										$ProfileContentManager->update($_SESSION['id'], $_POST['blockOrderValue'], new ProfileContent([
+											'userId' => $_SESSION['id'],
+											'tab' => $_POST['type'],
+											'size' => $_POST['sizeValue'],
+											'contentOrder' => $order,
+											'align' => $_POST['alignValue'],
+											'content' => $_POST['tinyMCEtextarea']]));
+									} else {
+										//content change place number
+										$ProfileContentManager->deleteByUserId($_SESSION['id'], $_POST['type'], $_POST['blockOrderValue']);
+										$order = intval($_POST['newOrderValue']);
+										$contentToUpdate = $ProfileContentManager->getContentForUpdate($_SESSION['id'], $_POST['type'], $_POST['blockOrderValue'], $_POST['newOrderValue']);
+										if ($_POST['newOrderValue'] < $_POST['blockOrderValue']) {
+											foreach ($contentToUpdate as $content) {
+												$newOrderContent = intval($content->getContentOrder())+1;
+												$ProfileContentManager->updateElem($content, 'contentOrder', $newOrderContent);
+											}
+										} else {
+											foreach ($contentToUpdate as $content) {
+												$newOrderContent = intval($content->getContentOrder())-1;
+												$ProfileContentManager->updateElem($content, 'contentOrder', $newOrderContent);
+											}
+										}
+
+										$ProfileContentManager->add(new ProfileContent([
+											'userId' => $_SESSION['id'],
+											'tab' => $_POST['type'],
+											'size' => $_POST['sizeValue'],
+											'contentOrder' => $order,
+											'align' => $_POST['alignValue'],
+											'content' => $_POST['tinyMCEtextarea']]));
+									}
+								}
+							}
+						}
+
+						if (isset($_SERVER['HTTP_REFERER'])) {
+							header('Location: ' . $_SERVER['HTTP_REFERER']);
+						} else {
+							header('Location: indexAdmin.php');
+						}
 					break;
 				}
 			}
@@ -415,12 +506,16 @@ class Frontend
 			if (!empty($final_path)) {
 				switch ($_GET['elem']) {
 					case 'banner' :
-						$UserManager->updateById($_SESSION['id'], 'profileBanner', $final_path);
+						if (isset($_GET['noBanner'])) {
+							$infos = $final_path . ' ' . $_GET['noBanner'];
+							$UserManager->updateById($_SESSION['id'], 'profileBannerInfo', $infos);
+						}
 					break;
 					case 'picture' :
-						$UserManager->updateById($_SESSION['id'], 'profilePicture', $final_path);
-					break;
-					case 'content' :
+						if (isset($_GET['orientation'], $_GET['size'])) {
+							$infos = $final_path . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
+							$UserManager->updateById($_SESSION['id'], 'profilePictureInfo', $infos);
+						}
 					break;
 				}
 			}

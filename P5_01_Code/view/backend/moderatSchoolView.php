@@ -21,9 +21,7 @@
 							</div>
 
 							<div>
-								<h1>
-									<?=$school->getName()?>
-								</h1>
+								<h1><?=$school->getName()?></h1>
 							</div>
 
 							<div>
@@ -44,10 +42,7 @@
 									</td>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=name">
-											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Modifier">
-										</form>
+										<button class="btnEditName">Modifier</button>
 									</td>
 								</tr>
 
@@ -61,10 +56,7 @@
 									</td>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=admin">
-											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Modifier">
-										</form>
+										<button class="btnEditAdmin">Modifier</button>
 									</td>
 								</tr>
 
@@ -78,10 +70,7 @@
 									</td>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=code">
-											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Modifier">
-										</form>
+										<button class="btnEditCode">Modifier</button>
 									</td>
 								</tr>
 
@@ -95,10 +84,7 @@
 									</td>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=nbEleve">
-											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Modifier">
-										</form>
+										<button class="btnEditNbEleve">Modifier</button>
 									</td>
 								</tr>
 
@@ -116,10 +102,7 @@
 									?>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=logo">
-											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Modifier">
-										</form>
+										<button class="btnEditLogo">Modifier</button>
 									</td>
 								</tr>
 
@@ -133,10 +116,7 @@
 									</td>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=dateDeadline">
-											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Modifier">
-										</form>
+										<button class="btnEditDateDeadline">Modifier</button>
 									</td>
 								</tr>
 
@@ -159,17 +139,14 @@
 										<?php
 										if ($school->getIsActive()) {
 											$value = "Désactiver";
-											$elem = "toInactive";
+											$elem = "ToInactive";
 										} else {
 											$value = "Activer";
-											$elem = "toActive";
+											$elem = "ToActive";
 										}
 										?>
 
-										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=<?=$elem?>">
-											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="<?=$value?>">
-										</form>
+										<button class="btnEdit<?=$elem?>"><?=$value?></button>
 									</td>
 								</tr>
 							</table>
@@ -215,10 +192,7 @@
 									</td>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=name">
-											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Modifier">
-										</form>
+										<button class="btnEditName">Modifier</button>
 									</td>
 								</tr>
 
@@ -232,10 +206,7 @@
 									</td>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=admin">
-											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Modifier">
-										</form>
+										<button class="btnEditAdmin">Modifier</button>
 									</td>
 								</tr>
 
@@ -249,10 +220,7 @@
 									</td>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=code">
-											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Modifier">
-										</form>
+										<button class="btnEditCode">Modifier</button>
 									</td>
 								</tr>
 
@@ -266,10 +234,7 @@
 									</td>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=moderatUsers">
-											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Consulter">
-										</form>
+										<a href="indexAdmin.php?action=moderatUsers"><button>Consulter</button></a>
 									</td>
 								</tr>
 
@@ -287,10 +252,7 @@
 									?>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=editSchool&amp;elem=logo">
-											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Modifier">
-										</form>
+										<button class="btnEditLogo">Modifier</button>
 									</td>
 								</tr>
 
@@ -304,10 +266,7 @@
 									</td>
 
 									<td>
-										<form method="POST" action="indexAdmin.php?action=schoolHistory">
-											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-											<input type="submit" name="submit" value="Consulter">
-										</form>
+										<a href="indexAdmin.php?action=schoolHistory"><button>Consulter</button></a>
 									</td>
 								</tr>
 
@@ -349,3 +308,70 @@
 		?>
 	</article>
 </section>
+
+<div id="modal">
+	<form class="container" method="POST" action="indexAdmin.php?action=editSchool" enctype="multipart/form-data">
+		<div>
+			<input type="hidden" name="elem" value="">
+			<input type="hidden" name="schoolName" value="">
+
+			<p id="blockName">
+				<label for="editName">Nouveau nom de l'établissement</label>
+				<input type="text" name="editName">
+			</p>
+
+			<p id="blockAdmin">
+				<label for="editAdmin">Nom du nouvel Administrateur</label>
+				<input type="text" name="editAdmin">
+			</p>
+
+			<p id="blockCode">
+				<label for="editCode">Nouveau code</label>
+				<input type="text" name="editCode">
+			</p>
+
+			<p id="blockNbEleve">
+				<label for="editNbEleve">Nombre d'élèves</label>
+				<input type="text" name="editNbEleve">
+			</p>
+
+			<div id="blockLogo">
+				<p>
+					<label for="editLogo">Url du nouveau logo</label>
+					<input type="text" name="editLogo">
+				</p>
+
+				<p>ou</p>
+
+				<p>
+					<label for="uploadLogo">Télécharger un nouveau logo (max : 2Mo)</label>
+					<input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+					<input type="file" name="uploadLogo">
+				</p>
+			</div>
+
+			<p id="blockDateDeadline">
+				<label for="editDateDeadline">Nombre de mois à ajouter à la date d'échéance</label>
+				<select name="editDateDeadline" id="editDateDeadline">
+					<option value="3">3 mois</option>
+					<option value="6">6 mois</option>
+					<option value="12">12 mois</option>
+				</select>
+			</p>
+
+			<p id="blockToActive">
+				<label for="editToActive">Pour activer l'établissement, indiquez le nombre de compte(s) élève(s)</label>
+				<input type="text" name="editToActive">
+			</p>
+
+			<p id="blockToInactive">
+				<span>L'établissement va être désactivé</span>
+			</p>
+
+			<p>
+				<input type="submit" name="submit" value="Valider">
+				<input type="button" name="cancel" value="Annuler">
+			</p>
+		</div>
+	</form>
+</div>

@@ -2,7 +2,7 @@
 	<div class="container">
 		<div>
 			<span>
-				<a href="indexAdmin.php">LOGO</a>
+				<a href="indexAdmin.php"><img src="public/images/banner.png"></a>
 			</span>
 
 			<nav>

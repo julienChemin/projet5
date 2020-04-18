@@ -2,6 +2,7 @@
 <html lang="fr">
 	<head>
 		<title>Art-school</title>
+		<link rel="shortcut icon" type="image/png" href="public/images/favicon.png"/>
 
 		<!--meta-->
 		<meta charset="utf-8">
@@ -53,11 +54,6 @@
 						<script src="public/js/slide.js"></script>
 						<?php
 					break;
-					case 'modal' :
-						?>
-						<script src="public/js/modal.js"></script>
-						<?php
-					break;
 					case 'buttonToggleSchool' :
 						?>
 						<script src="public/js/buttonToggleSchool.js"></script>
@@ -71,6 +67,22 @@
 					case 'addSchool' :
 						?>
 						<script src="public/js/addSchool.js"></script>
+						<?php
+					break;
+					case 'moderatSchool' :
+						?>
+						<script src="public/js/ajax.js"></script>
+						<script src="public/js/moderatSchool.js"></script>
+						<?php
+					break;
+					case 'moderatAdmin' :
+						?>
+						<script src="public/js/moderatAdmin.js"></script>
+						<?php
+					break;
+					case 'moderatUsers' :
+						?>
+						<script src="public/js/moderatUsers.js"></script>
 						<?php
 					break;
 					case 'schoolHistory' :
@@ -97,6 +109,13 @@
 						}
 						?>
 						<script src="public/js/userProfile.js"></script>
+						<?php
+					break;
+					case 'tinyMCE' :
+						require('gitignore/key.php');
+						?>
+						<script src='https://cdn.tiny.cloud/1/<?=$tinyMCEapiKey?>/tinymce/5/tinymce.min.js' referrerpolicy="origin"></script>
+						<script src="public/js/tinyMCEinit.js"></script>
 						<?php
 					break;
 					default :

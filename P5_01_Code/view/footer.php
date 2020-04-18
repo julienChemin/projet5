@@ -10,12 +10,6 @@
 						<li><a href="">exemple 2</a></li>
 						<li><a href="">exemple 3</a></li>
 					</ul>
-
-					<ul>
-						<li><a href="">exemple 1</a></li>
-						<li><a href="">exemple 2</a></li>
-						<li><a href="">exemple 3</a></li>
-					</ul>
 				</div>
 			</article>
 

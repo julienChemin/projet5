@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.4
+-- version 4.9.2
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  lun. 23 mars 2020 à 20:41
--- Version du serveur :  5.7.24
--- Version de PHP :  7.2.14
+-- Généré le :  sam. 18 avr. 2020 à 15:19
+-- Version du serveur :  10.4.10-MariaDB
+-- Version de PHP :  7.3.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `as_comments` (
   `idAuthor` int(11) NOT NULL,
   `content` text NOT NULL,
   `datePublication` datetime NOT NULL,
-  `nbReport` int(11) NOT NULL DEFAULT '0',
+  `nbReport` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `idPost` (`idPost`,`idAuthor`),
   KEY `idAuthor` (`idAuthor`)
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `as_history` (
   `dateEntry` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idSchool` (`idSchool`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_history`
@@ -93,7 +93,50 @@ INSERT INTO `as_history` (`id`, `idSchool`, `category`, `entry`, `dateEntry`) VA
 (28, 5, 'account', 'Julien Chemin a passé asaas au grade : modérateur', '2020-02-26 21:32:13'),
 (29, 5, 'account', 'Julien Chemin a supprimé le compte de asaas', '2020-02-26 21:32:29'),
 (30, 5, 'profil', 'Julien Chemin a modifié le logo de l\'établissement', '2020-02-26 21:33:26'),
-(31, 1, 'account', 'school 1 admin 1 a activé le compte de school 1 user 1', '2020-03-13 12:38:08');
+(31, 1, 'account', 'school 1 admin 1 a activé le compte de school 1 user 1', '2020-03-13 12:38:08'),
+(32, 1, 'profil', 'Julien Chemin a modifié le nom de votre établissement en : testedit 1', '2020-04-18 02:39:50'),
+(33, 1, 'profil', 'Julien Chemin a modifié le nom de votre établissement en : school 1', '2020-04-18 02:39:59'),
+(34, 2, 'profil', 'Julien Chemin a modifié le code d\'affiliation en : code 2 edité', '2020-04-18 02:41:12'),
+(35, 2, 'activityPeriod', 'La date de fin d\'abonnement a été repoussé jusqu\'au 16/04/2021', '2020-04-18 02:49:42'),
+(36, 2, 'profil', 'Julien Chemin a modifié le logo de l\'établissement', '2020-04-18 03:01:43'),
+(37, 4, 'profil', 'Julien Chemin a modifié le logo de l\'établissement', '2020-04-18 12:12:49'),
+(38, 4, 'profil', 'Julien Chemin a modifié le logo de l\'établissement', '2020-04-18 12:15:52'),
+(39, 4, 'profil', 'Julien Chemin a modifié le logo de l\'établissement', '2020-04-18 12:16:03'),
+(40, 4, 'profil', 'Julien Chemin a modifié le logo de l\'établissement', '2020-04-18 12:16:13'),
+(41, 4, 'profil', 'Julien Chemin a modifié le logo de l\'établissement', '2020-04-18 12:16:36'),
+(42, 4, 'profil', 'Julien Chemin a modifié le logo de l\'établissement', '2020-04-18 12:18:14'),
+(43, 4, 'profil', 'Julien Chemin a modifié le logo de l\'établissement', '2020-04-18 12:49:42'),
+(44, 4, 'profil', 'Le nombre maximum de compte affilié à votre établissement est passé à ', '2020-04-18 13:01:12'),
+(45, 4, 'profil', 'Le nombre maximum de compte affilié à votre établissement est passé à ', '2020-04-18 13:01:21'),
+(46, 4, 'profil', 'Le nombre maximum de compte affilié à votre établissement est passé à ', '2020-04-18 13:01:57'),
+(47, 4, 'profil', 'Le nombre maximum de compte affilié à votre établissement est passé à ', '2020-04-18 13:03:37'),
+(48, 4, 'profil', 'Julien Chemin a modifié le code d\'affiliation en : recode test', '2020-04-18 13:04:23'),
+(49, 4, 'profil', 'Julien Chemin a modifié le nom de votre établissement en : school test again', '2020-04-18 13:04:35'),
+(50, 4, 'activityPeriod', 'La date de fin d\'abonnement a été repoussé jusqu\'au 18/02/2021', '2020-04-18 13:04:49'),
+(51, 4, 'profil', 'Le nombre maximum de compte affilié à votre établissement est passé à 5', '2020-04-18 13:07:41'),
+(52, 2, 'profil', 'Le nombre maximum de compte affilié à votre établissement est passé à 1', '2020-04-18 13:08:02'),
+(53, 1, 'profil', 'Le nombre maximum de compte affilié à votre établissement est passé à 10', '2020-04-18 13:08:14'),
+(54, 2, 'activityPeriod', 'L\'établissement a été désactivé', '2020-04-18 13:09:07'),
+(55, 2, 'account', 'Julien Chemin a passé school 2 moderator 1 au grade : administrateur', '2020-04-18 13:10:10'),
+(56, 2, 'account', 'Julien Chemin a passé school 2 moderator 1 au grade : modérateur', '2020-04-18 13:10:13'),
+(57, 2, 'account', 'Julien Chemin a supprimé le compte de school 2 moderator 2', '2020-04-18 13:11:04'),
+(58, 2, 'activityPeriod', 'L\'établissement a été activé', '2020-04-18 13:12:41'),
+(59, 2, 'activityPeriod', 'L\'établissement a été désactivé', '2020-04-18 13:12:52'),
+(60, 2, 'activityPeriod', 'L\'établissement a été activé', '2020-04-18 13:12:57'),
+(61, 2, 'activityPeriod', 'L\'établissement a été désactivé', '2020-04-18 13:14:25'),
+(62, 2, 'activityPeriod', 'L\'établissement a été activé', '2020-04-18 13:14:31'),
+(63, 1, 'account', 'Julien Chemin a passé school 1 moderator 2 au grade : utilisateur', '2020-04-18 13:15:47'),
+(64, 1, 'account', 'Julien Chemin a désactivé le compte de school 1 moderator 2', '2020-04-18 13:15:53'),
+(65, 1, 'account', 'Julien Chemin a activé le compte de school 1 moderator 2', '2020-04-18 13:15:58'),
+(66, 1, 'account', 'Julien Chemin a passé school 1 moderator 2 au grade : modérateur', '2020-04-18 13:16:02'),
+(67, 1, 'account', 'Julien Chemin a activé le compte de school 1 user inactif 1', '2020-04-18 13:16:07'),
+(68, 1, 'activityPeriod', 'L\'établissement a été désactivé', '2020-04-18 13:16:59'),
+(69, 1, 'activityPeriod', 'L\'établissement a été activé', '2020-04-18 13:18:20'),
+(70, 1, 'account', 'Julien Chemin a activé le compte de school 1 user 1', '2020-04-18 13:18:28'),
+(71, 1, 'account', 'Julien Chemin a passé school 1 moderator 1 au grade : administrateur', '2020-04-18 13:59:08'),
+(72, 1, 'account', 'Julien Chemin a passé school 1 moderator 1 au grade : modérateur', '2020-04-18 13:59:12'),
+(73, 1, 'account', 'Julien Chemin a activé le compte de school 1 user inactif 1', '2020-04-18 13:59:18'),
+(74, 1, 'account', 'Julien Chemin a désactivé le compte de school 1 user inactif 1', '2020-04-18 13:59:24');
 
 -- --------------------------------------------------------
 
@@ -111,6 +154,33 @@ CREATE TABLE IF NOT EXISTS `as_posts` (
   PRIMARY KEY (`id`),
   KEY `idAuthor` (`idAuthor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `as_profile_content`
+--
+
+DROP TABLE IF EXISTS `as_profile_content`;
+CREATE TABLE IF NOT EXISTS `as_profile_content` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `tab` varchar(50) NOT NULL,
+  `size` varchar(50) NOT NULL,
+  `contentOrder` int(11) NOT NULL,
+  `align` varchar(50) NOT NULL,
+  `content` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=170 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `as_profile_content`
+--
+
+INSERT INTO `as_profile_content` (`id`, `userId`, `tab`, `size`, `contentOrder`, `align`, `content`) VALUES
+(164, 1, 'about', 'small', 1, '', '<p>1</p>'),
+(167, 1, 'profile', 'small', 1, '', '<p>2</p>'),
+(169, 1, 'profile', 'small', 2, '', '<p>4</p>');
 
 -- --------------------------------------------------------
 
@@ -162,11 +232,11 @@ CREATE TABLE IF NOT EXISTS `as_school` (
   `nameAdmin` varchar(255) NOT NULL,
   `code` varchar(255) NOT NULL,
   `nbEleve` int(11) NOT NULL,
-  `nbActiveAccount` int(11) NOT NULL DEFAULT '0',
+  `nbActiveAccount` int(11) NOT NULL DEFAULT 0,
   `dateInscription` datetime NOT NULL,
   `dateDeadline` datetime NOT NULL,
   `logo` text NOT NULL,
-  `isActive` tinyint(1) NOT NULL DEFAULT '1',
+  `isActive` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   KEY `idAdmin` (`idAdmin`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
@@ -177,9 +247,9 @@ CREATE TABLE IF NOT EXISTS `as_school` (
 
 INSERT INTO `as_school` (`id`, `idAdmin`, `name`, `nameAdmin`, `code`, `nbEleve`, `nbActiveAccount`, `dateInscription`, `dateDeadline`, `logo`, `isActive`) VALUES
 (1, 2, 'school 1', 'school 1 admin 1', 'code 1', 5, 1, '2020-01-16 13:55:33', '2020-07-16 00:07:00', 'https://images.pexels.com/photos/2040125/pexels-photo-2040125.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940', 1),
-(2, 3, 'school 2', 'school 2 admin 1', 'code 2', 3, 1, '2020-01-16 14:32:24', '2020-04-16 13:04:24', 'public/images/question-mark.png', 1),
+(2, 3, 'school 2', 'school 2 admin 1', 'code 2 edité', 10, 0, '2020-01-16 14:32:24', '2021-04-16 00:04:00', 'https://c.wallhere.com/photos/e8/ac/anime_anime_girls_kawaii_girl_pink_white_dress_Mahou_Shoujo_Madoka_Magica_Kaname_Madoka_pink_hair-1309355.jpg!d', 1),
 (3, 12, 'noSchool', 'no school admin 1', 'Ysiiac42kilsfog4ac23b2b', 100000000, 1, '2020-01-24 13:23:47', '3000-01-24 00:01:00', 'https://cdn.pixabay.com/photo/2014/04/03/11/47/people-312122_960_720.png', 1),
-(4, 16, 'school test', 'school test admin 1', 'code test', 5, 0, '2020-02-19 00:21:10', '2020-11-18 00:11:00', 'public/images/question-mark.png', 1),
+(4, 16, 'school test again', 'school test admin 1', 'recode test', 5, 0, '2020-02-19 00:21:10', '2021-02-18 00:02:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwoVnrRrJNmKa3zqCu8PtZQqhCFwKXHuLAGOQ0qZcBjb1y04UhkQ&s', 1),
 (5, 17, 'retest', 'osef', 'testeditcode', 8, 0, '2020-02-26 20:56:43', '2020-08-26 00:08:00', 'https://i.ytimg.com/vi/AocEZTv9eqs/hqdefault.jpg', 1);
 
 -- --------------------------------------------------------
@@ -195,17 +265,17 @@ CREATE TABLE IF NOT EXISTS `as_users` (
   `mail` varchar(255) NOT NULL,
   `school` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `temporaryPassword` text,
-  `beingReset` tinyint(1) NOT NULL DEFAULT '0',
-  `nbWarning` int(11) NOT NULL DEFAULT '0',
-  `isBan` tinyint(1) NOT NULL DEFAULT '0',
+  `temporaryPassword` text DEFAULT NULL,
+  `beingReset` tinyint(1) NOT NULL DEFAULT 0,
+  `nbWarning` int(11) NOT NULL DEFAULT 0,
+  `isBan` tinyint(1) NOT NULL DEFAULT 0,
   `dateBan` datetime DEFAULT NULL,
-  `isAdmin` tinyint(1) NOT NULL DEFAULT '0',
-  `isModerator` tinyint(1) NOT NULL DEFAULT '0',
-  `isActive` tinyint(1) NOT NULL DEFAULT '1',
-  `profileBanner` varchar(355) NOT NULL,
-  `profilePicture` varchar(355) NOT NULL DEFAULT 'public/images/question-mark.png',
-  `noBanner` tinyint(1) NOT NULL DEFAULT '1',
+  `isAdmin` tinyint(1) NOT NULL DEFAULT 0,
+  `isModerator` tinyint(1) NOT NULL DEFAULT 0,
+  `isActive` tinyint(1) NOT NULL DEFAULT 1,
+  `profileBannerInfo` text DEFAULT NULL,
+  `profilePictureInfo` text DEFAULT NULL,
+  `profileTextInfo` text DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
@@ -213,21 +283,20 @@ CREATE TABLE IF NOT EXISTS `as_users` (
 -- Déchargement des données de la table `as_users`
 --
 
-INSERT INTO `as_users` (`id`, `name`, `mail`, `school`, `password`, `temporaryPassword`, `beingReset`, `nbWarning`, `isBan`, `dateBan`, `isAdmin`, `isModerator`, `isActive`, `profileBanner`, `profilePicture`, `noBanner`) VALUES
-(1, 'Julien Chemin', 'julchemin@orange.fr', 'allSchool', '$2y$10$dwLFjJ4JY8QUbtFgpty55eTaVyaw/g1XXar1P09GhO6Lu00JzZa6G', '$2y$10$QUYa40nmjqPoRJotqkgg6e6ecBnmsCyH062RvSLiLlBGzOnPAQRie', 0, 0, 0, NULL, 1, 0, 1, 'public/images/Julien Cheminaa2851f23146faef4bb998a58740d0ce.jpg', 'https://waifu.clan.su/_ld/1/36417721.jpg', 0),
-(2, 'school 1 admin 1', 'school1@admin1.fr', 'school 1', '$2y$10$XUkx5w1ZeA8o2fCZVA4jnugiINucVGgVojX7PFcHiUXZO6JfKbh4O', NULL, 0, 0, 0, NULL, 1, 0, 1, '', 'public/images/question-mark.png', 1),
-(3, 'school 2 admin 1', 'school2@admin1.fr', 'school 2', '$2y$10$osVD3E3cOBsNZAKgnyV/8uaL7wI5Y.V/G4GCO89ckBtGJ8nP6yCGu', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png', 1),
-(4, 'school 1 admin 2', 'school1@admin2.fr', 'school 1', '$2y$10$AMPHmJItKJDb/w5p93.RaemOPMOJOG1W9uOKpcl87ldcvA.jBH3pa', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png', 1),
-(5, 'school 1 moderator 1', 'school1@moderator1.fr', 'school 1', '$2y$10$DKQbFIdAh0ow1kfgDKBFhOiX8Gdy8Hc7ylI0yrGVyC8zC84Rm3l9e', NULL, 0, 0, 0, NULL, 0, 1, 1, '', '../../public/images/question-mark.png', 1),
-(6, 'school 1 user 1', 'school1@user1.fr', 'school 1', '$2y$10$9hRf3BcZJUr17hCBw133IOi66snjV6Du/bN/FtI5g2SX6hNuUqdJu', NULL, 0, 0, 0, NULL, 0, 0, 1, '', '../../public/images/question-mark.png', 1),
-(9, 'school 1 user inactif 1', 'school1@userinactif1.fr', 'school 1', '$2y$10$tVn4/UttJTo/ioodoijOceJIq5c6G1qWKXGHwL6Yrw6epGudMWJSG', NULL, 0, 0, 0, NULL, 0, 0, 0, '', '../../public/images/question-mark.png', 1),
-(11, 'noschool user 1', 'noschool@user1.fr', 'noSchool', '$2y$10$8nJej/tAJSkLXhxSPnvjIe2Kkrq3MYgtyBAdkeCGEt.Dgl5oF28Mq', NULL, 0, 0, 0, NULL, 0, 0, 1, '', '../../public/images/question-mark.png', 1),
-(12, 'no school admin 1', 'noschool@admin1.fr', 'noSchool', '$2y$10$GT4./enDDg41G6xCfl2El.lBgJIbCr3gyTRQcJSiDb9rPqVehWKQS', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png', 1),
-(13, 'school 2 moderator 1', 'school2@moderator1.fr', 'school 2', '$2y$10$g5M3SrNEpIy8sRmw.jXe7eb22aVE9MTFE6wpqlAjNSMZ7e4xhHXkq', NULL, 0, 0, 0, NULL, 0, 1, 1, '', '../../public/images/question-mark.png', 1),
-(14, 'school 2 moderator 2', 'school2@moderator2.fr', 'school 2', '$2y$10$QdI/YQtb3NKjH9Is5KIGouKJMucTGSbMdXKMjX9hgCFl.88zxXhpi', NULL, 0, 0, 0, NULL, 0, 1, 1, '', '../../public/images/question-mark.png', 1),
-(15, 'school 1 moderator 2', 'school1@moderator2.fr', 'school 1', '$2y$10$CerSWFudtNUvgOxlDj3gy..fXqZiF2cqvze28LMdP4f2e.kYx1pDm', NULL, 0, 0, 0, NULL, 0, 1, 1, '', '../../public/images/question-mark.png', 1),
-(16, 'school test admin 1', 'schooltest@admin1.fr', 'school test', '$2y$10$lYHijLF9fL1plpl.eOKZOO/RmaJHfBmy5V2nOyubgWYj/TLnwcwyW', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png', 1),
-(17, 'osef', 'osef@osef.fr', 'retest', '$2y$10$utsERJZtLXjgvSFR4pVm1O3/kNb20u4arWkYoHFz6wTknV/EQp3lS', NULL, 0, 0, 0, NULL, 1, 0, 1, '', '../../public/images/question-mark.png', 1);
+INSERT INTO `as_users` (`id`, `name`, `mail`, `school`, `password`, `temporaryPassword`, `beingReset`, `nbWarning`, `isBan`, `dateBan`, `isAdmin`, `isModerator`, `isActive`, `profileBannerInfo`, `profilePictureInfo`, `profileTextInfo`) VALUES
+(1, 'Julien Chemin', 'julchemin@orange.fr', 'allSchool', '$2y$10$dwLFjJ4JY8QUbtFgpty55eTaVyaw/g1XXar1P09GhO6Lu00JzZa6G', '$2y$10$QUYa40nmjqPoRJotqkgg6e6ecBnmsCyH062RvSLiLlBGzOnPAQRie', 0, 0, 0, NULL, 1, 0, 1, 'https://storage.needpix.com/rsynced_images/wallpaper-4112926_1280.jpg false', 'https://cdn.pixabay.com/photo/2017/07/06/11/12/wallpaper-2477676_960_720.jpg widePicture bigPicture', 'elemEnd elemStart elemEnd'),
+(2, 'school 1 admin 1', 'school1@admin1.fr', 'school 1', '$2y$10$XUkx5w1ZeA8o2fCZVA4jnugiINucVGgVojX7PFcHiUXZO6JfKbh4O', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
+(3, 'school 2 admin 1', 'school2@admin1.fr', 'school 2', '$2y$10$osVD3E3cOBsNZAKgnyV/8uaL7wI5Y.V/G4GCO89ckBtGJ8nP6yCGu', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
+(4, 'school 1 admin 2', 'school1@admin2.fr', 'school 1', '$2y$10$AMPHmJItKJDb/w5p93.RaemOPMOJOG1W9uOKpcl87ldcvA.jBH3pa', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
+(5, 'school 1 moderator 1', 'school1@moderator1.fr', 'school 1', '$2y$10$DKQbFIdAh0ow1kfgDKBFhOiX8Gdy8Hc7ylI0yrGVyC8zC84Rm3l9e', NULL, 0, 0, 0, NULL, 0, 1, 1, NULL, NULL, NULL),
+(6, 'school 1 user 1', 'school1@user1.fr', 'school 1', '$2y$10$9hRf3BcZJUr17hCBw133IOi66snjV6Du/bN/FtI5g2SX6hNuUqdJu', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL),
+(9, 'school 1 user inactif 1', 'school1@userinactif1.fr', 'school 1', '$2y$10$tVn4/UttJTo/ioodoijOceJIq5c6G1qWKXGHwL6Yrw6epGudMWJSG', NULL, 0, 0, 0, NULL, 0, 0, 0, NULL, NULL, NULL),
+(11, 'noschool user 1', 'noschool@user1.fr', 'noSchool', '$2y$10$8nJej/tAJSkLXhxSPnvjIe2Kkrq3MYgtyBAdkeCGEt.Dgl5oF28Mq', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL),
+(12, 'no school admin 1', 'noschool@admin1.fr', 'noSchool', '$2y$10$GT4./enDDg41G6xCfl2El.lBgJIbCr3gyTRQcJSiDb9rPqVehWKQS', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
+(13, 'school 2 moderator 1', 'school2@moderator1.fr', 'school 2', '$2y$10$g5M3SrNEpIy8sRmw.jXe7eb22aVE9MTFE6wpqlAjNSMZ7e4xhHXkq', NULL, 0, 0, 0, NULL, 0, 1, 1, NULL, NULL, NULL),
+(15, 'school 1 moderator 2', 'school1@moderator2.fr', 'school 1', '$2y$10$CerSWFudtNUvgOxlDj3gy..fXqZiF2cqvze28LMdP4f2e.kYx1pDm', NULL, 0, 0, 0, NULL, 0, 1, 1, NULL, NULL, NULL),
+(16, 'school test admin 1', 'schooltest@admin1.fr', 'school test again', '$2y$10$lYHijLF9fL1plpl.eOKZOO/RmaJHfBmy5V2nOyubgWYj/TLnwcwyW', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
+(17, 'osef', 'osef@osef.fr', 'retest', '$2y$10$utsERJZtLXjgvSFR4pVm1O3/kNb20u4arWkYoHFz6wTknV/EQp3lS', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL);
 
 --
 -- Contraintes pour les tables déchargées

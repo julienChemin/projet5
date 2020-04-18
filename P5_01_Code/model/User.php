@@ -17,15 +17,25 @@ class User
 			$isAdmin,
 			$isModerator,
 			$isActive,
+			$profileBannerInfo = null,
 			$profileBanner,
+			$noBanner,
+			$profilePictureInfo = null,
 			$profilePicture,
-			$noBanner;
+			$profilePictureOrientation,
+			$profilePictureSize,
+			$profileTextInfo = null,
+			$profileTextBlock,
+			$profileTextPseudo,
+			$profileTextSchool;
 
 	public function __construct(array $data = null)
 	{
 		if (!empty($data)) {
 			$this->hydrate($data);
 		}
+
+		$this->init();
 	}
 
 	public function hydrate(array $data)
@@ -37,6 +47,13 @@ class User
 				$this->$method($value);
 			}
 		}
+	}
+
+	public function init()
+	{
+		$this->setProfileBannerInfo($this->getProfileBannerInfo());
+		$this->setProfilePictureInfo($this->getProfilePictureInfo());
+		$this->setProfileTextInfo($this->getProfileTextInfo());
 	}
 
 	//GETTERS
@@ -105,9 +122,24 @@ class User
 		return $this->isActive;
 	}
 
+	public function getProfileBannerInfo()
+	{
+		return $this->profileBannerInfo;
+	}
+
 	public function getProfileBanner()
 	{
 		return $this->profileBanner;
+	}
+
+	public function getNoBanner()
+	{
+		return $this->noBanner;
+	}
+
+	public function getProfilePictureInfo()
+	{
+		return $this->profilePictureInfo;
 	}
 
 	public function getProfilePicture()
@@ -115,9 +147,34 @@ class User
 		return $this->profilePicture;
 	}
 
-	public function getNoBanner()
+	public function getProfilePictureOrientation()
 	{
-		return $this->noBanner;
+		return $this->profilePictureOrientation;
+	}
+
+	public function getProfilePictureSize()
+	{
+		return $this->profilePictureSize;
+	}
+
+	public function getProfileTextInfo()
+	{
+		return $this->profileTextInfo;
+	}
+
+	public function getProfileTextBlock()
+	{
+		return $this->profileTextBlock;
+	}
+
+	public function getProfileTextPseudo()
+	{
+		return $this->profileTextPseudo;
+	}
+
+	public function getProfileTextSchool()
+	{
+		return $this->profileTextSchool;
 	}
 
 	//SETTERS
@@ -212,25 +269,112 @@ class User
 		return $this;
 	}
 
+	public function setProfileBannerInfo($profileBannerInfo)
+	{
+		if ($profileBannerInfo === null) {
+			$this->setProfileBanner('noBanner');
+			$this->setNoBanner(true);
+		} elseif (is_string($profileBannerInfo) && strlen($profileBannerInfo) > 0) {
+			$infos = explode(' ', $profileBannerInfo);
+			$this->setProfileBanner($infos[0]);
+			if ($infos[1] === 'true') {
+				$this->setNoBanner(true);
+			} else {
+				$this->setNoBanner(false);
+			}
+		}
+		return $this;
+	}
+
 	public function setProfileBanner(string $profileBanner)
 	{
 		if (strlen($profileBanner) > 0){
 			$this->profileBanner = $profileBanner;
-			return $this;
 		}
+		return $this;
+	}
+
+	public function setNoBanner(bool $noBanner)
+	{
+		$this->noBanner = $noBanner;
+		return $this;
+	}
+
+	public function setProfilePictureInfo($profilePictureInfo)
+	{
+		if ($profilePictureInfo === null) {
+			$this->setProfilePicture('public/images/question-mark.png');
+			$this->setProfilePictureOrientation('widePicture');
+			$this->setProfilePictureSize('smallPicture');
+		} elseif (is_string($profilePictureInfo) && strlen($profilePictureInfo) > 0){
+			$infos = explode(' ', $profilePictureInfo);
+			$this->setProfilePicture($infos[0]);
+			$this->setProfilePictureOrientation($infos[1]);
+			$this->setProfilePictureSize($infos[2]);
+		}
+		return $this;
 	}
 
 	public function setProfilePicture(string $profilePicture)
 	{
 		if (strlen($profilePicture) > 0){
 			$this->profilePicture = $profilePicture;
-			return $this;
 		}
+		return $this;
 	}
 
-	public function setNoBanner(bool $noBanner)
+	public function setProfilePictureOrientation(string $profilePictureOrientation)
 	{
-		$this->noBanner = $noBanner;
+		if (strlen($profilePictureOrientation) > 0){
+			$this->profilePictureOrientation = $profilePictureOrientation;
+		}
+		return $this;
+	}
+
+	public function setProfilePictureSize(string $profilePictureSize)
+	{
+		if (strlen($profilePictureSize) > 0){
+			$this->profilePictureSize = $profilePictureSize;
+		}
+		return $this;
+	}
+
+	public function setProfileTextInfo($profileTextInfo)
+	{
+		if ($profileTextInfo === null){
+			$this->setProfileTextBlock('elemCenter');
+			$this->setProfileTextPseudo('elemStart');
+			$this->setProfileTextSchool('elemStart');
+		} else {
+			$infos = explode(' ', $profileTextInfo);
+			$this->setProfileTextBlock($infos[0]);
+			$this->setProfileTextPseudo($infos[1]);
+			$this->setProfileTextSchool($infos[2]);
+		}
+		return $this;
+	}
+
+	public function setProfileTextBlock(string $profileTextBlock)
+	{
+		if (strlen($profileTextBlock) > 0){
+			$this->profileTextBlock = $profileTextBlock;
+		}
+		return $this;
+	}
+
+	public function setProfileTextPseudo(string $profileTextPseudo)
+	{
+		if (strlen($profileTextPseudo) > 0){
+			$this->profileTextPseudo = $profileTextPseudo;
+		}
+		return $this;
+	}
+
+	public function setProfileTextSchool(string $profileTextSchool)
+	{
+		if (strlen($profileTextSchool) > 0){
+			$this->profileTextSchool = $profileTextSchool;
+		}
 		return $this;
 	}
 }

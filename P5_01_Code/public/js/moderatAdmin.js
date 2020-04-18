@@ -1,13 +1,3 @@
-let modal = document.getElementById('modal');
-let textModal = document.querySelector('#modal > div > p');
-let btnConfirm = document.querySelector('#modal a');
-let btnCancel = document.querySelector("#modal input[name='cancel']");
-
-btnCancel.addEventListener('click', function(){
-	modal.style.display='none';
-});
-
-//moderatAdminView
 if (document.getElementById('moderatAdmin')) {
 	let linksToModo = document.querySelectorAll('.toModerator');
 	let linksToAdmin = document.querySelectorAll('.toAdmin');
@@ -17,6 +7,15 @@ if (document.getElementById('moderatAdmin')) {
 	let pathToModo = '&toAdmin=false&toModerator=true';
 	let pathToAdmin = '&toAdmin=true&toModerator=false';
 	let pathToNormalUser = '&toAdmin=false&toModerator=false';
+
+	let modal = document.getElementById('modal');
+	let textModal = document.querySelector('#modal > div > p');
+	let btnConfirm = document.querySelector('#modal a');
+	let btnCancel = document.querySelector("#modal input[name='cancel']");
+
+	btnCancel.addEventListener('click', function(){
+		modal.style.display='none';
+	});
 
 	for (let i=0;i<linksToModo.length;i++) {
 		linksToModo[i].addEventListener('click', function(){
@@ -66,7 +65,7 @@ if (document.getElementById('moderatAdmin')) {
 	let forms = document.querySelectorAll('.formAddModerator');
 	let linksAdd = document.querySelectorAll('.formAddModerator > p:first-of-type');
 	let formContent = document.querySelectorAll('.formAddModerator > div:first-of-type');
-	let btnCancel = document.querySelectorAll('.formAddModerator input[type="button"]')
+	let btnCancelAddModerator = document.querySelectorAll('.formAddModerator input[type="button"]')
 
 	for (let i=0; i<forms.length;i++) {
 		linksAdd[i].addEventListener('click', function(){
@@ -74,7 +73,7 @@ if (document.getElementById('moderatAdmin')) {
 			forms[i].style.padding = "50px 100px";
 		});
 
-		btnCancel[i].addEventListener('click', function(){
+		btnCancelAddModerator[i].addEventListener('click', function(){
 			formContent[i].style.height = "0px";
 			forms[i].style.padding = "0px";
 		});
@@ -87,60 +86,6 @@ if (document.getElementById('moderatAdmin')) {
 	for (let i=0; i<btnClose.length;i++) {
 		btnClose[i].addEventListener('click', function(){
 			msgBox[i].style.display = "none";
-		});
-	}
-}
-
-//moderatUsersView
-if (document.getElementById('moderatUsers')) {
-	let linksToModo = document.querySelectorAll('.toModerator');
-	let linksToActive = document.querySelectorAll('.toActive');
-	let linksToInactive = document.querySelectorAll('.toInactive');
-	let linksToDelete = document.querySelectorAll('.toDelete');
-
-	let pathToModo = '&toAdmin=false&toModerator=true';
-
-	for (let i=0;i<linksToModo.length;i++) {
-		linksToModo[i].addEventListener('click', function(){
-			let name = linksToModo[i].parentNode.parentNode.childNodes[1].textContent;
-			let schoolName = linksToModo[i].getAttribute('schoolname');
-
-			modal.style.display = 'flex';
-			textModal.textContent = "Passer " + name + " au grade de modérateur ?";
-			btnConfirm.href = "indexAdmin.php?action=editGrade&userName=" + name + "&schoolName=" + schoolName + pathToModo;
-		});
-	}
-
-	for (let i=0;i<linksToActive.length;i++) {
-		linksToActive[i].addEventListener('click', function(){
-			let name = linksToActive[i].parentNode.parentNode.childNodes[1].textContent;
-			let schoolName = linksToActive[i].getAttribute('schoolname');
-
-			modal.style.display = 'flex';
-			textModal.textContent = "Activer le compte de " + name + "  ?";
-			btnConfirm.href = "indexAdmin.php?action=toggleUserIsActive&userName=" + name + "&schoolName=" + schoolName;
-		});
-	}
-
-	for (let i=0;i<linksToInactive.length;i++) {
-		linksToInactive[i].addEventListener('click', function(){
-			let name = linksToInactive[i].parentNode.parentNode.childNodes[1].textContent;
-			let schoolName = linksToInactive[i].getAttribute('schoolname');
-
-			modal.style.display = 'flex';
-			textModal.textContent = "Désactiver le compte de " + name + "  ?";
-			btnConfirm.href = "indexAdmin.php?action=toggleUserIsActive&userName=" + name + "&schoolName=" + schoolName;
-		});
-	}
-
-	for (let i=0;i<linksToDelete.length;i++) {
-		linksToDelete[i].addEventListener('click', function(){
-			let name = linksToDelete[i].parentNode.parentNode.childNodes[1].textContent;
-			let schoolName = linksToDelete[i].getAttribute('schoolname');
-
-			modal.style.display = 'flex';
-			textModal.textContent = "Supprimer définitivement le compte de " + name + "  ?";
-			btnConfirm.href = "indexAdmin.php?action=delete&elem=user&userName=" + name + "&schoolName=" + schoolName;
 		});
 	}
 }

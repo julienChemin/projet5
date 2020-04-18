@@ -11,6 +11,13 @@ if (document.getElementById('moderatSchool') || document.getElementById('moderat
 			arrArrowDown[i].addEventListener('click', function(){
 				arrArrowDown[i].style.display = 'none';
 				arrArrowUp[i].style.display = 'inline-block';
+				for (let j=0; j<arrBlockSchoolDiv.length; j++) {
+					if (arrBlockSchoolDiv[j].style.display === 'flex') {
+						arrArrowDown[j].style.display = 'inline-block';
+						arrArrowUp[j].style.display = 'none';
+						arrBlockSchoolDiv[j].style.display = 'none';
+					}
+				}
 				arrBlockSchoolDiv[i].style.display = 'flex';
 			});
 

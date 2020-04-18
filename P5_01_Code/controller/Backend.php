@@ -358,9 +358,9 @@ class Backend
 			$schools = $SchoolManager->getSchoolByName($_SESSION['school']);
 
 			if (isset($schools)) {
-				RenderView::render('template.php', 'backend/moderatSchoolView.php', ['option' => ['buttonToggleSchool'], 'schools' => $schools]);
+				RenderView::render('template.php', 'backend/moderatSchoolView.php', ['option' => ['buttonToggleSchool', 'moderatSchool'], 'schools' => $schools]);
 			} else {
-				RenderView::render('template.php', 'backend/moderatSchoolView.php', ['option' => ['buttonToggleSchool']]);
+				RenderView::render('template.php', 'backend/moderatSchoolView.php', ['option' => ['buttonToggleSchool', 'moderatSchool']]);
 			}
 		} else {
 			header('Location: indexAdmin.php');
@@ -459,8 +459,9 @@ class Backend
 							if ($_SESSION['school'] === ALL_SCHOOL) {
 								$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
 
-								if ($school->getNbActiveAccount() <= $_POST['editNbEleve']) {
-									$SchoolManager->updateByName($_POST['schoolName'], 'nbEleve', $_POST['editNbEleve']);
+								if (intval($school->getNbActiveAccount()) <= $_POST['editNbEleve']) {
+									var_dump($_POST['editNbEleve']);
+									$SchoolManager->updateByName($_POST['schoolName'], 'nbEleve', intval($_POST['editNbEleve']));
 
 									//add history entry
 									$HistoryManager = new HistoryManager();
@@ -478,17 +479,43 @@ class Backend
 							}
 						break;
 						case 'logo' :
-							$SchoolManager->updateByName($_POST['schoolName'], 'logo', $_POST['editLogo']);
+							if (!empty($_POST['editLogo'])) {
+								$SchoolManager->updateByName($_POST['schoolName'], 'logo', $_POST['editLogo']);
 
-							//add history entry
-							$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
-							$HistoryManager = new HistoryManager();
-							$HistoryManager->addEntry(new HistoryEntry([
-								'idSchool' => $school->getId(),
-								'category' => 'profil',
-								'entry' => $_SESSION['pseudo'] . ' a modifié le logo de l\'établissement']));
+								//add history entry
+								$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
+								$HistoryManager = new HistoryManager();
+								$HistoryManager->addEntry(new HistoryEntry([
+									'idSchool' => $school->getId(),
+									'category' => 'profil',
+									'entry' => $_SESSION['pseudo'] . ' a modifié le logo de l\'établissement']));
 
-							$message = "Le logo de votre établissement a été modifié";
+								$message = "Le logo de votre établissement a été modifié";
+							} elseif (!empty($_FILES['uploadLogo'])) {
+								$schoolName = $_POST['schoolName'];
+
+								require('view/upload.php');
+
+								if (!empty($final_path)) {
+									$SchoolManager->updateByName($schoolName, 'logo', $final_path);
+
+									//add history entry
+									$school = $SchoolManager->getSchoolByName($schoolName);
+									$HistoryManager = new HistoryManager();
+									$HistoryManager->addEntry(new HistoryEntry([
+										'idSchool' => $school->getId(),
+										'category' => 'profil',
+										'entry' => $_SESSION['pseudo'] . ' a modifié le logo de l\'établissement']));
+								}
+
+								header('Location: indexAdmin.php?action=moderatSchool');
+							} else {
+								if (isset($_SERVER['HTTP_REFERER'])) {
+									header('Location: ' . $_SERVER['HTTP_REFERER']);
+								} else {
+									header('Location: indexAdmin.php?action=moderatSchool');
+								}
+							}
 						break;
 						case 'dateDeadline' :
 							$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
@@ -517,7 +544,7 @@ class Backend
 								}
 
 								$SchoolManager->updateByName($_POST['schoolName'], 'isActive', true)
-											->updateByName($_POST['schoolName'], 'nbEleve', $_POST['editNbEleve']);
+											->updateByName($_POST['schoolName'], 'nbEleve', intval($_POST['editToActive']));
 
 								//add history entry
 								$school = $SchoolManager->getSchoolByName($_POST['schoolName']);
@@ -527,7 +554,7 @@ class Backend
 									'category' => 'activityPeriod',
 									'entry' => 'L\'établissement a été activé']));
 
-								$message = "L'établissement a été activé, avec " . $_POST['editNbEleve'] . " compte affilié maximum";
+								$message = "L'établissement a été activé, avec " . $_POST['editToActive'] . " compte affilié maximum";
 							} else {
 								throw new \Exception("Vous ne pouvez pas accéder a cette page");
 							}
@@ -662,10 +689,10 @@ class Backend
 				if (isset($message)) {
 					RenderView::render('template.php', 'backend/moderatAdminView.php', 
 						['users' => $arrUsersBySchool, 'schools' => $schools, 'nbModerator' => $arrNbModerator, 'message' => $message,
-						 'option' => ['modal', 'buttonToggleSchool']]);
+						 'option' => ['moderatAdmin', 'buttonToggleSchool']]);
 				} else {
 					RenderView::render('template.php', 'backend/moderatAdminView.php', 
-						['users' => $arrUsersBySchool, 'schools' => $schools, 'nbModerator' => $arrNbModerator, 'option' => ['modal', 'buttonToggleSchool']]);
+						['users' => $arrUsersBySchool, 'schools' => $schools, 'nbModerator' => $arrNbModerator, 'option' => ['moderatAdmin', 'buttonToggleSchool']]);
 				}
 			} elseif ($_SESSION['grade'] === ADMIN) {
 				$nbModerator = 0;
@@ -678,10 +705,10 @@ class Backend
 				
 				if (isset($message)) {
 					RenderView::render('template.php', 'backend/moderatAdminView.php', 
-						['users' => $users, 'schools' => $schools, 'nbModerator' => $nbModerator, 'message' => $message, 'option' => ['modal', 'buttonToggleSchool']]);
+						['users' => $users, 'schools' => $schools, 'nbModerator' => $nbModerator, 'message' => $message, 'option' => ['moderatAdmin', 'buttonToggleSchool']]);
 				} else {
 					RenderView::render('template.php', 'backend/moderatAdminView.php', 
-						['users' => $users, 'schools' => $schools, 'nbModerator' => $nbModerator, 'option' => ['modal', 'buttonToggleSchool']]);
+						['users' => $users, 'schools' => $schools, 'nbModerator' => $nbModerator, 'option' => ['moderatAdmin', 'buttonToggleSchool']]);
 				}
 			}
 		} else {
@@ -728,7 +755,7 @@ class Backend
 					}
 				}
 				RenderView::render('template.php', 'backend/moderatUsersView.php', 
-					['users' => $arrUsersBySchool, 'schools' => $schools, 'isActive' => $arrIsActive, 'option' => ['modal', 'buttonToggleSchool']]);
+					['users' => $arrUsersBySchool, 'schools' => $schools, 'isActive' => $arrIsActive, 'option' => ['moderatUsers', 'buttonToggleSchool']]);
 			} else {
 				$arrIsActive = [];
 				$nbAccount = count($users);
@@ -747,7 +774,7 @@ class Backend
 
 
 				RenderView::render('template.php', 'backend/moderatUsersView.php', 
-					['users' => $users, 'schools' => $schools, 'isActive' => $arrIsActive, 'option' => ['modal', 'buttonToggleSchool']]);
+					['users' => $users, 'schools' => $schools, 'isActive' => $arrIsActive, 'option' => ['moderatUsers', 'buttonToggleSchool']]);
 			}
 		} else {
 			throw new \Exception("Cette page est réservé aux administrateurs / modérateurs");

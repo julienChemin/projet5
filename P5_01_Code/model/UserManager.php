@@ -9,7 +9,7 @@ class UserManager extends AbstractManager
 	public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\User';
 	public static $TABLE_NAME = 'as_users';
 	public static $TABLE_PK = 'id';
-	public static $TABLE_CHAMPS ='id, name, password, mail, school, temporaryPassword, beingReset, nbWarning, isBan, dateBan, isAdmin, isModerator, isActive, profileBanner, profilePicture, noBanner';
+	public static $TABLE_CHAMPS ='id, name, password, mail, school, temporaryPassword, beingReset, nbWarning, isBan, dateBan, isAdmin, isModerator, isActive, profileBannerInfo, profilePictureInfo, profileTextInfo';
 
 	public function add(User $user)
 	{
@@ -156,26 +156,26 @@ class UserManager extends AbstractManager
 					WHERE id = :id', 
 					[':temporaryPassword' => $value, ':id' => $id]);
 			break;
-			case 'profileBanner' :
+			case 'profileBannerInfo' :
 				$this->sql('
 					UPDATE ' . static::$TABLE_NAME . ' 
-					SET profileBanner = :profileBanner 
+					SET profileBannerInfo = :profileBannerInfo 
 					WHERE id = :id', 
-					[':profileBanner' => $value, ':id' => $id]);
+					[':profileBannerInfo' => $value, ':id' => $id]);
 			break;
-			case 'profilePicture' :
+			case 'profilePictureInfo' :
 				$this->sql('
 					UPDATE ' . static::$TABLE_NAME . ' 
-					SET profilePicture = :profilePicture 
+					SET profilePictureInfo = :profilePictureInfo 
 					WHERE id = :id', 
-					[':profilePicture' => $value, ':id' => $id]);
+					[':profilePictureInfo' => $value, ':id' => $id]);
 			break;
-			case 'noBanner' :
+			case 'profileTextInfo' :
 				$this->sql('
 					UPDATE ' . static::$TABLE_NAME . ' 
-					SET noBanner = :noBanner 
+					SET profileTextInfo = :profileTextInfo 
 					WHERE id = :id', 
-					[':noBanner' => intval($value), ':id' => $id]);
+					[':profileTextInfo' => $value, ':id' => $id]);
 			break;
 		}
 		return $this;
@@ -219,26 +219,26 @@ class UserManager extends AbstractManager
 					WHERE name = :name', 
 					[':temporaryPassword' => $value, ':name' => $name]);
 			break;
-			case 'profileBanner' :
+			case 'profileBannerInfo' :
 				$this->sql('
 					UPDATE ' . static::$TABLE_NAME . ' 
-					SET profileBanner = :profileBanner 
+					SET profileBannerInfo = :profileBannerInfo 
 					WHERE name = :name', 
-					[':profileBanner' => $value, ':name' => $name]);
+					[':profileBannerInfo' => $value, ':name' => $name]);
 			break;
-			case 'profilePicture' :
+			case 'profilePictureInfo' :
 				$this->sql('
 					UPDATE ' . static::$TABLE_NAME . ' 
-					SET profilePicture = :profilePicture 
+					SET profilePictureInfo = :profilePictureInfo 
 					WHERE name = :name', 
-					[':profilePicture' => $value, ':name' => $name]);
+					[':profilePictureInfo' => $value, ':name' => $name]);
 			break;
-			case 'noBanner' :
+			case 'profileTextInfo' :
 				$this->sql('
 					UPDATE ' . static::$TABLE_NAME . ' 
-					SET noBanner = :noBanner 
+					SET profileTextInfo = :profileTextInfo 
 					WHERE name = :name', 
-					[':noBanner' => intval($value), ':name' => $name]);
+					[':profileTextInfo' => $value, ':name' => $name]);
 			break;
 		}
 		return $this;
