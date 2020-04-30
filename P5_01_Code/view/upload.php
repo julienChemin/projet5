@@ -4,12 +4,12 @@ reset($_FILES);
 $temp = current($_FILES);
 $imageFolder = "public/images/dl/";
 $relative_path = "public/images/dl/";
-$maxFileSize = 2000000;
+$maxFileSize = $_POST['MAX_FILE_SIZE'];
 $fileSize = $temp['size'];
 
 if (is_uploaded_file($temp['tmp_name']) && $fileSize < $maxFileSize) {
     // Verify extension
-    if (!in_array(strtolower(pathinfo($temp['name'], PATHINFO_EXTENSION)), array("jpeg", "jpg", "png", "gif"))) {
+    if (!in_array(strtolower(pathinfo($temp['name'], PATHINFO_EXTENSION)), $arrAcceptedExtention)) {
         header("HTTP/1.1 400 Invalid extension.");
         return;
     }

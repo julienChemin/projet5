@@ -6,6 +6,7 @@ class ProfileContent
 {
 	private $id,
 			$userId,
+			$schoolId,
 			$tab,
 			$size,
 			$contentOrder,
@@ -39,6 +40,11 @@ class ProfileContent
 	public function getUserId()
 	{
 		return $this->userId;
+	}
+
+	public function getSchoolId()
+	{
+		return $this->schoolId;
 	}
 
 	public function getTab()
@@ -79,6 +85,14 @@ class ProfileContent
 	{
 		if ($userId > 0){
 			$this->userId = $userId;
+			return $this;
+		}
+	}
+
+	public function setSchoolId(int $schoolId)
+	{
+		if ($schoolId > 0){
+			$this->schoolId = $schoolId;
 			return $this;
 		}
 	}

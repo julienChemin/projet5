@@ -493,7 +493,7 @@ class Backend
 								$message = "Le logo de votre établissement a été modifié";
 							} elseif (!empty($_FILES['uploadLogo'])) {
 								$schoolName = $_POST['schoolName'];
-
+								$arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
 								require('view/upload.php');
 
 								if (!empty($final_path)) {
@@ -981,6 +981,171 @@ class Backend
 		}
 	}
 
+	public function schoolProfile()
+	{
+		if (!empty($_GET['school']) && $_GET['school'] === $_SESSION['school'] && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) {
+			$SchoolManager = new SchoolManager();
+
+			if ($SchoolManager->nameExists($_GET['school'])) {
+				$ProfileContentManager = new ProfileContentManager();
+				$school = $SchoolManager->getSchoolByName($_GET['school']);
+				$profileContent = $ProfileContentManager->getByProfileId($school->getId(), true);
+
+				RenderView::render('template.php', 'backend/schoolProfileView.php', ['school' => $school, 'profileContent' => $profileContent, 'option' => ['schoolProfile', 'tinyMCE']]);
+			} else {
+				throw new \Exception("L'établissement recherché n'existe pas");
+			}
+		} else {
+			throw new \Exception("Les informations renseignées sont incorrectes");
+		}
+	}
+
+	public function updateProfile()
+	{
+		if (!empty($_GET['school']) && !empty($_GET['elem'])) {
+			$SchoolManager = new SchoolManager();
+
+			if ($SchoolManager->nameExists($_GET['school']) && $_GET['school'] === $_SESSION['school']) {
+				switch ($_GET['elem']) {
+					case 'profileBanner' :
+						if (isset($_GET['noBanner'], $_GET['value'])) {
+							$infos = $_GET['value'] . ' ' . $_GET['noBanner'];
+							$SchoolManager->updateByName($_GET['school'], 'profileBannerInfo', $infos);
+						}
+					break;
+					case 'profilePicture' :
+						if (isset($_GET['orientation'], $_GET['size'], $_GET['value'])) {
+							$infos = $_GET['value'] . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
+							$SchoolManager->updateByName($_GET['school'], 'profilePictureInfo', $infos);
+						}
+					break;
+					case 'profileText' :
+						if (isset($_GET['block'], $_GET['school'], $_GET['schoolPos'])) {
+							$infos = $_GET['block'] . ' ' . $_GET['schoolPos'];
+							$SchoolManager->updateByName($_GET['school'], 'profileTextInfo', $infos);
+							var_dump($infos);
+						}
+					break;
+					case 'content' :
+						$ProfileContentManager = new ProfileContentManager();
+						$school = $SchoolManager->getSchoolByName($_GET['school']);
+
+						if (!empty($_POST['deleteBlock'])) {
+							//delete content
+							$ProfileContentManager->deleteByProfileId($school->getId(), $_POST['type'], $_POST['deleteBlock'], true);
+							$order = intval($_POST['deleteBlock']);
+							$contentToUpdate = $ProfileContentManager->getContentForDelete($school->getId(), $_POST['type'], $_POST['deleteBlock'], true);
+
+							foreach ($contentToUpdate as $content) {
+								$newOrderContent = intval($content->getContentOrder())-1;
+								$ProfileContentManager->updateElem($content, 'contentOrder', $newOrderContent, true);
+							}
+						} else {
+							if (stripos($_POST['tinyMCEtextarea'], '&lt;script') === false && stripos($_POST['tinyMCEtextarea'], '&lt;iframe') === false) {
+								if ($_POST['blockOrderValue'] === 'new') {
+									//add new content
+									if ($_POST['newOrderValue'] === 'last') {
+										//new content go to last place
+										$order = $ProfileContentManager->getCount($school->getId(), $_POST['type'], true) + 1;
+									} else {
+										//new content go to "newOrderValue" place
+										$order = intval($_POST['newOrderValue']);
+										$contentToUpdate = $ProfileContentManager->getContentForAdd($school->getId(), $_POST['type'], $order, true);
+										foreach ($contentToUpdate as $content) {
+											$newOrderContent = intval($content->getContentOrder())+1;
+											$ProfileContentManager->updateElem($content, 'contentOrder', $newOrderContent, true);
+										}
+									}
+
+									$ProfileContentManager->add(new ProfileContent([
+										'schoolId' => $school->getId(),
+										'tab' => $_POST['type'],
+										'size' => $_POST['sizeValue'],
+										'contentOrder' => $order,
+										'align' => $_POST['alignValue'],
+										'content' => $_POST['tinyMCEtextarea']]));
+								} else {
+									//edit content
+									if ($_POST['blockOrderValue'] === $_POST['newOrderValue']) {
+										//content keep his place number
+										$order = intval($_POST['newOrderValue']);
+										$ProfileContentManager->update($_POST['blockOrderValue'], new ProfileContent([
+											'schoolId' => $school->getId(),
+											'tab' => $_POST['type'],
+											'size' => $_POST['sizeValue'],
+											'contentOrder' => $order,
+											'align' => $_POST['alignValue'],
+											'content' => $_POST['tinyMCEtextarea']]), true);
+									} else {
+										//content change place number
+										$ProfileContentManager->deleteByProfileId($school->getId(), $_POST['type'], $_POST['blockOrderValue'], true);
+										$order = intval($_POST['newOrderValue']);
+										$contentToUpdate = $ProfileContentManager->getContentForUpdate($school->getId(), $_POST['type'], $_POST['blockOrderValue'], $_POST['newOrderValue'], true);
+										if ($_POST['newOrderValue'] < $_POST['blockOrderValue']) {
+											foreach ($contentToUpdate as $content) {
+												$newOrderContent = intval($content->getContentOrder())+1;
+												$ProfileContentManager->updateElem($content, 'contentOrder', $newOrderContent, true);
+											}
+										} else {
+											foreach ($contentToUpdate as $content) {
+												$newOrderContent = intval($content->getContentOrder())-1;
+												$ProfileContentManager->updateElem($content, 'contentOrder', $newOrderContent, true);
+											}
+										}
+
+										$ProfileContentManager->add(new ProfileContent([
+											'schoolId' => $school->getId(),
+											'tab' => $_POST['type'],
+											'size' => $_POST['sizeValue'],
+											'contentOrder' => $order,
+											'align' => $_POST['alignValue'],
+											'content' => $_POST['tinyMCEtextarea']]));
+									}
+								}
+							}
+						}
+						if (isset($_SERVER['HTTP_REFERER'])) {
+							header('Location: ' . $_SERVER['HTTP_REFERER']);
+						} else {
+							header('Location: indexAdmin.php');
+						}
+					break;
+				}
+			}
+		}
+	}
+
+	public function upload()
+	{
+		if (!empty($_GET['elem'])) {
+			$arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
+			require('view/upload.php');
+			$SchoolManager = new SchoolManager();
+
+			if (!empty($final_path)) {
+				switch ($_GET['elem']) {
+					case 'banner' :
+						if (isset($_GET['noBanner'])) {
+							$infos = $final_path . ' ' . $_GET['noBanner'];var_dump($infos);
+							$SchoolManager->updateByName($_SESSION['school'], 'profileBannerInfo', $infos);
+						}
+					break;
+					case 'picture' :
+						if (isset($_GET['orientation'], $_GET['size'])) {
+							$infos = $final_path . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
+							$SchoolManager->updateByName($_SESSION['school'], 'profilePictureInfo', $infos);
+						}
+					break;
+				}
+			}
+			if (isset($_SERVER['HTTP_REFERER'])) {
+				header('Location: ' . $_SERVER['HTTP_REFERER']);
+			} else {
+				header('Location: indexAdmin.php');
+			}
+		}
+	}
+
 	public function schoolHistory()
 	{
 		$HistoryManager = new HistoryManager();
@@ -1039,6 +1204,29 @@ class Backend
 				
 				echo json_encode($arrEntries);
 			}
+		}
+	}
+
+	public function addSchoolPost()
+	{
+		RenderView::render('template.php', 'backend/addSchoolPostView.php', ['option' => ['addPost', 'tinyMCE']]);
+	}
+
+	public function uploadSchoolPost()
+	{
+		
+	}
+
+	public function checkForScriptInsertion(string $str)
+	{
+		if (!empty($str)) {
+			if (stripos($str, '&lt;script') === false && stripos($str, '&lt;iframe') === false) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return true;
 		}
 	}
 

@@ -555,20 +555,20 @@ figure img{
 
 	background: linear-gradient(to bottom, transparent, #222224 70px);
 }
-#userProfile{
+#profile{
 	position: relative;
 	top: -150px;
 }
-#userProfile > header{
+#profile > header{
 	display: flex;
 	max-height: 500px;
 }
-#userProfile > header > div:first-child{
+#profile > header > div:first-child{
 	overflow: hidden;
 	position: relative;
 }
 
-#userProfile > header > div:nth-of-type(2){
+#profile > header > div:nth-of-type(2){
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -577,12 +577,12 @@ figure img{
 	padding: 30px;
 	width: 100%;
 }
-#userProfile > header span, #userProfile > header a{
+#profile > header span, #profile > header a{
 	font-size: 1.5em;
 	margin-top: 20px;
 	color: white;
 }
-#userProfile > header span{
+#profile > header span{
 	font-size: 2em;
 }
 .widePicture{
@@ -622,7 +622,7 @@ figure img{
 #blockTabs{
 	display: flex;
 }
-#userProfile nav{
+#profile nav{
 	display: flex;
 	justify-content: space-between;
 }
@@ -685,12 +685,12 @@ figure img{
 	width: 95%;
 	height: 100%;
 }
-#tabProfile i, #tabPublication i, #tabAbout i{
+#tabProfile i, #tabNews i, #tabPublication i, #tabPrivatePublication i, #tabAbout i{
 	position: absolute;
 	left: 5px;
 	top: 5px;
 }
-.blockContentProfile, .blockContentAbout{
+.blockContentProfile, .blockContentNews, .blockContentAbout{
 	position: relative;
 	min-width: 30%;
 
@@ -701,7 +701,7 @@ figure img{
 	padding: 0 10px;
 	word-wrap: break-word;
 }
-.blockContentProfile img, .blockContentAbout img{
+.blockContentProfile img, .blockContentNews img, .blockContentAbout img{
 	max-width: 100%!important;
 }
 /*editing*/
@@ -753,7 +753,7 @@ figure img{
 .iconeEdit:hover{
 	border: solid 1px #CF8B3F;
 }
-#tabPublication .iconeEdit{
+#tabPublication .iconeEdit, #tabPrivatePublication .iconeEdit{
 	display: inline-block!important;
 }
 #banner i{
@@ -761,7 +761,7 @@ figure img{
 	bottom: 100px;
 	left: 20px;
 }
-#userProfile > header > div:first-child i, #userProfile > header > div:nth-of-type(2) i{
+#profile > header > div:first-child i, #profile > header > div:nth-of-type(2) i{
 	position: absolute;
 	bottom: 10px;
 	left: 10px;
@@ -837,7 +837,7 @@ figure img{
 #contentMenuEditBlock > form > div:first-of-type > div:first-of-type, #contentMenuEditBlock > form > div:nth-of-type(2) > div:first-of-type{
 	margin-top: 15px;
 }
-#blockProfileListOrder, #blockAboutListOrder{
+#blockProfileListOrder, #blockNewsListOrder, #blockAboutListOrder{
 	display: none;
 }
 .blockTuto > p > i{
@@ -874,13 +874,13 @@ figure img{
 	width: 99%;
 }
 /*modal*/
-#blockUserProfile + #modal{
+#blockProfile + #modal{
 	z-index: 750;
 }
-#blockUserProfile + #modal form{
+#blockProfile + #modal form{
 	padding: 25px 0;
 }
-#blockUserProfile + #modal form > div{
+#blockProfile + #modal form > div{
 	width: auto;
 	max-width: 90%;
 }
@@ -894,6 +894,212 @@ figure img{
 	margin-top: 10px;
 	flex-direction: row;
 	justify-content: center;
+}
+
+/*add post / add school post*/
+#addSchoolPost, #addPost{
+	padding: 100px 0px;
+}
+#addSchoolPost hr, #addPost hr{
+	margin: 50px 0;
+}
+#addSchoolPost h1, #addSchoolPost h2, #addPost h1,#addPost h2{
+	color: #CF8B3F;
+}
+#blockUploadType{
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: center;
+
+	width: 100%;
+}
+#btnAddFolder, #btnAddFile{
+	width: 40%;
+
+	display: flex;
+	flex-direction: column;
+
+	border-radius: 20px;
+	cursor: pointer;
+}
+#btnAddFolder img, #btnAddFile img{
+	max-width: 100%;
+	height: 80%;
+}
+#blockAddFile{
+	display: none;
+	width: 100%;
+	margin: 35px 0;
+}
+#fileTypeSelection{
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+#fileTypeSelection p{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	border-radius: 20px;
+
+	width: 20%;
+}
+#fileTypeSelection input{
+	display: none;
+}
+#fileTypeSelection label img{
+	cursor: pointer;
+}
+#blockTitle, #blockVideoLink{
+	width: 100%;
+	display: none;
+	justify-content: center;
+	align-items: center;
+}
+#blockTitle input, #blockVideoLink input{
+	width: 500px;
+}
+#blockUploadFile{
+	display: none;
+	justify-content: space-around;
+	align-items: center;
+	width: 100%;
+}
+#blockUploadFile > div{
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	padding: 15px;
+}
+#blockUploadFile > div > div{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	border: solid 1px #CF8B3F;
+	border-radius: 20px;
+
+	width: 40%;
+	min-height: 100px;
+}
+#blockUploadFile div > figure{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	border: none;
+
+	width: 40%;
+	min-height: 100px;
+}
+#blockUploadFile #preview{
+	display: none;
+	justify-content: center;
+	align-items: center;
+
+	height: 500px;
+}
+#blockUploadFile #preview img{
+	max-width: 90%;
+	max-height: 90%;
+}
+#blockTinyMce{
+	width: 100%;
+	display: none;
+}
+#blockTags{
+	width: 100%;
+
+	display: none;
+	justify-content: flex-start;
+	align-items: flex-start;
+}
+#blockTags p{
+	font-size: 1.3em;
+	text-align: left;
+}
+#tags{
+	/*input text for tags*/
+	transition: 0.15s linear;
+	-webkit-transition: 0.15s linear;
+}
+.tagRules{
+	transition: 0.15s linear;
+	-webkit-transition: 0.15s linear;
+}
+#blockAddTags{
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+}
+#blockAddTags > div:first-of-type{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 50%;
+}
+#selectedTags{
+	display: none;
+	width: 50%;
+}
+#recommendedTags{
+	display: none;
+	width: 100%;
+}
+#selectedTags > div, #recommendedTags > div{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-wrap: wrap;
+	padding: 5px;
+}
+.tag{
+	font-size: 1.5em;
+	border: solid 2px #CF8B3F;
+	border-radius: 10px;
+	background-color: #222224;
+
+	margin: 10px;
+	margin-top: 10px;
+	padding: 5px;
+
+	cursor: pointer;
+
+	transition: 0.15s linear;
+	-webkit-transition: 0.15s linear;
+}
+.tag i{
+	padding: 4px 6px;
+	color: red;
+	border: solid 2px #CF8B3F;
+	border-radius: 10px;
+	transform: scale(0.7);
+}
+#blockSubmit{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+#errorMsg{
+	opacity: 0;
+	color: red;
+	font-size: 1.2em;
+
+	transition: 0.15s linear;
+	-webkit-transition: 0.15s linear;
+}
+#addSchoolPost input[type='submit']{
+	display: none;
+	margin-top: 20px;
+	padding: 15px;
+	font-size: 2em;
+	width: 200px;
 }
 
 /* --------------------------------------------------------------- ADMIN ---------------------------------------------------- */

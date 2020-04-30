@@ -370,11 +370,30 @@ class Frontend
 			if ($UserManager->exists($_GET['userId'])) {
 				$ProfileContentManager = new ProfileContentManager();
 				$user = $UserManager->getOneById($_GET['userId']);
-				$profileContent = $ProfileContentManager->getByUserId($user->getId());
+				$profileContent = $ProfileContentManager->getByProfileId($user->getId());
 
 				RenderView::render('template.php', 'frontend/userProfileView.php', ['user' => $user, 'profileContent' => $profileContent, 'option' => ['userProfile', 'tinyMCE']]);
 			} else {
 				throw new \Exception("L'utilisateur recherché n'existe pas");
+			}
+		} else {
+			throw new \Exception("Les informations renseignées sont incorrectes");
+		}
+	}
+
+	public function schoolProfile()
+	{
+		if (!empty($_GET['school']) && $_GET['school'] !== ALL_SCHOOL && $_GET['school'] !== NO_SCHOOL) {
+			$SchoolManager = new SchoolManager();
+
+			if ($SchoolManager->nameExists($_GET['school'])) {
+				$ProfileContentManager = new ProfileContentManager();
+				$school = $SchoolManager->getSchoolByName($_GET['school']);
+				$profileContent = $ProfileContentManager->getByProfileId($school->getId(), true);
+
+				RenderView::render('template.php', 'frontend/schoolProfileView.php', ['school' => $school, 'profileContent' => $profileContent, 'option' => ['schoolProfile']]);
+			} else {
+				throw new \Exception("L'établissement recherché n'existe pas");
 			}
 		} else {
 			throw new \Exception("Les informations renseignées sont incorrectes");
@@ -411,7 +430,7 @@ class Frontend
 
 						if (!empty($_POST['deleteBlock'])) {
 							//delete content
-							$ProfileContentManager->deleteByUserId($_SESSION['id'], $_POST['type'], $_POST['deleteBlock']);
+							$ProfileContentManager->deleteByProfileId($_SESSION['id'], $_POST['type'], $_POST['deleteBlock']);
 							$order = intval($_POST['deleteBlock']);
 							$contentToUpdate = $ProfileContentManager->getContentForDelete($_SESSION['id'], $_POST['type'], $_POST['deleteBlock']);
 
@@ -421,7 +440,7 @@ class Frontend
 								$ProfileContentManager->updateElem($content, 'contentOrder', $newOrderContent);
 							}
 						} else {
-							if (stripos($_POST['tinyMCEtextarea'], '&lt;script') === false) {
+							if (stripos($_POST['tinyMCEtextarea'], '&lt;script') === false && stripos($_POST['tinyMCEtextarea'], '&lt;iframe') === false) {
 								//add new content
 								if ($_POST['blockOrderValue'] === 'new') {
 									if ($_POST['newOrderValue'] === 'last') {
@@ -449,7 +468,7 @@ class Frontend
 									if ($_POST['blockOrderValue'] === $_POST['newOrderValue']) {
 										//content keep his place number
 										$order = intval($_POST['newOrderValue']);
-										$ProfileContentManager->update($_SESSION['id'], $_POST['blockOrderValue'], new ProfileContent([
+										$ProfileContentManager->update($_POST['blockOrderValue'], new ProfileContent([
 											'userId' => $_SESSION['id'],
 											'tab' => $_POST['type'],
 											'size' => $_POST['sizeValue'],
@@ -458,7 +477,7 @@ class Frontend
 											'content' => $_POST['tinyMCEtextarea']]));
 									} else {
 										//content change place number
-										$ProfileContentManager->deleteByUserId($_SESSION['id'], $_POST['type'], $_POST['blockOrderValue']);
+										$ProfileContentManager->deleteByProfileId($_SESSION['id'], $_POST['type'], $_POST['blockOrderValue']);
 										$order = intval($_POST['newOrderValue']);
 										$contentToUpdate = $ProfileContentManager->getContentForUpdate($_SESSION['id'], $_POST['type'], $_POST['blockOrderValue'], $_POST['newOrderValue']);
 										if ($_POST['newOrderValue'] < $_POST['blockOrderValue']) {
@@ -484,11 +503,10 @@ class Frontend
 								}
 							}
 						}
-
 						if (isset($_SERVER['HTTP_REFERER'])) {
 							header('Location: ' . $_SERVER['HTTP_REFERER']);
 						} else {
-							header('Location: indexAdmin.php');
+							header('Location: index.php');
 						}
 					break;
 				}
@@ -499,8 +517,8 @@ class Frontend
 	public function upload()
 	{
 		if (!empty($_GET['elem'])) {
+			$arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
 			require('view/upload.php');
-
 			$UserManager = new UserManager();
 
 			if (!empty($final_path)) {
@@ -523,8 +541,170 @@ class Frontend
 			if (isset($_SERVER['HTTP_REFERER'])) {
 				header('Location: ' . $_SERVER['HTTP_REFERER']);
 			} else {
-				header('Location: indexAdmin.php');
+				header('Location: index.php');
 			}
+		}
+	}
+
+	public function addPost()
+	{
+		RenderView::render('template.php', 'frontend/addPostView.php', ['option' => ['addPost', 'tinyMCE']]);
+	}
+
+	public function uploadPost()
+	{
+		if (!empty($_POST['fileTypeValue'])) {
+			$PostsManager = new PostsManager();
+			//check for script / iframe insertion
+			$titleOk = $this->checkForScriptInsertion($_POST['title']);
+			$descriptionOk = $this->checkForScriptInsertion($_POST['tinyMCEtextarea']);
+			$urlOk = $this->checkForScriptInsertion($_POST['videoLink']);
+			$tagOk = "";
+			//check tags
+			$listTags = explode(',', $_POST['listTags']);
+			array_shift($listTags);
+			foreach ($listTags as $tag) {
+				if (!$this->tagIsValide($tag)) {
+					$tagOk = false;
+				}
+			}
+			if ($tagOk !== false) {
+				$tagOk = true;
+			}
+			
+			if ($titleOk && $descriptionOk && $urlOk && $tagOk) {
+				//set $folder
+				if (!empty($_GET['folder']) && $PostsManager->folderBelongsToUser($_GET['folder'], $_SESSION['id'])) {
+					$folder = $_GET['folder'];
+				} else {
+					$folder = null;
+				}
+
+				switch ($_POST['fileTypeValue']) {
+					case 'image':
+						if (!empty($_FILES) && !empty($_POST['listTags'])) {
+							$arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
+							require('view/upload.php');
+							if (!empty($final_path)) {
+								$PostsManager->set(new Post([
+									'idAuthor' => $_SESSION['id'], 
+									'title' => $_POST['title'], 
+									'filePath' => $final_path, 
+									'description' => $_POST['tinyMCEtextarea'], 
+									'isPrivate' => false, 
+									'postType' => 'userPost', 
+									'fileType' => $_POST['fileTypeValue'], 
+									'onFolder' => $folder, 
+									'tags' => $_POST['listTags']]));
+								$this->checkForNewTag($_POST['listTags']);
+							}
+						}
+					break;
+					case 'video':
+						if (!empty($_POST['videoLink']) && !empty($_POST['listTags'])) {
+							$arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
+							require('view/upload.php');
+							!empty($final_path) ? $filePath = $final_path : $filePath = null;
+							
+							$PostsManager->set(new Post([
+								'idAuthor' => $_SESSION['id'], 
+								'title' => $_POST['title'], 
+								'filePath' => $filePath, 
+								'urlVideo' => $_POST['videoLink'], 
+								'description' => $_POST['tinyMCEtextarea'], 
+								'isPrivate' => false, 
+								'postType' => 'userPost', 
+								'fileType' => $_POST['fileTypeValue'], 
+								'onFolder' => $folder, 
+								'tags' => $_POST['listTags']]));
+							$this->checkForNewTag($_POST['listTags']);
+						}
+					break;
+					case 'compressed':
+						if (!empty($_FILES) && !empty($_POST['title'])) {
+							$arrAcceptedExtention = array("zip", "rar");
+							require('view/upload.php');
+							if (!empty($final_path)) {
+								$PostsManager->set(new Post([
+									'idAuthor' => $_SESSION['id'], 
+									'title' => $_POST['title'], 
+									'filePath' => $final_path, 
+									'description' => $_POST['tinyMCEtextarea'], 
+									'isPrivate' => false, 
+									'postType' => 'userPost', 
+									'fileType' => $_POST['fileTypeValue'], 
+									'onFolder' => $folder]));
+							}
+						}
+					break;
+					case 'folder':
+						if (!empty($_POST['title'])) {
+							$arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
+							require('view/upload.php');
+							!empty($final_path) ? $filePath = $final_path : $filePath = null;
+
+							$PostsManager->set(new Post([
+								'idAuthor' => $_SESSION['id'], 
+								'title' => $_POST['title'], 
+								'filePath' => $filePath,  
+								'description' => $_POST['tinyMCEtextarea'], 
+								'isPrivate' => false, 
+								'postType' => 'userPost', 
+								'fileType' => $_POST['fileTypeValue'], 
+								'onFolder' => $folder]));
+						}
+					break;
+				}
+			}
+		}
+		header('Location: index.php?action=userProfile&userId=' . $_SESSION['id']);
+	}
+
+	public function getTags()
+	{
+		$TagsManager = new TagsManager();
+		$listTags = $TagsManager->getAll();
+		$arrTags = [];
+		for ($i=0; $i<count($listTags); $i++) {
+			$arrTags[$i] = $listTags[$i]['name'];
+		}
+		echo json_encode($arrTags);
+	}
+
+	private function tagIsValide(string $tag)
+	{
+		$regex = '/^[a-z0-9]+[a-z0-9 ]*[a-z0-9]+$/i';
+		if (preg_match($regex, $tag)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private function checkForNewTag(string $listTags)
+	{
+		if (!empty($listTags)) {
+			$TagsManager = new TagsManager();
+			$arrTags = explode(',', $listTags);
+
+			for ($i=1; $i<count($arrTags); $i++) {
+				if (!$TagsManager->exists($arrTags[$i])) {
+					$TagsManager->set($arrTags[$i]);
+				}
+			}
+		}
+	}
+
+	private function checkForScriptInsertion(string $str)
+	{
+		if (!empty($str)) {
+			if (stripos($str, '&lt;script') === false && stripos($str, '&lt;iframe') === false) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return true;
 		}
 	}
 

@@ -7,7 +7,7 @@ class SchoolManager extends AbstractManager
 	public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\School';
 	public static $TABLE_NAME = 'as_school';
 	public static $TABLE_PK = 'id';
-	public static $TABLE_CHAMPS ='id, idAdmin, name, nameAdmin, code, nbEleve, nbActiveAccount, DATE_FORMAT(dateInscription, "%d/%m/%Y") AS dateInscription, DATE_FORMAT(dateDeadline, "%d/%m/%Y") AS dateDeadline, logo, isActive';
+	public static $TABLE_CHAMPS ='id, idAdmin, name, nameAdmin, code, nbEleve, nbActiveAccount, DATE_FORMAT(dateInscription, "%d/%m/%Y") AS dateInscription, DATE_FORMAT(dateDeadline, "%d/%m/%Y") AS dateDeadline, logo, isActive, profileBannerInfo, profilePictureInfo, profileTextInfo';
 
 	public function add(School $school)
 	{
@@ -113,6 +113,27 @@ class SchoolManager extends AbstractManager
 					WHERE id = :id', 
 					[':isActive' => intval($value), ':id' => $id]);
 			break;
+			case 'profileBannerInfo' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET profileBannerInfo = :profileBannerInfo 
+					WHERE id = :id', 
+					[':profileBannerInfo' => $value, ':id' => $id]);
+			break;
+			case 'profilePictureInfo' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET profilePictureInfo = :profilePictureInfo 
+					WHERE id = :id', 
+					[':profilePictureInfo' => $value, ':id' => $id]);
+			break;
+			case 'profileTextInfo' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET profileTextInfo = :profileTextInfo 
+					WHERE id = :id', 
+					[':profileTextInfo' => $value, ':id' => $id]);
+			break;
 		}
 		return $this;
 	}
@@ -182,6 +203,27 @@ class SchoolManager extends AbstractManager
 					SET isActive = :isActive 
 					WHERE name = :name', 
 					[':isActive' => intval($value), ':name' => $name]);
+			break;
+			case 'profileBannerInfo' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET profileBannerInfo = :profileBannerInfo 
+					WHERE name = :name', 
+					[':profileBannerInfo' => $value, ':name' => $name]);
+			break;
+			case 'profilePictureInfo' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET profilePictureInfo = :profilePictureInfo 
+					WHERE name = :name', 
+					[':profilePictureInfo' => $value, ':name' => $name]);
+			break;
+			case 'profileTextInfo' :
+				$this->sql('
+					UPDATE ' . static::$TABLE_NAME . ' 
+					SET profileTextInfo = :profileTextInfo 
+					WHERE name = :name', 
+					[':profileTextInfo' => $value, ':name' => $name]);
 			break;
 		}
 		return $this;

@@ -47,11 +47,23 @@ try {
 			case 'userProfile' :
 				$Frontend->userProfile();
 			break;
+			case 'schoolProfile' :
+				$Frontend->schoolProfile();
+			break;
 			case 'updateProfile' :
 				$Frontend->updateProfile();
 			break;
 			case 'upload' :
 				$Frontend->upload();
+			break;
+			case 'addPost' :
+				$Frontend->addPost();
+			break;
+			case 'uploadPost' :
+				$Frontend->uploadPost();
+			break;
+			case 'getTags' :
+				$Frontend->getTags();
 			break;
 			default :
 				//"action" value is unknow

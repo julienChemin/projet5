@@ -123,7 +123,7 @@
 					<hr>
 
 					<li>
-						<a href="#">
+						<a href="indexAdmin.php?action=schoolProfile&school=<?=$_SESSION['school']?>">
 							Profil de l'établissement<i class="far fa-address-card"></i>
 						</a>
 					</li>

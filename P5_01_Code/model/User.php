@@ -34,7 +34,6 @@ class User
 		if (!empty($data)) {
 			$this->hydrate($data);
 		}
-
 		$this->init();
 	}
 

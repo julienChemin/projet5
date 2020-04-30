@@ -97,7 +97,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	let bannerImg = document.querySelector('#banner img');
 	let bannerSrcInBdd = bannerImg.src;
 	let noBannerIsChecked = formBanner.elements.noBanner.checked;
-	let userId = formBanner.elements.userId.value;
+	let school = formBanner.elements.school.value;
 
 	//input banner picture path
 	formBanner.elements.bannerPath.addEventListener('change', function(e){
@@ -110,7 +110,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 	//input no banner
 	formBanner.elements.noBanner.addEventListener('change', function(e){
-		let url = 'index.php?action=upload&elem=banner&noBanner='+formBanner.elements.noBanner.checked;
+		let url = 'indexAdmin.php?action=upload&elem=banner&noBanner='+formBanner.elements.noBanner.checked;
 		formBanner.action = url;
 			
 		if (e.target.checked) {
@@ -125,7 +125,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	formBanner.elements.saveBanner.addEventListener('click', function(e){
 		if (formBanner.elements.bannerPath.value !== "" && formBanner.elements.bannerPath.value !== bannerSrcInBdd) {
 			e.preventDefault();
-			let url = 'index.php?action=updateProfile&userId='+userId;
+			let url = 'indexAdmin.php?action=updateProfile&school='+school;
 			url += '&elem=profileBanner&value='+formBanner.elements.bannerPath.value;
 			url += '&noBanner='+formBanner.elements.noBanner.checked;
 
@@ -143,7 +143,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		} else if (formBanner.elements.dlBanner.value === "") {
 			if (noBanner !== formBanner.elements.noBanner.checked) {
 				e.preventDefault();
-				let url = 'index.php?action=updateProfile&userId='+userId;
+				let url = 'indexAdmin.php?action=updateProfile&school='+school;
 				url += '&elem=profileBanner&value='+bannerImg.src;
 				url += '&noBanner='+formBanner.elements.noBanner.checked;
 
@@ -185,7 +185,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			profileImg.classList.remove('highPicture');
 		}
 
-		let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
 			formProfilePicture.action = url;
 	});
@@ -196,7 +196,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			profileImg.classList.remove('widePicture');
 		}
 
-		let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
 			formProfilePicture.action = url;
 	});
@@ -209,7 +209,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			blockProfilePicture.classList.remove('bigPicture');
 		}
 
-		let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
 			formProfilePicture.action = url;
 	});
@@ -221,7 +221,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			blockProfilePicture.classList.remove('bigPicture');
 		}
 
-		let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
 			formProfilePicture.action = url;
 	});
@@ -233,7 +233,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			blockProfilePicture.classList.remove('mediumPicture');
 		}
 
-		let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
 			formProfilePicture.action = url;
 	});
@@ -245,7 +245,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	formProfilePicture.elements.saveProfilePicture.addEventListener('click', function(e){
 		if (formProfilePicture.elements.picturePath.value !== "" && formProfilePicture.elements.picturePath.value !== profileSrcInBdd) {
 			e.preventDefault();
-			let url = 'index.php?action=updateProfile&userId=' + userId;
+			let url = 'indexAdmin.php?action=updateProfile&school=' + school;
 			url += '&elem=profilePicture&value=' + formProfilePicture.elements.picturePath.value;
 			url += '&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
@@ -265,7 +265,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		} else if (formProfilePicture.elements.dlPicture.value === "") {
 			if (pictureOrientation !== formProfilePicture.elements.pictureOrientation.value || pictureSize !== formProfilePicture.elements.pictureSize.value) {
 				e.preventDefault();
-				let url = 'index.php?action=updateProfile&userId=' + userId;
+				let url = 'indexAdmin.php?action=updateProfile&school=' + school;
 				url += '&elem=profilePicture&value=' + profileImg.src;
 				url += '&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 				url += '&size=' + formProfilePicture.elements.pictureSize.value;
@@ -287,11 +287,10 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		}
 	});
 
-	//MENU EDIT TEXT
+	//MENU EDIT TEXT (block text, pseudo, school name)
 	let formProfileText = document.querySelector('#contentMenuEditText > form');
 	let profileTextBlock = document.querySelector('#profile > header > div:nth-of-type(2)');
-	let profilePseudo = document.querySelector('#profile > header > div:nth-of-type(2) > span:nth-of-type(1)');
-	let profileSchool = document.querySelector('#profile > header > div:nth-of-type(2) > a:nth-of-type(1)');
+	let profileSchool = document.querySelector('#profile > header > div:nth-of-type(2) > span:nth-of-type(1)');
 
 	//block position
 	document.getElementById('blockTextTop').addEventListener('click', function(){
@@ -315,31 +314,6 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			profileTextBlock.classList.add('elemEnd');
 			profileTextBlock.classList.remove('elemStart');
 			profileTextBlock.classList.remove('elemCenter');
-		}
-	});
-
-	//pseudo position
-	document.getElementById('pseudoLeft').addEventListener('click', function(){
-		if (!profilePseudo.classList.contains('elemStart')) {
-			profilePseudo.classList.add('elemStart');
-			profilePseudo.classList.remove('elemCenter');
-			profilePseudo.classList.remove('elemEnd');
-		}
-	});
-
-	document.getElementById('pseudoCenter').addEventListener('click', function(){
-		if (!profilePseudo.classList.contains('elemCenter')) {
-			profilePseudo.classList.add('elemCenter');
-			profilePseudo.classList.remove('elemStart');
-			profilePseudo.classList.remove('elemEnd');
-		}
-	});
-
-	document.getElementById('pseudoRight').addEventListener('click', function(){
-		if (!profilePseudo.classList.contains('elemEnd')) {
-			profilePseudo.classList.add('elemEnd');
-			profilePseudo.classList.remove('elemStart');
-			profilePseudo.classList.remove('elemCenter');
 		}
 	});
 
@@ -370,20 +344,16 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 	//submit
 	let blockPos = formProfileText.elements.blockTextPosition.value;
-	let pseudoPos = formProfileText.elements.pseudoPosition.value;
 	let schoolPos = formProfileText.elements.schoolPosition.value;
 
 	formProfileText.elements.saveProfileText.addEventListener('click', function(e){
 		e.preventDefault();
-		if (blockPos !== formProfileText.elements.blockTextPosition.value || pseudoPos !== formProfileText.elements.pseudoPosition.value 
-		|| schoolPos !== formProfileText.elements.schoolPosition.value) {
-			let url = 'index.php?action=updateProfile&userId=' + userId;
+		if (blockPos !== formProfileText.elements.blockTextPosition.value || schoolPos !== formProfileText.elements.schoolPosition.value) {
+			let url = 'indexAdmin.php?action=updateProfile&school=' + school;
 			url += '&elem=profileText&block=' + formProfileText.elements.blockTextPosition.value;
-			url += '&pseudo=' + formProfileText.elements.pseudoPosition.value;
-			url += '&school=' + formProfileText.elements.schoolPosition.value;
+			url += '&schoolPos=' + formProfileText.elements.schoolPosition.value;
 
 			blockPos = formProfileText.elements.blockTextPosition.value;
-			pseudoPos = formProfileText.elements.pseudoPosition.value;
 			schoolPos = formProfileText.elements.schoolPosition.value;
 			
 			ajaxGet(url, function(response){
@@ -558,6 +528,102 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		}
 	});
 
+	//MENU EDIT NEWS
+	let allButtonsEditNews = document.querySelectorAll('.editable > .iconeEditNews');
+	let allBlockContentNews = document.querySelectorAll('.blockContentNews');
+	let blockNewsListOrder = document.getElementById('blockNewsListOrder');
+	let listContentOrderNews = document.getElementById('newsContentOrder');
+
+	//pencil icone (for editing) on tab 'news'
+	for (let i=0; i<allButtonsEditNews.length; i++) {
+		allButtonsEditNews[i].addEventListener('click', function(){
+			let blockOrderValue = allButtonsEditNews[i].textContent.substring(4, allButtonsEditNews[i].textContent.length);
+			let sizeValue = allButtonsEditNews[i].getAttribute('atrsize');
+			let idCheckboxSize = 'block' + sizeValue.substr(0, 1).toUpperCase() + sizeValue.substr(1);
+			let alignValue = allButtonsEditNews[i].getAttribute('atralign');
+
+			toggleMenuTop(contentMenuEditBlock, blockMenuEditingTop, modal);
+			blockNewsListOrder.style.display = "flex";
+			//set form modal inputs value
+			formModal.elements.type.value = "news";
+			formModal.elements.blockOrderValue.value = blockOrderValue;
+			formModal.elements.newOrderValue.value = blockOrderValue;
+			document.querySelector('#newsContentOrder > option[value="' + blockOrderValue + '"]').selected = true;
+			formModal.elements.sizeValue.value = sizeValue;
+			if (formModal.classList.contains('small')) {
+				formModal.classList.remove('small');
+			}
+			if (formModal.classList.contains('medium')) {
+				formModal.classList.remove('medium');
+			}
+			if (formModal.classList.contains('big')) {
+				formModal.classList.remove('big');
+			}
+			formModal.classList.add(sizeValue);
+			document.getElementById(idCheckboxSize).checked = true;
+			formModal.elements.alignValue.value = alignValue;
+
+			if (alignValue !== "") {
+				checkboxAlign.checked = true;
+				blockAlign.style.display = "flex";
+				switch (alignValue) {
+					case 'elemStart' :
+						document.getElementById('alignLeft').checked = true;
+					break;
+					case 'elemCenter' :
+						document.getElementById('alignCenter').checked = true;
+					break;
+					case 'elemEnd' :
+						document.getElementById('alignRight').checked = true;
+					break;
+				}
+			}
+
+			let content = allBlockContentNews[i].innerHTML.split('</i>')[1];
+			tinyMCE.get('tinyMCEtextarea').setContent(content);
+
+			if (document.querySelector('#newsContentOrder .lastOption') !== null) {
+				listContentOrderNews.removeChild(document.querySelector('#newsContentOrder .lastOption'));
+			}
+		});
+	}
+
+	//plus icone (for adding content) on tab 'news'
+	document.querySelector('#tabNews .fa-plus-square').addEventListener('click', function(){
+		toggleMenuTop(contentMenuEditBlock, blockMenuEditingTop, modal);
+		blockToDelete.style.display = "none";
+
+		if (blockNewsListOrder.style.display !== "flex") {
+			blockNewsListOrder.style.display = "flex";
+		}
+		
+		if (!formModal.classList.contains('small')) {
+			formModal.classList.add('small');
+			formModal.classList.remove('medium');
+			formModal.classList.remove('big');
+			document.getElementById('blockSmall').checked = true;
+		}
+
+		if (document.querySelector('#newsContentOrder .lastOption') === null) {
+			let option = document.createElement('option');
+			option.classList.add = 'lastOption';
+			option.value = "last";
+			option.textContent = "Dernier";
+			option.selected = true;
+			listContentOrderNews.appendChild(option);
+		}
+
+		formModal.elements.type.value = "news";
+		formModal.elements.blockOrderValue.value = "new";
+		formModal.elements.newOrderValue.value = "last";
+		tinyMCE.get('tinyMCEtextarea').setContent("");
+	});
+
+	//block order value
+	listContentOrderNews.addEventListener('change', function(e){
+		formModal.elements.newOrderValue.value = e.target.value;
+	});
+
 	//MENU EDIT PUBLICATION
 
 	//MENU EDIT ABOUT
@@ -667,7 +733,6 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	});
 
 	//MODAL
-
 	//button cancel
 	formModal.elements.cancel.addEventListener('click', function(e){
 		e.preventDefault();
@@ -685,11 +750,12 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			if (blockProfileListOrder.style.display === "flex") {
 				blockProfileListOrder.style.display = "none";
 			}
-
+			if (blockNewsListOrder.style.display === "flex") {
+				blockNewsListOrder.style.display = "none";
+			}
 			if (blockAboutListOrder.style.display === "flex") {
 				blockAboutListOrder.style.display = "none";
 			}
-
 			if (blockToDelete.style.display === 'none') {
 				blockToDelete.style.display = "flex";
 			}

@@ -1,4 +1,4 @@
-<section id="blockUserProfile">
+<section id="blockProfile">
 	<?php
 	if ($data['user']->getId() === $_SESSION['id']) {
 		//editing menus
@@ -24,13 +24,7 @@
 
 					<p>
 						<span>
-							<?php
-							if ($data['user']->getNoBanner()) {
-								echo '<input type="checkbox" name="noBanner" id="noBanner" checked>';
-							} else {
-								echo '<input type="checkbox" name="noBanner" id="noBanner">';
-							}
-							?>
+							<input type="checkbox" name="noBanner" id="noBanner" <?=$data['user']->getNoBanner() === true ? 'checked' : 'unchecked'?>>
 							<label for="noBanner">Pas d'image de bannière</label>
 						</span>
 					</p>
@@ -273,10 +267,6 @@
 			<div id="contentMenuEditPublication" class="contentMenuEdit">
 				publi
 			</div>
-
-			<div id="contentMenuEditAbout" class="contentMenuEdit">
-				about
-			</div>
 		</div>
 		<?php
 	}
@@ -297,7 +287,7 @@
 	</div>
 	<div id="colorFade"></div>
 
-	<article id="userProfile" class="container">
+	<article id="profile" class="container">
 		<header>
 			<div class="<?=$data['user']->getProfilePictureSize()?> editable">
 				<img src="<?=$data['user']->getProfilePicture()?>" alt="profile picture" class="<?=$data['user']->getProfilePictureOrientation()?>">

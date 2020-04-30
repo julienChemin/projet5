@@ -111,11 +111,27 @@
 						<script src="public/js/userProfile.js"></script>
 						<?php
 					break;
+					case 'schoolProfile' :
+						if (isset($_SESSION['id']) && $data['school']->getName() === $_SESSION['school']) {
+							?>
+							<script src="public/js/ajax.js"></script>
+							<?php
+						}
+						?>
+						<script src="public/js/schoolProfile.js"></script>
+						<?php
+					break;
 					case 'tinyMCE' :
 						require('gitignore/key.php');
 						?>
 						<script src='https://cdn.tiny.cloud/1/<?=$tinyMCEapiKey?>/tinymce/5/tinymce.min.js' referrerpolicy="origin"></script>
 						<script src="public/js/tinyMCEinit.js"></script>
+						<?php
+					break;
+					case 'addPost' :
+						?>
+						<script src="public/js/ajax.js"></script>
+						<script src="public/js/addPost.js"></script>
 						<?php
 					break;
 					default :

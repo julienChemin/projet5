@@ -66,11 +66,26 @@ try {
 			case 'delete' :
 				$Backend->delete();
 			break;
+			case 'schoolProfile' :
+				$Backend->schoolProfile();
+			break;
+			case 'updateProfile' :
+				$Backend->updateProfile();
+			break;
+			case 'upload' :
+				$Backend->upload();
+			break;
 			case 'schoolHistory' :
 				$Backend->schoolHistory();
 			break;
 			case 'getSchoolHistory' :
 				$Backend->getSchoolHistory();
+			break;
+			case 'addSchoolPost' :
+				$Backend->addSchoolPost();
+			break;
+			case 'uploadSchoolPost' :
+				$Backend->uploadSchoolPost();
 			break;
 			default :
 				//"action" value is unknow
