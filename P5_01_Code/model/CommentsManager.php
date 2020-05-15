@@ -1,7 +1,5 @@
 <?php
-
 namespace Chemin\ArtSchool\Model;
-
 use Chemin\ArtSchool\Model\ReportManager;
 
 class CommentsManager extends ReportManager
@@ -13,22 +11,18 @@ class CommentsManager extends ReportManager
 
 	public function set(Comment $Comment)
 	{
-		$this->sql('
-			INSERT INTO ' . static::$TABLE_NAME . ' (idPost, content, idAuthor, datePublication) 
-			VALUES (:idPost, :content, :idAuthor, NOW())',
-			[':idPost' => $Comment->getIdPost(), ':content' => $Comment->getContent(), ':idAuthor' => $Comment->getIdAuthor()]);
-
+		$this->sql('INSERT INTO ' . static::$TABLE_NAME . ' (idPost, content, idAuthor, datePublication) 
+					VALUES (:idPost, :content, :idAuthor, NOW())', 
+					[':idPost' => $Comment->getIdPost(), ':content' => $Comment->getContent(), ':idAuthor' => $Comment->getIdAuthor()]);
 		return $this;
 	}
 
 	public function update(Comment $Comment)
 	{
-		$this->sql('
-			UPDATE ' . static::$TABLE_CHAMPS . ' 
-			SET content = :content 
-			WHERE id = :id',
-			[':content' => $Comment->getContent(), ':id' => $Comment->getId()]);
-
+		$this->sql('UPDATE ' . static::$TABLE_CHAMPS . ' 
+					SET content = :content 
+					WHERE id = :id', 
+					[':content' => $Comment->getContent(), ':id' => $Comment->getId()]);
 		return $this;
 	}
 }

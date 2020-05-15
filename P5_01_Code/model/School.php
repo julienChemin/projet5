@@ -8,6 +8,8 @@ class School
 			$idAdmin,
 			$name,
 			$nameAdmin,
+			$schoolGroups,
+			$listSchoolGroups,
 			$code,
 			$nbEleve,
 			$nbActiveAccount,
@@ -47,6 +49,7 @@ class School
 
 	public function init()
 	{
+		$this->setListSchoolGroups($this->getSchoolGroups());
 		$this->setProfileBannerInfo($this->getProfileBannerInfo());
 		$this->setProfilePictureInfo($this->getProfilePictureInfo());
 		$this->setProfileTextInfo($this->getProfileTextInfo());
@@ -71,6 +74,16 @@ class School
 	public function getNameAdmin()
 	{
 		return $this->nameAdmin;
+	}
+
+	public function getSchoolGroups()
+	{
+		return $this->schoolGroups;
+	}
+
+	public function getListSchoolGroups()
+	{
+		return $this->listSchoolGroups;
 	}
 
 	public function getCode()
@@ -187,6 +200,23 @@ class School
 	{
 		if (strlen($nameAdmin) > 0) {
 			$this->nameAdmin = $nameAdmin;
+			return $this;
+		}
+	}
+
+	public function setSchoolGroups(string $schoolGroups)
+	{
+		if (strlen($schoolGroups) > 0){
+			$this->schoolGroups = $schoolGroups;
+			return $this;
+		}
+	}
+
+	public function setListSchoolGroups($list)
+	{
+		if ($list !== null) {
+			$listSchoolGroups = explode(',', $list);
+			$this->listSchoolGroups = array_slice($listSchoolGroups, 1);
 			return $this;
 		}
 	}

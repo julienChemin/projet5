@@ -44,81 +44,67 @@
 			}
 			?>
 		</article>
-
 		<aside id="slowSlide" class="sliderPosts">
 			<div class="container">
 				<h2>Récemment posté par des élèves de votre établissement</h2>
 				<a href="#">Tout voir</a>
 			</div>
-
 			<hr>
-
 			<div class="container posts">
 				<div class="arrow arrowLeft">
 					<i class="fas fa-chevron-circle-left"></i>
 				</div>
-
 				<div class="arrow arrowRight">
 					<i class="fas fa-chevron-circle-left"></i>
 				</div>
-
 				<div class="slide">
 					<div class="items">
 						<figure>
 							<img src="public/images/test.png">
 						</figure>
 					</div>
-
 					<div class="items">
 						<figure>
 							<img src="public/images/test2.jpg">
 						</figure>
 					</div>
-
 					<div class="items">
 						<figure>
 							<img src="public/images/test.png">
 						</figure>
 					</div>
-
 					<div class="items">
 						<figure>
 							<img src="public/images/test2.jpg">
 						</figure>
 					</div>
-
 					<div class="items">
 						<figure>
 							<img src="public/images/test2.jpg">
 						</figure>
 					</div>
 				</div>
-
 				<div class="slide">
 					<div class="items">
 						<figure>
 							<img src="public/images/test.png">
 						</figure>
 					</div>
-
 					<div class="items">
 						<figure>
 							<img src="public/images/test2.jpg">
 						</figure>
 					</div>
-
 					<div class="items">
 						<figure>
 							<img src="public/images/test.png">
 						</figure>
 					</div>
-
 					<div class="items">
 						<figure>
 							<img src="public/images/test2.jpg">
 						</figure>
 					</div>
-
 					<div class="items">
 						<figure>
 							<img src="public/images/test2.jpg">
@@ -137,23 +123,19 @@
 					<label for="ConnectPseudoAdmin">Identifiant</label>
 					<input type="text" name="ConnectPseudoAdmin" required="">
 				</p>
-
 				<p>
 					<label for="ConnectPasswordAdmin">Mot de passe</label>
 					<input type="password" name="ConnectPasswordAdmin" required="">
 				</p>
-
 				<p>
 					<label for="stayConnect">Rester connecté</label>
 					<input type="checkbox" name="stayConnect" id="stayConnect">
 				</p>
-
 				<p>
 					<input type="submit" name="submit" value="Connection">
 					<span id="buttonForgetPassword">Mot de passe oublié</span>
 				</p>
 			</div>
-
 			<?php
 			if (isset($data['message'])) {
 				echo '<p class="msg orang">' . $data['message'] . '</p>';
@@ -165,17 +147,14 @@
 			<p>
 				Saisissez l'adresse mail lié à votre compte, 
 			</p>
-
 			<p>
 				un email vous sera envoyé à cette adresse pour réinitialiser votre mot de passe.
 			</p>
-
 			<div>
 				<p>
 					<label for="postMail">Adresse email</label>
 					<input type="email" name="postMail" required="">
 				</p>
-
 				<p>
 					<input type="submit" name="submit" value="Envoyer">
 					<span id="buttonCancel">Annuler</span>

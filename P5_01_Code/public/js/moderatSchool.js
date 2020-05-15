@@ -1,6 +1,7 @@
 if (document.getElementById('blockModeratSchool') !== null) {
 	let modal = document.getElementById('modal');
 	let formModal = document.querySelector('#modal > form');
+	
 	let blockName = document.getElementById('blockName');
 	let blockAdmin = document.getElementById('blockAdmin');
 	let blockCode = document.getElementById('blockCode');

@@ -8,6 +8,7 @@ class User
 			$name,
 			$mail,
 			$school,
+			$schoolGroup,
 			$password,
 			$temporaryPassword,
 			$beingReset,
@@ -74,6 +75,11 @@ class User
 	public function getSchool()
 	{
 		return $this->school;
+	}
+
+	public function getSchoolGroup()
+	{
+		return $this->schoolGroup;
 	}
 
 	public function getPassword()
@@ -205,6 +211,14 @@ class User
 	{
 		if (strlen($school) > 0){
 			$this->school = $school;
+			return $this;
+		}
+	}
+
+	public function setSchoolGroup(string $schoolGroup)
+	{
+		if (strlen($schoolGroup) > 0){
+			$this->schoolGroup = $schoolGroup;
 			return $this;
 		}
 	}

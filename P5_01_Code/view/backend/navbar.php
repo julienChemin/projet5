@@ -4,7 +4,6 @@
 			<span>
 				<a href="indexAdmin.php"><img src="public/images/banner.png"></a>
 			</span>
-
 			<nav>
 				<ul>
 					<li title="Modérer les utilisateurs">
@@ -12,7 +11,6 @@
 							<i class="fas fa-list-ul"></i>
 						</a>
 					</li>
-
 					<hr class="hrNavbar">
 
 					<?php
@@ -23,7 +21,6 @@
 								<i class="fas fa-user-cog"></i>
 							</a>
 						</li>
-
 						<hr class="hrNavbar">
 						<?php
 					}
@@ -35,7 +32,6 @@
 								<i class="fas fa-school"></i>
 							</a>
 						</li>
-
 						<hr class="hrNavbar">
 						<?php
 					} elseif ($_SESSION['grade'] === ADMIN) {
@@ -45,7 +41,6 @@
 								<i class="fas fa-school"></i>
 							</a>
 						</li>
-
 						<hr class="hrNavbar">
 						<?php
 					}
@@ -55,13 +50,11 @@
 						<?=$_SESSION['pseudo']?>
 						<i class="fas fa-sort-down"></i>
 					</li>
-
 					<hr class="hrNavbar">
 
 					<li title="Vers ArtSchool">
 						<a href="index.php"><i class="fas fa-external-link-alt"></i></a>
 					</li>
-
 					<hr class="hrNavbar">
 
 					<li title="Se Déconnecter">
@@ -72,7 +65,6 @@
 				</ul>
 			</nav>
 		</div>
-
 		<div id="menuNavbar">
 			<div>
 				<ul>
@@ -81,7 +73,6 @@
 							Page d'accueil<i class="fas fa-home"></i>
 						</a>
 					</li>
-
 					<hr>
 
 					<li>
@@ -119,7 +110,6 @@
 						<?php
 					}
 					?>
-
 					<hr>
 
 					<li>
@@ -129,11 +119,16 @@
 					</li>
 
 					<li>
+						<a href="indexAdmin.php?action=addSchoolPost">
+							Publier pour l'établissement<i class="fas fa-file-import"></i>
+						</a>
+					</li>
+
+					<li>
 						<a href="indexAdmin.php?action=schoolHistory">
 							Historique<i class="fas fa-history"></i>
 						</a>
 					</li>
-
 					<hr>
 
 					<li>
@@ -141,7 +136,6 @@
 							Vers le site ArtSchool<i class="fas fa-external-link-alt"></i>
 						</a>
 					</li>
-
 					<hr>
 
 					<li>

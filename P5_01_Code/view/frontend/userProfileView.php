@@ -11,26 +11,20 @@
 						<label for="bannerPath">Adresse de l'image</label>
 						<input type="text" name="bannerPath" id="bannerPath">
 					</p>
-
 					<p>- ou -</p>
-
 					<p>
 						<label for="dlBanner">Télécharger une image (max : 2Mo) : </label>
 						<input type="hidden" name="MAX_FILE_SIZE" value="2000000">
 						<input type="file" name="dlBanner" id="dlBanner">
 					</p>
-
 					<p>- ou -</p>
-
 					<p>
 						<span>
 							<input type="checkbox" name="noBanner" id="noBanner" <?=$data['user']->getNoBanner() === true ? 'checked' : 'unchecked'?>>
 							<label for="noBanner">Pas d'image de bannière</label>
 						</span>
 					</p>
-
 					<hr class="hrNavbar">
-
 					<p>
 						<button name="saveBanner" id="saveBanner">
 							<i class="fas fa-check"></i>
@@ -38,7 +32,6 @@
 					</p>
 				</form>
 			</div>
-
 			<div id="contentMenuEditProfilePicture" class="contentMenuEdit menuEditHeader">
 				<form method="POST" action="index.php?action=upload&elem=picture&orientation=<?=$data['user']->getProfilePictureOrientation()?>
 				&size=<?=$data['user']->getProfilePictureSize()?>" enctype="multipart/form-data">
@@ -46,51 +39,43 @@
 						<label for="picturePath">Adresse de l'image</label>
 						<input type="text" name="picturePath" id="picturePath">
 					</p>
-
 					<p>- ou -</p>
-
 					<p>
 						<label for="dlPicture">Télécharger une image (max : 2Mo): </label>
 						<input type="hidden" name="MAX_FILE_SIZE" value="2000000">
 						<input type="file" name="dlPicture" id="dlPicture">
 					</p>
-
 					<hr class="hrNavbar">
-
 					<p>
 						<span>
 							<input type="radio" name="pictureOrientation" id="widePicture" 
 							value="widePicture" <?=$data['user']->getProfilePictureOrientation() === 'widePicture' ? 'checked' : 'unchecked'?>>
 							<label for="widePicture">Image large</label>
 						</span>
-
 						<span>
 							<input type="radio" name="pictureOrientation" id="highPicture" 
 							value="highPicture" <?=$data['user']->getProfilePictureOrientation() === 'highPicture' ? 'checked' : 'unchecked'?>>
 							<label for="highPicture">Image haute</label>
 						</span>
 					</p>
-
 					<hr class="hrNavbar">
-
 					<p>
 						<span>Taille de l'image</span>
-
 						<span>
 							<input type="radio" name="pictureSize" id="smallPicture" 
 							value="smallPicture" <?=$data['user']->getProfilePictureSize() === 'smallPicture' ? 'checked' : 'unchecked'?>>
 							<label for="smallPicture">Petite</label>
+
 							<input type="radio" name="pictureSize" id="mediumPicture" 
 							value="mediumPicture" <?=$data['user']->getProfilePictureSize() === 'mediumPicture' ? 'checked' : 'unchecked'?>>
 							<label for="mediumPicture">Moyenne</label>
+
 							<input type="radio" name="pictureSize" id="bigPicture" 
 							value="bigPicture" <?=$data['user']->getProfilePictureSize() === 'bigPicture' ? 'checked' : 'unchecked'?>>
 							<label for="bigPicture">Grande</label>
 						</span>
 					</p>
-
 					<hr class="hrNavbar">
-
 					<p>
 						<button name="saveProfilePicture" id="saveProfilePicture">
 							<i class="fas fa-check"></i>
@@ -98,7 +83,6 @@
 					</p>
 				</form>
 			</div>
-
 			<div id="contentMenuEditText" class="contentMenuEdit menuEditHeader">
 				<form>
 					<div>
@@ -113,16 +97,14 @@
 						<label for="blockTextCenter">
 							<img src="public/images/blockTextCenter.jpg">
 						</label>
-					
+
 						<input type="radio" name="blockTextPosition" id="blockTextBottom"
 						value="elemEnd" <?=$data['user']->getProfileTextBlock() === 'elemEnd' ? 'checked' : 'unchecked'?>>
 						<label for="blockTextBottom">
 							<img src="public/images/blockTextBottom.jpg">
 						</label>
 					</div>
-
 					<hr class="hrNavbar">
-
 					<div>
 						<input type="radio" name="pseudoPosition" id="pseudoLeft"
 						value="elemStart" <?=$data['user']->getProfileTextPseudo() === 'elemStart' ? 'checked' : 'unchecked'?>>
@@ -135,16 +117,14 @@
 						<label for="pseudoCenter">
 							<img src="public/images/pseudoCenter.jpg">
 						</label>
-					
+
 						<input type="radio" name="pseudoPosition" id="pseudoRight"
 						value="elemEnd" <?=$data['user']->getProfileTextPseudo() === 'elemEnd' ? 'checked' : 'unchecked'?>>
 						<label for="pseudoRight">
 							<img src="public/images/pseudoRight.jpg">
 						</label>
 					</div>
-
 					<hr class="hrNavbar">
-
 					<div>
 						<input type="radio" name="schoolPosition" id="schoolLeft"
 						value="elemStart" <?=$data['user']->getProfileTextSchool() === 'elemStart' ? 'checked' : 'unchecked'?>>
@@ -157,16 +137,14 @@
 						<label for="schoolCenter">
 							<img src="public/images/schoolCenter.jpg">
 						</label>
-					
+
 						<input type="radio" name="schoolPosition" id="schoolRight"
 						value="elemEnd" <?=$data['user']->getProfileTextSchool() === 'elemEnd' ? 'checked' : 'unchecked'?>>
 						<label for="schoolRight">
 							<img src="public/images/schoolRight.jpg">
 						</label>
 					</div>
-
 					<hr class="hrNavbar">
-
 					<div>
 						<button name="saveProfileText" id="saveProfileText">
 							<i class="fas fa-check"></i>
@@ -174,12 +152,10 @@
 					</div>
 				</form>
 			</div>
-
 			<div id="contentMenuEditBlock" class="contentMenuEdit">
 				<form>
 					<div>
 						<p>Largeur</p>
-
 						<div>
 							<input type="radio" name="blockSize" id="blockSmall"
 							value="small">
@@ -194,9 +170,7 @@
 							<label for="blockBig">Grand</label>
 						</div>
 					</div>
-
 					<hr class="hrNavbar">
-
 					<p id="blockProfileListOrder">
 						<label for="profileContentOrder">Bloc numéro :</label>
 						<select name="profileContentOrder" id="profileContentOrder">
@@ -213,7 +187,6 @@
 							?>
 						</select>
 					</p>
-
 					<p id="blockAboutListOrder">
 						<label for="aboutContentOrder">Bloc numéro :</label>
 						<select name="aboutContentOrder" id="aboutContentOrder">
@@ -230,17 +203,13 @@
 							?>
 						</select>
 					</p>
-
 					<hr class="hrNavbar">
-
 					<p>
 						<label for="align">Bloc seul sur sa ligne</label>
 						<input type="checkbox" name="align" id="align">
 					</p>
-
 					<div>
 						<p>Alignement</p>
-
 						<div>
 							<input type="radio" name="alignSide" id="alignLeft"
 							value="elemStart">
@@ -255,7 +224,6 @@
 							<label for="alignRight">Droite</label>
 						</div>
 					</div>
-
 					<div id="blockToDelete">
 						<hr class="hrNavbar">
 						<i class="fas fa-times"></i>
@@ -263,30 +231,20 @@
 					</div>
 				</form>
 			</div>
-
-			<div id="contentMenuEditPublication" class="contentMenuEdit">
-				publi
-			</div>
 		</div>
 		<?php
 	}
 	?>
-
 	<div id="banner" class="editable">
 		<?php
-		if ($data['user']->getNoBanner()) {
-			echo '<img class="hide" src="' . $data['user']->getProfileBanner() . '" alt="banner picture">';
-		} else {
-			echo '<img src="' . $data['user']->getProfileBanner() . '" alt="banner picture">';
-		}
-
+		$data['user']->getNoBanner() ? $classForBanner = 'hide' : $classForBanner = "";
+		echo '<img class="' . $classForBanner . '" src="' . $data['user']->getProfileBanner() . '" alt="banner picture">';
 		if ($data['user']->getId() === $_SESSION['id']) {
 			echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader"></i>';
 		}
 		?>
 	</div>
 	<div id="colorFade"></div>
-
 	<article id="profile" class="container">
 		<header>
 			<div class="<?=$data['user']->getProfilePictureSize()?> editable">
@@ -297,11 +255,10 @@
 				}
 				?>
 			</div>
-
 			<div class="<?=$data['user']->getProfileTextBlock()?> editable">
 				<span class="<?=$data['user']->getProfileTextPseudo()?>"><?=$data['user']->getName()?></span>
 				<a href="index.php?action=schoolProfile&school=<?=$data['user']->getSchool()?>" class="<?=$data['user']->getProfileTextSchool()?>">
-					<?=$data['user']->getSchool()?> - groupe
+					<?=$data['user']->getSchool()?><?=$data['user']->getSchoolGroup() !== null ? " - " . $data['user']->getSchoolGroup() : "" ?>
 				</a>
 				<?php
 				if ($data['user']->getId() === $_SESSION['id']) {
@@ -310,7 +267,6 @@
 				?>
 			</div>
 		</header>
-
 		<div>
 			<nav>
 				<ul id="blockTabs" class="tabsStyleOne">
@@ -318,7 +274,6 @@
 					<li>Publication</li>
 					<li>À propos</li>
 				</ul>
-
 				<?php
 				if ($data['user']->getId() === $_SESSION['id']) {
 					?>
@@ -331,7 +286,6 @@
 				}
 				?>
 			</nav>
-
 			<div id="slideTab">
 				<div id="tabProfile" class="editable">
 					<?php
@@ -339,7 +293,6 @@
 						echo '<i class="far fa-plus-square iconeEdit"></i>';
 					}
 					?>
-
 					<div>
 						<?php
 						if (!empty($data['profileContent'])) {
@@ -376,26 +329,20 @@
 						?>
 					</div>
 				</div>
-
 				<div id="tabPublication" class="editable">
 					<?php
 					if ($data['user']->getId() === $_SESSION['id']) {
 						echo '<a href="index.php?action=addPost"><i class="far fa-plus-square iconeEdit"></i></a>';
 					}
 					?>
-
-					<div>
-						
-					</div>
+					<div></div>
 				</div>
-
 				<div id="tabAbout" class="editable">
 					<?php
 					if ($data['user']->getId() === $_SESSION['id']) {
 						echo '<i class="far fa-plus-square iconeEdit"></i>';
 					}
 					?>
-
 					<div>
 						<?php
 						if (!empty($data['profileContent'])) {
@@ -436,7 +383,6 @@
 		</div>
 	</article>
 </section>
-
 <?php
 if ($data['user']->getId() === $_SESSION['id']) {
 	?>
@@ -445,11 +391,9 @@ if ($data['user']->getId() === $_SESSION['id']) {
 			<div id="warningBeforeDelete">
 				<p>Êtes-vous sûr de vouloir supprimer ce bloc?</p>
 			</div>
-
 			<div>
 				<textarea id="tinyMCEtextarea" name="tinyMCEtextarea"></textarea>
 			</div>
-
 			<div class="modalButtons">
 				<input type="hidden" name="type" value="">
 				<input type="hidden" name="blockOrderValue" value="">

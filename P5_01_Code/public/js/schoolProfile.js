@@ -460,6 +460,8 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		formModal.elements.type.value = "profile";
 		formModal.elements.blockOrderValue.value = "new";
 		formModal.elements.newOrderValue.value = "last";
+		formModal.elements.sizeValue.value = "small";
+		formModal.elements.alignValue.value = "";
 		tinyMCE.get('tinyMCEtextarea').setContent("");
 	});
 
@@ -616,6 +618,8 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		formModal.elements.type.value = "news";
 		formModal.elements.blockOrderValue.value = "new";
 		formModal.elements.newOrderValue.value = "last";
+		formModal.elements.sizeValue.value = "small";
+		formModal.elements.alignValue.value = "";
 		tinyMCE.get('tinyMCEtextarea').setContent("");
 	});
 
@@ -623,8 +627,6 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	listContentOrderNews.addEventListener('change', function(e){
 		formModal.elements.newOrderValue.value = e.target.value;
 	});
-
-	//MENU EDIT PUBLICATION
 
 	//MENU EDIT ABOUT
 	let allButtonsEditAbout = document.querySelectorAll('.editable > .iconeEditAbout');
@@ -714,6 +716,8 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		formModal.elements.type.value = "about";
 		formModal.elements.blockOrderValue.value = "new";
 		formModal.elements.newOrderValue.value = "last";
+		formModal.elements.sizeValue.value = "small";
+		formModal.elements.alignValue.value = "";
 		tinyMCE.get('tinyMCEtextarea').setContent("");
 	});
 

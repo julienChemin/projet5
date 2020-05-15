@@ -14,67 +14,47 @@
 					}
 					//display all schools for webmaster
 					foreach ($data['schools'] as $school) {
-						if ($school->getIsActive()) {
-							$classIsActive = "";
-						} else {
-							$classIsActive = "inactiveSchool";
-						}
 						?>
-
 						<div class="blockSchool">
-							<div class="<?=$classIsActive?>">
+							<div class="<?=$school->getIsActive() ? "" : "inactiveSchool"?>">
 								<div>
 									<figure>
 										<img src='<?=$school->getLogo()?>'>
 									</figure>
 								</div>
-
 								<div>
 									<h1>
-										<?=$school->getName()?>
+										<a href="index.php?action=schoolProfile&school=<?=$school->getName()?>"><?=$school->getName()?></a>
 									</h1>
 								</div>
-
 								<div>
 									<i class="far fa-caret-square-down"></i>
 									<i class="far fa-caret-square-up"></i>
 								</div>
 							</div>
-
 							<div class="tableAdminModerator">
 								<table> 
 									<tr>
 										<th>
 											Administrateur(s)
 										</th>
-
 										<th>
 											Passer en modérateur
 										</th>
 									</tr>
-
 									<?php
 									foreach ($data['users'][$school->getName()] as $user) {
 										if ($user->getIsAdmin()) {
 											?>
 											<tr>
 												<td>
-													<?=$user->getName()?>
+													<a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a>
 												</td>
-
 												<?php
 												if ($user->getId() !== $school->getIdAdmin() && $user->getId() !== $_SESSION['id']) {
-													?>
-													<td>
-														<i class="far fa-minus-square toModerator" schoolname="<?=$school->getName()?>"></i>
-													</td>
-													<?php
+													echo '<td><i class="far fa-minus-square toModerator" schoolname="' . $school->getName() . '"></i></td>';
 												} else {
-													?>
-													<td>
-														<i class="far fa-minus-square inactifLink" schoolname="<?=$school->getName()?>"></i>
-													</td>
-													<?php
+													echo '<td><i class="far fa-minus-square inactifLink" schoolname="' . $school->getName() . '"></i></td>';
 												}
 												?>
 											</tr>
@@ -83,7 +63,6 @@
 									}
 									?>
 								</table>
-
 								<?php
 								if ($data['nbModerator'][$school->getName()] > 0) {
 									?>
@@ -92,37 +71,30 @@
 											<th>
 												Modérateur(s)
 											</th>
-
 											<th>
 												Passer en administrateur
 											</th>
-
 											<th>
 												Enlever les droits de modérateur
 											</th>
-
 											<th>
 												Supprimer
 											</th>
 										</tr>
-
 										<?php
 										foreach ($data['users'][$school->getName()] as $user) {
 											if ($user->getIsModerator()) {
 												?>
 												<tr>
 													<td>
-														<?=$user->getName()?>
+														<a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a>
 													</td>
-
 													<td>
 														<i class="far fa-plus-square toAdmin" schoolname="<?=$school->getName()?>"></i>
 													</td>
-
 													<td>
 														<i class="far fa-minus-square toNormalUser" schoolname="<?=$school->getName()?>"></i>
 													</td>
-
 													<td>
 														<i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
 													</td>
@@ -143,36 +115,29 @@
 									<?php
 								}
 								?>
-
 								<form class="formAddModerator" method="POST" action="indexAdmin.php?action=moderatAdmin&amp;option=addModerator">	
 									<p class="orang">Ajouter un modérateur >></p>
-
 									<div>
 										<hr>
 										<h2>Information sur le nouveau modérateur</h2>
-
 										<div>
 											<p>
 												<label for="moderatorName">Identifiant</label>
 												<input type="text" name="moderatorName" required="">
 											</p>
-
 											<p>
 												<label for="moderatorPassword">Mot de passe</label>
 												<input type="password" name="moderatorPassword" required="">
 											</p>
-
 											<p>
 												<label for="moderatorConfirmPassword">Confirmez le mot de passe</label>
 												<input type="password" name="moderatorConfirmPassword" required="">
 											</p>
-
 											<p>
 												<label for="moderatorMail">Adresse email</label>
 												<input type="email" name="moderatorMail" required="">
 											</p>
 										</div>
-
 										<div>
 											<p>
 												<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
@@ -180,7 +145,6 @@
 												<input type="button" name="cancel" value="Annuler">
 											</p>
 										</div>
-
 										<hr>
 									</div>
 								</form>
@@ -210,41 +174,30 @@
 						</div>
 						<?php
 					}
-
-					if ($school->getIsActive()) {
-						$classIsActive = "";
-					} else {
-						$classIsActive = "inactiveSchool";
-					}
 					?>
-					
 					<div class="blockSchool">
-						<div class="<?=$classIsActive?>">
+						<div class="<?=$school->getIsActive() ? "" : "inactiveSchool"?>">
 							<div>
 								<figure>
 									<img src='<?=$school->getLogo()?>'>
 								</figure>
 							</div>
-
 							<div>
 								<h1>
-									<?=$school->getName()?>
+									<a href="indexAdmin.php?action=schoolProfile&school=<?=$school->getName()?>"><?=$school->getName()?></a>
 								</h1>
 							</div>
 						</div>
-
 						<div class="tableAdminModerator">
 							<table> 
 								<tr>
 									<th>
 										Administrateur(s)
 									</th>
-
 									<th>
 										Passer en modérateur
 									</th>
 								</tr>
-
 								<?php
 								//display all admins
 								foreach ($data['users'] as $user) {
@@ -252,22 +205,13 @@
 										?>
 										<tr>
 											<td>
-												<?=$user->getName()?>
+												<a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a>
 											</td>
-
 											<?php
 											if (($user->getId() !== $school->getIdAdmin() && $user->getId() !== $_SESSION['id'])) {
-												?>
-												<td>
-													<i class="far fa-minus-square toModerator" schoolname="<?=$school->getName()?>"></i>
-												</td>
-												<?php
+												echo '<td><i class="far fa-minus-square toModerator" schoolname="' . $school->getName() . '"></i></td>';
 											} else {
-												?>
-												<td>
-													<i class="far fa-minus-square inactifLink" schoolname="<?=$school->getName()?>"></i>
-												</td>
-												<?php
+												echo '<td><i class="far fa-minus-square inactifLink" schoolname="' . $school->getName() . '"></i></td>';
 											}
 											?>
 										</tr>
@@ -276,7 +220,6 @@
 								}
 								?>
 							</table>
-
 							<?php
 							if ($data['nbModerator'] > 0) {
 								//display all moderator
@@ -286,37 +229,30 @@
 										<th>
 											Modérateur(s)
 										</th>
-
 										<th>
 											Passer en administrateur
 										</th>
-
 										<th>
 											Enlever les droits de modérateur
 										</th>
-
 										<th>
 											Supprimer
 										</th>
 									</tr>
-
 									<?php
 									foreach ($data['users'] as $user) {
 										if ($user->getIsModerator()) {
 											?>
 											<tr>
 												<td>
-													<?=$user->getName()?>
+													<a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a>
 												</td>
-
 												<td>
 													<i class="far fa-plus-square toAdmin" schoolname="<?=$school->getName()?>"></i>
 												</td>
-
 												<td>
 													<i class="far fa-minus-square toNormalUser" schoolname="<?=$school->getName()?>"></i>
 												</td>
-
 												<td>
 													<i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
 												</td>
@@ -338,36 +274,29 @@
 								<?php
 							}
 							?>
-
 							<form class="formAddModerator" method="POST" action="indexAdmin.php?action=moderatAdmin&amp;option=addModerator">
 								<p class="orang">Ajouter un modérateur >></p>
-
 								<div>
 									<hr>
 									<h2>Information sur le nouveau modérateur</h2>
-
 									<div>
 										<p>
 											<label for="moderatorName">Identifiant</label>
 											<input type="text" name="moderatorName" required="">
 										</p>
-
 										<p>
 											<label for="moderatorPassword">Mot de passe</label>
 											<input type="password" name="moderatorPassword" required="">
 										</p>
-
 										<p>
 											<label for="moderatorConfirmPassword">Confirmez le mot de passe</label>
 											<input type="password" name="moderatorConfirmPassword" required="">
 										</p>
-
 										<p>
 											<label for="moderatorMail">Adresse email</label>
 											<input type="email" name="moderatorMail" required="">
 										</p>
 									</div>
-
 									<div>
 										<p>
 											<input type="hidden" name="schoolName" value="<?=$school->getName()?>">
@@ -375,7 +304,6 @@
 											<input type="button" name="cancel" value="Annuler">
 										</p>
 									</div>
-
 									<hr>
 								</div>
 							</form>

@@ -1,7 +1,5 @@
 <?php
-
 namespace Chemin\ArtSchool\Model;
-
 class Post
 {
 	private $id,
@@ -12,6 +10,8 @@ class Post
 			$description,
 			$datePublication,
 			$isPrivate,
+			$authorizedGroups,
+			$listAuthorizedGroups,
 			$postType,
 			$fileType,
 			$onFolder,
@@ -31,7 +31,6 @@ class Post
 	{
 		foreach ($data as $key => $value) {
 			$method = 'set' . ucfirst($key);
-
 			if (method_exists($this, $method)) {
 				$this->$method($value);
 			}
@@ -42,6 +41,7 @@ class Post
 	{
 		if ($this->getTags() !== null) {
 			$this->setListTag($this->getTags());
+			$this->setListAuthorizedGroups($this->getAuthorizedGroups());
 		}
 	}
 
@@ -86,6 +86,16 @@ class Post
 		return $this->isPrivate;
 	}
 
+	public function getAuthorizedGroups()
+	{
+		return $this->authorizedGroups;
+	}
+
+	public function getListAuthorizedGroups()
+	{
+		return $this->listAuthorizedGroups;
+	}
+
 	public function getPostType()
 	{
 		return $this->postType;
@@ -121,48 +131,48 @@ class Post
 	{
 		if ($id > 0){
 			$this->id = $id;
-			return $this;
 		}
+		return $this;
 	}
 
 	public function setIdAuthor(int $idAuthor)
 	{
 		if ($idAuthor > 0){
 			$this->idAuthor = $idAuthor;
-			return $this;
 		}
+		return $this;
 	}
 
 	public function setTitle(string $title)
 	{
 		if (strlen($title) > 0){
 			$this->title = $title;
-			return $this;
 		}
+		return $this;
 	}
 
 	public function setFilePath($filePath)
 	{
 		if (strlen($filePath) > 0){
 			$this->filePath = $filePath;
-			return $this;
 		}
+		return $this;
 	}
 
 	public function setDescription(string $description)
 	{
 		if (strlen($description) > 0){
 			$this->description = $description;
-			return $this;
 		}
+		return $this;
 	}
 
 	public function setDatePublication($date)
 	{
 		if (!empty($date)){
 			$this->datePublication = $date;
-			return $this;
 		}
+		return $this;
 	}
 
 	public function setIsPrivate(bool $isPrivate)
@@ -171,28 +181,45 @@ class Post
 		return $this;
 	}
 
+	public function setAuthorizedGroups(string $authorizedGroups)
+	{
+		if (strlen($authorizedGroups) > 0){
+			$this->authorizedGroups = $authorizedGroups;
+		}
+		return $this;
+	}
+
+	public function setListAuthorizedGroups($list)
+	{
+		if ($list !== null) {
+			$listAuthorizedGroups = explode(',', $list);
+			$this->listAuthorizedGroups = array_slice($listAuthorizedGroups, 1);
+		}
+		return $this;
+	}
+
 	public function setPostType(string $postType)
 	{
 		if (strlen($postType) > 0){
 			$this->postType = $postType;
-			return $this;
 		}
+		return $this;
 	}
 
 	public function setFileType(string $fileType)
 	{
 		if (strlen($fileType) > 0){
 			$this->fileType = $fileType;
-			return $this;
 		}
+		return $this;
 	}
 
 	public function setUrlVideo(string $urlVideo)
 	{
 		if (strlen($urlVideo) > 0){
 			$this->urlVideo = $urlVideo;
-			return $this;
 		}
+		return $this;
 	}
 
 	public function setOnFolder($onFolder)
@@ -205,8 +232,8 @@ class Post
 	{
 		if (strlen($tags) > 0){
 			$this->tags = $tags;
-			return $this;
 		}
+		return $this;
 	}
 
 	public function setListTag(string $list)
@@ -215,6 +242,7 @@ class Post
 			$listTag = explode(',', $list);
 			$this->listTag = array_slice($listTag, 1);
 		}
+		return $this;
 	}
 
 	public function setComments(array $comments)

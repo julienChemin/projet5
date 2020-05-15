@@ -9,7 +9,7 @@ spl_autoload_register(function($class)
 	$arr = str_split($class, 23);
 	$nameClass = $arr[1];
 	
-	if ($nameClass === 'Frontend' || $nameClass === 'Backend') {
+	if ($nameClass === 'Frontend' || $nameClass === 'Backend' || $nameClass === 'Controller') {
 		require 'controller/' . $nameClass . '.php';
 	} else {
 		require 'model/' . $nameClass . '.php';
@@ -27,8 +27,6 @@ const USER = 'user';
 
 try {
 	$Frontend = new Frontend();
-	//verify information in $_SESSION (information can be modified by an administrator)
-	$Frontend->verifyInformation();
 	
 	if (isset($_GET['action'])) {
 		switch ($_GET['action']) {
@@ -64,6 +62,9 @@ try {
 			break;
 			case 'getTags' :
 				$Frontend->getTags();
+			break;
+			case 'getSchools' :
+				$Frontend->getSchools();
 			break;
 			default :
 				//"action" value is unknow

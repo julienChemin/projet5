@@ -9,7 +9,7 @@ spl_autoload_register(function($class)
 	$arr = str_split($class, 23);
 	$nameClass = $arr[1];
 	
-	if ($nameClass === 'Frontend' || $nameClass === 'Backend') {
+	if ($nameClass === 'Frontend' || $nameClass === 'Backend' || $nameClass === 'Controller') {
 		require 'controller/' . $nameClass . '.php';
 	} else {
 		require 'model/' . $nameClass . '.php';
@@ -28,8 +28,6 @@ const USER = 'user';
 
 try {
 	$Backend = new Backend();
-	//verify information in $_SESSION (information can be modified by an administrator)
-	$Backend->verifyInformation();
 
 	if (isset($_GET['action'])) {
 		switch ($_GET['action']) {
@@ -53,6 +51,18 @@ try {
 			break;
 			case 'moderatUsers' :
 				$Backend->moderatUsers();
+			break;
+			case 'createGroup' :
+				$Backend->createGroup();
+			break;
+			case 'getGroup' :
+				$Backend->getGroup();
+			break;
+			case 'setGroup' :
+				$Backend->setGroup();
+			break;
+			case 'deleteGroup' :
+				$Backend->deleteGroup();
 			break;
 			case 'editGrade' :
 				$Backend->editGrade();

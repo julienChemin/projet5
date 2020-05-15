@@ -4,7 +4,6 @@
 			<span>
 				<a href="index.php"><img src="public/images/banner.png"></a>
 			</span>
-
 			<nav>
 				<ul>
 					<?php
@@ -13,7 +12,6 @@
 						<li title="Se connecter">
 							<a href="index.php?action=signIn">Se connecter</a>
 						</li>
-
 						<li title="S'inscrire">
 							<a href="index.php?action=signUp">S'inscrire</a>
 						</li>
@@ -24,12 +22,10 @@
 							<?=$_SESSION['pseudo']?>
 							<i class="fas fa-sort-down"></i>
 						</li>
-
 						<?php
 						if ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {
 							?>
 							<hr class="hrNavbar">
-							
 							<li title="vers l'interface d'administration">
 								<a href="indexAdmin.php">
 									<i class="fas fa-external-link-alt"></i>
@@ -38,9 +34,7 @@
 							<?php
 						}
 						?>
-
 						<hr class="hrNavbar">
-
 						<li title="Se Déconnecter">
 							<a href="index.php?action=disconnect">
 								<i class="fas fa-power-off"></i>
@@ -52,7 +46,6 @@
 				</ul>
 			</nav>
 		</div>
-
 		<?php
 		if (isset($_SESSION['grade'])) {
 			?>
@@ -64,9 +57,12 @@
 							Profil<i class="far fa-address-card"></i>
 							</a>
 						</li>
-						
+						<li>
+							<a href="index.php?action=addPost">
+								Publication<i class="fas fa-file-import"></i>
+							</a>
+						</li>
 						<hr>
-
 						<?php
 						if ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {
 							?>
@@ -75,11 +71,9 @@
 									Vers l'interface d'administration<i class="fas fa-external-link-alt"></i>
 								</a>
 							</li>
-
 							<hr>
 							<?php
 						}
-
 						?>
 						<li title="Se Déconnecter">
 							<a href="index.php?action=disconnect">

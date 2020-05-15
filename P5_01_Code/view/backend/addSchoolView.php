@@ -8,23 +8,19 @@
 				<div>
 					<hr>
 					<h2>Information sur l'établissement</h2>
-
 					<div>
 						<p>
 							<label for="schoolName">Nom de l'établissement</label>
 							<input type="text" name="schoolName" required="">
 						</p>
-
 						<p>
 							<label for="schoolCode">Code d'affiliation</label>
 							<input type="text" name="schoolCode" required="">
 						</p>
-
 						<p>
 							<label for="schoolNbEleve">Nombre d'élève</label>
 							<input type="text" name="schoolNbEleve" required="">
 						</p>
-
 						<p>
 							<label for="schoolDuration">Durée de l'abonnement</label>
 							<select name="schoolDuration" id="schoolDuration" required="">
@@ -33,51 +29,41 @@
 								<option value="12">12 mois</option>
 							</select>
 						</p>
-
 						<p>
 							<input type="button" id="addSchoolBtnNext" name="next" value="Suivant">
 						</p>
 					</div>
-
 					<hr>
 				</div>
-					
 				<div>
 					<hr>
 					<h2>Information sur l'administrateur de l'établissement</h2>
-
 					<div>
 						<p>
 							<label for="adminName">Identifiant</label>
 							<input type="text" name="adminName" required="">
 						</p>
-
 						<p>
 							<label for="adminPassword">Mot de passe</label>
 							<input type="password" name="adminPassword" required="">
 						</p>
-
 						<p>
 							<label for="adminConfirmPassword">Confirmez le mot de passe</label>
 							<input type="password" name="adminConfirmPassword" required="">
 						</p>
-
 						<p>
 							<label for="adminMail">Adresse email</label>
 							<input type="email" name="adminMail" required="">
 						</p>
 					</div>
-
 					<div>
 						<p>
 							<input type="button" id="addSchoolBtnPrevious" name="previous" value="Précédent">
 							<input type="submit" name="submit" value="Ajouter">
 						</p>
 					</div>
-
 					<hr>
 				</div>
-
 				<?php
 				if (isset($data['message'])) {	
 					?>
@@ -101,7 +87,6 @@
 					<span>Ajouter une Art School</span>
 				</div>
 			</a>
-
 			<a href="indexAdmin.php?action=moderatSchool">
 				<div class="itemHomeAdmin">
 					<i class="far fa-edit"></i>

@@ -3,15 +3,9 @@
 		<?php
 		if ($_SESSION['school'] === ALL_SCHOOL) {
 			echo '<div id="blockSchools">';
-
 			foreach ($data['schools'] as $school) {
-				if ($school->getIsActive()) {
-					$classIsActive = "";
-				} else {
-					$classIsActive = "inactiveSchool";
-				}
+				$school->getIsActive() ? $classIsActive = "" : $classIsActive = "inactiveSchool";
 				?>
-				
 				<div class="blockSchool">
 					<div class="<?=$classIsActive?>">
 						<div>
@@ -19,7 +13,6 @@
 								<img src='<?=$school->getLogo()?>'>
 							</figure>
 						</div>
-
 						<div>
 							<h1>
 								<?=$school->getName()?>
@@ -34,7 +27,6 @@
 			}
 			?>
 			</div>
-
 			<div>
 				<div>
 					<div id="search">
@@ -43,10 +35,8 @@
 						<button value="date">Date</button>
 						<button value="categoryAndDate">Catégorie et date</button>
 					</div>
-
 					<form>
 						<input type="hidden" name="sortBy" id="sortBy" value="">
-
 						<div>
 							<label for="tagCategory">Catégorie</label>
 							<select name="tagCategory" id="tagCategory">
@@ -56,7 +46,6 @@
 								<option value="activityPeriod">Abonnement</option>
 							</select>
 						</div>
-
 						<div>
 							<div>
 								<span>Période</span>
@@ -68,11 +57,7 @@
 						</div>
 					</form>
 				</div>
-
-				<div id="blockEntries">
-					
-				</div>
-
+				<div id="blockEntries"></div>
 				<p id="showMore" class="orang">Afficher plus</p>
 			</div>
 			<?php
@@ -86,12 +71,10 @@
 						<button value="date">Date</button>
 						<button value="categoryAndDate">Catégorie et date</button>
 					</div>
-
 					<form>
 						<span class="hide"><?=$data['school']->getId()?></span>
 						<input type="hidden" name="schoolName" id="schoolName" value="<?=$data['school']->getName()?>">
 						<input type="hidden" name="sortBy" id="sortBy" value="">
-
 						<div>
 							<label for="tagCategory">Catégorie</label>
 							<select name="tagCategory" id="tagCategory">
@@ -101,7 +84,6 @@
 								<option value="activityPeriod">Abonnement</option>
 							</select>
 						</div>
-
 						<div>
 							<div>
 								<span>Période</span>
@@ -113,7 +95,6 @@
 						</div>
 					</form>
 				</div>
-
 				<div id="blockEntries">
 					<?php
 					if (!empty($data['entries'])) {
@@ -132,7 +113,6 @@
 					}
 					?>
 				</div>
-
 				<p id="showMore" class="orang">Afficher plus</p>
 			</div>
 			<?php

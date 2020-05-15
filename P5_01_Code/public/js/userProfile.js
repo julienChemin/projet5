@@ -490,6 +490,8 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		formModal.elements.type.value = "profile";
 		formModal.elements.blockOrderValue.value = "new";
 		formModal.elements.newOrderValue.value = "last";
+		formModal.elements.sizeValue.value = "small";
+		formModal.elements.alignValue.value = "";
 		tinyMCE.get('tinyMCEtextarea').setContent("");
 	});
 
@@ -557,8 +559,6 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			formModal.elements.alignValue.value = 'elemEnd';
 		}
 	});
-
-	//MENU EDIT PUBLICATION
 
 	//MENU EDIT ABOUT
 	let allButtonsEditAbout = document.querySelectorAll('.editable > .iconeEditAbout');
@@ -648,6 +648,8 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		formModal.elements.type.value = "about";
 		formModal.elements.blockOrderValue.value = "new";
 		formModal.elements.newOrderValue.value = "last";
+		formModal.elements.sizeValue.value = "small";
+		formModal.elements.alignValue.value = "";
 		tinyMCE.get('tinyMCEtextarea').setContent("");
 	});
 

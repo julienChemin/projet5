@@ -1,32 +1,28 @@
 <section id="blockProfile">
 	<div id="banner">
 		<?php
-		if ($data['school']->getNoBanner()) {
-			echo '<img class="hide" src="' . $data['school']->getProfileBanner() . '" alt="banner picture">';
-		} else {
-			echo '<img src="' . $data['school']->getProfileBanner() . '" alt="banner picture">';
-		}
+		$data['school']->getNoBanner() ? $classForBanner = 'hide' : $classForBanner = "";
+		echo '<img class="' . $classForBanner . '" src="' . $data['school']->getProfileBanner() . '" alt="banner picture">';
 		?>
 	</div>
 	<div id="colorFade"></div>
-
 	<article id="profile" class="container">
 		<header>
 			<div class="<?=$data['school']->getProfilePictureSize()?>">
 				<?php
-				if ($data['school']->getProfilePicture() === 'public/images/question-mark.png') {
-					echo '<img src="' . $data["school"]->getLogo() . '" alt="profile picture" class="' . $data["school"]->getProfilePictureOrientation() . '">';
-				} else {
-					echo '<img src="' . $data["school"]->getProfilePicture() . '" alt="profile picture" class="' . $data["school"]->getProfilePictureOrientation() . '">';
-				}
+				$data['school']->getProfilePicture() === 'public/images/question-mark.png' ? $PictureSrc = $data["school"]->getLogo() : $PictureSrc = $data["school"]->getProfilePicture();
+				echo '<img src="' . $PictureSrc . '" alt="profile picture" class="' . $data["school"]->getProfilePictureOrientation() . '">';
 				?>
 			</div>
-
 			<div class="<?=$data['school']->getProfileTextBlock()?>">
 				<span class="<?=$data['school']->getProfileTextSchool()?>"><?=$data['school']->getName()?></span>
 			</div>
 		</header>
-
+		<?php
+		if (!$data['school']->getIsActive()) {
+			echo '<div class="fullWidth inactiveSchool">Cette établissement n\'est plus actif sur le site depuis le ' . $data['school']->getDateDeadline() . '</div>';
+		}
+		?>
 		<div>
 			<nav>
 				<ul id="blockTabs" class="tabsStyleOne">
@@ -40,7 +36,6 @@
 					<li>À propos</li>
 				</ul>
 			</nav>
-
 			<div id="slideTab">
 				<div id="tabProfile">
 					<div>
@@ -52,11 +47,9 @@
 										echo '<div class="contentAloneInRow" style="order:' . $profileContent->getContentOrder() . '">';
 									}
 									?>
-
 									<div class="blockContentProfile <?=$profileContent->getSize()?> <?=$profileContent->getAlign()?>" style="order:<?=$profileContent->getContentOrder()?>">
 										<?=$profileContent->getContent()?>
 									</div>
-
 									<?php
 									if (!empty($profileContent->getAlign())) {
 										echo '</div>';
@@ -67,11 +60,9 @@
 						?>
 					</div>
 				</div>
-
 				<div id="tabPublication">
 					<div></div>
 				</div>
-
 				<?php
 				if ($data['school']->getName() === $_SESSION['school']) {
 					?>
@@ -81,7 +72,6 @@
 					<?php
 				}
 				?>
-
 				<div id="tabAbout">
 					<div>
 						<?php
@@ -92,11 +82,9 @@
 										echo '<div class="contentAloneInRow" style="order:' . $profileContent->getContentOrder() . '">';
 									}
 									?>
-
 									<div class="blockContentAbout <?=$profileContent->getSize()?> <?=$profileContent->getAlign()?>" style="order:<?=$profileContent->getContentOrder()?>">
 										<?=$profileContent->getContent()?>
 									</div>
-
 									<?php
 									if (!empty($profileContent->getAlign())) {
 										echo '</div>';

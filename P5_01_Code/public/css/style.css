@@ -559,6 +559,11 @@ figure img{
 	position: relative;
 	top: -150px;
 }
+#profile .inactiveSchool{
+	padding: 5px 0;
+	text-align: center;
+	border-radius: 5px;
+}
 #profile > header{
 	display: flex;
 	max-height: 500px;
@@ -896,7 +901,7 @@ figure img{
 	justify-content: center;
 }
 
-/*add post / add school post*/
+/*---------------------add post / add school post----------------------*/
 #addSchoolPost, #addPost{
 	padding: 100px 0px;
 }
@@ -911,6 +916,7 @@ figure img{
 	flex-direction: row;
 	justify-content: space-around;
 	align-items: center;
+	flex-wrap: wrap;
 
 	width: 100%;
 }
@@ -951,6 +957,60 @@ figure img{
 }
 #fileTypeSelection label img{
 	cursor: pointer;
+}
+#blockIsPrivate{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#blockIsPrivate > div:first-of-type{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 50%;
+}
+#authorizedGroups{
+	display: none;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	border: solid 2px #CF8B3F;
+	border-radius: 10px;
+	width: 50%;
+	min-height: 80px;
+}
+.authorizedGroup{
+	color: #CF8B3F;
+	border: solid 2px #CF8B3F;
+	border-radius: 10px;
+	padding: 4px 6px;
+	margin: 5px;
+}
+.authorizedGroup i{
+	margin-left: 5px;
+}
+#blockIsPrivate > div > div{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#blockIsPrivate > div > div:nth-of-type(2){
+	display: none;
+	justify-content: center;
+	align-items: center;
+}
+#blockIsPrivate input{
+	transform: scale(2.5);
+}
+#blockIsPrivate label{
+	color: #CF8B3F;
+	font-size: 2em;
+	margin-right: 35px;
+}
+#blockIsPrivate select{
+	transform: scale(1.5);
 }
 #blockTitle, #blockVideoLink{
 	width: 100%;
@@ -1094,7 +1154,7 @@ figure img{
 	transition: 0.15s linear;
 	-webkit-transition: 0.15s linear;
 }
-#addSchoolPost input[type='submit']{
+#addSchoolPost input[type='submit'], #addPost input[type='submit']{
 	display: none;
 	margin-top: 20px;
 	padding: 15px;
@@ -1377,7 +1437,11 @@ form > div{
 #moderatAdmin th{
 	color: #CF8B3F;
 }
+
 /*table admin*/
+.tableAdminModerator table a{
+	color: white;
+}
 .tableAdminModerator > table:first-child td:first-child{
 	width: 80%;
 	color: white;
@@ -1460,7 +1524,7 @@ form > div{
 
 	width: 100%;
 }
-#moderatUsers .blockSchool > div:nth-child(2){
+#moderatUsers .blockSchool > div:nth-of-type(2){
 	flex-wrap: wrap;
 }
 #moderatUsers table{
@@ -1479,19 +1543,109 @@ form > div{
 	color: #CF8B3F;
 }
 /*table active - inactive users*/
-#moderatUsers .blockSchool > div:nth-child(2) > table td:first-child{
-	width: 60%;
+#moderatUsers .blockSchool > div:nth-of-type(2) > table th:first-child{
+	border-right: solid 1px #CF8B3F;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2) > table th:nth-child(2){
+	border-right: solid 1px #CF8B3F;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2) > table th:nth-child(3){
+	border-right: solid 1px #CF8B3F;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2) > table th:nth-child(4){
+	border-right: solid 1px #CF8B3F;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2) > table td:first-child{
+	width: 30%;
 	color: white;
 	font-weight: normal;
 }
-#moderatUsers .blockSchool > div:nth-child(2) > table td:nth-child(2){
-	width: 13.33%;
+#moderatUsers .blockSchool > div:nth-of-type(2) > table td:nth-child(2){
+	width: 30%;
 }
-#moderatUsers .blockSchool > div:nth-child(2) > table td:nth-child(3){
-	width: 13.33%;
+.btnEditGroup{
+	cursor: pointer;
+	color: #CF8B3F;
 }
-#moderatUsers .blockSchool > div:nth-child(2) > table td:nth-child(4){
-	width: 13.33%;
+.listEditGroup{
+	display: none;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2) > table td:nth-child(3){
+	width: 13%;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2) > table td:nth-child(4){
+	width: 13%;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2) > table td:nth-child(5){
+	width: 13%;
+}
+/*form add group*/
+.formAddGroup{
+	padding: 0;
+	transition: 0.2s linear;
+	-webkit-transition: 0.2s linear;
+}
+.formAddGroup > p{
+	text-decoration: underline;
+	cursor: pointer;
+	font-size: 1.2em;
+}
+.formAddGroup > div:first-of-type{
+	height: 0px;
+	width: 100%;
+
+	overflow: hidden;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	transition: 0.2s linear;
+	-webkit-transition: 0.2s linear;
+}
+.formAddGroup > div:last-of-type{
+	display: none;
+	width: 100%;
+
+	overflow: hidden;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	transition: 0.2s linear;
+	-webkit-transition: 0.2s linear;
+}
+.formAddGroup i[class~='fa-times']{
+	font-size: 0.6em;
+	margin: 5px;
+}
+/*list group*/
+.listGroup{
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.listGroup li{
+	width: 49%;
+	text-align: center;
+	list-style-type: none;
+	font-size: 1.2em;
+	color: #CF8B3F;
+}
+.listGroup li i{
+	border: solid 1px #CF8B3F;
+	border-radius: 10px;
+	transform: scale(1);
+	padding: 4px 6px;
+}
+.confirmDeleteGroup{
+	display: none;
+	margin-left: 5px;
+	border: solid 2px #161617;
+	border-radius: 5px;
+	color: red;
+	cursor: pointer;
 }
 
 /* ------------------------ SCHOOL HISTORY ------------------------ */

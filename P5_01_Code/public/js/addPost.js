@@ -1,4 +1,9 @@
-let formAddPost = document.querySelector('#addSchoolPost > form');
+let formAddPost;
+if (document.getElementById('addSchoolPost') !== null) {
+	formAddPost = document.querySelector('#addSchoolPost > form');
+} else {
+	formAddPost = document.querySelector('#addPost > form');
+}
 let btnAddFolder = document.getElementById('btnAddFolder');
 let btnAddFile = document.getElementById('btnAddFile');
 let blockAddFile = document.getElementById('blockAddFile');
@@ -74,7 +79,9 @@ btnImg.addEventListener('click', function(){
 	blockUploadFile.style.display = 'flex';
 	labelUploadFile.textContent = "Fichier jpg, png, gif - (max : 5Mo)";
 	blockTinyMce.style.display = 'flex';
-	blockTags.style.display = 'flex';
+	if (formAddPost.elements.uploadType.value === 'public') {
+		blockTags.style.display = 'flex';
+	}
 	inputSubmit.style.display = "inline-block";
 	formAddPost.elements.fileTypeValue.value = 'image';
 	//set focus
@@ -95,7 +102,9 @@ btnVideo.addEventListener('click', function(){
 	blockUploadFile.style.display = 'flex';
 	labelUploadFile.textContent = "Thumbnail de la vidéo (jpg, png, gif) - non obligatoire - (max : 5Mo)";
 	blockTinyMce.style.display = 'flex';
-	blockTags.style.display = 'flex';
+	if (formAddPost.elements.uploadType.value === 'public') {
+		blockTags.style.display = 'flex';
+	}
 	inputSubmit.style.display = "inline-block";
 	blockVideoLink.style.display = "flex";
 	formAddPost.elements.fileTypeValue.value = 'video';
@@ -110,27 +119,29 @@ btnVideo.addEventListener('click', function(){
 	btnActif.btn = blockTypeVideo;
 });
 
-btnOther.addEventListener('click', function(){
-	blockTitle.style.display  = "flex";
-	inputTitle.placeholder = '';
-	blockUploadFile.style.display = 'flex';
-	labelUploadFile.innerHTML = "Fichier zip, rar - (max : 5Mo)";
-	preview.style.display = 'none';
-	blockTinyMce.style.display = 'flex';
-	blockTags.style.display = 'none';
-	inputSubmit.style.display = "inline-block";
-	formAddPost.elements.fileTypeValue.value = 'compressed';
-	//set focus
-	blockTypeOther.style.backgroundColor = '#222224';
-	blockTypeOther.style.border = 'solid 1px #CF8B3F';
-	if (btnActif.btn !== "" && btnActif.btn !== blockTypeOther) {
-		//unset previous focus
-		btnActif.btn.style.backgroundColor = '#161617';
-		btnActif.btn.style.border = 'none';
-	}
-	blockVideoLink.style.display = "none";
-	btnActif.btn = blockTypeOther;
-});
+if (document.getElementById('addSchoolPost') !== null) {
+	btnOther.addEventListener('click', function(){
+		blockTitle.style.display  = "flex";
+		inputTitle.placeholder = '';
+		blockUploadFile.style.display = 'flex';
+		labelUploadFile.innerHTML = "Fichier zip, rar - (max : 5Mo)";
+		preview.style.display = 'none';
+		blockTinyMce.style.display = 'flex';
+		blockTags.style.display = 'none';
+		inputSubmit.style.display = "inline-block";
+		formAddPost.elements.fileTypeValue.value = 'compressed';
+		//set focus
+		blockTypeOther.style.backgroundColor = '#222224';
+		blockTypeOther.style.border = 'solid 1px #CF8B3F';
+		if (btnActif.btn !== "" && btnActif.btn !== blockTypeOther) {
+			//unset previous focus
+			btnActif.btn.style.backgroundColor = '#161617';
+			btnActif.btn.style.border = 'none';
+		}
+		blockVideoLink.style.display = "none";
+		btnActif.btn = blockTypeOther;
+	});
+}
 
 //set preview
 inputFile.addEventListener('change', function(e){
@@ -281,10 +292,9 @@ inputTag.addEventListener('input', function(){
 
 //button submit
 inputSubmit.addEventListener('click', function(e){
-	console.log(inputFile.files);
 	switch (formAddPost.elements.fileTypeValue.value) {
 		case 'image' :
-			if (inputListTags.value === "") {
+			if (formAddPost.elements.uploadType.value === 'public' && inputListTags.value === "") {
 				e.preventDefault();
 				setErrorMsg('Vous devez choisir au moins un tag');
 			}
@@ -294,7 +304,7 @@ inputSubmit.addEventListener('click', function(e){
 			}
 		break;
 		case 'video' :
-			if (inputListTags.value === "") {
+			if (formAddPost.elements.uploadType.value === 'public' && inputListTags.value === "") {
 				e.preventDefault();
 				setErrorMsg('Vous devez choisir au moins un tag');
 			}
@@ -319,6 +329,87 @@ inputSubmit.addEventListener('click', function(e){
 				setErrorMsg('Vous devez ajouter un titre');
 			}
 		break;
-
+	}
+	if (document.getElementById('addSchoolPost') !== null && formAddPost.elements.isPrivate.checked && 
+	formAddPost.elements.listGroup.value !== 'all' && formAddPost.elements.listAuthorizedGroups.value === '') {
+		//no group selected for private school post
+		e.preventDefault();
+		setErrorMsg('Pour une publication privée, vous devez choisir au moins un groupe');
 	}
 });
+
+//public / private publication
+if (document.getElementById('addSchoolPost') !== null) {
+	let checkboxIsPrivate = formAddPost.elements.isPrivate;
+	let blockListGroup = document.querySelector('#blockIsPrivate > div > div:nth-of-type(2)');
+	let listGroup = document.querySelector('#blockIsPrivate select');
+	let listAuthorizedGroups = formAddPost.elements.listAuthorizedGroups;
+	let blockAuthorizedGroups = document.getElementById('authorizedGroups');
+
+	function addGroupToAuthorizedList(group) {
+		//add elem to list authorized group
+		let elemSpan = document.createElement('span');
+		elemSpan.textContent = group;
+		elemSpan.classList.add('authorizedGroup');
+
+		let elemI = document.createElement('i');
+		elemI.classList.add('fas');
+		elemI.classList.add('fa-times');
+		elemI.classList.add('deleteGroup');
+		elemI.addEventListener('click', function(){
+			//delete this group from list authorized group
+			blockAuthorizedGroups.removeChild(elemSpan);
+			//delete group value to input list authorized
+			let arrAuthorizedGroups = listAuthorizedGroups.value.split(',');
+			arrAuthorizedGroups.shift();
+			arrAuthorizedGroups.splice(arrAuthorizedGroups.indexOf(group), 1);
+			listAuthorizedGroups.value = "";
+			for (let i=0;i<arrAuthorizedGroups.length;i++) {
+				listAuthorizedGroups.value += (',' + arrAuthorizedGroups[i]);
+			}
+			//add this group from list group to add
+			let elemOption = document.createElement('option');
+			elemOption.value = group;
+			elemOption.textContent = group;
+			listGroup.appendChild(elemOption);
+		});
+		elemSpan.appendChild(elemI);
+		blockAuthorizedGroups.appendChild(elemSpan);
+		//add group value to input list authorized
+		listAuthorizedGroups.value += (',' + group);
+		//remove this group from list group to add
+		listGroup.removeChild(document.querySelector('option[value="' + group + '"]'));
+		//select empty option on list group
+		document.querySelector('option[value=""]').selected = true;
+	}
+
+	//display / hide private mode
+	checkboxIsPrivate.addEventListener('change', function(){
+		if (!checkboxIsPrivate.checked) {
+			blockListGroup.style.display = 'none';
+			blockAuthorizedGroups.style.display = 'none';
+			formAddPost.elements.uploadType.value = 'public';
+			if (formAddPost.elements.fileTypeValue.value === 'video' || formAddPost.elements.fileTypeValue.value === 'image') {
+				blockTags.style.display = 'flex';
+			}
+		} else {
+			blockListGroup.style.display = 'inline-block';
+			formAddPost.elements.uploadType.value = 'private';
+			if (blockTags.style.display === 'flex') {
+				blockTags.style.display = 'none';
+			}
+		}
+	});
+
+	//add group to list authorized group
+	listGroup.addEventListener('change', function(e){
+		if (e.target.value === "all") {
+			blockAuthorizedGroups.style.display = 'none';
+		} else if (e.target.value === "") {
+			blockAuthorizedGroups.style.display = 'flex';
+		} else {
+			blockAuthorizedGroups.style.display = 'flex';
+			addGroupToAuthorizedList(e.target.value);
+		}
+	});
+}

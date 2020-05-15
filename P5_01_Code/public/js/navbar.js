@@ -2,7 +2,7 @@ if (document.getElementById('pseudo')) {
 	let menuNavbar = document.getElementById('menuNavbar');
 	let contentMenuNavbar = menuNavbar.children[0];
 	let pseudo = document.getElementById('pseudo');
-	let marginPseudo = parseInt(getComputedStyle(pseudo).margin.split(' ')[1]);
+	let marginPseudo = parseInt(getComputedStyle(pseudo).marginLeft);
 	let icone = document.querySelector('#pseudo i');
 	let rect = icone.getBoundingClientRect();
 
