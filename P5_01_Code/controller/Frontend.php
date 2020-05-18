@@ -237,6 +237,11 @@ class Frontend extends Controller
 		} else {$this->incorrectInformation();}
 	}
 
+	public function post()
+	{
+		RenderView::render('template.php', 'frontend/postView.php');
+	}
+
 	public function addPost()
 	{
 		RenderView::render('template.php', 'frontend/addPostView.php', ['option' => ['addPost', 'tinyMCE']]);
@@ -247,8 +252,8 @@ class Frontend extends Controller
 		$PostsManager = new PostsManager();
 		$TagsManager = new TagsManager();
 		if (isset($_SESSION['id'], $_POST)) {
-			if ($PostsManager->canUploadPost($_POST, $_GET['folder'], $TagsManager)) {
-				if ($PostsManager->uploadPost($_POST, $_GET['folder'])) {
+			if ($PostsManager->canUploadPost($_POST, $TagsManager)) {
+				if ($PostsManager->uploadPost($_POST)) {
 					if (!empty($_POST['listTags'])) {
 						$TagsManager->checkForNewTag($_POST['listTags']);
 					}
@@ -280,5 +285,50 @@ class Frontend extends Controller
 			}
 		}
 		echo json_encode($arrSchoolName);
-	}	
+	}
+
+	public function getPostsBySchool()
+	{
+		$SchoolManager = new SchoolManager();
+		$PostsManager = new PostsManager();
+		if (!empty($_GET['school']) && $SchoolManager->nameExists($_GET['school'])) {
+			empty($_GET['offset']) ? $offset = 0 : $offset = $_GET['offset'];
+			empty($_GET['limit']) ? $limit = null : $limit = $_GET['limit'];
+			empty($_GET['withFolder']) ? $withFolder = false : $withFolder = true;
+			$posts = $PostsManager->getPostsBySchool($_GET['school'], $withFolder, $offset, $limit);
+			$arrPosts = [];
+			if (count($posts) > 0) {
+				foreach ($posts as $post) {
+					$arrPosts[] = $PostsManager->toArray($post);
+				}
+				echo json_encode($arrPosts);
+			} else {echo false;}
+		} else {echo false;}
+	}
+
+	public function getUserPosts()
+	{
+		$UserManager = new UserManager();
+		$PostsManager = new PostsManager();
+		if (!empty($_GET['id']) && $UserManager->exists($_GET['id'])) {
+			$posts = $PostsManager->getPostsByAuthor($_GET['id']);
+			if (count($posts) > 0) {
+				$arrSortedPosts = $PostsManager->sortForProfile($posts);
+				echo json_encode($arrSortedPosts);
+			} else {echo false;}
+		} else {echo false;}
+	}
+
+	public function getSchoolPosts()
+	{
+		$SchoolManager = new SchoolManager();
+		$PostsManager = new PostsManager();
+		if (!empty($_GET['school']) && $SchoolManager->nameExists($_GET['school'])) {
+			$posts = $PostsManager->getSchoolPosts($_GET['school']);
+			if (count($posts) > 0) {
+				$arrSortedPosts = $PostsManager->sortForProfile($posts);
+				echo json_encode($arrSortedPosts);
+			} else {echo false;}
+		} else {echo false;}
+	}
 }

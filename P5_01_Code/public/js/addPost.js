@@ -16,6 +16,19 @@ let preview = document.getElementById('preview');
 let blockTinyMce = document.getElementById('blockTinyMce');
 let inputSubmit = document.querySelector("input[type='submit']");
 
+window.addEventListener('load', function(){
+	//look if post is in folder
+	let url = window.location.search.split('&');
+	let arr = [];
+	for (let i=1; i<url.length; i++) {
+		let splitUrl = url[i].split('=');
+		arr[splitUrl[0]] = splitUrl[1];
+	}
+	if (arr['folder'] !== undefined) {
+		formAddPost.elements.folder.value = arr['folder'];
+	}
+});
+
 btnAddFolder.addEventListener('click', function(){
 	//display inputs add folder, hide inputs add file
 	btnAddFolder.style.backgroundColor = '#222224';
@@ -63,11 +76,11 @@ btnAddFile.addEventListener('click', function(){
 });
 
 //button type file
-let blockTypeImg = document.querySelector('#fileTypeSelection > p:first-of-type');
+let blockTypeImg = document.querySelector('#fileTypeSelection > figure:first-of-type');
 let btnImg = document.getElementById('typeImage');
-let blockTypeVideo = document.querySelector('#fileTypeSelection > p:nth-of-type(2)');
+let blockTypeVideo = document.querySelector('#fileTypeSelection > figure:nth-of-type(2)');
 let btnVideo = document.getElementById('typeVideo');
-let blockTypeOther = document.querySelector('#fileTypeSelection > p:last-of-type');
+let blockTypeOther = document.querySelector('#fileTypeSelection > figure:last-of-type');
 let btnOther = document.getElementById('typeOther');
 let btnActif = {btn:""};
 let inputFile = document.querySelector('#blockUploadFile input[type="file"]');
@@ -79,7 +92,7 @@ btnImg.addEventListener('click', function(){
 	blockUploadFile.style.display = 'flex';
 	labelUploadFile.textContent = "Fichier jpg, png, gif - (max : 5Mo)";
 	blockTinyMce.style.display = 'flex';
-	if (formAddPost.elements.uploadType.value === 'public') {
+	if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' && formAddPost.elements.isStudent.value === 'true') {
 		blockTags.style.display = 'flex';
 	}
 	inputSubmit.style.display = "inline-block";
@@ -102,7 +115,7 @@ btnVideo.addEventListener('click', function(){
 	blockUploadFile.style.display = 'flex';
 	labelUploadFile.textContent = "Thumbnail de la vidéo (jpg, png, gif) - non obligatoire - (max : 5Mo)";
 	blockTinyMce.style.display = 'flex';
-	if (formAddPost.elements.uploadType.value === 'public') {
+	if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' && formAddPost.elements.isStudent.value === 'true') {
 		blockTags.style.display = 'flex';
 	}
 	inputSubmit.style.display = "inline-block";
@@ -294,7 +307,9 @@ inputTag.addEventListener('input', function(){
 inputSubmit.addEventListener('click', function(e){
 	switch (formAddPost.elements.fileTypeValue.value) {
 		case 'image' :
-			if (formAddPost.elements.uploadType.value === 'public' && inputListTags.value === "") {
+			if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' 
+			&& formAddPost.elements.isStudent.value === 'true' && inputListTags.value === "") {
+				//tag is only for public student post
 				e.preventDefault();
 				setErrorMsg('Vous devez choisir au moins un tag');
 			}
@@ -304,7 +319,9 @@ inputSubmit.addEventListener('click', function(e){
 			}
 		break;
 		case 'video' :
-			if (formAddPost.elements.uploadType.value === 'public' && inputListTags.value === "") {
+			if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' 
+			&& formAddPost.elements.isStudent.value === 'true' && inputListTags.value === "") {
+				//tag is only for public student post
 				e.preventDefault();
 				setErrorMsg('Vous devez choisir au moins un tag');
 			}

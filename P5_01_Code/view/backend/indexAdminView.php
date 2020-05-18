@@ -45,9 +45,10 @@
 			?>
 		</article>
 		<aside id="slowSlide" class="sliderPosts">
+			<input type="hidden" name="schoolName" id="schoolName" value="<?=$_SESSION['school']?>">
 			<div class="container">
 				<h2>Récemment posté par des élèves de votre établissement</h2>
-				<a href="#">Tout voir</a>
+				<a href="index.php">Tout voir</a>
 			</div>
 			<hr>
 			<div class="container posts">
@@ -57,60 +58,7 @@
 				<div class="arrow arrowRight">
 					<i class="fas fa-chevron-circle-left"></i>
 				</div>
-				<div class="slide">
-					<div class="items">
-						<figure>
-							<img src="public/images/test.png">
-						</figure>
-					</div>
-					<div class="items">
-						<figure>
-							<img src="public/images/test2.jpg">
-						</figure>
-					</div>
-					<div class="items">
-						<figure>
-							<img src="public/images/test.png">
-						</figure>
-					</div>
-					<div class="items">
-						<figure>
-							<img src="public/images/test2.jpg">
-						</figure>
-					</div>
-					<div class="items">
-						<figure>
-							<img src="public/images/test2.jpg">
-						</figure>
-					</div>
-				</div>
-				<div class="slide">
-					<div class="items">
-						<figure>
-							<img src="public/images/test.png">
-						</figure>
-					</div>
-					<div class="items">
-						<figure>
-							<img src="public/images/test2.jpg">
-						</figure>
-					</div>
-					<div class="items">
-						<figure>
-							<img src="public/images/test.png">
-						</figure>
-					</div>
-					<div class="items">
-						<figure>
-							<img src="public/images/test2.jpg">
-						</figure>
-					</div>
-					<div class="items">
-						<figure>
-							<img src="public/images/test2.jpg">
-						</figure>
-					</div>
-				</div>
+				<div class="slider"></div>
 			</div>
 		</aside>
 		<?php

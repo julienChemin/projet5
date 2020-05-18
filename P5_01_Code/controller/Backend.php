@@ -65,7 +65,7 @@ class Backend extends Controller
 				$message = "Un mail vient de vous être envoyé pour réinitialiser votre mot de passe.";
 			} else {$message = "l'adresse mail renseignée ne correspond à aucun utilisateur";}
 		}
-		RenderView::render('template.php', 'backend/indexAdminView.php', ['option' => ['forgetPassword', 'signIn'], 'message' => $message]);
+		RenderView::render('template.php', 'backend/indexAdminView.php', ['option' => ['forgetPassword', 'signIn', 'homeAdmin'], 'message' => $message]);
 	}
 
 	public function addSchool()
@@ -375,8 +375,8 @@ class Backend extends Controller
 			$_POST['uploadType'] === "private" ? $isPrivate = true : $isPrivate = false;
 			$_POST['listGroup'] === "all" ? $authorizedGroups = null : $authorizedGroups = $_POST['listAuthorizedGroups'];
 			if (isset($_SESSION['id'], $_POST)) {
-				if ($PostsManager->canUploadPost($_POST, $_GET['folder'], $TagsManager)) {
-					if ($PostsManager->uploadPost($_POST, $_GET['folder'], true, $isPrivate, $authorizedGroups)) {
+				if ($PostsManager->canUploadPost($_POST, $TagsManager)) {
+					if ($PostsManager->uploadPost($_POST, true, $isPrivate, $authorizedGroups)) {
 						if (!empty($_POST['listTags'])) {
 							$TagsManager->checkForNewTag($_POST['listTags']);
 						}

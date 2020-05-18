@@ -4,6 +4,7 @@ class Post
 {
 	private $id,
 			$idAuthor,
+			$school,
 			$title,
 			$filePath,
 			$urlVideo,
@@ -16,7 +17,7 @@ class Post
 			$fileType,
 			$onFolder,
 			$tags,
-			$listTag,
+			$listTags,
 			$comments;
 
 	public function __construct(array $data = null)
@@ -40,7 +41,7 @@ class Post
 	public function init()
 	{
 		if ($this->getTags() !== null) {
-			$this->setListTag($this->getTags());
+			$this->setListTags($this->getTags());
 			$this->setListAuthorizedGroups($this->getAuthorizedGroups());
 		}
 	}
@@ -54,6 +55,11 @@ class Post
 	public function getIdAuthor()
 	{
 		return $this->idAuthor;
+	}
+
+	public function getSchool()
+	{
+		return $this->school;
 	}
 
 	public function getTitle()
@@ -143,6 +149,14 @@ class Post
 		return $this;
 	}
 
+	public function setSchool(string $school)
+	{
+		if (strlen($school) > 0){
+			$this->school = $school;
+		}
+		return $this;
+	}
+
 	public function setTitle(string $title)
 	{
 		if (strlen($title) > 0){
@@ -181,7 +195,7 @@ class Post
 		return $this;
 	}
 
-	public function setAuthorizedGroups(string $authorizedGroups)
+	public function setAuthorizedGroups($authorizedGroups)
 	{
 		if (strlen($authorizedGroups) > 0){
 			$this->authorizedGroups = $authorizedGroups;
@@ -236,11 +250,11 @@ class Post
 		return $this;
 	}
 
-	public function setListTag(string $list)
+	public function setListTags(string $list)
 	{
 		if ($list !== null) {
-			$listTag = explode(',', $list);
-			$this->listTag = array_slice($listTag, 1);
+			$listTags = explode(',', $list);
+			$this->listTags = array_slice($listTags, 1);
 		}
 		return $this;
 	}

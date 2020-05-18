@@ -8,11 +8,9 @@ class PostsManager extends AbstractManager
 	public static $TABLE_NAME = 'as_posts';
 	public static $TABLE_COMMENTS = 'as_comments';
 	public static $TABLE_PK = 'id';
-	public static $TABLE_CHAMPS ='id, idAuthor, title, filePath, urlVideo, description, DATE_FORMAT(datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, 
+	public static $TABLE_CHAMPS ='id, idAuthor, school, title, filePath, urlVideo, description, DATE_FORMAT(datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, 
 							isPrivate, authorizedGroups, postType, fileType, onFolder, tags';
-	public static $TABLE_CHAMPS_WITH_COMMENTS ='a.id, a.idAuthor, a.title, a.filePath, a.urlVideo, a.description, DATE_FORMAT(a.datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, 
-							a.isPrivate, a.authorizedGroups, a.postType, a.fileType, a.onFolder, a.tags, c.id AS idComment, c.idPost AS commentIdPost, c.idAuthor AS commentIdAuthor, 
-							c.content AS commentContent, DATE_FORMAT(c.datePublication, "%d/%m/%Y à %H:%i.%s") AS commentDatePublication, c.nbReport AS commentNbReport';
+	public static $TABLE_CHAMPS_WITH_COMMENTS ='a.id, a.idAuthor, a.school, a.title, a.filePath, a.urlVideo, a.description, DATE_FORMAT(a.datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, a.isPrivate, a.authorizedGroups, a.postType, a.fileType, a.onFolder, a.tags, c.id AS idComment, c.idPost AS commentIdPost, c.idAuthor AS commentIdAuthor, c.content AS commentContent, DATE_FORMAT(c.datePublication, "%d/%m/%Y à %H:%i.%s") AS commentDatePublication, c.nbReport AS commentNbReport';
 
 	public function getOneById(int $id)
 	{
@@ -37,13 +35,79 @@ class PostsManager extends AbstractManager
 		}
 	}
 
-	public function getPostsByAuthor(int $idAuthor)
+	public function getPostsByAuthor(int $idAuthor, int $offset = 0, int $limit = null)
 	{
 		if ($idAuthor > 0) {
+			if (!empty($limit)) {
+				$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+								FROM ' . static::$TABLE_NAME . ' 
+								WHERE idAuthor = :idAuthor AND postType = "userPost" AND isPrivate = "0" 
+								ORDER BY id DESC 
+								LIMIT :limit OFFSET :offset', 
+								[':idAuthor' => $idAuthor, ':offset' => $offset, ':limit' => $limit]);
+			} else {
+				$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+								FROM ' . static::$TABLE_NAME . ' 
+								WHERE idAuthor = :idAuthor AND postType = "userPost" AND isPrivate = "0" 
+								ORDER BY id DESC', 
+								[':idAuthor' => $idAuthor]);
+			}
+			$result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
+			
+			$q->closeCursor();
+			return $result;
+		}
+	}
+
+	public function getPostsBySchool(string $school, bool $withFolder = false, int $offset = 0, int $limit = null)
+	{
+		if (strlen($school) > 0) {
+			if ($withFolder) {
+				if (!empty($limit)) {
+					$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+									FROM ' . static::$TABLE_NAME . ' 
+									WHERE school = :school AND postType = "userPost" AND onFolder = null AND isPrivate = "0" 
+									ORDER BY id DESC 
+									LIMIT :limit OFFSET :offset', 
+									[':school' => $school, ':offset' => $offset, ':limit' => $limit]);
+				} else {
+					$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+									FROM ' . static::$TABLE_NAME . ' 
+									WHERE school = :school AND postType = "userPost" AND onFolder = null AND isPrivate = "0" 
+									ORDER BY id DESC', 
+									[':school' => $school]);
+				}
+			} else {
+				if (!empty($limit)) {
+					$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+									FROM ' . static::$TABLE_NAME . ' 
+									WHERE school = :school AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0" 
+									ORDER BY id DESC 
+									LIMIT :limit OFFSET :offset', 
+									[':school' => $school, ':offset' => $offset, ':limit' => $limit]);
+				} else {
+					$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+									FROM ' . static::$TABLE_NAME . ' 
+									WHERE school = :school AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0" 
+									ORDER BY id DESC', 
+									[':school' => $school]);
+				}
+			}
+			$result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
+			
+			$q->closeCursor();
+			return $result;
+		}
+	}
+
+	public function getSchoolPosts(string $school)
+	{
+		if (strlen($school)) {
 			$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
 							FROM ' . static::$TABLE_NAME . ' 
-							WHERE idAuthor = :idAuthor', 
-							[':idAuthor' => $idAuthor]);
+							WHERE school = :school AND postType = "schoolPost" 
+							ORDER BY id DESC', 
+							[':school' => $school]);
 			$result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
 			
 			$q->closeCursor();
@@ -53,10 +117,10 @@ class PostsManager extends AbstractManager
 
 	public function set(Post $Post)
 	{
-		$this->sql('INSERT INTO ' . static::$TABLE_NAME . ' (idAuthor ,title, filePath, urlVideo, description, isPrivate, authorizedGroups, postType, 
+		$this->sql('INSERT INTO ' . static::$TABLE_NAME . ' (idAuthor, school ,title, filePath, urlVideo, description, isPrivate, authorizedGroups, postType, 
 					fileType, onFolder, tags, datePublication) 
-					VALUES(:idAuthor, :title, :filePath, :urlVideo, :description, :isPrivate, :authorizedGroups, :postType, :fileType, :onFolder, :tags, NOW())', 
-					[':idAuthor' => $Post->getIdAuthor(), ':title' => $Post->getTitle(), ':filePath' => $Post->getFilePath(), ':urlVideo' => $Post->getUrlVideo(), 
+					VALUES(:idAuthor, :school, :title, :filePath, :urlVideo, :description, :isPrivate, :authorizedGroups, :postType, :fileType, :onFolder, :tags, NOW())', 
+					[':idAuthor' => $Post->getIdAuthor(), ':school' => $Post->getSchool(), ':title' => $Post->getTitle(), ':filePath' => $Post->getFilePath(), ':urlVideo' => $Post->getUrlVideo(), 
 					':description' => $Post->getDescription(), ':isPrivate' => intval($Post->getIsPrivate()), ':authorizedGroups' => $Post->getAuthorizedGroups(), 
 					':postType' => $Post->getPostType(), ':fileType' => $Post->getFileType(), ':onFolder' => $Post->getOnFolder(), ':tags' => $Post->getTags()]);
 		return $this;
@@ -92,7 +156,26 @@ class PostsManager extends AbstractManager
 		}
 	}
 
-	public function canUploadPost(array $arrPOST, $folder, TagsManager $TagsManager)
+	public function toArray(Post $post)
+	{
+		$arr = ['id' => $post->getId(),
+				'idAuthor' => $post->getIdAuthor(), 
+				'school' => $post->getSchool(), 
+				'title' => $post->getTitle(), 
+				'filePath' => $post->getFilePath(), 
+				'urlVideo' => $post->getUrlVideo(), 
+				'description' => $post->getDescription(), 
+				'datePublication' => $post->getDatePublication(), 
+				'isPrivate' => $post->getIsPrivate(), 
+				'listAuthorizedGroups' => $post->getListAuthorizedGroups(), 
+				'postType' => $post->getPostType(), 
+				'fileType' => $post->getFileType(), 
+				'onFolder' => $post->getOnFolder(),
+				'listTags' => $post->getListTags()];
+		return $arr;
+	}
+
+	public function canUploadPost(array $arrPOST, TagsManager $TagsManager)
 	{
 		if (!empty($arrPOST['fileTypeValue']) && $this->checkForScriptInsertion([$arrPOST])) {
 			//check list tag
@@ -108,23 +191,25 @@ class PostsManager extends AbstractManager
 				return false;
 			}
 			//check folder
-			if (!empty($folder) && !$this->folderBelongsToUser(intval($folder), $_SESSION['id'])) {
+			if (!empty($arrPOST['folder']) && !$this->folderBelongsToUser(intval($arrPOST['folder']), $_SESSION['id'])) {
 				return false;
 			}
 			//check $_post
 			switch ($arrPOST['fileTypeValue']) {
 				case 'image':
-					if (empty($_FILES) || empty($arrPOST['listTags'])) {
+					if (empty($_FILES['uploadFile']) || (empty($arrPOST['listTags']) && $arrPOST['uploadType'] === 'public' && $arrPOST['postType'] === 'userPost'
+					&& $arrPOST['isStudent'] === 'true')) {
 						return false;
 					}
 				break;
 				case 'video':
-					if (empty($arrPOST['videoLink']) || empty($arrPOST['listTags'])) {
+					if (empty($arrPOST['videoLink']) || (empty($arrPOST['listTags']) && $arrPOST['uploadType'] === 'public' && $arrPOST['postType'] === 'userPost'
+					&& $arrPOST['isStudent'] === 'true')) {
 						return false;
 					}
 				break;
 				case 'compressed':
-					if (empty($_FILES) || empty($arrPOST['title'])) {
+					if (empty($_FILES['uploadFile']) || empty($arrPOST['title'])) {
 						return false;
 					}
 				break;
@@ -133,26 +218,29 @@ class PostsManager extends AbstractManager
 						return false;
 					}
 				break;
+				default :
+					return false;
 			}
 		} else {return false;}
 		return true;
 	}
 
-	public function uploadPost(array $arrPOST, $folder, $schoolPost = false, $isPrivate = false, $authorizedGroups = null)
+	public function uploadPost(array $arrPOST, $schoolPost = false, $isPrivate = false, $authorizedGroups = null)
 	{	
-		empty($folder) ? $folder = null : $folder = intval($folder);
+		empty($arrPOST['folder']) ? $folder = null : $folder = intval($arrPOST['folder']);
 		switch ($arrPOST['fileTypeValue']) {
 			case 'image':
 				$arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
 				require('view/upload.php');
 				if (!empty($final_path)) {
 					$this->set(new Post(['idAuthor' => $_SESSION['id'], 
+										'school' => $_SESSION['school'], 
 										'title' => $arrPOST['title'], 
 										'filePath' => $final_path, 
 										'description' => $arrPOST['tinyMCEtextarea'], 
 										'isPrivate' => $isPrivate, 
 										'authorizedGroups' => $authorizedGroups, 
-										'postType' => 'userPost', 
+										'postType' => $arrPOST['postType'], 
 										'fileType' => $arrPOST['fileTypeValue'], 
 										'onFolder' => $folder, 
 										'tags' => $arrPOST['listTags']]));
@@ -161,7 +249,7 @@ class PostsManager extends AbstractManager
 			break;
 			case 'video':
 				$filePath = null;
-				if (!empty($_FILES)) {
+				if ($_FILES['uploadFile']['error'] === 0) {
 					$arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
 					require('view/upload.php');
 					if (!empty($final_path)) {
@@ -169,13 +257,14 @@ class PostsManager extends AbstractManager
 					} else {return false;}
 				}
 				$this->set(new Post(['idAuthor' => $_SESSION['id'], 
+									'school' => $_SESSION['school'], 
 									'title' => $arrPOST['title'], 
 									'filePath' => $filePath, 
 									'urlVideo' => $arrPOST['videoLink'], 
 									'description' => $arrPOST['tinyMCEtextarea'], 
 									'isPrivate' => $isPrivate, 
 									'authorizedGroups' => $authorizedGroups, 
-									'postType' => 'userPost', 
+									'postType' => $arrPOST['postType'], 
 									'fileType' => $arrPOST['fileTypeValue'], 
 									'onFolder' => $folder, 
 									'tags' => $arrPOST['listTags']]));
@@ -188,12 +277,13 @@ class PostsManager extends AbstractManager
 					if (!empty($final_path)) {
 						$this->set(new Post([
 							'idAuthor' => $_SESSION['id'], 
+							'school' => $_SESSION['school'], 
 							'title' => $arrPOST['title'], 
 							'filePath' => $final_path, 
 							'description' => $arrPOST['tinyMCEtextarea'], 
 							'isPrivate' => $isPrivate, 
 							'authorizedGroups' => $authorizedGroups, 
-							'postType' => 'schoolPost', 
+							'postType' => $arrPOST['postType'], 
 							'fileType' => $arrPOST['fileTypeValue'], 
 							'onFolder' => $folder]));
 						return true;
@@ -202,7 +292,7 @@ class PostsManager extends AbstractManager
 			break;
 			case 'folder':
 				$filePath = null;
-				if (!empty($_FILES)) {
+				if ($_FILES['uploadFile']['error'] === 0) {
 					$arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
 					require('view/upload.php');
 					if (!empty($final_path)) {
@@ -210,12 +300,13 @@ class PostsManager extends AbstractManager
 					} else {return false;}
 				}
 				$this->set(new Post(['idAuthor' => $_SESSION['id'], 
+									'school' => $_SESSION['school'], 
 									'title' => $arrPOST['title'], 
 									'filePath' => $filePath,  
 									'description' => $arrPOST['tinyMCEtextarea'], 
 									'isPrivate' => $isPrivate, 
 									'authorizedGroups' => $authorizedGroups, 
-									'postType' => 'userPost', 
+									'postType' => $arrPOST['postType'], 
 									'fileType' => $arrPOST['fileTypeValue'], 
 									'onFolder' => $folder]));
 				return true;
@@ -234,5 +325,26 @@ class PostsManager extends AbstractManager
 				return true;
 			} else {return false;}
 		}
+	}
+
+	public function sortForProfile($posts)
+	{
+		$arrSortedPosts = ['folder' => [], 'private' => [], 'public' => []];
+		foreach ($posts as $post) {
+			//sort post on folder, public post and private post
+			$post = $this->toArray($post);
+			if ($post['onFolder'] !== null) {
+				$idPost = $post['onFolder'];
+				if (!isset($arrSortedPosts['folder'][$idPost])) {
+					$arrSortedPosts['folder'][$idPost] = [];
+				}
+				$arrSortedPosts['folder'][$idPost][] = $post;
+			} elseif ($post['isPrivate'] === 1) {
+				$arrSortedPosts['private'][] = $post;
+			} else {
+				$arrSortedPosts['public'][] = $post;
+			}
+		}
+		return $arrSortedPosts;
 	}
 }

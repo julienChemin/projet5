@@ -54,6 +54,9 @@ try {
 			case 'upload' :
 				$Frontend->upload();
 			break;
+			case 'post' :
+				$Frontend->post();
+			break;
 			case 'addPost' :
 				$Frontend->addPost();
 			break;
@@ -65,6 +68,15 @@ try {
 			break;
 			case 'getSchools' :
 				$Frontend->getSchools();
+			break;
+			case 'getPostsBySchool' :
+				$Frontend->getPostsBySchool();
+			break;
+			case 'getUserPosts' :
+				$Frontend->getUserPosts();
+			break;
+			case 'getSchoolPosts' :
+				$Frontend->getSchoolPosts();
 			break;
 			default :
 				//"action" value is unknow

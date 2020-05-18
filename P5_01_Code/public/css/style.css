@@ -423,13 +423,21 @@ footer ul{
 	margin: 10px;
 
 }
+.slider{
+	display: flex;
+	width: 100%;
+	position: relative;
+	left:0;
+	transition: left 0.3s ease-out;
+	-webkit-transition: left 0.3s ease-out;
+}
 .slide{
 	display: flex;
-	justify-content: center;
+	justify-content: space-around;
 	min-width: 100%;
 }
 .items{
-	max-width: 18%;
+	max-width: 19.5%;
 }
 figure{
 	height: 300px;
@@ -441,9 +449,13 @@ figure{
 
 	overflow: hidden;
 }
+figure a{
+	width: 100%;
+    height: 100%;
+}
 figure img{
-	max-width: 100%;
-	max-height: 100%;
+	max-width: 90%;
+	max-height: 90%;
 }
 .arrow{
 	display: flex;
@@ -452,6 +464,8 @@ figure img{
 
 	height: 100%;
 	width: 5%;
+	z-index: 1000;
+	background: linear-gradient(to right, transparent, #161617 10%, transparent 90%);
 
 	cursor: pointer;
 }
@@ -900,6 +914,26 @@ figure img{
 	flex-direction: row;
 	justify-content: center;
 }
+/*publication*/
+#tabPublication > div:first-of-type, #tabPrivatePublication > div:first-of-type{
+	justify-content: flex-start;
+}
+.post{
+	width: 33.3%;
+}
+.post figure{
+	transition: 0.2s linear;
+    -webkit-transition: 0.2s linear;
+}
+.post:hover figure{
+	background-color: #222224;
+	border-radius: 15px;
+}
+#tabPublication .post > figure > a, #tabPrivatePublication .post > figure > a{
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 /*---------------------add post / add school post----------------------*/
 #addSchoolPost, #addPost{
@@ -910,6 +944,11 @@ figure img{
 }
 #addSchoolPost h1, #addSchoolPost h2, #addPost h1,#addPost h2{
 	color: #CF8B3F;
+}
+#addSchoolPost figcaption, #addPost figcaption{
+	margin-bottom: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
 }
 #blockUploadType{
 	display: flex;
@@ -943,20 +982,29 @@ figure img{
 	justify-content: space-around;
 	align-items: center;
 }
-#fileTypeSelection p{
+#fileTypeSelection input{
+	display: none;
+}
+#fileTypeSelection figure{
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
-	align-items: center;
-
 	border-radius: 20px;
 
 	width: 20%;
 }
-#fileTypeSelection input{
-	display: none;
+#fileTypeSelection label{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+
+	max-height: 100%;
 }
 #fileTypeSelection label img{
 	cursor: pointer;
+	max-width: 75%;
+	max-height: 65%;
 }
 #blockIsPrivate{
 	display: flex;
@@ -1161,9 +1209,9 @@ figure img{
 	font-size: 2em;
 	width: 200px;
 }
-
+/* -------------------------------------------------------------------------------------------------------------------------- */
 /* --------------------------------------------------------------- ADMIN ---------------------------------------------------- */
-
+/* -------------------------------------------------------------------------------------------------------------------------- */
 /* ------------------------ LOGIN FORM ------------------------ */
 form > div{
 	width: 300px;
@@ -1247,7 +1295,6 @@ form > div{
 
 .itemHomeAdmin i{
 	color: #CF8B3F;
-
 	transform: scale(3);
 }
 
@@ -1259,12 +1306,43 @@ form > div{
 
 #slowSlide{
 	height: 250px;
+	width: 100%;
 }
 #slowSlide figure{
 	height: 150px;
 }
 #slowSlide .items{
-	max-width: 20%;
+	max-width: 19%;
+}
+#slowSlide > div:first-of-type{
+	display: flex;
+	flex-direction: column;
+}
+#slowSlide > div:first-of-type a{
+	text-align: right;
+}
+figure a{
+	position: relative;
+}
+.iconeVideo{
+	z-index: 500;
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	opacity: 0.7;
+	width: 45px;
+	transition: 0.3s ease;
+	-webkit-transition: 0.3s ease;
+}
+figure a:hover .iconeVideo{
+	opacity: 1;
+	width: 100px;
+}
+.thumbnailFolder{
+	z-index: 500;
+	position: absolute;
+	max-width: 60%;
+	max-height: 60%;
 }
 
 /* ------------------------ MODERAT - EDIT SCHOOL ------------------------ */

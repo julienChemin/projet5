@@ -1,19 +1,27 @@
 <section id="addSchoolPost" class="container">
 	<h1>Publication</h1>
 	<form method="POST" action="indexAdmin.php?action=uploadSchoolPost" enctype="multipart/form-data">
+		<input type="hidden" name="postType" value="schoolPost">
 		<input type="hidden" name="uploadType" value="public">
 		<input type="hidden" name="fileTypeValue" value="">
+		<input type="hidden" name="folder" value="">
 		<input type="hidden" name="listAuthorizedGroups" value="">
 		<input type="hidden" name="listTags" id="listTags" value="">
+		<?php
+		if ($_SESSION['grade'] === STUDENT) {
+			$isStudent = 'true';
+		} else {$isStudent = 'false';}
+		?>
+		<input type="hidden" name="isStudent" id="isStudent" value="<?=$isStudent?>">
 
 		<div id="blockUploadType">
 			<figure id="btnAddFolder">
-				<figcaption>Publier un dossier</figcaption>
-				<img src="public/images/folder.jpg">
+				<figcaption>Dossier</figcaption>
+				<img src="public/images/folder.png">
 			</figure>
 			<figure id="btnAddFile">
-				<figcaption>Publier un fichier</figcaption>
-				<img src="public/images/file.jpg">
+				<figcaption>Fichier</figcaption>
+				<img src="public/images/schoolFile.png">
 			</figure>
 			<div id="blockIsPrivate" class="fullWidth">
 				<div>
@@ -42,18 +50,27 @@
 		<div id="blockAddFile">
 			<hr>
 			<div id="fileTypeSelection">
-				<p>
+				<figure>
 					<input type="radio" name="fileType" id="typeImage" value="image">
-					<label for="typeImage"><img src="public/images/image.png"></label>
-				</p>
-				<p>
+					<label for="typeImage">
+						<figcaption>Images</figcaption>
+						<img src="public/images/fileImage.png">
+					</label>
+				</figure>
+				<figure>
 					<input type="radio" name="fileType" id="typeVideo" value="video">
-					<label for="typeVideo"><img src="public/images/video.png"></label>
-				</p>
-				<p>
+					<label for="typeVideo">
+						<figcaption>Vidéos</figcaption>
+						<img src="public/images/fileVideo.png">
+					</label>
+				</figure>
+				<figure>
 					<input type="radio" name="fileType" id="typeOther" value="other">
-					<label for="typeOther"><img src="public/images/other.jpg"></label>
-				</p>
+					<label for="typeOther">
+						<figcaption>Autres</figcaption>
+						<img src="public/images/fileOther.png">
+					</label>
+				</figure>
 			</div>
 		</div>
 		<div id="blockTitle">

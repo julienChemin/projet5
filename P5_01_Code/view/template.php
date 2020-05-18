@@ -41,6 +41,10 @@
 		if (isset($data['option'])) {
 			foreach ($data['option'] as $option) {
 				switch ($option) {
+					case 'homeAdmin' :
+						echo '<script src="public/js/slide.js"></script>';
+						echo '<script src="public/js/homeAdmin.js"></script>';
+					break;
 					case 'buttonToggleSchool' :
 						echo '<script src="public/js/buttonToggleSchool.js"></script>';
 					break;
@@ -69,9 +73,11 @@
 						echo '<script src="public/js/signIn.js"></script>';
 					break;
 					case 'userProfile' :
+						echo '<script src="public/js/fillProfileWithPosts.js"></script>';
 						echo '<script src="public/js/userProfile.js"></script>';
 					break;
 					case 'schoolProfile' :
+						echo '<script src="public/js/fillProfileWithPosts.js"></script>';
 						echo '<script src="public/js/schoolProfile.js"></script>';
 					break;
 					case 'tinyMCE' :
