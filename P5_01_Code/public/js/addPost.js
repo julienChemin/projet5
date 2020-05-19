@@ -75,6 +75,90 @@ btnAddFile.addEventListener('click', function(){
 	inputSubmit.style.display = "none";
 });
 
+//public / private publication
+if (document.getElementById('addSchoolPost') !== null) {
+	let checkboxIsPrivate = formAddPost.elements.isPrivate;
+	let blockListGroup = document.querySelector('#blockIsPrivate > div > div:nth-of-type(2)');
+	let listGroup = document.querySelector('#blockIsPrivate select');
+	let listAuthorizedGroups = formAddPost.elements.listAuthorizedGroups;
+	let blockAuthorizedGroups = document.getElementById('authorizedGroups');
+
+	function addGroupToAuthorizedList(group) {
+		//add elem to list authorized group
+		let elemSpan = document.createElement('span');
+		elemSpan.textContent = group;
+		elemSpan.classList.add('authorizedGroup');
+
+		let elemI = document.createElement('i');
+		elemI.classList.add('fas');
+		elemI.classList.add('fa-times');
+		elemI.classList.add('deleteGroup');
+		elemI.addEventListener('click', function(){
+			//delete this group from list authorized group
+			blockAuthorizedGroups.removeChild(elemSpan);
+			//delete group value to input list authorized
+			let arrAuthorizedGroups = listAuthorizedGroups.value.split(',');
+			arrAuthorizedGroups.shift();
+			arrAuthorizedGroups.splice(arrAuthorizedGroups.indexOf(group), 1);
+			listAuthorizedGroups.value = "";
+			for (let i=0;i<arrAuthorizedGroups.length;i++) {
+				listAuthorizedGroups.value += (',' + arrAuthorizedGroups[i]);
+			}
+			//add this group from list group to add
+			let elemOption = document.createElement('option');
+			elemOption.value = group;
+			elemOption.textContent = group;
+			listGroup.appendChild(elemOption);
+		});
+		elemSpan.appendChild(elemI);
+		blockAuthorizedGroups.appendChild(elemSpan);
+		//add group value to input list authorized
+		listAuthorizedGroups.value += (',' + group);
+		//remove this group from list group to add
+		listGroup.removeChild(document.querySelector('option[value="' + group + '"]'));
+		//select empty option on list group
+		document.querySelector('option[value=""]').selected = true;
+	}
+
+	//display / hide private mode
+	checkboxIsPrivate.addEventListener('change', function(e){
+		if (formAddPost.elements.fileTypeValue.value === 'compressed' && !checkboxIsPrivate.checked) {
+			//compressed file can't be public
+			e.preventDefault();
+			checkboxIsPrivate.checked = true;
+		}
+		if (!checkboxIsPrivate.checked) {
+			blockListGroup.style.display = 'none';
+			blockAuthorizedGroups.style.display = 'none';
+			formAddPost.elements.uploadType.value = 'public';
+			if (document.getElementById('addSchoolPost') === null && (formAddPost.elements.fileTypeValue.value === 'video' || formAddPost.elements.fileTypeValue.value === 'image')) {
+				blockTags.style.display = 'flex';
+			}
+		} else {
+			blockListGroup.style.display = 'inline-block';
+			formAddPost.elements.uploadType.value = 'private';
+			if (listGroup.value !== "all") {
+				blockAuthorizedGroups.style.display = 'flex';
+			}
+			if (blockTags.style.display === 'flex') {
+				blockTags.style.display = 'none';
+			}
+		}
+	});
+
+	//add group to list authorized group
+	listGroup.addEventListener('change', function(e){
+		if (e.target.value === "all") {
+			blockAuthorizedGroups.style.display = 'none';
+		} else if (e.target.value === "") {
+			blockAuthorizedGroups.style.display = 'flex';
+		} else {
+			blockAuthorizedGroups.style.display = 'flex';
+			addGroupToAuthorizedList(e.target.value);
+		}
+	});
+}
+
 //button type file
 let blockTypeImg = document.querySelector('#fileTypeSelection > figure:first-of-type');
 let btnImg = document.getElementById('typeImage');
@@ -134,6 +218,9 @@ btnVideo.addEventListener('click', function(){
 
 if (document.getElementById('addSchoolPost') !== null) {
 	btnOther.addEventListener('click', function(){
+		if (!formAddPost.elements.isPrivate.checked) {
+			formAddPost.elements.isPrivate.click();
+		}
 		blockTitle.style.display  = "flex";
 		inputTitle.placeholder = '';
 		blockUploadFile.style.display = 'flex';
@@ -317,6 +404,10 @@ inputSubmit.addEventListener('click', function(e){
 				e.preventDefault();
 				setErrorMsg('Vous devez sélectionner une image a télécharger');
 			}
+			if (formAddPost.elements.title.value !== "" && formAddPost.elements.title.value.length > 30) {
+				e.preventDefault();
+				setErrorMsg('Le titre ne peut pas comporter plus de 30 caractères');
+			}
 		break;
 		case 'video' :
 			if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' 
@@ -329,21 +420,25 @@ inputSubmit.addEventListener('click', function(e){
 				e.preventDefault();
 				setErrorMsg('Vous devez ajouter un lien pour la vidéo');
 			}
+			if (formAddPost.elements.title.value !== "" && formAddPost.elements.title.value.length > 30) {
+				e.preventDefault();
+				setErrorMsg('Le titre ne peut pas comporter plus de 30 caractères');
+			}
 		break;
 		case 'compressed' :
 			if (!inputFile.files.length > 0) {
 				e.preventDefault();
 				setErrorMsg('Vous devez sélectionner une fichier a télécharger');
 			}
-			if (formAddPost.elements.title.value === "") {
+			if (formAddPost.elements.title.value === "" || formAddPost.elements.title.value.length > 30) {
 				e.preventDefault();
-				setErrorMsg('Vous devez ajouter un titre');
+				setErrorMsg('Vous devez ajouter un titre (30 caractères max.)');
 			}
 		break;
 		case 'folder' :
-			if (formAddPost.elements.title.value === "") {
+			if (formAddPost.elements.title.value === "" || formAddPost.elements.title.value.length > 30) {
 				e.preventDefault();
-				setErrorMsg('Vous devez ajouter un titre');
+				setErrorMsg('Vous devez ajouter un titre (30 caractères max.)');
 			}
 		break;
 	}
@@ -354,79 +449,3 @@ inputSubmit.addEventListener('click', function(e){
 		setErrorMsg('Pour une publication privée, vous devez choisir au moins un groupe');
 	}
 });
-
-//public / private publication
-if (document.getElementById('addSchoolPost') !== null) {
-	let checkboxIsPrivate = formAddPost.elements.isPrivate;
-	let blockListGroup = document.querySelector('#blockIsPrivate > div > div:nth-of-type(2)');
-	let listGroup = document.querySelector('#blockIsPrivate select');
-	let listAuthorizedGroups = formAddPost.elements.listAuthorizedGroups;
-	let blockAuthorizedGroups = document.getElementById('authorizedGroups');
-
-	function addGroupToAuthorizedList(group) {
-		//add elem to list authorized group
-		let elemSpan = document.createElement('span');
-		elemSpan.textContent = group;
-		elemSpan.classList.add('authorizedGroup');
-
-		let elemI = document.createElement('i');
-		elemI.classList.add('fas');
-		elemI.classList.add('fa-times');
-		elemI.classList.add('deleteGroup');
-		elemI.addEventListener('click', function(){
-			//delete this group from list authorized group
-			blockAuthorizedGroups.removeChild(elemSpan);
-			//delete group value to input list authorized
-			let arrAuthorizedGroups = listAuthorizedGroups.value.split(',');
-			arrAuthorizedGroups.shift();
-			arrAuthorizedGroups.splice(arrAuthorizedGroups.indexOf(group), 1);
-			listAuthorizedGroups.value = "";
-			for (let i=0;i<arrAuthorizedGroups.length;i++) {
-				listAuthorizedGroups.value += (',' + arrAuthorizedGroups[i]);
-			}
-			//add this group from list group to add
-			let elemOption = document.createElement('option');
-			elemOption.value = group;
-			elemOption.textContent = group;
-			listGroup.appendChild(elemOption);
-		});
-		elemSpan.appendChild(elemI);
-		blockAuthorizedGroups.appendChild(elemSpan);
-		//add group value to input list authorized
-		listAuthorizedGroups.value += (',' + group);
-		//remove this group from list group to add
-		listGroup.removeChild(document.querySelector('option[value="' + group + '"]'));
-		//select empty option on list group
-		document.querySelector('option[value=""]').selected = true;
-	}
-
-	//display / hide private mode
-	checkboxIsPrivate.addEventListener('change', function(){
-		if (!checkboxIsPrivate.checked) {
-			blockListGroup.style.display = 'none';
-			blockAuthorizedGroups.style.display = 'none';
-			formAddPost.elements.uploadType.value = 'public';
-			if (formAddPost.elements.fileTypeValue.value === 'video' || formAddPost.elements.fileTypeValue.value === 'image') {
-				blockTags.style.display = 'flex';
-			}
-		} else {
-			blockListGroup.style.display = 'inline-block';
-			formAddPost.elements.uploadType.value = 'private';
-			if (blockTags.style.display === 'flex') {
-				blockTags.style.display = 'none';
-			}
-		}
-	});
-
-	//add group to list authorized group
-	listGroup.addEventListener('change', function(e){
-		if (e.target.value === "all") {
-			blockAuthorizedGroups.style.display = 'none';
-		} else if (e.target.value === "") {
-			blockAuthorizedGroups.style.display = 'flex';
-		} else {
-			blockAuthorizedGroups.style.display = 'flex';
-			addGroupToAuthorizedList(e.target.value);
-		}
-	});
-}

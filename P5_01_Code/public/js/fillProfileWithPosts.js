@@ -65,13 +65,13 @@ function setVideoPost(post, blockContent) {
 	blockContent.appendChild(divItem);
 }
 function setFolderPost(post, blockContent) {
+	//create folder
 	let divFolder = document.createElement('div');
 	divFolder.classList.add('folder');
 	let divItem = document.createElement('div');
 	divItem.classList.add('fullWidth');
 	let elemFigure = document.createElement('figure');
 	let elemDiv = document.createElement('div');
-	//elemA.href = 'index.php?action=post&id=' + post['id'];
 	let elemImg = document.createElement('img');
 	elemImg.src = 'public/images/folder.png';
 	if (post['filePath'] !== null) {
@@ -80,18 +80,39 @@ function setFolderPost(post, blockContent) {
 		elemThumbnail.src = post['filePath'];
 		elemDiv.appendChild(elemThumbnail);
 	}
-	if (post['title'] !== null) {
-		elemImg.setAttribute('title', post['title']);
-	}
+	let elemSpan = document.createElement('span');
+	elemSpan.classList.add('previewTitle');
+	elemSpan.textContent = post['title'];
 	elemDiv.appendChild(elemImg);
+	elemDiv.appendChild(elemSpan);
 	elemFigure.appendChild(elemDiv);
 	divItem.appendChild(elemFigure);
+	divItem.addEventListener('click', function(){
+		toggleFolder(divFolder);
+	});
 	divFolder.appendChild(divItem);
+	//create post folder (link to consult post)
+	let div = document.createElement('div');
+	div.classList.add('post');
+	let figure = document.createElement('figure');
+	let link = document.createElement('a');
+	link.href = 'index.php?action=post&id=' + post['id'];
+	let img = document.createElement('img');
+	img.src = 'public/images/folder.png';
+	let span = document.createElement('span');
+	span.classList.add('previewTitle');
+	span.textContent = 'Consulter le dossier';
+	link.appendChild(img);
+	link.appendChild(span);
+	figure.appendChild(link);
+	div.appendChild(figure);
+	divFolder.appendChild(div);
 	fillFolder(post['id'], divFolder);
+	
 	blockContent.appendChild(divFolder);
 }
 function fillFolder(postId, elemFolder) {
-	if (sortedPosts['folder'][postId].length > 0) {
+	if (sortedPosts['folder'][postId] !== undefined) {
 		sortedPosts['folder'][postId].forEach(post =>{
 			switch (post['fileType']) {
 				case 'image' :
@@ -109,6 +130,32 @@ function fillFolder(postId, elemFolder) {
 			}
 		});
 	}
+}
+function toggleFolder(folder, action = null) {
+	let childs = folder.childNodes;
+	if (folderIsOpen(folder)) {
+		folder.style.width = "33.3%";
+		folder.style.border = "none";
+		folder.style.margin = '0px';
+		for (let i=1; i<childs.length;i++) {
+			if (childs[i].classList.contains('folder') && folderIsOpen(childs[i])) {
+				toggleFolder(childs[i]);
+			}
+			childs[i].style.width = "0%";
+		}
+	} else {
+		folder.style.width = "98%";
+		folder.style.border = "solid 2px #CF8B3F";
+		folder.style.margin = 'auto';
+		for (let i=1; i<childs.length;i++) {
+			childs[i].style.width = "33.3%";
+		}
+	}
+}
+function folderIsOpen(folder) {
+	if (folder.childNodes[1].style.width === "33.3%") {
+		return true;
+	} else { return false;}
 }
 function setCompressedPost(post, blockContent) {
 	let divItem = document.createElement('div');

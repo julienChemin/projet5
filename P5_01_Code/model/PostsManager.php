@@ -12,7 +12,7 @@ class PostsManager extends AbstractManager
 							isPrivate, authorizedGroups, postType, fileType, onFolder, tags';
 	public static $TABLE_CHAMPS_WITH_COMMENTS ='a.id, a.idAuthor, a.school, a.title, a.filePath, a.urlVideo, a.description, DATE_FORMAT(a.datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, a.isPrivate, a.authorizedGroups, a.postType, a.fileType, a.onFolder, a.tags, c.id AS idComment, c.idPost AS commentIdPost, c.idAuthor AS commentIdAuthor, c.content AS commentContent, DATE_FORMAT(c.datePublication, "%d/%m/%Y à %H:%i.%s") AS commentDatePublication, c.nbReport AS commentNbReport';
 
-	public function getOneById(int $id)
+	public function getPostWithComments(int $id)
 	{
 		if ($id > 0) {
 			$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS_WITH_COMMENTS . ' 
@@ -24,11 +24,13 @@ class PostsManager extends AbstractManager
 			$result = $q->fetch();
 			$post = new Post($result);
 			$arrComments = [];
-			do {
-				$comment = new Comment();
-				$comment->setId($result['idComment'])->setIdPost($result['commentIdPost'])->setIdAuthor($result['commentIdAuthor'])->setContent($result['commentContent'])->setDatePublication($result['commentDatePublication'])->setNbReport($result['commentNbReport']);
-				array_unshift($arrComments, $comment);
-			} while ($result = $q->fetch());
+			if ($result['idComment'] !== null) {
+				do {
+					$comment = new Comment();
+					$comment->setId($result['idComment'])->setIdPost($result['commentIdPost'])->setIdAuthor($result['commentIdAuthor'])->setContent($result['commentContent'])->setDatePublication($result['commentDatePublication'])->setNbReport($result['commentNbReport']);
+					array_unshift($arrComments, $comment);
+				} while ($result = $q->fetch());	
+			}
 			$post->setComments($arrComments);
 			$q->closeCursor();
 			return $post;
@@ -197,6 +199,10 @@ class PostsManager extends AbstractManager
 			//check folder
 			if (!empty($arrPOST['folder']) && !$this->folderBelongsToUser(intval($arrPOST['folder']), $_SESSION['id'])) {
 				return false;
+			} elseif (!empty($arrPOST['folder'])) {
+				if (!$this->canPostOnFolder(intval($arrPOST['folder']), $arrPOST['uploadType'])) {
+					return false;
+				}
 			}
 			//check $_post
 			switch ($arrPOST['fileTypeValue']) {
@@ -213,7 +219,7 @@ class PostsManager extends AbstractManager
 					}
 				break;
 				case 'compressed':
-					if (empty($_FILES['uploadFile']) || empty($arrPOST['title'])) {
+					if ($arrPOST['uploadType'] === 'public' || empty($_FILES['uploadFile']) || empty($arrPOST['title'])) {
 						return false;
 					}
 				break;
@@ -231,6 +237,7 @@ class PostsManager extends AbstractManager
 
 	public function uploadPost(array $arrPOST, $schoolPost = false, $isPrivate = false, $authorizedGroups = null)
 	{	
+		!$isPrivate ? $authorizedGroups = null : $authorizedGroups = $authorizedGroups;
 		empty($arrPOST['folder']) ? $folder = null : $folder = intval($arrPOST['folder']);
 		switch ($arrPOST['fileTypeValue']) {
 			case 'image':
@@ -331,6 +338,18 @@ class PostsManager extends AbstractManager
 		}
 	}
 
+	public function canPostOnFolder(int $idFolder, string $privacy)
+	{
+		if ($this->exists($idFolder)) {
+			$folder = $this->getOneById($idFolder);
+			if ($privacy === 'public' && !$folder->getIsPrivate()) {
+				return true;
+			} elseif ($privacy === 'private' && $folder->getIsPrivate()) {
+				return true;
+			} else {return false;}
+		}
+	}
+
 	public function sortForProfile($posts)
 	{
 		$arrSortedPosts = ['folder' => [], 'private' => [], 'public' => []];
@@ -344,8 +363,7 @@ class PostsManager extends AbstractManager
 				}
 				$arrSortedPosts['folder'][$idPost][] = $post;
 			} elseif ($post['isPrivate'] === '1' && ($post['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
-				if ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || $_SESSION['id'] === $post->getIdAuthor() || $post['authorizedGroups'] === null 
-				|| stristr($post['authorizedGroups'], $_SESSION['group']) !== false) {
+				if ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || $_SESSION['id'] === $post['idAuthor'] || $post['listAuthorizedGroups'] === null || stristr($post['listAuthorizedGroups'], $_SESSION['group']) !== false) {
 					$arrSortedPosts['private'][] = $post;
 				}
 			} else {

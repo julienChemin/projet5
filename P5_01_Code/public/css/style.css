@@ -920,22 +920,23 @@ figure img{
 }
 .post, .folder{
 	width: 33.3%;
+	transition: 0.5s ease;
+	-webkit-transition: 0.5s ease;
 }
 .folder{
 	display: flex;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: center;
 	flex-wrap: wrap;
+	border-radius: 10px;
 }
-.folder > .post{
+.folder > .post, .folder > .folder{
 	width: 0%;
-	transition: 0.3s ease;
-	-webkit-transition: 0.3s ease;
 }
 .folder figure{
 	cursor: pointer;
 }
-.folder div:first-of-type > figure > div{
+.folder > div:first-of-type > figure > div{
 	width: 100%;
 	height:100%;
 	position: relative;
@@ -996,12 +997,13 @@ figure a:hover .iconeVideo{
 	left: 0;
 	width: 100%;
 	font-size: 1.2em;
+	color: #CF8B3F;
 	background-color: #161617;
 	text-align: center;
 	transition: 0.5s ease;
 	-webkit-transition: 0.5s ease;
 }
-a:hover .previewTitle{
+a:hover > .previewTitle, div:hover > .previewTitle{
 	top: 45%;
 	font-size: 1.5em;
 	padding :5px 0;
@@ -1084,15 +1086,19 @@ a:hover .previewTitle{
 }
 #blockIsPrivate{
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+}
+#blockIsPrivate > div{
+	margin-bottom: 10px;
 }
 #blockIsPrivate > div:first-of-type{
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	width: 50%;
+	width: 48%;
 }
 #authorizedGroups{
 	display: none;
@@ -1102,7 +1108,7 @@ a:hover .previewTitle{
 	flex-wrap: wrap;
 	border: solid 2px #CF8B3F;
 	border-radius: 10px;
-	width: 50%;
+	width: 48%;
 	min-height: 80px;
 }
 .authorizedGroup{
