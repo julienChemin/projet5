@@ -38,14 +38,13 @@ class Frontend extends Controller
 			$SchoolManager = new SchoolManager();
 			$UserManager = new UserManager();
 			if((!$SchoolManager->nameExists($_SESSION['school']) && !($_SESSION['school'] === ALL_SCHOOL)) || !$UserManager->nameExists($_SESSION['pseudo'])) {
-				//if user name don't exist or if school name don't exist and isn't "allSchool" 
-				session_destroy();
-				if (isset($_COOKIE['artSchoolId']) || isset($_COOKIE['artSchoolAdminId'])) {
-					$this->useCookieToSignIn();
-				} else {
-					throw new \Exception("Certaines informations lié a votre compte ne sont plus valide,
-					 veuillez vous reconnecter pour mettre à jour ces informations.
-					 Cocher la case 'rester connecté' lors de la connection peu vous éviter ce genre de désagrément");
+				//if user name don't exist or if school name don't exist and isn't "allSchool"
+				$this->forceDisconnect();
+			} else {
+				//user exist, check his group
+				$user = $UserManager->getUserByName($_SESSION['pseudo']);
+				if ($_SESSION['group'] !== $user->getSchoolGroup()) {
+					$this->forceDisconnect();
 				}
 			}
 		} elseif (isset($_COOKIE['artSchoolId']) || isset($_COOKIE['artSchoolAdminId'])) {

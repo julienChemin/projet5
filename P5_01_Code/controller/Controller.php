@@ -42,6 +42,7 @@ abstract class Controller
 		$_SESSION['id'] = $user->getId();
 		$_SESSION['pseudo'] = $user->getName();
 		$_SESSION['school'] = $user->getSchool();
+		$_SESSION['group'] = $user->getSchoolGroup();
 
 		if ($user->getIsAdmin()) {
 			$_SESSION['grade'] = ADMIN;
@@ -61,6 +62,18 @@ abstract class Controller
 		}
 		$this->cookieDestroy();
 		header('Location: ' . static::$INDEX);
+	}
+
+	public function forceDisconnect()
+	{
+		session_destroy();
+		if (isset($_COOKIE['artSchoolId']) || isset($_COOKIE['artSchoolAdminId'])) {
+			$this->useCookieToSignIn();
+		} else {
+			throw new \Exception("Certaines informations lié a votre compte ne sont plus valide,
+			 veuillez vous reconnecter pour mettre à jour ces informations.
+			 Cocher la case 'rester connecté' lors de la connection peu vous éviter ce genre de désagrément");
+		}
 	}
 
 	public function setCookie(User $user)

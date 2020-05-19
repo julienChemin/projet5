@@ -186,6 +186,10 @@ class PostsManager extends AbstractManager
 					return false;
 				}
 			}
+			//check title length
+			if (!empty($arrPOST['title']) && strlen($arrPOST['title']) > 30) {
+				return false;
+			}
 			//check privacy
 			if ($arrPOST['uploadType'] === "private" && !empty($arrPOST['listTags'])) {
 				return false;
@@ -339,8 +343,11 @@ class PostsManager extends AbstractManager
 					$arrSortedPosts['folder'][$idPost] = [];
 				}
 				$arrSortedPosts['folder'][$idPost][] = $post;
-			} elseif ($post['isPrivate'] === 1) {
-				$arrSortedPosts['private'][] = $post;
+			} elseif ($post['isPrivate'] === '1' && ($post['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
+				if ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || $_SESSION['id'] === $post->getIdAuthor() || $post['authorizedGroups'] === null 
+				|| stristr($post['authorizedGroups'], $_SESSION['group']) !== false) {
+					$arrSortedPosts['private'][] = $post;
+				}
 			} else {
 				$arrSortedPosts['public'][] = $post;
 			}

@@ -65,33 +65,72 @@ function setVideoPost(post, blockContent) {
 	blockContent.appendChild(divItem);
 }
 function setFolderPost(post, blockContent) {
+	let divFolder = document.createElement('div');
+	divFolder.classList.add('folder');
 	let divItem = document.createElement('div');
-	divItem.classList.add('post');
+	divItem.classList.add('fullWidth');
 	let elemFigure = document.createElement('figure');
-	let elemA = document.createElement('a');
-	elemA.href = 'index.php?action=post&id=' + post['id'];
+	let elemDiv = document.createElement('div');
+	//elemA.href = 'index.php?action=post&id=' + post['id'];
 	let elemImg = document.createElement('img');
 	elemImg.src = 'public/images/folder.png';
 	if (post['filePath'] !== null) {
 		let elemThumbnail = document.createElement('img');
 		elemThumbnail.classList.add('thumbnailFolder');
 		elemThumbnail.src = post['filePath'];
-		elemA.appendChild(elemThumbnail);
+		elemDiv.appendChild(elemThumbnail);
 	}
 	if (post['title'] !== null) {
 		elemImg.setAttribute('title', post['title']);
 	}
+	elemDiv.appendChild(elemImg);
+	elemFigure.appendChild(elemDiv);
+	divItem.appendChild(elemFigure);
+	divFolder.appendChild(divItem);
+	fillFolder(post['id'], divFolder);
+	blockContent.appendChild(divFolder);
+}
+function fillFolder(postId, elemFolder) {
+	if (sortedPosts['folder'][postId].length > 0) {
+		sortedPosts['folder'][postId].forEach(post =>{
+			switch (post['fileType']) {
+				case 'image' :
+					setImagePost(post, elemFolder);
+				break;
+				case 'video' :
+					setVideoPost(post, elemFolder);
+				break;
+				case 'folder' :
+					setFolderPost(post, elemFolder);
+				break;
+				case 'compressed' :
+					setCompressedPost(post, elemFolder);
+				break;
+			}
+		});
+	}
+}
+function setCompressedPost(post, blockContent) {
+	let divItem = document.createElement('div');
+	divItem.classList.add('post');
+	let elemFigure = document.createElement('figure');
+	let elemA = document.createElement('a');
+	elemA.href = 'index.php?action=post&id=' + post['id'];
+	let elemImg = document.createElement('img');
+	elemImg.src = 'public/images/fileOther.png';
+	let elemSpan = document.createElement('span');
+	elemSpan.classList.add('previewTitle');
+	elemSpan.textContent = post['title'];
 	elemA.appendChild(elemImg);
+	elemA.appendChild(elemSpan);
 	elemFigure.appendChild(elemA);
 	divItem.appendChild(elemFigure);
 	blockContent.appendChild(divItem);
 }
-function setCompressedPost(post, blockContent) {
-	
-}
 
 let tabPublicPosts = document.querySelector('#tabPublication > div');
-let tabPrivatePosts = document.getElementById('#tabPrivatePublication > div');
+let tabPrivatePosts = document.querySelector('#tabPrivatePublication > div');
+let sortedPosts;
 
 window.addEventListener('load', function(){
 	let ajaxUrl = "";
@@ -109,8 +148,9 @@ window.addEventListener('load', function(){
 		ajaxUrl = 'index.php?action=getUserPosts&id=' + arr['userId'];
 	}
 	ajaxGet(ajaxUrl, function(response){
-		if (response !== 'false' && response.length > 0) {					console.log(JSON.parse(response));
-			fillProfile(JSON.parse(response));
+		if (response !== 'false' && response.length > 0) {
+			sortedPosts = JSON.parse(response);
+			fillProfile(sortedPosts);
 		}
 	});
 });
