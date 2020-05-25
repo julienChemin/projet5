@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  ven. 15 mai 2020 à 11:47
+-- Généré le :  lun. 25 mai 2020 à 20:08
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -25,21 +25,23 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Structure de la table `as_comments`
+-- Structure de la table `as_comment`
 --
 
-DROP TABLE IF EXISTS `as_comments`;
-CREATE TABLE IF NOT EXISTS `as_comments` (
+DROP TABLE IF EXISTS `as_comment`;
+CREATE TABLE IF NOT EXISTS `as_comment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idPost` int(11) NOT NULL,
   `idAuthor` int(11) NOT NULL,
+  `nameAuthor` varchar(355) NOT NULL,
+  `profilePictureAuthor` varchar(355) NOT NULL DEFAULT 'public/images/question-mark.png',
   `content` text NOT NULL,
   `datePublication` datetime NOT NULL,
   `nbReport` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `idPost` (`idPost`,`idAuthor`),
   KEY `idAuthor` (`idAuthor`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -56,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `as_history` (
   `dateEntry` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idSchool` (`idSchool`)
-) ENGINE=InnoDB AUTO_INCREMENT=129 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_history`
@@ -190,18 +192,35 @@ INSERT INTO `as_history` (`id`, `idSchool`, `category`, `entry`, `dateEntry`) VA
 (125, 1, 'profil', 'school 1 admin 1 a modifié le logo de l\'établissement', '2020-05-14 15:32:41'),
 (126, 1, 'profil', 'school 1 admin 1 a modifié le logo de l\'établissement', '2020-05-14 15:32:49'),
 (127, 1, 'profil', 'school 1 admin 1 a modifié le logo de l\'établissement', '2020-05-14 15:32:54'),
-(128, 1, 'profil', 'school 1 admin 1 a modifié le logo de l\'établissement', '2020-05-14 15:32:59');
+(128, 1, 'profil', 'school 1 admin 1 a modifié le logo de l\'établissement', '2020-05-14 15:32:59'),
+(129, 1, 'account', 'school 1 admin 1 a activé le compte de school 1 user inactif 1', '2020-05-20 01:37:27'),
+(130, 1, 'account', 'school 1 admin 1 a supprimé le compte de testuser', '2020-05-25 18:03:06');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `as_posts`
+-- Structure de la table `as_like_post`
 --
 
-DROP TABLE IF EXISTS `as_posts`;
-CREATE TABLE IF NOT EXISTS `as_posts` (
+DROP TABLE IF EXISTS `as_like_post`;
+CREATE TABLE IF NOT EXISTS `as_like_post` (
+  `idUser` int(11) NOT NULL,
+  `idPost` int(11) NOT NULL,
+  PRIMARY KEY (`idUser`,`idPost`),
+  KEY `idPost` (`idPost`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `as_post`
+--
+
+DROP TABLE IF EXISTS `as_post`;
+CREATE TABLE IF NOT EXISTS `as_post` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idAuthor` int(11) NOT NULL,
+  `school` varchar(100) NOT NULL,
   `title` varchar(30) DEFAULT NULL,
   `filePath` text DEFAULT NULL,
   `urlVideo` varchar(355) DEFAULT NULL,
@@ -215,21 +234,16 @@ CREATE TABLE IF NOT EXISTS `as_posts` (
   `tags` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idAuthor` (`idAuthor`)
-) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8;
 
 --
--- Déchargement des données de la table `as_posts`
+-- Déchargement des données de la table `as_post`
 --
 
-INSERT INTO `as_posts` (`id`, `idAuthor`, `title`, `filePath`, `urlVideo`, `description`, `datePublication`, `isPrivate`, `authorizedGroups`, `postType`, `fileType`, `onFolder`, `tags`) VALUES
-(20, 2, NULL, 'public/images/dl/b0954b26b78beb98344febda4c380972.jpg', NULL, NULL, '2020-05-04 11:59:18', 1, NULL, 'schoolPost', 'image', NULL, ',rem,re zero'),
-(21, 2, NULL, NULL, 'cdhnfhfcd', NULL, '2020-05-04 12:13:12', 0, NULL, 'userPost', 'video', NULL, ',test,re zero'),
-(22, 2, NULL, NULL, 'testurlmachin', NULL, '2020-05-04 12:15:16', 1, NULL, 'schoolPost', 'video', NULL, ',test'),
-(23, 2, 'test', NULL, NULL, NULL, '2020-05-04 12:17:30', 1, NULL, 'schoolPost', 'folder', NULL, NULL),
-(24, 2, 'dossier 1', NULL, NULL, '<p>un test</p>', '2020-05-04 12:33:30', 1, ',groupe_1', 'schoolPost', 'folder', NULL, NULL),
-(25, 2, NULL, NULL, 'bfdcbdbgfcdb &folder=24', NULL, '2020-05-04 18:30:55', 1, ',groupe_1', 'schoolPost', 'video', 24, ',test'),
-(26, 2, NULL, NULL, 'dhbfbh', '<p>gn xg g</p>', '2020-05-06 15:53:04', 0, NULL, 'schoolPost', 'video', NULL, ',dg'),
-(27, 2, NULL, 'public/images/dl/0893e150d81dfac099e37a796f368f4d.png', NULL, NULL, '2020-05-14 16:15:32', 0, NULL, 'userPost', 'image', NULL, ',test,images');
+INSERT INTO `as_post` (`id`, `idAuthor`, `school`, `title`, `filePath`, `urlVideo`, `description`, `datePublication`, `isPrivate`, `authorizedGroups`, `postType`, `fileType`, `onFolder`, `tags`) VALUES
+(57, 2, 'school 1', 'private folder', NULL, NULL, NULL, '2020-05-20 00:42:17', 1, NULL, 'schoolPost', 'folder', NULL, NULL),
+(58, 2, 'school 1', 'dossier public', NULL, NULL, NULL, '2020-05-20 00:53:44', 0, NULL, 'schoolPost', 'folder', NULL, NULL),
+(59, 2, 'school 1', NULL, 'public/images/dl/ae37345f9327c55aeee0bae57301b7ef.jpg', NULL, NULL, '2020-05-20 01:36:28', 1, ',group_1', 'schoolPost', 'image', 57, NULL);
 
 -- --------------------------------------------------------
 
@@ -247,8 +261,10 @@ CREATE TABLE IF NOT EXISTS `as_profile_content` (
   `contentOrder` int(11) NOT NULL,
   `align` varchar(50) NOT NULL,
   `content` text NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=234 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  KEY `userId` (`userId`),
+  KEY `schoolId` (`schoolId`)
+) ENGINE=InnoDB AUTO_INCREMENT=237 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_profile_content`
@@ -269,11 +285,11 @@ INSERT INTO `as_profile_content` (`id`, `userId`, `schoolId`, `tab`, `size`, `co
 -- --------------------------------------------------------
 
 --
--- Structure de la table `as_reported_comments`
+-- Structure de la table `as_reporte_comment`
 --
 
-DROP TABLE IF EXISTS `as_reported_comments`;
-CREATE TABLE IF NOT EXISTS `as_reported_comments` (
+DROP TABLE IF EXISTS `as_reporte_comment`;
+CREATE TABLE IF NOT EXISTS `as_reporte_comment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idComment` int(11) NOT NULL,
   `idAuthor` int(11) NOT NULL,
@@ -287,11 +303,11 @@ CREATE TABLE IF NOT EXISTS `as_reported_comments` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `as_reported_posts`
+-- Structure de la table `as_reporte_post`
 --
 
-DROP TABLE IF EXISTS `as_reported_posts`;
-CREATE TABLE IF NOT EXISTS `as_reported_posts` (
+DROP TABLE IF EXISTS `as_reporte_post`;
+CREATE TABLE IF NOT EXISTS `as_reporte_post` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idPost` int(11) NOT NULL,
   `idAuthor` int(11) NOT NULL,
@@ -343,36 +359,24 @@ INSERT INTO `as_school` (`id`, `idAdmin`, `name`, `nameAdmin`, `schoolGroups`, `
 -- --------------------------------------------------------
 
 --
--- Structure de la table `as_tags`
+-- Structure de la table `as_tag`
 --
 
-DROP TABLE IF EXISTS `as_tags`;
-CREATE TABLE IF NOT EXISTS `as_tags` (
+DROP TABLE IF EXISTS `as_tag`;
+CREATE TABLE IF NOT EXISTS `as_tag` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(355) NOT NULL,
-  `quantity` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
-
---
--- Déchargement des données de la table `as_tags`
---
-
-INSERT INTO `as_tags` (`id`, `name`, `quantity`) VALUES
-(18, 'rem', 0),
-(19, 're zero', 0),
-(20, 'test', 0),
-(21, 'dg', 0),
-(22, 'images', 0);
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `as_users`
+-- Structure de la table `as_user`
 --
 
-DROP TABLE IF EXISTS `as_users`;
-CREATE TABLE IF NOT EXISTS `as_users` (
+DROP TABLE IF EXISTS `as_user`;
+CREATE TABLE IF NOT EXISTS `as_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `mail` varchar(255) NOT NULL,
@@ -394,17 +398,17 @@ CREATE TABLE IF NOT EXISTS `as_users` (
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
 
 --
--- Déchargement des données de la table `as_users`
+-- Déchargement des données de la table `as_user`
 --
 
-INSERT INTO `as_users` (`id`, `name`, `mail`, `school`, `schoolGroup`, `password`, `temporaryPassword`, `beingReset`, `nbWarning`, `isBan`, `dateBan`, `isAdmin`, `isModerator`, `isActive`, `profileBannerInfo`, `profilePictureInfo`, `profileTextInfo`) VALUES
+INSERT INTO `as_user` (`id`, `name`, `mail`, `school`, `schoolGroup`, `password`, `temporaryPassword`, `beingReset`, `nbWarning`, `isBan`, `dateBan`, `isAdmin`, `isModerator`, `isActive`, `profileBannerInfo`, `profilePictureInfo`, `profileTextInfo`) VALUES
 (1, 'Julien Chemin', 'julchemin@orange.fr', 'allSchool', NULL, '$2y$10$kJ1W2sEancIUJPVp3Ecq2ef1Od9BxzF4bpyoyjVkyPuyn72cARy26', '$2y$10$lcWyVNH7ojRtvEjQpBUkMurrgamS1b7XMSiAD9lDQaNUl/eMkfUKu', 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
 (2, 'school 1 admin 1', 'school1@admin1.fr', 'school 1', NULL, '$2y$10$XUkx5w1ZeA8o2fCZVA4jnugiINucVGgVojX7PFcHiUXZO6JfKbh4O', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
 (3, 'school 2 admin 1', 'school2@admin1.fr', 'school 2', NULL, '$2y$10$osVD3E3cOBsNZAKgnyV/8uaL7wI5Y.V/G4GCO89ckBtGJ8nP6yCGu', NULL, 0, 0, 0, NULL, 1, 0, 0, NULL, NULL, NULL),
 (4, 'school 1 admin 2', 'school1@admin2.fr', 'school 1', NULL, '$2y$10$AMPHmJItKJDb/w5p93.RaemOPMOJOG1W9uOKpcl87ldcvA.jBH3pa', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
 (5, 'school 1 moderator 1', 'school1@moderator1.fr', 'school 1', NULL, '$2y$10$DKQbFIdAh0ow1kfgDKBFhOiX8Gdy8Hc7ylI0yrGVyC8zC84Rm3l9e', NULL, 0, 0, 0, NULL, 0, 1, 1, NULL, NULL, NULL),
 (6, 'school 1 user 1', 'school1@user1.fr', 'school 1', 'group_1', '$2y$10$9hRf3BcZJUr17hCBw133IOi66snjV6Du/bN/FtI5g2SX6hNuUqdJu', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL),
-(9, 'school 1 user inactif 1', 'school1@userinactif1.fr', 'school 1', 'group_2', '$2y$10$tVn4/UttJTo/ioodoijOceJIq5c6G1qWKXGHwL6Yrw6epGudMWJSG', NULL, 0, 0, 0, NULL, 0, 0, 0, NULL, NULL, NULL),
+(9, 'school 1 user inactif 1', 'school1@userinactif1.fr', 'school 1', 'group_2', '$2y$10$tVn4/UttJTo/ioodoijOceJIq5c6G1qWKXGHwL6Yrw6epGudMWJSG', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL),
 (11, 'noschool user 1', 'noschool@user1.fr', 'noSchool', NULL, '$2y$10$8nJej/tAJSkLXhxSPnvjIe2Kkrq3MYgtyBAdkeCGEt.Dgl5oF28Mq', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL),
 (12, 'no school admin 1', 'noschool@admin1.fr', 'noSchool', NULL, '$2y$10$GT4./enDDg41G6xCfl2El.lBgJIbCr3gyTRQcJSiDb9rPqVehWKQS', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
 (13, 'school 2 moderator 1', 'school2@moderator1.fr', 'school 2', NULL, '$2y$10$g5M3SrNEpIy8sRmw.jXe7eb22aVE9MTFE6wpqlAjNSMZ7e4xhHXkq', NULL, 0, 0, 0, NULL, 0, 1, 0, NULL, NULL, NULL),
@@ -412,51 +416,64 @@ INSERT INTO `as_users` (`id`, `name`, `mail`, `school`, `schoolGroup`, `password
 (16, 'school test admin 1', 'schooltest@admin1.fr', 'school test again', NULL, '$2y$10$lYHijLF9fL1plpl.eOKZOO/RmaJHfBmy5V2nOyubgWYj/TLnwcwyW', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
 (17, 'osef', 'osef@osef.fr', 'retest', NULL, '$2y$10$utsERJZtLXjgvSFR4pVm1O3/kNb20u4arWkYoHFz6wTknV/EQp3lS', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
 (18, 'test', 'tse@tetete.fr', 'noSchool', NULL, '$2y$10$LrLt4zxeHCOg63PXPFk.EOnNNLEmIjItn24J.r2sDIdmHVt3FauKy', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL),
-(19, 'test2', 'test2@test.fr', 'noSchool', NULL, '$2y$10$0AxewiEBDmHShmbV..NjC.EQjjcwZ72iGfETZP3SVcqdVQ.RjP0Ha', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL),
-(22, 'testuser', 'testuser@test.fr', 'school 1', 'group_2', '$2y$10$UnjQn68Yq6iDdw4l2VxBlOnkj46VfyjuJ6sujTYSSg.uGDtNsdvy.', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL);
+(19, 'test2', 'test2@test.fr', 'noSchool', NULL, '$2y$10$0AxewiEBDmHShmbV..NjC.EQjjcwZ72iGfETZP3SVcqdVQ.RjP0Ha', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL);
 
 --
 -- Contraintes pour les tables déchargées
 --
 
 --
--- Contraintes pour la table `as_comments`
+-- Contraintes pour la table `as_comment`
 --
-ALTER TABLE `as_comments`
-  ADD CONSTRAINT `as_comments_ibfk_1` FOREIGN KEY (`idPost`) REFERENCES `as_posts` (`id`),
-  ADD CONSTRAINT `as_comments_ibfk_2` FOREIGN KEY (`idAuthor`) REFERENCES `as_users` (`id`);
+ALTER TABLE `as_comment`
+  ADD CONSTRAINT `as_comment_ibfk_1` FOREIGN KEY (`idPost`) REFERENCES `as_post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `as_comment_ibfk_2` FOREIGN KEY (`idAuthor`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `as_history`
 --
 ALTER TABLE `as_history`
-  ADD CONSTRAINT `as_history_ibfk_1` FOREIGN KEY (`idSchool`) REFERENCES `as_school` (`id`);
+  ADD CONSTRAINT `as_history_ibfk_1` FOREIGN KEY (`idSchool`) REFERENCES `as_school` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `as_posts`
+-- Contraintes pour la table `as_like_post`
 --
-ALTER TABLE `as_posts`
-  ADD CONSTRAINT `as_posts_ibfk_1` FOREIGN KEY (`idAuthor`) REFERENCES `as_users` (`id`);
+ALTER TABLE `as_like_post`
+  ADD CONSTRAINT `as_like_post_ibfk_1` FOREIGN KEY (`idPost`) REFERENCES `as_post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `as_like_post_ibfk_2` FOREIGN KEY (`idUser`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `as_reported_comments`
+-- Contraintes pour la table `as_post`
 --
-ALTER TABLE `as_reported_comments`
-  ADD CONSTRAINT `as_reported_comments_ibfk_1` FOREIGN KEY (`idAuthor`) REFERENCES `as_users` (`id`),
-  ADD CONSTRAINT `as_reported_comments_ibfk_2` FOREIGN KEY (`idComment`) REFERENCES `as_comments` (`id`);
+ALTER TABLE `as_post`
+  ADD CONSTRAINT `as_post_ibfk_1` FOREIGN KEY (`idAuthor`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `as_reported_posts`
+-- Contraintes pour la table `as_profile_content`
 --
-ALTER TABLE `as_reported_posts`
-  ADD CONSTRAINT `as_reported_posts_ibfk_1` FOREIGN KEY (`idAuthor`) REFERENCES `as_users` (`id`),
-  ADD CONSTRAINT `as_reported_posts_ibfk_2` FOREIGN KEY (`idPost`) REFERENCES `as_posts` (`id`);
+ALTER TABLE `as_profile_content`
+  ADD CONSTRAINT `as_profile_content_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `as_profile_content_ibfk_2` FOREIGN KEY (`schoolId`) REFERENCES `as_school` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `as_reporte_comment`
+--
+ALTER TABLE `as_reporte_comment`
+  ADD CONSTRAINT `as_reporte_comment_ibfk_1` FOREIGN KEY (`idAuthor`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `as_reporte_comment_ibfk_2` FOREIGN KEY (`idComment`) REFERENCES `as_comment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `as_reporte_post`
+--
+ALTER TABLE `as_reporte_post`
+  ADD CONSTRAINT `as_reporte_post_ibfk_1` FOREIGN KEY (`idAuthor`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `as_reporte_post_ibfk_2` FOREIGN KEY (`idPost`) REFERENCES `as_post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `as_school`
 --
 ALTER TABLE `as_school`
-  ADD CONSTRAINT `as_school_ibfk_1` FOREIGN KEY (`idAdmin`) REFERENCES `as_users` (`id`);
+  ADD CONSTRAINT `as_school_ibfk_1` FOREIGN KEY (`idAdmin`) REFERENCES `as_user` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

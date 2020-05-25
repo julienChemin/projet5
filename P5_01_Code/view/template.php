@@ -88,6 +88,12 @@
 					case 'addPost' :
 						echo '<script src="public/js/addPost.js"></script>';
 					break;
+					case 'postView' :
+						echo '<script src="public/js/postView.js"></script>';
+					break;
+					case 'folderView' :
+						echo '<script src="public/js/folderView.js"></script>';
+					break;
 					default :
 						throw new Exception('L\'option indiqué n\'existe pas.');
 					break;

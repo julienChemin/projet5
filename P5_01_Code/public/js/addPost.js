@@ -416,9 +416,13 @@ inputSubmit.addEventListener('click', function(e){
 				e.preventDefault();
 				setErrorMsg('Vous devez choisir au moins un tag');
 			}
-			if (formAddPost.elements.videoLink.value === "") {
+			let regexUrl = /youtube\.com\/watch\?v\=([a-zA-Z0-9]+)$/;
+			if (formAddPost.elements.videoLink.value === "" || !regexUrl.test(formAddPost.elements.videoLink.value)) {
 				e.preventDefault();
-				setErrorMsg('Vous devez ajouter un lien pour la vidéo');
+				setErrorMsg('Vous devez ajouter une adresse youtube pour la vidéo');
+			} else {
+				//set url video
+				formAddPost.elements.videoLink.value = regexUrl.exec(formAddPost.elements.videoLink.value)[1];
 			}
 			if (formAddPost.elements.title.value !== "" && formAddPost.elements.title.value.length > 30) {
 				e.preventDefault();

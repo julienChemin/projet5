@@ -4,11 +4,11 @@ use Chemin\ArtSchool\Model\Database;
 
 class TagsManager extends Database
 {
-	public static $TABLE_NAME = 'as_tags';
+	public static $TABLE_NAME = 'as_tag';
 
 	public function getAll()
 	{
-		$q = $this->sql('SELECT name, quantity 
+		$q = $this->sql('SELECT name 
 						FROM ' . static::$TABLE_NAME);
 		$result = $q->fetchAll();	
 		$q->closeCursor();
@@ -17,7 +17,7 @@ class TagsManager extends Database
 
 	public function getOneByName(string $name)
 	{
-		$q = $this->sql('SELECT name, quantity 
+		$q = $this->sql('SELECT name 
 						FROM ' . static::$TABLE_NAME . ' 
 						WHERE name = :name', 
 						[':name' => $name]);
@@ -71,7 +71,6 @@ class TagsManager extends Database
 				if (!$this->exists($arrTags[$i])) {
 					$this->set($arrTags[$i]);
 				}
-				$this->incrementQuantity($arrTags[$i]);
 			}
 		}
 	}
@@ -85,35 +84,5 @@ class TagsManager extends Database
 			}
 		}
 		return true;
-	}
-
-	public function incrementQuantity($name)
-	{
-		if ($this->exists($name)) {
-			$tag = $this->getOneByName($name);
-			$incrementedQuantity = intval($tag['quantity']) + 1;
-			$this->sql('UPDATE ' . static::$TABLE_NAME . ' 
-						SET quantity = :quantity
-						WHERE name = :name', 
-						[':quantity' => $incrementedQuantity, ':name' => $name]);
-		}
-		return $this;
-	}
-
-	public function decrementQuantity($name)
-	{
-		if ($this->exists($name)) {
-			$tag = $this->getOneByName($name);
-			$decrementedQuantity = intval($tag['quantity']) - 1;
-			if ($decrementedQuantity <= 0) {
-				$this->delete($name);
-			} else {
-				$this->sql('UPDATE ' . static::$TABLE_NAME . ' 
-						SET quantity = :quantity
-						WHERE name = :name', 
-						[':quantity' => $decrementedQuantity, ':name' => $name]);
-			}
-		}
-		return $this;
 	}
 }

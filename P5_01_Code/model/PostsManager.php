@@ -5,21 +5,21 @@ use Chemin\ArtSchool\Model\AbstractManager;
 class PostsManager extends AbstractManager
 {
 	public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\Post';
-	public static $TABLE_NAME = 'as_posts';
-	public static $TABLE_COMMENTS = 'as_comments';
+	public static $TABLE_NAME = 'as_post';
+	public static $TABLE_COMMENTS = 'as_comment';
 	public static $TABLE_PK = 'id';
-	public static $TABLE_CHAMPS ='id, idAuthor, school, title, filePath, urlVideo, description, DATE_FORMAT(datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, 
-							isPrivate, authorizedGroups, postType, fileType, onFolder, tags';
-	public static $TABLE_CHAMPS_WITH_COMMENTS ='a.id, a.idAuthor, a.school, a.title, a.filePath, a.urlVideo, a.description, DATE_FORMAT(a.datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, a.isPrivate, a.authorizedGroups, a.postType, a.fileType, a.onFolder, a.tags, c.id AS idComment, c.idPost AS commentIdPost, c.idAuthor AS commentIdAuthor, c.content AS commentContent, DATE_FORMAT(c.datePublication, "%d/%m/%Y à %H:%i.%s") AS commentDatePublication, c.nbReport AS commentNbReport';
+	public static $TABLE_CHAMPS ='id, idAuthor, school, title, filePath, urlVideo, description, DATE_FORMAT(datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, isPrivate, authorizedGroups, postType, fileType, onFolder, tags';
+	public static $TABLE_CHAMPS_WITH_COMMENTS ='a.id, a.idAuthor, a.school, a.title, a.filePath, a.urlVideo, a.description, DATE_FORMAT(a.datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, a.isPrivate, a.authorizedGroups, a.postType, a.fileType, a.onFolder, a.tags, c.id AS idComment, c.idPost AS commentIdPost, c.idAuthor AS commentIdAuthor, c.NameAuthor AS commentNameAuthor, c.profilePictureAuthor AS commentProfilePictureAuthor, c.content AS commentContent, DATE_FORMAT(c.datePublication, "%d/%m/%Y à %H:%i.%s") AS commentDatePublication, c.nbReport AS commentNbReport';
 
-	public function getPostWithComments(int $id)
+	public function getOneById(int $id)
 	{
 		if ($id > 0) {
 			$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS_WITH_COMMENTS . ' 
 							FROM ' . static::$TABLE_NAME . ' AS a 
-							INNER JOIN ' . static::$TABLE_COMMENTS . ' AS c 
+							LEFT JOIN ' . static::$TABLE_COMMENTS . ' AS c 
 							ON a.id = c.idPost 
-							WHERE a.id = :id', 
+							WHERE a.id = :id 
+							ORDER BY commentDatePublication', 
 							[':id' => $id]);
 			$result = $q->fetch();
 			$post = new Post($result);
@@ -27,7 +27,7 @@ class PostsManager extends AbstractManager
 			if ($result['idComment'] !== null) {
 				do {
 					$comment = new Comment();
-					$comment->setId($result['idComment'])->setIdPost($result['commentIdPost'])->setIdAuthor($result['commentIdAuthor'])->setContent($result['commentContent'])->setDatePublication($result['commentDatePublication'])->setNbReport($result['commentNbReport']);
+					$comment->setId($result['idComment'])->setIdPost($result['commentIdPost'])->setIdAuthor($result['commentIdAuthor'])->setNameAuthor($result['commentNameAuthor'])->setProfilePictureAuthor($result['commentProfilePictureAuthor'])->setContent($result['commentContent'])->setDatePublication($result['commentDatePublication'])->setNbReport($result['commentNbReport']);
 					array_unshift($arrComments, $comment);
 				} while ($result = $q->fetch());	
 			}
@@ -68,14 +68,14 @@ class PostsManager extends AbstractManager
 				if (!empty($limit)) {
 					$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
 									FROM ' . static::$TABLE_NAME . ' 
-									WHERE school = :school AND postType = "userPost" AND onFolder = null AND isPrivate = "0" 
+									WHERE school = :school AND postType = "userPost" AND onFolder IS NULL AND isPrivate = "0" 
 									ORDER BY id DESC 
 									LIMIT :limit OFFSET :offset', 
 									[':school' => $school, ':offset' => $offset, ':limit' => $limit]);
 				} else {
 					$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
 									FROM ' . static::$TABLE_NAME . ' 
-									WHERE school = :school AND postType = "userPost" AND onFolder = null AND isPrivate = "0" 
+									WHERE school = :school AND postType = "userPost" AND onFolder IS NULL AND isPrivate = "0" 
 									ORDER BY id DESC', 
 									[':school' => $school]);
 				}
@@ -107,11 +107,24 @@ class PostsManager extends AbstractManager
 		if (strlen($school)) {
 			$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
 							FROM ' . static::$TABLE_NAME . ' 
-							WHERE school = :school AND postType = "schoolPost" 
+							WHERE school = :school AND (postType = "schoolPost" OR (postType = "userPost" AND onFolder != "null" AND tags IS NULL)) 
 							ORDER BY id DESC', 
 							[':school' => $school]);
 			$result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
-			
+
+			$q->closeCursor();
+			return $result;
+		}
+	}
+
+	public function getPostsOnFolder(int $idFolder)
+	{
+		if ($idFolder > 0) {
+			$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+							FROM ' . static::$TABLE_NAME . ' 
+							WHERE onFolder = :idFolder', 
+							[':idFolder' => $idFolder]);
+			$result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
 			$q->closeCursor();
 			return $result;
 		}
@@ -143,18 +156,30 @@ class PostsManager extends AbstractManager
 	public function deletePost(int $postId)
 	{
 		if ($postId > 0) {
-			$TagsManager = new TagsManager();
-			$CommentsManager = new CommentsManager();
 			$post = $this->getOneById($postId);
-			$tags = $post->getListTags();
-			foreach ($tags as $tag) {
-				$TagsManager->decrementQuantity($tag);
-			}
-			$comments = $post->getComments();
-			foreach ($comments as $comment) {
-				$CommentsManager->delete($comment->getId());
+			if (!empty($post->getFilePath())) {
+				unlink($post->getFilePath());
 			}
 			$this->delete($post->getId());
+		}
+	}
+
+	public function deleteFolder(int $idFolder)
+	{
+		if ($idFolder > 0) {
+			if ($this->exists($idFolder)) {
+				$postsOnFolder = $this->getPostsOnFolder($idFolder);
+				if (strlen($postsOnFolder) > 0) {
+					foreach ($postsOnFolder as $post) {
+						if ($post->getFileType() === 'folder') {
+							$this->deleteFolder($post->getId());
+						} else {
+							$this->deletePost($post->getId());
+						}
+					}
+				}
+				$this->deletePost($idFolder);
+			} 
 		}
 	}
 
@@ -197,12 +222,8 @@ class PostsManager extends AbstractManager
 				return false;
 			}
 			//check folder
-			if (!empty($arrPOST['folder']) && !$this->folderBelongsToUser(intval($arrPOST['folder']), $_SESSION['id'])) {
+			if (!empty($arrPOST['folder']) && !$this->canPostOnFolder($this->getOneById(intval($arrPOST['folder'])))) {
 				return false;
-			} elseif (!empty($arrPOST['folder'])) {
-				if (!$this->canPostOnFolder(intval($arrPOST['folder']), $arrPOST['uploadType'])) {
-					return false;
-				}
 			}
 			//check $_post
 			switch ($arrPOST['fileTypeValue']) {
@@ -235,10 +256,22 @@ class PostsManager extends AbstractManager
 		return true;
 	}
 
-	public function uploadPost(array $arrPOST, $schoolPost = false, $isPrivate = false, $authorizedGroups = null)
+	public function uploadPost(array $arrPOST, $schoolPost = false, $authorizedGroups = null)
 	{	
+		//set folder and privacy
+		$arrPOST['uploadType'] === "private" ? $isPrivate = true : $isPrivate = false;
+		if (!empty($arrPOST['folder'])) {
+			$folder = $this->getOneById(intval($arrPOST['folder']));
+			if ($arrPOST['uploadType'] === 'public' && $folder->getIsPrivate()) {
+				$isPrivate = true;
+				$folder = intval($arrPOST['folder']);
+			} elseif ($arrPOST['uploadType'] === 'private' && !$folder->getIsPrivate()) {
+				$folder = null;
+			} else {
+				$folder = intval($arrPOST['folder']);
+			}
+		} else {$folder = null;}
 		!$isPrivate ? $authorizedGroups = null : $authorizedGroups = $authorizedGroups;
-		empty($arrPOST['folder']) ? $folder = null : $folder = intval($arrPOST['folder']);
 		switch ($arrPOST['fileTypeValue']) {
 			case 'image':
 				$arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
@@ -325,29 +358,20 @@ class PostsManager extends AbstractManager
 		}
 	}
 
-	public function folderBelongsToUser(int $idFolder, int $idUser)
+	public function canPostOnFolder(Post $post)
 	{
-		if ($idFolder > 0 && $idUser > 0) {
-			$q = $this->sql('SELECT * 
-							FROM ' . static::$TABLE_NAME . ' 
-							WHERE id = :idFolder AND idAuthor = :idUser AND fileType = :fileType', 
-							[':idFolder' => $idFolder, ':idUser' => $idUser, ':fileType' => 'folder']);
-			if ($q->fetch()) {
+		if (isset($_SESSION) && $post->getFileType() === 'folder') {
+			if ($post->getIdAuthor() === $_SESSION['id']) {
+				//folder belong to user
+				return true;
+			} elseif ($post->getSchool() === $_SESSION['school'] && ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN)) {
+				//admin and moderator can post on school folder
+				return true;
+			} elseif ($post->getSchool() === $_SESSION['school'] && $post->getIsPrivate() && ($post->getListAuthorizedGroups() === null || in_array($_SESSION['group'], $post->getListAuthorizedGroups()))) {
+				//user on this group can post in this folder
 				return true;
 			} else {return false;}
-		}
-	}
-
-	public function canPostOnFolder(int $idFolder, string $privacy)
-	{
-		if ($this->exists($idFolder)) {
-			$folder = $this->getOneById($idFolder);
-			if ($privacy === 'public' && !$folder->getIsPrivate()) {
-				return true;
-			} elseif ($privacy === 'private' && $folder->getIsPrivate()) {
-				return true;
-			} else {return false;}
-		}
+		} else {return false;}
 	}
 
 	public function sortForProfile($posts)
@@ -363,7 +387,7 @@ class PostsManager extends AbstractManager
 				}
 				$arrSortedPosts['folder'][$idPost][] = $post;
 			} elseif ($post['isPrivate'] === '1' && ($post['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
-				if ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || $_SESSION['id'] === $post['idAuthor'] || $post['listAuthorizedGroups'] === null || stristr($post['listAuthorizedGroups'], $_SESSION['group']) !== false) {
+				if ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || $_SESSION['id'] === $post['idAuthor'] || $post['listAuthorizedGroups'] === null || in_array($_SESSION['group'], $post['listAuthorizedGroups'])) {
 					$arrSortedPosts['private'][] = $post;
 				}
 			} else {

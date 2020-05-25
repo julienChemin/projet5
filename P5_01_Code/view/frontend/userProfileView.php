@@ -258,7 +258,7 @@
 			<div class="<?=$data['user']->getProfileTextBlock()?> editable">
 				<span class="<?=$data['user']->getProfileTextPseudo()?>"><?=$data['user']->getName()?></span>
 				<a href="index.php?action=schoolProfile&school=<?=$data['user']->getSchool()?>" class="<?=$data['user']->getProfileTextSchool()?>">
-					<?=$data['user']->getSchool()?><?=$data['user']->getSchoolGroup() !== null ? " - " . $data['user']->getSchoolGroup() : "" ?>
+					<?=$data['user']->getSchool()?>
 				</a>
 				<?php
 				if ($data['user']->getId() === $_SESSION['id']) {

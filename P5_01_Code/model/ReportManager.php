@@ -55,7 +55,7 @@ abstract class ReportManager extends AbstractManager
 
 			//add report to "report" table
 			$this->sql('
-				INSERT INTO as_reported_comments (idComment, idAuthor, reason, dateReport)
+				INSERT INTO as_reporte_comment (idComment, idAuthor, reason, dateReport)
 				VALUES (:idComment, :idAuthor, :reason, NOW())',
 				[':idComment' => $idComment, ':idAuthor' => $idAuthor, ':reason' => $reason]);
 
@@ -69,7 +69,7 @@ abstract class ReportManager extends AbstractManager
 			if ($this->reportExists($idReport)) {
 				//delete report
 				$this->sql('
-					DELETE FROM as_reported_comments 
+					DELETE FROM as_reporte_comment 
 					WHERE id = :id',
 					[':id' => $idReport]);
 
@@ -89,7 +89,7 @@ abstract class ReportManager extends AbstractManager
 	{
 		if ($idComment > 0) {
 			$this->sql('
-				DELETE FROM as_reported_comments 
+				DELETE FROM as_reporte_comment 
 				WHERE idComment = :idComment',
 				[':idComment' => $idComment]);
 
@@ -102,7 +102,7 @@ abstract class ReportManager extends AbstractManager
 		if ($id > 0) {
 			$req = $this->sql(
 				'SELECT *
-				 FROM as_reported_comments 
+				 FROM as_reporte_comment 
 				 WHERE id = :id',
 				[':id' => $id]);
 

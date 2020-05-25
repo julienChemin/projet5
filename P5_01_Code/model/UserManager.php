@@ -5,7 +5,7 @@ use Chemin\ArtSchool\Model\Database;
 class UserManager extends AbstractManager
 {
 	public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\User';
-	public static $TABLE_NAME = 'as_users';
+	public static $TABLE_NAME = 'as_user';
 	public static $TABLE_PK = 'id';
 	public static $TABLE_CHAMPS ='id, name, password, mail, school, schoolGroup, temporaryPassword, beingReset, nbWarning, isBan, dateBan, isAdmin, isModerator, isActive, profileBannerInfo, profilePictureInfo, profileTextInfo';
 
@@ -381,19 +381,12 @@ class UserManager extends AbstractManager
 		}
 	}
 
-	public function deleteUser($GET, SchoolManager $SchoolManager, PostsManager $PostsManager)
+	public function deleteUser($GET, SchoolManager $SchoolManager)
 	{
 		$HistoryManager = new HistoryManager();
 		$user = $this->getUserByName($GET['userName']);
 		$school = $SchoolManager->getSchoolByName($GET['schoolName']);
 		if (!$user->getIsAdmin()) {
-			//delete reports related to this account
-
-			//delete content publish by this account and reports related to this content
-			$posts = $PostsManager->getPostsByAuthor($user->getId());
-			foreach ($posts as $post) {
-				$PostsManager->deletePost($post->getId());
-			}
 			//if account is active and not moderator, nb active account -1
 			if ($user->getIsActive() && !$user->getIsModerator()) {
 				$SchoolManager->updateByName($GET['schoolName'], 'nbActiveAccount', $school->getNbActiveAccount() - 1);

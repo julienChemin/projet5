@@ -42,6 +42,8 @@ class Post
 	{
 		if ($this->getTags() !== null) {
 			$this->setListTags($this->getTags());
+		}
+		if ($this->getAuthorizedGroups() !== null) {
 			$this->setListAuthorizedGroups($this->getAuthorizedGroups());
 		}
 	}
@@ -157,7 +159,7 @@ class Post
 		return $this;
 	}
 
-	public function setTitle(string $title)
+	public function setTitle($title)
 	{
 		if (strlen($title) > 0){
 			$this->title = $title;
@@ -173,7 +175,7 @@ class Post
 		return $this;
 	}
 
-	public function setDescription(string $description)
+	public function setDescription($description)
 	{
 		if (strlen($description) > 0){
 			$this->description = $description;
@@ -228,7 +230,7 @@ class Post
 		return $this;
 	}
 
-	public function setUrlVideo(string $urlVideo)
+	public function setUrlVideo($urlVideo)
 	{
 		if (strlen($urlVideo) > 0){
 			$this->urlVideo = $urlVideo;
@@ -242,7 +244,7 @@ class Post
 		return $this;
 	}
 
-	public function setTags(string $tags)
+	public function setTags($tags)
 	{
 		if (strlen($tags) > 0){
 			$this->tags = $tags;

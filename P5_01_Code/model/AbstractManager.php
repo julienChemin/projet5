@@ -31,7 +31,7 @@ abstract class AbstractManager extends Database
 			if ($result = $req->fetch()) {
 				return true;
 			} else {return false;}
-		}
+		} else {return false;}
 	}
 
 	public function delete(int $id)

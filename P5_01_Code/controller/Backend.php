@@ -365,11 +365,10 @@ class Backend extends Controller
 			$PostsManager = new PostsManager();
 			$TagsManager = new TagsManager();
 			//check upload type
-			$_POST['uploadType'] === "private" ? $isPrivate = true : $isPrivate = false;
 			$_POST['listGroup'] === "all" ? $authorizedGroups = null : $authorizedGroups = $_POST['listAuthorizedGroups'];
 			if (isset($_SESSION['id'], $_POST)) {
 				if ($PostsManager->canUploadPost($_POST, $TagsManager)) {
-					if ($PostsManager->uploadPost($_POST, true, $isPrivate, $authorizedGroups)) {
+					if ($PostsManager->uploadPost($_POST, true, $authorizedGroups)) {
 						if (!empty($_POST['listTags'])) {
 							$TagsManager->checkForNewTag($_POST['listTags']);
 						}

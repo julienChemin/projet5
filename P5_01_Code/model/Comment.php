@@ -7,6 +7,8 @@ class Comment
 	private $id,
 			$idPost,
 			$idAuthor,
+			$nameAuthor,
+			$profilePictureAuthor,
 			$content,
 			$datePublication,
 			$nbReport;
@@ -45,6 +47,16 @@ class Comment
 		return $this->idAuthor;
 	}
 
+	public function getNameAuthor()
+	{
+		return $this->nameAuthor;
+	}
+
+	public function getProfilePictureAuthor()
+	{
+		return $this->profilePictureAuthor;
+	}
+
 	public function getContent()
 	{
 		return $this->content;
@@ -77,10 +89,26 @@ class Comment
 		}
 	}
 
-	public function setIdAuthor(string $idAuthor)
+	public function setIdAuthor(int $idAuthor)
 	{
-		if (strlen($idAuthor) > 0) {
+		if ($idAuthor > 0) {
 			$this->idAuthor = $idAuthor;
+			return $this;
+		}
+	}
+
+	public function setNameAuthor(string $nameAuthor)
+	{
+		if (strlen($nameAuthor) > 0) {
+			$this->nameAuthor = $nameAuthor;
+			return $this;
+		}
+	}
+
+	public function setProfilePictureAuthor(string $profilePictureAuthor)
+	{
+		if (strlen($profilePictureAuthor) > 0) {
+			$this->profilePictureAuthor = $profilePictureAuthor;
 			return $this;
 		}
 	}

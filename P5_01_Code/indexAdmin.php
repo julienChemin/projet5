@@ -25,10 +25,8 @@ const STUDENT = 'student';
 const USER = 'user';
 
 /*---------------------------------*/
-
+$Backend = new Backend();
 try {
-	$Backend = new Backend();
-
 	if (isset($_GET['action'])) {
 		switch ($_GET['action']) {
 			case 'resetPassword' :

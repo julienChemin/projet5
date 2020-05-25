@@ -93,7 +93,7 @@
 		</div>
 		<div id="blockVideoLink">
 			<hr>
-			<h2>Url de la vidéo</h2>
+			<h2>Adresse de la vidéo youtube</h2>
 			<input type="text" name="videoLink" id="videoLink">
 		</div>
 		<div id="blockTinyMce">
@@ -106,7 +106,7 @@
 			<h2>Ajoutez des tags</h2>
 			<p>Les tags permettent de répertorier vos publications<br>Vous pouvez par exemple mettre la catégorie (perspective, chara design, court métrage, etc...), le nom de votre établissement scolaire, etc...</p>
 			<p>Privilégiez les tags déjà existant pour avoir une meilleure visibilité, mais rien ne vous empêche de créer le votre !</p>
-			<p class="tagRules">Les tags ne peuvent contenir que des chiffres, des lettres et des espaces</p>
+			<p class="tagRules">Les tags ne peuvent contenir que des chiffres, des lettres et des espaces (30 caractères max.)</p>
 			<div id="blockAddTags">
 				<div>
 					<label  for="tags">Entrez un tag : </label>

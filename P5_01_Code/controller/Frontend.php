@@ -6,29 +6,10 @@ class Frontend extends Controller
 {
 	public static $SIDE = 'frontend';
 	public static $INDEX = 'index.php';
-	public static $COLOR = 'white';
 
 	public function __construct()
 	{
 		$this->verifyInformation();
-		if (isset($_SESSION['grade'])) {
-			switch ($_SESSION['grade']) {
-				case ADMIN :
-					static::$COLOR = '#CF8B3F';
-				break;
-				case MODERATOR :
-					static::$COLOR = '#FFC652';
-				break;
-				case STUDENT :
-					static::$COLOR = '#3498BF';
-				break;
-				case USER :
-					static::$COLOR = '#3498BF';
-				break;
-				default :
-					static::$COLOR = '#555';
-			}
-		}
 	}
 
 	public function verifyInformation()
@@ -238,7 +219,20 @@ class Frontend extends Controller
 
 	public function post()
 	{
-		RenderView::render('template.php', 'frontend/postView.php');
+		$UserManager = new UserManager();
+		$PostsManager = new PostsManager();
+		if (!empty($_GET['id']) && $PostsManager->exists($_GET['id'])) {
+			$post = $PostsManager->getOneById($_GET['id']);
+			$author = $UserManager->getOneById($post->getIdAuthor());
+			if (!empty($_SESSION)) {
+				$user = $UserManager->getOneById($_SESSION['id']);
+			} else {$user = null;}
+			if ($post->getFileType() === 'folder') {
+				RenderView::render('template.php', 'frontend/folderView.php', ['post' => $post, 'user' => $user, 'author' => $author, 'option' => ['folderView']]);
+			} else {
+				RenderView::render('template.php', 'frontend/postView.php', ['post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
+			}
+		} else {$this->incorrectInformation();}
 	}
 
 	public function addPost()
@@ -330,4 +324,42 @@ class Frontend extends Controller
 			} else {echo false;}
 		} else {echo false;}
 	}
-}
+
+	public function setComment()
+	{
+		$CommentsManager = new CommentsManager();
+		$UserManager = new UserManager();
+		if (isset($_POST['idPost'], $_SESSION['id']) && $_POST['idPost'] > 0 && !empty($_POST['commentContent'])) {
+			$user = $UserManager->getOneById($_SESSION['id']);
+			echo json_encode($CommentsManager->setComment($_POST, $user));
+		} else {echo false;}
+	}
+
+	public function deleteComment()
+	{
+		$CommentsManager = new CommentsManager();
+		if (isset($_GET['id'], $_SESSION['id']) && $CommentsManager->exists($_GET['id'])) {
+			$comment = $CommentsManager->getOneById($_GET['id']);
+			if ($comment->getIdAuthor() === $_SESSION['id'] || $_SESSION['grade'] === ALL_SCHOOL) {
+				$CommentsManager->delete($comment->getId());
+				echo true;
+			} else {echo false;}
+		} else {echo false;}
+	}
+
+	public function deletePost()
+	{
+		$PostsManager = new PostsManager();
+		if (isset($_GET['id'], $_SESSION['id']) && $PostsManager->exists($_GET['id'])) {
+			$post = $PostsManager->getOneById($_GET['id']);
+			if ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['grade'] === ALL_SCHOOL) {
+				if ($post->getFileType() === 'folder') {
+					$PostsManager->deleteFolder($post->getId());
+				} else {
+					$PostsManager->deletePost($post->getId());
+				}
+				header('Location: index.php?action=userProfile&userId=' . $_SESSION['id']);
+			} else {$this->accessDenied();}
+		} else {$this->incorrectInformation();}
+	}
+} 
