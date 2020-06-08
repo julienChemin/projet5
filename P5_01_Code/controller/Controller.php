@@ -23,7 +23,7 @@ abstract class Controller
 			$userPassword = htmlspecialchars($cookie[1]);
 			if ($UserManager->exists($userId)) {
 				$user = $UserManager->getOneById($userId);
-				if ($user->getPassword() === $userPassword) {
+				if ($user->getPassword() === $userPassword && !$user->getIsBan()) {
 					$SchoolManager = new SchoolManager();
 					if(!$SchoolManager->nameExists($user->getSchool()) && $user->getSchool() !== ALL_SCHOOL) {
 						//if school name don't exist and isn't "allSchool"
@@ -39,6 +39,20 @@ abstract class Controller
 
 	public function connect(User $user)
 	{
+		if ($user->getIsBan()) {
+			$today = \DateTime::createFromFormat("d/m/Y", date('d/m/Y'));
+			$dateBan = \DateTime::createFromFormat("d/m/Y", $user->getDateBan());
+			$strDateEndBan = date('d/m/Y', strtotime('+' . 1 . ' month', strtotime($dateBan->format('Y/m/d'))));
+			$dateEndBan = \DateTime::createFromFormat('d/m/Y', $strDateEndBan);
+			if ($today < $dateEndBan) {
+				throw new \Exception("Votre compte a reçu 3 avertissements et est bloqué jusqu'aux " . $strDateEndBan);
+			} else {
+				$UserManager = new UserManager();
+				$UserManager->updateById($user->getId(), 'isBan', false, true);
+				$UserManager->updateById($user->getId(), 'dateBan', null);
+			}
+		}
+
 		$_SESSION['id'] = $user->getId();
 		$_SESSION['pseudo'] = $user->getName();
 		$_SESSION['school'] = $user->getSchool();
@@ -70,9 +84,7 @@ abstract class Controller
 		if (isset($_COOKIE['artSchoolId']) || isset($_COOKIE['artSchoolAdminId'])) {
 			$this->useCookieToSignIn();
 		} else {
-			throw new \Exception("Certaines informations lié a votre compte ne sont plus valide,
-			 veuillez vous reconnecter pour mettre à jour ces informations.
-			 Cocher la case 'rester connecté' lors de la connection peu vous éviter ce genre de désagrément");
+			throw new \Exception("Certaines informations lié a votre compte ne sont plus valide, veuillez vous reconnecter pour mettre à jour ces informations.Cocher la case 'rester connecté' lors de la connection peu vous éviter ce genre de désagrément");
 		}
 	}
 

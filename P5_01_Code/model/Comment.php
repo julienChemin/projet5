@@ -10,8 +10,7 @@ class Comment
 			$nameAuthor,
 			$profilePictureAuthor,
 			$content,
-			$datePublication,
-			$nbReport;
+			$datePublication;
 
 	public function __construct(array $data = null)
 	{
@@ -67,11 +66,6 @@ class Comment
 		return $this->datePublication;
 	}
 
-	public function getNbReport()
-	{
-		return $this->nbReport;
-	}
-
 	//SETTERS
 	public function setId(int $idComment)
 	{
@@ -125,14 +119,6 @@ class Comment
 	{
 		if (!empty($date)) {
 			$this->datePublication = $date;
-			return $this;
-		}
-	}
-
-	public function setNbReport(int $nbReport)
-	{
-		if ($nbReport >= 0) {
-			$this->nbReport = $nbReport;
 			return $this;
 		}
 	}

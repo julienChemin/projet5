@@ -7,14 +7,14 @@ class UserManager extends AbstractManager
 	public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\User';
 	public static $TABLE_NAME = 'as_user';
 	public static $TABLE_PK = 'id';
-	public static $TABLE_CHAMPS ='id, name, password, mail, school, schoolGroup, temporaryPassword, beingReset, nbWarning, isBan, dateBan, isAdmin, isModerator, isActive, profileBannerInfo, profilePictureInfo, profileTextInfo';
+	public static $TABLE_CHAMPS ='id, name, password, mail, school, schoolGroup, temporaryPassword, beingReset, nbWarning, isBan, DATE_FORMAT(dateBan, "%d/%m/%Y") AS dateBan, isAdmin, isModerator, isActive, profileBannerInfo, profilePictureInfo, profileTextInfo';
 
 	public function add(User $user)
 	{
-		$this->sql('INSERT INTO ' . static::$TABLE_NAME . ' (name, mail, school, password, isAdmin, isModerator) 
-					VALUES (:name, :mail, :school, :password, :isAdmin, :isModerator)', 
+		$this->sql('INSERT INTO ' . static::$TABLE_NAME . ' (name, mail, school, password, isAdmin, isModerator, isActive) 
+					VALUES (:name, :mail, :school, :password, :isAdmin, :isModerator, :isActive)', 
 					[':name' => $user->getName(), ':mail' => $user->getMail(), ':school' => $user->getSchool(), 
-					':password' => $user->getPassword(), ':isAdmin' => intval($user->getIsAdmin()), ':isModerator' => intval($user->getIsModerator())]);
+					':password' => $user->getPassword(), ':isAdmin' => intval($user->getIsAdmin()), ':isModerator' => intval($user->getIsModerator()), ':isActive' => intval($user->getIsActive())]);
 		return $this;
 	}
 
@@ -344,7 +344,8 @@ class UserManager extends AbstractManager
 												'password' => password_hash($POST['password'], PASSWORD_DEFAULT), 
 												'school' => NO_SCHOOL, 
 												'isAdmin' => false, 
-												'isModerator' => false]));
+												'isModerator' => false, 
+												'isActive' => false]));
 							return $message = "Le compte à bien été créé, vous pouvez maintenant <a href='index.php?action=signIn'>vous connecter</a>";
 						}
 					} else {return $message = "Cette adresse mail est déja lié a un compte";}

@@ -2,7 +2,7 @@ function fillProfile(sortedPosts) {
 	if (sortedPosts['public'].length > 0) {
 		setPosts(sortedPosts['public'], tabPublicPosts);
 	}
-	if (sortedPosts['private'].length > 0 && tabPrivatePosts !== null) {
+	if (sortedPosts['private'].length > 0 && tabPrivatePosts !== null && document.getElementById('pseudo') !== null) {
 		setPosts(sortedPosts['private'], tabPrivatePosts);
 	}
 }
@@ -64,7 +64,7 @@ function setVideoPost(post, blockContent) {
 	divItem.appendChild(elemFigure);
 	blockContent.appendChild(divItem);
 }
-function setFolderPost(post, blockContent) {
+function setFolderPost(post, blockContent, onFolderView = false) {
 	//create folder
 	let divFolder = document.createElement('div');
 	divFolder.classList.add('folder');
@@ -87,9 +87,26 @@ function setFolderPost(post, blockContent) {
 	elemDiv.appendChild(elemSpan);
 	elemFigure.appendChild(elemDiv);
 	divItem.appendChild(elemFigure);
-	divItem.addEventListener('click', function(){
-		toggleFolder(divFolder);
-	});
+	if (onFolderView) {
+		//event to fill folder on click
+		divItem.addEventListener('click', function() {
+			ajaxUrl = 'index.php?action=getProfilePosts&idFolder=' + post['id'];
+			ajaxGet(ajaxUrl, function(response){
+				if (response !== 'false' && response.length > 0) {
+					sortedPosts = JSON.parse(response);
+					fillFolder(post['id'], divFolder);
+					toggleFolder(divFolder);
+					divItem.addEventListener('click', function(){
+						toggleFolder(divFolder);
+					});
+				}
+			});
+		}, {'once' : true});
+	} else {
+		divItem.addEventListener('click', function(){
+			toggleFolder(divFolder);
+		});
+	}
 	divFolder.appendChild(divItem);
 	//create post folder (link to consult post)
 	let div = document.createElement('div');
@@ -107,12 +124,14 @@ function setFolderPost(post, blockContent) {
 	figure.appendChild(link);
 	div.appendChild(figure);
 	divFolder.appendChild(div);
-	fillFolder(post['id'], divFolder);
+	if (!onFolderView) {
+		fillFolder(post['id'], divFolder);
+	}
 	
 	blockContent.appendChild(divFolder);
 }
-function fillFolder(postId, elemFolder) {
-	if (sortedPosts['folder'][postId] !== undefined) {
+function fillFolder(postId, elemFolder, onFolderView = false) {
+	if (sortedPosts['folder'][postId] !== undefined && sortedPosts['folder'][postId].length > 0) {
 		sortedPosts['folder'][postId].forEach(post =>{
 			switch (post['fileType']) {
 				case 'image' :
@@ -122,13 +141,16 @@ function fillFolder(postId, elemFolder) {
 					setVideoPost(post, elemFolder);
 				break;
 				case 'folder' :
-					setFolderPost(post, elemFolder);
+					setFolderPost(post, elemFolder, onFolderView);
 				break;
 				case 'compressed' :
 					setCompressedPost(post, elemFolder);
 				break;
 			}
 		});
+	} else if (onFolderView) {
+		elemFolder.style.justifyContent = "center";
+		elemFolder.innerHTML = '<p class="emptyFolder">Ce dossier est vide pour le moment</p>';
 	}
 }
 function toggleFolder(folder, action = null) {
@@ -187,7 +209,10 @@ window.addEventListener('load', function(){
 		let splitUrl = url[i].split('=');
 		arr[splitUrl[0]] = splitUrl[1];
 	}
-	if (arr['action'] === 'schoolProfile') {
+	if (arr['action'] === 'post') {
+		//folder view
+		ajaxUrl = 'index.php?action=getProfilePosts&idFolder=' + arr['id'];
+	} else if (arr['action'] === 'schoolProfile') {
 		//school profile
 		ajaxUrl = 'index.php?action=getSchoolPosts&school=' + arr['school'];
 	} else {
@@ -197,7 +222,11 @@ window.addEventListener('load', function(){
 	ajaxGet(ajaxUrl, function(response){
 		if (response !== 'false' && response.length > 0) {
 			sortedPosts = JSON.parse(response);
-			fillProfile(sortedPosts);
+			if (arr['action'] === 'post') {
+				fillFolder(arr['id'], document.querySelector('#viewFolder > article > section > div'), true);
+			} else {
+				fillProfile(sortedPosts);
+			}
 		}
 	});
 });

@@ -24,8 +24,9 @@ const STUDENT = 'student';
 const USER = 'user';
 
 /*---------------------------------*/
-$Frontend = new Frontend();
 try {
+	$Frontend = new Frontend();
+	$Frontend->verifyInformation();
 	if (isset($_GET['action'])) {
 		switch ($_GET['action']) {
 			case 'resetPassword' :
@@ -76,6 +77,9 @@ try {
 			case 'getSchoolPosts' :
 				$Frontend->getSchoolPosts();
 			break;
+			case 'getProfilePosts' :
+				$Frontend->getProfilePosts();
+			break;
 			case 'setComment' :
 				$Frontend->setComment();
 			break;
@@ -84,6 +88,18 @@ try {
 			break;
 			case 'deletePost' :
 				$Frontend->deletePost();
+			break;
+			case 'userAlreadyLikePost' :
+				$Frontend->userAlreadyLikePost();
+			break;
+			case 'toggleLikePost' :
+				$Frontend->toggleLikePost();
+			break;
+			case 'report' :
+				$Frontend->report();
+			break;
+			case 'setReport' :
+				$Frontend->setReport();
 			break;
 			default :
 				//"action" value is unknow

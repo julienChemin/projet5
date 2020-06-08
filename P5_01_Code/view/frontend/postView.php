@@ -20,13 +20,16 @@ $user = $data['user'];
 			<aside id="optionList">
 				<nav>
 					<ul>
-						<li><i class="far fa-heart"></i></li>
 						<?php
-						if (!empty($_SESSION['id']) && $post->getIdAuthor() === intval($_SESSION['id'])) {
-							echo '<li id="deletePost" title="Supprimer"><i class="far fa-trash-alt"></i></li>';
-							echo '<a href="index.php?action=deletePost&id=' . $post->getId() . '" id="confirmDeletePost" title="Supprimer">Supprimer définitivement la publication ?</i></a>';
-						} else {
-							echo '<li title="Signaler"><i class="far fa-flag"></i></li>';
+						if (!empty($_SESSION['id'])) {
+							echo '<li id="heart"><i class="far fa-heart" idpost="' . $post->getId() . '"></i></li>';
+						}
+						echo '<li id="nbLike"><span><span>' . $post->getNbLike() . '</span><i class="fas fa-heart"></i></span></li>';
+						if (!empty($_SESSION['id']) && ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['school'] === ALL_SCHOOL || ($post->getPostType() === 'schoolPost' && $_SESSION['grade'] === ADMIN))) {
+							echo '<li id="deletePost" title="Supprimer la publication"><i class="far fa-trash-alt"></i></li>';
+							echo '<a href="index.php?action=deletePost&id=' . $post->getId() . '" id="confirmDeletePost" title="Supprimer la publication">Supprimer définitivement la publication ?</i></a>';
+						} elseif (!empty($_SESSION['id'])) {
+							echo '<li title="Signaler"><a href="index.php?action=report&elem=post&id=' . $post->getId() . '"><i class="far fa-flag"></i></a></li>';
 						}
 						?>
 					</ul>
@@ -89,13 +92,15 @@ $user = $data['user'];
 			<form id="addComment">
 				<?php
 				if (!empty($user)) {
-					echo '<input type="hidden" name="userId" value="' . $user->getId() . '">';
-					echo '<input type="hidden" name="userName" value="' . $user->getName() . '">';
-					echo '<input type="hidden" name="userPicture" value="' . $user->getProfilePicture() . '">';
-					echo '<span id="msgComment"></span>';
-					echo '<textarea wrap="hard" name="commentContent" placeholder="Ajouter un commentaire"></textarea>';
-					echo '<input type="hidden" name="idPost" value="' . $_GET['id'] . '">';
-					echo '<input type="button" name="submitComment" id="submitComment" value="Ajouter">';
+					?>
+					<input type="hidden" name="userId" value="<?=$user->getId()?>">
+					<input type="hidden" name="userName" value="<?=$user->getName()?>">
+					<input type="hidden" name="userPicture" value="<?=$user->getProfilePicture()?>">
+					<span id="msgComment"></span>
+					<textarea wrap="hard" name="commentContent" placeholder="Ajouter un commentaire"></textarea>
+					<input type="hidden" name="idPost" value="<?=$_GET['id']?>">
+					<input type="button" name="submitComment" id="submitComment" value="Ajouter">
+					<?php
 				} else {
 					echo '<p>Vous devez être connecté pour poster un commentaire</p>';
 				}
@@ -121,14 +126,14 @@ $user = $data['user'];
 								<p>
 									<?=$comment->getDatePublication()?>
 									<?php
-									if (!empty($_SESSION['id']) && intval($_SESSION['id']) === $comment->getIdAuthor()) {
-										echo ' - <span class="deleteComment" idcomment="' . $comment->getId() . '">Supprimer mon commentaire</span><span class="confirmDelete">Supprimer définitivement ?</span>';
+									if (!empty($_SESSION['id']) && (intval($_SESSION['id']) === $comment->getIdAuthor() || $_SESSION['school'] === ALL_SCHOOL)) {
+										echo ' - <span class="deleteComment" idcomment="' . $comment->getId() . '">Supprimer le commentaire</span><span class="confirmDelete">Supprimer définitivement ?</span>';
 									}
 									?>
 								</p>
 								<?php
 								if (empty($_SESSION['id']) || intval($_SESSION['id']) !== $comment->getIdAuthor()) {
-									echo '<i title="Signaler" class="far fa-flag"></i>';
+									echo '<a href="index.php?action=report&elem=comment&id=' . $comment->getId() . '&idPost=' . $post->getId() . '" title="Signaler le commentaire" class="reportComment"><i class="far fa-flag"></i></a>';
 								}
 								?>
 							</div>

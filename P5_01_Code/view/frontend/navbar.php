@@ -17,7 +17,29 @@
 						</li>
 						<?php
 					} else {
+						if ($_SESSION['school'] !== ALL_SCHOOL) {
+							?>
+							<li title="Publication">
+								<a href="index.php?action=addPost">
+									<i class="fas fa-file-import"></i>
+								</a>
+							</li>
+							<hr class="hrNavbar">
+							<li title="Profil">
+								<a href="index.php?action=userProfile&userId=<?=$_SESSION['id']?>">
+								<i class="far fa-address-card"></i>
+								</a>
+							</li>
+							<hr class="hrNavbar">
+							<li title="Profil de mon établissement">
+								<a href="index.php?action=schoolProfile&school=<?=$_SESSION['school']?>">
+									<i class="fas fa-school"></i>
+								</a>
+							</li>
+							<?php
+						}
 						?>
+						<hr class="hrNavbar">
 						<li id="pseudo">
 							<?=$_SESSION['pseudo']?>
 							<i class="fas fa-sort-down"></i>
@@ -37,7 +59,7 @@
 						<hr class="hrNavbar">
 						<li title="Se Déconnecter">
 							<a href="index.php?action=disconnect">
-								<i class="fas fa-power-off"></i>
+								<i class="fas fa-sign-out-alt"></i>
 							</a>
 						</li>
 						<?php
@@ -52,18 +74,28 @@
 			<div id="menuNavbar">
 				<div>
 					<ul>
-						<li>
-							<a href="index.php?action=userProfile&userId=<?=$_SESSION['id']?>">
-							Profil<i class="far fa-address-card"></i>
-							</a>
-						</li>
-						<li>
-							<a href="index.php?action=addPost">
-								Publication<i class="fas fa-file-import"></i>
-							</a>
-						</li>
-						<hr>
 						<?php
+						if ($_SESSION['school'] !== ALL_SCHOOL) {
+							?>
+							<li>
+								<a href="index.php?action=addPost">
+									Publication<i class="fas fa-file-import"></i>
+								</a>
+							</li>
+							<li>
+								<a href="index.php?action=userProfile&userId=<?=$_SESSION['id']?>">
+								Profil<i class="far fa-address-card"></i>
+								</a>
+							</li>
+							<hr>
+							<li>
+								<a href="index.php?action=schoolProfile&school=<?=$_SESSION['school']?>">
+									Profil de mon établissement<i class="fas fa-school"></i>
+								</a>
+							</li>
+							<hr>
+							<?php
+						}
 						if ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {
 							?>
 							<li title="Vers l'interface d'administration">
@@ -77,7 +109,7 @@
 						?>
 						<li title="Se Déconnecter">
 							<a href="index.php?action=disconnect">
-								Se Déconnecter<i class="fas fa-power-off"></i>
+								Se Déconnecter<i class="fas fa-sign-out-alt"></i>
 							</a>
 						</li>
 					</ul>

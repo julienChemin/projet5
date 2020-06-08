@@ -44,34 +44,36 @@ function addComment(content) {
 	blockComments.insertBefore(divComment, blockComments.childNodes[0]);
 }
 //add comment
-btnAddComment.addEventListener('click', function(e){
-	e.preventDefault();
-	if (formAddComment.elements.commentContent.value !== "") {
-		let url = 'index.php?action=setComment';
-		let data = new FormData(formAddComment);
-		ajaxPost(url, data, function(response){
-			if (response.length > 0 && response !== "false") {
-				//add comment to flux
-				addComment(formAddComment.elements.commentContent.value);
-				formAddComment.elements.commentContent.value = "";
-				spanMsgComment.style.display = "inline";
-				spanMsgComment.textContent = "Votre commentaire a bien été ajouté";
-				spanMsgComment.style.color = 'green';
-				setTimeout(function(){
-					spanMsgComment.style.display = "none";
-				}, 3000);
-			} else {
-				formAddComment.elements.commentContent.value = "";
-				spanMsgComment.style.display = "inline";
-				spanMsgComment.textContent = "Votre commentaire n'a pas pu être ajouté, veuillez réessayer plus tard";
-				spanMsgComment.style.color = 'red';
-				setTimeout(function(){
-					spanMsgComment.style.display = "none";
-				}, 3000);
-			}
-		});
-	}
-});
+if (btnAddComment !== null) {
+	btnAddComment.addEventListener('click', function(e){
+		e.preventDefault();
+		if (formAddComment.elements.commentContent.value !== "") {
+			let url = 'index.php?action=setComment';
+			let data = new FormData(formAddComment);
+			ajaxPost(url, data, function(response){
+				if (response.length > 0 && response !== "false") {
+					//add comment to flux
+					addComment(formAddComment.elements.commentContent.value);
+					formAddComment.elements.commentContent.value = "";
+					spanMsgComment.style.display = "inline";
+					spanMsgComment.textContent = "Votre commentaire a bien été ajouté";
+					spanMsgComment.style.color = 'green';
+					setTimeout(function(){
+						spanMsgComment.style.display = "none";
+					}, 3000);
+				} else {
+					formAddComment.elements.commentContent.value = "";
+					spanMsgComment.style.display = "inline";
+					spanMsgComment.textContent = "Votre commentaire n'a pas pu être ajouté, veuillez réessayer plus tard";
+					spanMsgComment.style.color = 'red';
+					setTimeout(function(){
+						spanMsgComment.style.display = "none";
+					}, 3000);
+				}
+			});
+		}
+	});
+}
 
 //delete comment
 for (let i=0;i<arrBtnDeleteComment.length;i++) {
@@ -84,8 +86,8 @@ for (let i=0;i<arrBtnDeleteComment.length;i++) {
 		}, 2500);
 	});
 
-	let idPost = arrBtnDeleteComment[i].getAttribute('idcomment');
-	let url = 'index.php?action=deleteComment&id=' + idPost;
+	let idComment = arrBtnDeleteComment[i].getAttribute('idcomment');
+	let url = 'index.php?action=deleteComment&id=' + idComment;
 	arrBtnConfirmDelete[i].addEventListener('click', function(){
 		ajaxGet(url, function(response){
 			if (response) {
@@ -99,15 +101,97 @@ for (let i=0;i<arrBtnDeleteComment.length;i++) {
 //delete post
 let btnDeletePost = document.getElementById('deletePost');
 let btnConfirmDeletePost = document.getElementById('confirmDeletePost');
-let btnLike = document.querySelector('i[class="far fa-heart"]');
+let btnLike = document.querySelector('#heart > i');
+let btnPostOnFolder = document.querySelector('#postOnFolder > a');
 
-btnDeletePost.addEventListener('click', function(){
-	btnConfirmDeletePost.style.display = "inline";
-	btnDeletePost.style.display = "none";
-	btnLike.style.display = "none";
-	setTimeout(function(){
-		btnConfirmDeletePost.style.display = "none";
-		btnDeletePost.style.display = "inline";
-		btnLike.style.display = "inline";
-	}, 2500);
-});
+if (btnDeletePost !== null) {
+	btnDeletePost.addEventListener('click', function(){
+		btnConfirmDeletePost.style.display = "inline";
+		btnDeletePost.style.display = "none";
+		btnLike.style.display = "none";
+		if (btnPostOnFolder !== null) {
+			btnPostOnFolder.style.display = "none";
+		}
+		setTimeout(function(){
+			btnConfirmDeletePost.style.display = "none";
+			btnDeletePost.style.display = "inline";
+			btnLike.style.display = "inline";
+			if (btnPostOnFolder !== null) {
+				btnPostOnFolder.style.display = "inline";
+			}
+		}, 2500);
+	});
+}
+
+//like/unlike the post
+if (btnLike !== null) {
+	let idPost = btnLike.getAttribute('idPost');
+	let blockNbLike = document.querySelector('#nbLike > span > span');
+	let nbLike = parseInt(blockNbLike.textContent);
+	let urlAlreadyLike = 'index.php?action=userAlreadyLikePost&idPost=' + idPost;
+	let urlToggleLike = 'index.php?action=toggleLikePost&idPost=' + idPost;
+
+	function likePost() {
+		btnLike.style.transform = 'scale(0.3)';
+		setTimeout(function() {
+			btnLike.classList.remove('far');
+			btnLike.classList.add('fas');
+			btnLike.style.transform = 'scale(1)';
+		}, 200);
+		ajaxGet(urlToggleLike, function(response) {
+			if (response === 'true') {
+				blockNbLike.textContent = (nbLike += 1);
+				urlToggleLike = 'index.php?action=toggleLikePost&idPost=' + idPost;
+				setTimeout(function(){
+					btnLike.addEventListener('click', function(){
+						unlikePost();
+					}, {once : true});
+				}, 400);
+			}
+		});
+	}
+	function unlikePost() {
+		btnLike.style.transform = 'scale(0.3)';
+		setTimeout(function() {
+			btnLike.classList.remove('fas');
+			btnLike.classList.add('far');
+			btnLike.style.transform = 'scale(1)';
+		}, 200);
+		ajaxGet(urlToggleLike, function(response) {
+			if (response === 'true') {
+				blockNbLike.textContent = (nbLike -= 1);
+				urlToggleLike = 'index.php?action=toggleLikePost&idPost=' + idPost;
+				setTimeout(function(){
+					btnLike.addEventListener('click', function(){
+						likePost();
+					}, {once : true});
+				}, 400);
+			}
+		});
+	}
+	window.addEventListener('load', function(){
+		setTimeout(function(){
+			ajaxGet(urlAlreadyLike, function(response) {
+				if (response === 'true') {
+					btnLike.classList.remove('far');
+					btnLike.classList.add('fas');
+					btnLike.style.transform = 'scale(1.4)';
+					setTimeout(function() {
+						btnLike.style.transform = 'scale(1)';
+						btnLike.addEventListener('click', function(){
+							unlikePost();
+						}, {once : true});
+					}, 200);
+				} else {
+					btnLike.style.transform = 'scale(1.4)';
+					setTimeout(function() {
+						btnLike.style.transform = 'scale(1)';
+						btnLike.addEventListener('click', function(){
+							likePost();
+						}, {once : true});
+					}, 200);
+				}
+			});
+		}, 500)
+	});
+}

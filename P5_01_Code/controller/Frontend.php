@@ -7,24 +7,21 @@ class Frontend extends Controller
 	public static $SIDE = 'frontend';
 	public static $INDEX = 'index.php';
 
-	public function __construct()
-	{
-		$this->verifyInformation();
-	}
-
 	public function verifyInformation()
 	{
 		if (isset($_SESSION['pseudo'])) {
 			//user is connect, verify SESSION info
 			$SchoolManager = new SchoolManager();
 			$UserManager = new UserManager();
-			if((!$SchoolManager->nameExists($_SESSION['school']) && !($_SESSION['school'] === ALL_SCHOOL)) || !$UserManager->nameExists($_SESSION['pseudo'])) {
+			if ((!$SchoolManager->nameExists($_SESSION['school']) && !($_SESSION['school'] === ALL_SCHOOL)) || !$UserManager->nameExists($_SESSION['pseudo'])) {
 				//if user name don't exist or if school name don't exist and isn't "allSchool"
 				$this->forceDisconnect();
 			} else {
-				//user exist, check his group
+				//user exist, check his group and if user is ban
 				$user = $UserManager->getUserByName($_SESSION['pseudo']);
-				if ($_SESSION['group'] !== $user->getSchoolGroup()) {
+				if ($user->getIsBan()) {
+					$this->disconnect();
+				} elseif ($_SESSION['group'] !== $user->getSchoolGroup()) {
 					$this->forceDisconnect();
 				}
 			}
@@ -130,7 +127,7 @@ class Frontend extends Controller
 
 	public function schoolProfile()
 	{
-		if (!empty($_GET['school']) && $_GET['school'] !== ALL_SCHOOL && $_GET['school'] !== NO_SCHOOL) {
+		if (!empty($_GET['school']) && $_GET['school'] !== ALL_SCHOOL) {
 			$SchoolManager = new SchoolManager();
 			if ($SchoolManager->nameExists($_GET['school'])) {
 				$ProfileContentManager = new ProfileContentManager();
@@ -227,17 +224,29 @@ class Frontend extends Controller
 			if (!empty($_SESSION)) {
 				$user = $UserManager->getOneById($_SESSION['id']);
 			} else {$user = null;}
-			if ($post->getFileType() === 'folder') {
-				RenderView::render('template.php', 'frontend/folderView.php', ['post' => $post, 'user' => $user, 'author' => $author, 'option' => ['folderView']]);
+			if ($post->getIsPrivate()) {
+				if (!empty($_SESSION) && ($post->getSchool() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL) && ($post->getIdAuthor() === $_SESSION['id'] || $_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || $post->getListAuthorizedGroups() === null || in_array($_SESSION['group'], $post->getListAuthorizedGroups()))) {
+					if ($post->getFileType() === 'folder') {
+						RenderView::render('template.php', 'frontend/folderView.php', ['post' => $post, 'user' => $user, 'author' => $author, 'option' => ['folderView']]);
+					} else {
+						RenderView::render('template.php', 'frontend/postView.php', ['post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
+					}
+				} else {$this->accessDenied();}
 			} else {
-				RenderView::render('template.php', 'frontend/postView.php', ['post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
+				if ($post->getFileType() === 'folder') {
+					RenderView::render('template.php', 'frontend/folderView.php', ['post' => $post, 'user' => $user, 'author' => $author, 'option' => ['folderView']]);
+				} else {
+					RenderView::render('template.php', 'frontend/postView.php', ['post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
+				}
 			}
 		} else {$this->incorrectInformation();}
 	}
 
 	public function addPost()
 	{
-		RenderView::render('template.php', 'frontend/addPostView.php', ['option' => ['addPost', 'tinyMCE']]);
+		if (!empty($_SESSION['id']) && $_SESSION['school'] !== ALL_SCHOOL) {
+			RenderView::render('template.php', 'frontend/addPostView.php', ['option' => ['addPost', 'tinyMCE']]);
+		} else {$this->accessDenied();}
 	}
 
 	public function uploadPost()
@@ -325,6 +334,15 @@ class Frontend extends Controller
 		} else {echo false;}
 	}
 
+	public function getProfilePosts()
+	{
+		$PostsManager = new PostsManager();
+		if (!empty($_GET['idFolder']) && intval($_GET['idFolder']) > 0) {
+			$posts = $PostsManager->getPostsOnFolder(intval($_GET['idFolder']));
+			echo json_encode($PostsManager->sortForProfile($posts));
+		} else {echo false;}
+	}
+
 	public function setComment()
 	{
 		$CommentsManager = new CommentsManager();
@@ -340,7 +358,7 @@ class Frontend extends Controller
 		$CommentsManager = new CommentsManager();
 		if (isset($_GET['id'], $_SESSION['id']) && $CommentsManager->exists($_GET['id'])) {
 			$comment = $CommentsManager->getOneById($_GET['id']);
-			if ($comment->getIdAuthor() === $_SESSION['id'] || $_SESSION['grade'] === ALL_SCHOOL) {
+			if ($comment->getIdAuthor() === $_SESSION['id'] || $_SESSION['school'] === ALL_SCHOOL) {
 				$CommentsManager->delete($comment->getId());
 				echo true;
 			} else {echo false;}
@@ -352,7 +370,7 @@ class Frontend extends Controller
 		$PostsManager = new PostsManager();
 		if (isset($_GET['id'], $_SESSION['id']) && $PostsManager->exists($_GET['id'])) {
 			$post = $PostsManager->getOneById($_GET['id']);
-			if ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['grade'] === ALL_SCHOOL) {
+			if ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['school'] === ALL_SCHOOL) {
 				if ($post->getFileType() === 'folder') {
 					$PostsManager->deleteFolder($post->getId());
 				} else {
@@ -362,4 +380,55 @@ class Frontend extends Controller
 			} else {$this->accessDenied();}
 		} else {$this->incorrectInformation();}
 	}
-} 
+
+	public function userAlreadyLikePost()
+	{
+		$PostsManager = new PostsManager();
+		if (!empty($_SESSION['id']) && !empty($_GET['idPost']) && $PostsManager->exists($_GET['idPost']) && $PostsManager->userAlreadyLikePost(intval($_SESSION['id']), intval($_GET['idPost']))) {
+			echo 'true';
+		} else {echo 'false';}
+	}
+
+	public function toggleLikePost()
+	{
+		$PostsManager = new PostsManager();
+		if (!empty($_SESSION['id']) && !empty($_GET['idPost']) && $PostsManager->exists($_GET['idPost'])) {
+			$PostsManager->toggleLikePost(intval($_SESSION['id']), intval($_GET['idPost']));
+			echo 'true';
+		} else {echo 'false';}
+	}
+
+	public function report()
+	{
+		if (!empty($_SESSION) && !empty($_GET['elem']) && !empty($_GET['id'])) {
+			$ReportManager = new ReportManager();
+			$reportExists = $ReportManager->reportExists($_GET['elem'], $_GET['id'], $_SESSION['id']);
+			switch ($_GET['elem']) {
+				case 'post' :
+					$PostsManager = new PostsManager();
+					$elemExists = $PostsManager->exists($_GET['id']);
+				break;
+				case 'comment' :
+					$CommentsManager = new CommentsManager();
+					$elemExists = $CommentsManager->exists($_GET['id']);
+				break;
+				default : $this->incorrectInformation();
+			}
+			if ($elemExists) {
+				RenderView::render('template.php', 'frontend/reportView.php', ['reportExists' => $reportExists, 'option' => ['tinyMCE']]);
+			} else {$this->incorrectInformation();}
+		} else {$this->incorrectInformation();}
+	}
+
+	public function setReport()
+	{
+		$arrAcceptedElem = array('post', 'comment');
+		if (!empty($_SESSION) && !empty($_POST['elem']) && in_array($_POST['elem'], $arrAcceptedElem) && !empty($_POST['idElem']) && intval($_POST['idElem']) > 0 && !empty($_POST['tinyMCEtextarea'])) {
+			$ReportManager = new ReportManager();
+			$ReportManager->setReport($_POST['elem'], intval($_POST['idElem']), $_SESSION['id'], $_POST['tinyMCEtextarea']);
+			if (!empty($_POST['idPost']) && intval($_POST['idPost']) > 0) {
+				header('Location: index.php?action=post&id=' . $_POST['idPost']);
+			} else {$this->redirection();}
+		} else {$this->incorrectInformation();}
+	}
+}

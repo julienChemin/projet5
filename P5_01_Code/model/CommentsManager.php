@@ -1,13 +1,13 @@
 <?php
 namespace Chemin\ArtSchool\Model;
-use Chemin\ArtSchool\Model\ReportManager;
+use Chemin\ArtSchool\Model\AbstractManager;
 
-class CommentsManager extends ReportManager
+class CommentsManager extends AbstractManager
 {
 	public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\Comment';
 	public static $TABLE_NAME = 'as_comment';
 	public static $TABLE_PK = 'id';
-	public static $TABLE_CHAMPS ='id, idPost, idAuthor, nameAuthor, profilePictureAuthor, content, nbReport, DATE_FORMAT(datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication';
+	public static $TABLE_CHAMPS ='id, idPost, idAuthor, nameAuthor, profilePictureAuthor, content, DATE_FORMAT(datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication';
 
 	public function setComment(array $POST, user $user)
 	{

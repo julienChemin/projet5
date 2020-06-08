@@ -27,9 +27,10 @@
 			<nav>
 				<ul id="blockTabs" class="tabsStyleOne">
 					<li class="buttonIsFocus">Profil</li>
+					<li>Actualité</li>
 					<li>Publication</li>
 					<?php
-					if ($data['school']->getName() === $_SESSION['school']) {
+					if (!empty($_SESSION) && ($data['school']->getName() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
 						echo '<li>Publication privée</li>';
 					}
 					?>
@@ -60,11 +61,34 @@
 						?>
 					</div>
 				</div>
+				<div id="tabNews">
+					<div>
+						<?php
+						if (!empty($data['profileContent'])) {
+							foreach ($data['profileContent'] as $profileContent) {
+								if ($profileContent->getTab() === 'news') {
+									if (!empty($profileContent->getAlign())) {
+										echo '<div class="contentAloneInRow" style="order:' . $profileContent->getContentOrder() . '">';
+									}
+									?>
+									<div class="blockContentNews <?=$profileContent->getSize()?> <?=$profileContent->getAlign()?>" style="order:<?=$profileContent->getContentOrder()?>">
+										<?=$profileContent->getContent()?>
+									</div>
+									<?php
+									if (!empty($profileContent->getAlign())) {
+										echo '</div>';
+									}
+								}
+							}
+						}
+						?>
+					</div>
+				</div>
 				<div id="tabPublication">
 					<div></div>
 				</div>
 				<?php
-				if ($data['school']->getName() === $_SESSION['school']) {
+				if (!empty($_SESSION) && ($data['school']->getName() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
 					?>
 					<div id="tabPrivatePublication">
 						<div></div>

@@ -54,6 +54,9 @@ class User
 		$this->setProfileBannerInfo($this->getProfileBannerInfo());
 		$this->setProfilePictureInfo($this->getProfilePictureInfo());
 		$this->setProfileTextInfo($this->getProfileTextInfo());
+		if ($this->getIsActive() !== false) {
+			$this->setIsActive(true);
+		}
 	}
 
 	//GETTERS
@@ -104,7 +107,7 @@ class User
 
 	public function getIsBan()
 	{
-		return $this->isBan;
+		return boolval($this->isBan);
 	}
 
 	public function getDateBan()

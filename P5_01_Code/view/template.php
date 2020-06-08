@@ -63,6 +63,9 @@
 					case 'moderatUsers' :
 						echo '<script src="public/js/moderatUsers.js"></script>';
 					break;
+					case 'moderatReports' :
+						echo '<script src="public/js/moderatReports.js"></script>';
+					break;
 					case 'schoolHistory' :
 						echo '<script src="public/js/schoolHistory.js"></script>';
 					break;
@@ -92,7 +95,8 @@
 						echo '<script src="public/js/postView.js"></script>';
 					break;
 					case 'folderView' :
-						echo '<script src="public/js/folderView.js"></script>';
+						echo '<script src="public/js/postView.js"></script>';
+						echo '<script src="public/js/fillProfileWithPosts.js"></script>';
 					break;
 					default :
 						throw new Exception('L\'option indiqué n\'existe pas.');

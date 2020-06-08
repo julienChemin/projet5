@@ -1,15 +1,15 @@
 <?php
 namespace Chemin\ArtSchool\Model;
-use Chemin\ArtSchool\Model\AbstractManager;
+use Chemin\ArtSchool\Model\LikeManager;
 
-class PostsManager extends AbstractManager
+class PostsManager extends LikeManager
 {
 	public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\Post';
 	public static $TABLE_NAME = 'as_post';
 	public static $TABLE_COMMENTS = 'as_comment';
 	public static $TABLE_PK = 'id';
-	public static $TABLE_CHAMPS ='id, idAuthor, school, title, filePath, urlVideo, description, DATE_FORMAT(datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, isPrivate, authorizedGroups, postType, fileType, onFolder, tags';
-	public static $TABLE_CHAMPS_WITH_COMMENTS ='a.id, a.idAuthor, a.school, a.title, a.filePath, a.urlVideo, a.description, DATE_FORMAT(a.datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, a.isPrivate, a.authorizedGroups, a.postType, a.fileType, a.onFolder, a.tags, c.id AS idComment, c.idPost AS commentIdPost, c.idAuthor AS commentIdAuthor, c.NameAuthor AS commentNameAuthor, c.profilePictureAuthor AS commentProfilePictureAuthor, c.content AS commentContent, DATE_FORMAT(c.datePublication, "%d/%m/%Y à %H:%i.%s") AS commentDatePublication, c.nbReport AS commentNbReport';
+	public static $TABLE_CHAMPS ='id, idAuthor, school, title, filePath, urlVideo, description, DATE_FORMAT(datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, isPrivate, authorizedGroups, postType, fileType, onFolder, tags, nbLike';
+	public static $TABLE_CHAMPS_WITH_COMMENTS ='a.id, a.idAuthor, a.school, a.title, a.filePath, a.urlVideo, a.description, DATE_FORMAT(a.datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, a.isPrivate, a.authorizedGroups, a.postType, a.fileType, a.onFolder, a.tags, a.nbLike, c.id AS idComment, c.idPost AS commentIdPost, c.idAuthor AS commentIdAuthor, c.NameAuthor AS commentNameAuthor, c.profilePictureAuthor AS commentProfilePictureAuthor, c.content AS commentContent, DATE_FORMAT(c.datePublication, "%d/%m/%Y à %H:%i.%s") AS commentDatePublication';
 
 	public function getOneById(int $id)
 	{
@@ -27,7 +27,7 @@ class PostsManager extends AbstractManager
 			if ($result['idComment'] !== null) {
 				do {
 					$comment = new Comment();
-					$comment->setId($result['idComment'])->setIdPost($result['commentIdPost'])->setIdAuthor($result['commentIdAuthor'])->setNameAuthor($result['commentNameAuthor'])->setProfilePictureAuthor($result['commentProfilePictureAuthor'])->setContent($result['commentContent'])->setDatePublication($result['commentDatePublication'])->setNbReport($result['commentNbReport']);
+					$comment->setId($result['idComment'])->setIdPost($result['commentIdPost'])->setIdAuthor($result['commentIdAuthor'])->setNameAuthor($result['commentNameAuthor'])->setProfilePictureAuthor($result['commentProfilePictureAuthor'])->setContent($result['commentContent'])->setDatePublication($result['commentDatePublication']);
 					array_unshift($arrComments, $comment);
 				} while ($result = $q->fetch());	
 			}
@@ -258,19 +258,30 @@ class PostsManager extends AbstractManager
 
 	public function uploadPost(array $arrPOST, $schoolPost = false, $authorizedGroups = null)
 	{	
-		//set folder and privacy
+		//set folder, postType and privacy
 		$arrPOST['uploadType'] === "private" ? $isPrivate = true : $isPrivate = false;
 		if (!empty($arrPOST['folder'])) {
 			$folder = $this->getOneById(intval($arrPOST['folder']));
+			if ($folder->getPostType() === "schoolPost") {
+				//if folder is schoolPost, post must be schoolPost too
+				$postType = 'schoolPost';
+			} else {
+				$postType = 'userPost';
+			}
 			if ($arrPOST['uploadType'] === 'public' && $folder->getIsPrivate()) {
+				//post public on private folder -> post become private
 				$isPrivate = true;
 				$folder = intval($arrPOST['folder']);
 			} elseif ($arrPOST['uploadType'] === 'private' && !$folder->getIsPrivate()) {
+				//post private on public folder -> don't post on folder
 				$folder = null;
 			} else {
 				$folder = intval($arrPOST['folder']);
 			}
-		} else {$folder = null;}
+		} else {
+			$folder = null;
+			$postType = $arrPOST['postType'];
+		}
 		!$isPrivate ? $authorizedGroups = null : $authorizedGroups = $authorizedGroups;
 		switch ($arrPOST['fileTypeValue']) {
 			case 'image':
@@ -284,7 +295,7 @@ class PostsManager extends AbstractManager
 										'description' => $arrPOST['tinyMCEtextarea'], 
 										'isPrivate' => $isPrivate, 
 										'authorizedGroups' => $authorizedGroups, 
-										'postType' => $arrPOST['postType'], 
+										'postType' => $postType, 
 										'fileType' => $arrPOST['fileTypeValue'], 
 										'onFolder' => $folder, 
 										'tags' => $arrPOST['listTags']]));
@@ -308,7 +319,7 @@ class PostsManager extends AbstractManager
 									'description' => $arrPOST['tinyMCEtextarea'], 
 									'isPrivate' => $isPrivate, 
 									'authorizedGroups' => $authorizedGroups, 
-									'postType' => $arrPOST['postType'], 
+									'postType' => $postType, 
 									'fileType' => $arrPOST['fileTypeValue'], 
 									'onFolder' => $folder, 
 									'tags' => $arrPOST['listTags']]));
@@ -327,7 +338,7 @@ class PostsManager extends AbstractManager
 							'description' => $arrPOST['tinyMCEtextarea'], 
 							'isPrivate' => $isPrivate, 
 							'authorizedGroups' => $authorizedGroups, 
-							'postType' => $arrPOST['postType'], 
+							'postType' => $postType, 
 							'fileType' => $arrPOST['fileTypeValue'], 
 							'onFolder' => $folder]));
 						return true;
@@ -350,7 +361,7 @@ class PostsManager extends AbstractManager
 									'description' => $arrPOST['tinyMCEtextarea'], 
 									'isPrivate' => $isPrivate, 
 									'authorizedGroups' => $authorizedGroups, 
-									'postType' => $arrPOST['postType'], 
+									'postType' => $postType, 
 									'fileType' => $arrPOST['fileTypeValue'], 
 									'onFolder' => $folder]));
 				return true;
@@ -381,14 +392,27 @@ class PostsManager extends AbstractManager
 			//sort post on folder, public post and private post
 			$post = $this->toArray($post);
 			if ($post['onFolder'] !== null) {
-				$idPost = $post['onFolder'];
-				if (!isset($arrSortedPosts['folder'][$idPost])) {
-					$arrSortedPosts['folder'][$idPost] = [];
+				$idFolder = $post['onFolder'];
+				if ($post['isPrivate'] === '1') {
+					if (!empty($_SESSION) && ($post['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
+						if ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || $_SESSION['id'] === $post['idAuthor'] || $post['listAuthorizedGroups'] === null || in_array($_SESSION['group'], $post['listAuthorizedGroups'])) {
+							if (!isset($arrSortedPosts['folder'][$idFolder])) {
+								$arrSortedPosts['folder'][$idFolder] = [];
+							}
+							$arrSortedPosts['folder'][$idFolder][] = $post;
+						}
+					}
+				} else {
+					if (!isset($arrSortedPosts['folder'][$idFolder])) {
+						$arrSortedPosts['folder'][$idFolder] = [];
+					}
+					$arrSortedPosts['folder'][$idFolder][] = $post;
 				}
-				$arrSortedPosts['folder'][$idPost][] = $post;
-			} elseif ($post['isPrivate'] === '1' && ($post['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
-				if ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || $_SESSION['id'] === $post['idAuthor'] || $post['listAuthorizedGroups'] === null || in_array($_SESSION['group'], $post['listAuthorizedGroups'])) {
-					$arrSortedPosts['private'][] = $post;
+			} elseif ($post['isPrivate'] === '1') {
+				if (!empty($_SESSION) && ($post['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
+					if ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || $_SESSION['id'] === $post['idAuthor'] || $post['listAuthorizedGroups'] === null || in_array($_SESSION['group'], $post['listAuthorizedGroups'])) {
+						$arrSortedPosts['private'][] = $post;
+					}
 				}
 			} else {
 				$arrSortedPosts['public'][] = $post;

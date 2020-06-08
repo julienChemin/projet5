@@ -1,6 +1,10 @@
 <section id="blockProfile">
 	<?php
-	if ($data['user']->getId() === $_SESSION['id']) {
+	if (!empty($_SESSION) && ($data['user']->getId() === $_SESSION['id'] || $_SESSION['school'] === ALL_SCHOOL)) {
+		$authorizedUser = true;
+	} else {$authorizedUser = false;}
+	
+	if ($authorizedUser) {
 		//editing menus
 		?>
 		<div id="blockMenuEditingTop">
@@ -239,7 +243,7 @@
 		<?php
 		$data['user']->getNoBanner() ? $classForBanner = 'hide' : $classForBanner = "";
 		echo '<img class="' . $classForBanner . '" src="' . $data['user']->getProfileBanner() . '" alt="banner picture">';
-		if ($data['user']->getId() === $_SESSION['id']) {
+		if ($authorizedUser) {
 			echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader"></i>';
 		}
 		?>
@@ -250,7 +254,7 @@
 			<div class="<?=$data['user']->getProfilePictureSize()?> editable">
 				<img src="<?=$data['user']->getProfilePicture()?>" alt="profile picture" class="<?=$data['user']->getProfilePictureOrientation()?>">
 				<?php
-				if ($data['user']->getId() === $_SESSION['id']) {
+				if ($authorizedUser) {
 					echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader"></i>';
 				}
 				?>
@@ -261,7 +265,7 @@
 					<?=$data['user']->getSchool()?>
 				</a>
 				<?php
-				if ($data['user']->getId() === $_SESSION['id']) {
+				if ($authorizedUser) {
 					echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader"></i>';
 				}
 				?>
@@ -275,12 +279,28 @@
 					<li>À propos</li>
 				</ul>
 				<?php
-				if ($data['user']->getId() === $_SESSION['id']) {
+				if ($authorizedUser) {
 					?>
 					<ul id="blockTabsEditProfile">
 						<li title="éditer le profil">
 							<i class="fas fa-pencil-alt iconeEdit"></i>
 						</li>
+						<?php
+						if ($_SESSION['school'] === ALL_SCHOOL) {
+							if ($data['user']->getIsBan()) {
+								$class = 'alreadyBan';
+								$titleForWarnIcone = 'l\'utilisateur est banni depuis le ' . $data['user']->getDateBan();
+							} else {
+								$class = '';
+								$titleForWarnIcone = 'ajouter un warning a cet utilisateur';
+							}
+							?>
+							<li title="<?=$titleForWarnIcone?>">
+								<i class="fas fa-exclamation-triangle iconeEdit <?=$class?>" iduser="<?=$data['user']->getId()?>"></i>
+							</li>
+							<?php
+						}
+						?>
 					</ul>
 					<?php
 				}
@@ -289,7 +309,7 @@
 			<div id="slideTab">
 				<div id="tabProfile" class="editable">
 					<?php
-					if ($data['user']->getId() === $_SESSION['id']) {
+					if ($authorizedUser) {
 						echo '<i class="far fa-plus-square iconeEdit"></i>';
 					}
 					?>
@@ -304,7 +324,7 @@
 									?>
 									<div class="blockContentProfile editable <?=$profileContent->getSize()?> <?=$profileContent->getAlign()?>" style="order:<?=$profileContent->getContentOrder()?>">
 										<?php
-										if ($data['user']->getId() === $_SESSION['id']) {
+										if ($authorizedUser) {
 											echo '<i class="fas fa-pencil-alt iconeEdit iconeEditProfile" atrsize="' . $profileContent->getSize() .  
 											'" atralign="' . $profileContent->getAlign() . '"> N° ' . $profileContent->getContentOrder() . '</i>';
 										}
@@ -317,7 +337,7 @@
 									}
 								}
 							}
-						} elseif ($data['user']->getId() === $_SESSION['id']) {
+						} elseif ($authorizedUser) {
 							?>
 							<div class="blockContentProfile blockTuto big">
 								<p>
@@ -331,7 +351,7 @@
 				</div>
 				<div id="tabPublication" class="editable">
 					<?php
-					if ($data['user']->getId() === $_SESSION['id']) {
+					if ($authorizedUser) {
 						echo '<a href="index.php?action=addPost"><i class="far fa-plus-square iconeEdit"></i></a>';
 					}
 					?>
@@ -339,7 +359,7 @@
 				</div>
 				<div id="tabAbout" class="editable">
 					<?php
-					if ($data['user']->getId() === $_SESSION['id']) {
+					if ($authorizedUser) {
 						echo '<i class="far fa-plus-square iconeEdit"></i>';
 					}
 					?>
@@ -354,7 +374,7 @@
 									?>
 									<div class="blockContentAbout editable <?=$profileContent->getSize()?> <?=$profileContent->getAlign()?>" style="order:<?=$profileContent->getContentOrder()?>">
 										<?php
-										if ($data['user']->getId() === $_SESSION['id']) {
+										if ($authorizedUser) {
 											echo '<i class="fas fa-pencil-alt iconeEdit iconeEditAbout" atrsize="' . $profileContent->getSize() .  
 											'" atralign="' . $profileContent->getAlign() . '"> N° ' . $profileContent->getContentOrder() . '</i>';
 										}
@@ -367,7 +387,7 @@
 									}
 								}
 							}
-						} elseif ($data['user']->getId() === $_SESSION['id']) {
+						} elseif ($authorizedUser) {
 							?>
 							<div class="blockContentAbout blockTuto big">
 								<p>
@@ -384,7 +404,7 @@
 	</article>
 </section>
 <?php
-if ($data['user']->getId() === $_SESSION['id']) {
+if ($authorizedUser) {
 	?>
 	<div id="modal">
 		<form class="container" method="POST" action="index.php?action=updateProfile&elem=content&userId=<?=$data['user']->getId()?>">

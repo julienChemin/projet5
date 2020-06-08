@@ -586,16 +586,17 @@ figure img{
 	max-height: 500px;
 }
 #profile > header > div:first-child{
+	display: flex;
+    justify-content: center;
+    align-items: center;
 	overflow: hidden;
 	position: relative;
 }
-
 #profile > header > div:nth-of-type(2){
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	position: relative;
-
 	padding: 30px;
 	width: 100%;
 }
@@ -619,16 +620,19 @@ figure img{
 	min-width: 170px;
 	width: 170px;
 	max-height: 170px;
+	top: -90px;
 }
 .mediumPicture{
 	min-width: 300px;
 	width: 300px;
 	max-height: 300px;
+	top: -120px;
 }
 .bigPicture{
 	min-width: 500px;
 	width: 500px;
 	max-height: 500px;
+	top: -150px;
 }
 .elemStart{
 	align-self: flex-start;
@@ -663,6 +667,8 @@ figure img{
 	color: #CF8B3F;
 }
 #blockTabsEditProfile{
+	display: flex;
+	flex-direction: row-reverse;
 	margin: 0;
 }
 #blockTabsEditProfile li{
@@ -706,6 +712,11 @@ figure img{
 	flex-wrap: wrap;
 
 	width: 95%;
+}
+.alreadyBan{
+	color: red!important;
+	border: solid 1px red!important;
+	cursor: default!important;
 }
 #tabProfile i, #tabNews i, #tabPublication i, #tabPrivatePublication i, #tabAbout i{
 	position: absolute;
@@ -1293,30 +1304,55 @@ a:hover > .previewTitle, div:hover > .previewTitle{
 	font-size: 2em;
 	width: 200px;
 }
-/* ------------------------------------------------------------ */
-/* ------------------------- POST VIEW ------------------------ */
-/* ------------------------------------------------------------ */
-#viewPost{
+  /* ------------------------------------------------------------------- */
+ /* ------------------------- POST / FOLDER VIEW ---------------------- */
+/* ------------------------------------------------------------------- */
+#viewPost, #viewFolder{
 	padding: 0 0 100px 0;
 }
-#viewPost > article{
+#viewPost > article, #viewFolder > article{
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
-	height: 80vh;
 	margin: 10px 0;
 }
-#viewPost > article > section{
+#viewPost > article{
+	height: 80vh;
+}
+#viewFolder > article{
+	flex-direction: column;
+}
+#viewPost > article > section, #viewFolder > article > section{
 	height: 100%;
 }
-#viewPost > article > section:first-of-type{
+#viewPost > article > section:first-of-type, #viewFolder > article > section:first-of-type{
 	display: flex;
-	flex-direction: column;
 	justify-content: space-around;
 	align-items: center;
+}
+#viewPost > article > section:first-of-type{
+	flex-direction: column;
 	width: 23%;
 }
-#viewPost hr{
+#viewFolder > article > section{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-width: 100%;
+    height: min-content;
+    border-radius: 15px;
+    background-color: #161617;
+    padding: 50px 0;
+    position: relative;
+}
+#viewFolder > article > section > div{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+    flex-wrap: wrap;
+    width: 95%;
+}
+#viewPost hr, #viewFolder hr{
 	margin: 30px 0;
 }
 /*author profile*/
@@ -1331,6 +1367,11 @@ a:hover > .previewTitle, div:hover > .previewTitle{
 	border-radius: 15px;
 	word-break: break-all;
 }
+#viewFolder #authorProfile{
+	margin-top: 50px;
+	background-color: transparent;
+	align-self: flex-start;
+}
 #authorProfile > a{
 	font-size: 1.2em;
 	margin: 0 5px;
@@ -1338,6 +1379,23 @@ a:hover > .previewTitle, div:hover > .previewTitle{
 #authorProfile > a:first-of-type{
 	width: 90%;
 	height: 70%;
+}
+#viewFolder #authorProfile > a{
+	width: 50%;
+	height: 80%;
+	display: flex;
+	justify-content: center;
+}
+#viewFolder #authorProfile > div{
+	width: 40%;
+	height: 80%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+}
+#viewFolder #authorProfile > div > a{
+	margin-top: 10px;
 }
 #authorProfile img{
 	max-width: 100%;
@@ -1354,6 +1412,19 @@ a:hover > .previewTitle, div:hover > .previewTitle{
 	background-color: #161617;
 	border-radius: 15px;
 }
+#viewFolder #optionList{
+	width: 70%;
+	border: solid 3px #161617;
+	background-color: transparent;
+}
+#viewFolder #commentsAndRelatedPosts > aside{
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+	align-self: flex-start;
+	width: 25%;
+}
 #optionList > nav{
 	display: flex;
 	justify-content: center;
@@ -1368,15 +1439,41 @@ a:hover > .previewTitle, div:hover > .previewTitle{
 	width: 100%;
 	height: 100%;
 	list-style-type: none;
+	position: relative;
 }
 #optionList li{
 	color: #CF8B3F;
 	font-size: 3em;
 	cursor: pointer;
 }
+#heart, #postOnFolder{
+	z-index: 500;
+}
+#heart > i{
+	transform: scale(0);
+	transition: 0.2s ease-out;
+	-webkit-transition: 0.2s ease-out;
+}
+#nbLike > span > i[class~="fa-heart"]{
+	color: red;
+	margin : 0 0 5px 8px;
+}
+#heart + #nbLike{
+	position: absolute;
+	bottom: 5px;
+	left: 10px;
+	font-size: 1.3em;
+}
+#viewFolder #heart + #nbLike{
+	top: -50px;
+	right: 0;
+}
 #confirmDeletePost{
 	display: none;
 	color: red;
+}
+#viewFolder #confirmDeletePost{
+	text-align: center;
 }
 #viewPost > article > section:nth-of-type(2){
 	display: flex;
@@ -1419,7 +1516,13 @@ i[class="fas fa-download"]{
 #directLink{
 	text-align: right;
 }
+.emptyFolder{
+	text-align: center;
+}
 /*block description*/
+#viewFolder #blockDescription{
+	margin: 20px 0;
+}
 #blockDescription > h1{
 	text-align: center;
 }
@@ -1457,6 +1560,7 @@ i[class="fas fa-download"]{
 	display: flex;
 	justify-content: space-around;
 	align-items: center;
+	margin-top: 40px;
 }
 /*comments*/
 #blockComments{
@@ -1519,7 +1623,8 @@ i[class="fas fa-download"]{
 	word-break: break-all;
 	font-size: 1.3em;
 }
-.comment > div > i{
+.reportComment{
+	display: none;
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -1527,8 +1632,8 @@ i[class="fas fa-download"]{
 	color: #CF8B3F;
 	cursor: pointer;
 }
-.comment > div > i:hover{
-
+.comment > div:hover > .reportComment{
+	display: inline;
 }
 .deleteComment{
 	cursor: pointer;
@@ -1543,6 +1648,75 @@ i[class="fas fa-download"]{
 /*aside recommanded posts*/
 #relatedPosts{
 	width: 23%;
+}
+/*folder view*/
+#viewFolder .post > figure > a{
+	position: relative;
+}
+/* ------------------------------------------------------------ */
+/* ------------------------ REPORT VIEW ----------------------- */
+/* ------------------------------------------------------------ */
+#reportView h1, #reportView h2{
+	color: #CF8B3F;
+}
+#reportView > div{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 30px 0;
+	padding-top: 100px;
+	border: solid 1px #CF8B3F;
+	border-radius: 5px;
+	background-color: #161617;
+}
+#reportView form{
+	margin-bottom: 100px;
+}
+#reportView li{
+	font-size: 1.2em;
+	list-style-type: none;
+	margin-bottom: 20px;
+	padding: 5px;
+	border-radius: 5px;
+}
+#reportView .tox-tinymce{
+	width: 100%;
+}
+#reportView .blockStyleOne{
+	font-size: 1.3em;
+	padding: 50px 0;
+}
+#btnDeleteReportsFromElem{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+}
+#btnDeleteReportsFromElem > p{
+	font-size: 1.4em;
+	color: #CF8B3F;
+	background-color: #161617;
+	border: solid 1px #CF8B3F;
+	border-radius: 15px;
+	padding: 10px;
+	cursor: pointer;
+	z-index: 500;
+}
+#btnDeleteReportsFromElem i{
+	color: green;
+	background-color: #161617;
+	border: solid 1px #CF8B3F;
+	border-radius: 15px;
+	padding: 10px;
+	position: absolute;
+	right: 5px;
+	cursor: pointer;
+	transition: 0.2s ease-out;
+	-webkit-transition: 0.2s ease-out;
+}
+.moderatReportsFromElem > p:first-of-type{
+	text-decoration: underline;
 }
 /* -------------------------------------------------------------------------------------------------------------------------- */
 /* --------------------------------------------------------------- ADMIN ---------------------------------------------------- */
@@ -2037,7 +2211,81 @@ form > div{
 	color: red;
 	cursor: pointer;
 }
-
+/* ------------------------ MODERAT USERS ------------------------ */
+#moderatReports{
+	padding: 100px 0px;
+}
+#moderatReports ul{
+	list-style-type: none;
+	display: flex;
+}
+#moderatReports > nav, #moderatReports > nav > ul{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#moderatReports > nav li{
+	border: solid 1px #CF8B3F;
+	border-radius: 10px;
+	padding: 10px;
+	margin: 15px;
+	font-size: 1.5em;
+	cursor: pointer;
+}
+/*table reports*/
+#moderatReports > #content[class='moderatReportsFromElem']{
+	display: flex;
+}
+#moderatReports > #content{
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	transition: 0.5s linear;
+	-webkit-transition: 0.5s linear;
+}
+#moderatReports tr, #moderatReports th, #moderatReports td{
+	padding: 5px;
+}
+#moderatReports th{
+	color: #CF8B3F;
+	background-color: #222224;
+}
+#moderatReports th:first-of-type{
+	width: 25%;
+}
+#moderatReports th:nth-of-type(2){
+	width: 70%;
+}
+#moderatReports th:last-of-type{
+	width: 5%;
+}
+#moderatReports tr > td:first-of-type, #moderatReports tr > td:last-of-type{
+	text-align: center;
+}
+#moderatReports tr > td:nth-of-type(2) > p:last-of-type{
+	text-align: right;
+}
+#moderatReports tr i{
+	cursor: pointer;
+	color: #CF8B3F;
+	font-size: 1em;
+}
+/*paging*/
+#paging{
+	transition: 0.5s linear;
+	-webkit-transition: 0.5s linear;
+}
+#paging li{
+	font-size: 1.2em;
+	margin-right: 10px;
+	padding: 5px;
+	cursor: pointer;
+}
+/*block display if no content to display*/
+#noContent{
+	display: none;
+}
 /* ------------------------ SCHOOL HISTORY ------------------------ */
 #blockSchoolHistory{
 	padding: 100px 0px;

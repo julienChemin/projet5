@@ -7,11 +7,6 @@ class Backend extends Controller
 	public static $SIDE = 'backend';
 	public static $INDEX = 'indexAdmin.php';
 
-	public function __construct()
-	{
-		$this->verifyInformation();
-	}
-
 	public function verifyInformation()
 	{
 		if (isset($_SESSION['grade']) && ($_SESSION['grade'] === ADMIN  || $_SESSION['grade'] === MODERATOR)) {
@@ -21,6 +16,11 @@ class Backend extends Controller
 			if((!$SchoolManager->nameExists($_SESSION['school']) && !($_SESSION['school'] === ALL_SCHOOL)) || !$UserManager->nameExists($_SESSION['pseudo'])) {
 				//if user name don't exist or if school name don't exist and isn't "allSchool" 
 				$this->forceDisconnect();
+			} else {
+				$user = $UserManager->getUserByName($_SESSION['pseudo']);
+				if ($user->getIsBan()) {
+					$this->disconnect();
+				}
 			}
 		} elseif (isset($_SESSION['grade']) && $_SESSION['grade'] !== ADMIN  && $_SESSION['grade'] !== MODERATOR) {
 			//user is connect but not as admin or moderator
@@ -58,7 +58,11 @@ class Backend extends Controller
 				$message = "Un mail vient de vous être envoyé pour réinitialiser votre mot de passe.";
 			} else {$message = "l'adresse mail renseignée ne correspond à aucun utilisateur";}
 		}
-		RenderView::render('template.php', 'backend/indexAdminView.php', ['option' => ['forgetPassword', 'signIn', 'homeAdmin'], 'message' => $message]);
+		if (!empty($_SESSION) && $_SESSION['school'] === ALL_SCHOOL) {
+			RenderView::render('template.php', 'backend/indexAdminView.php');
+		} else {
+			RenderView::render('template.php', 'backend/indexAdminView.php', ['option' => ['forgetPassword', 'signIn', 'homeAdmin'], 'message' => $message]);
+		}
 	}
 
 	public function addSchool()
@@ -144,6 +148,79 @@ class Backend extends Controller
 			RenderView::render('template.php', 'backend/moderatUsersView.php', 
 				['users' => $sorting['users'], 'schools' => $schools, 'isActive' => $sorting['isActive'], 'option' => ['moderatUsers', 'buttonToggleSchool']]);
 		} else {$this->accessDenied();}
+	}
+
+	public function moderatReports()
+	{
+		if ($_SESSION['school'] === ALL_SCHOOL) {
+			$arrAcceptedValue = array('post', 'comment');
+			if (!empty($_GET['elem']) && in_array($_GET['elem'], $arrAcceptedValue) && !empty($_GET['idElem']) && intval($_GET['idElem']) > 0) {
+				switch ($_GET['elem']) {
+					case 'post':
+						$PostsManager = new PostsManager();
+						if ($PostsManager->exists(intval($_GET['idElem']))) {
+							$elem = $PostsManager->getOneById($_GET['idElem']);
+						} else {$this->incorrectInformation();}
+					break;
+					case 'comment':
+						$CommentsManager = new CommentsManager();
+						if ($CommentsManager->exists(intval($_GET['idElem']))) {
+							$elem = $CommentsManager->getOneById($_GET['idElem']);
+						} else {$this->incorrectInformation();}
+					break;
+				}
+				RenderView::render('template.php', 'backend/moderatReportsView.php', ['reportsFromElem' => $elem, 'option' => ['moderatReports']]);
+			} else {
+				RenderView::render('template.php', 'backend/moderatReportsView.php', ['option' => ['moderatReports']]);
+			}
+		} else {$this->accessDenied();}
+	}
+
+	public function getReports()
+	{
+		if (!empty($_GET['elem']) && isset($_GET['offset']) && intval($_GET['offset']) >= 0) {
+			$ReportManager = new ReportManager();
+			echo json_encode($ReportManager->getReports($_GET['elem'], true, $_GET['offset']));
+		} else {echo 'false';}
+	}
+
+	public function getReportsFromElem()
+	{
+		if (!empty($_GET['elem']) && isset($_GET['idElem']) && intval($_GET['idElem']) > 0) {
+			$ReportManager = new ReportManager();
+			echo json_encode($ReportManager->getReportsFromElem($_GET['elem'], $_GET['idElem']));
+		} else {echo 'false';}
+	}
+
+	public function getCountReports()
+	{
+		$arrAcceptedValue = array('post', 'comment');
+		if (!empty($_GET['elem']) && in_array($_GET['elem'], $arrAcceptedValue)) {
+			$ReportManager = new ReportManager();
+			echo json_encode($ReportManager->getCount($_GET['elem']));
+		}
+	}
+
+	public function deleteReport()
+	{
+		$ReportManager = new ReportManager();
+		$arrAcceptedValue = array('post', 'comment');
+		if (!empty($_GET['elem']) && in_array($_GET['elem'], $arrAcceptedValue) && !empty($_GET['idElem']) && intval($_GET['idElem']) > 0 && !empty($_GET['idUser']) && intval($_GET['idUser']) > 0) {
+			if ($ReportManager->reportExists($_GET['elem'], $_GET['idElem'], $_GET['idUser'])) {
+				$ReportManager->deleteReport($_GET['elem'], $_GET['idElem'], $_GET['idUser']);
+				echo true;
+			} else {echo false;}
+		} else {echo false;}
+	}
+
+	public function deleteReportsFromElem()
+	{
+		$ReportManager = new ReportManager();
+		$arrAcceptedValue = array('post', 'comment');
+		if (!empty($_GET['elem']) && in_array($_GET['elem'], $arrAcceptedValue) && !empty($_GET['idElem']) && intval($_GET['idElem']) > 0) {
+			$ReportManager->deleteReportsFromElem($_GET['elem'], $_GET['idElem']);
+			echo true;
+		} else {echo false;}
 	}
 
 	public function createGroup()
@@ -241,7 +318,7 @@ class Backend extends Controller
 
 	public function schoolProfile()
 	{
-		if (!empty($_GET['school']) && $_GET['school'] === $_SESSION['school'] && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) {
+		if (!empty($_GET['school']) && ($_GET['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL) && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) {
 			$SchoolManager = new SchoolManager();
 			if ($SchoolManager->nameExists($_GET['school'])) {
 				$ProfileContentManager = new ProfileContentManager();
@@ -354,9 +431,11 @@ class Backend extends Controller
 
 	public function addSchoolPost()
 	{
-		$SchoolManager = new SchoolManager();
-		$school = $SchoolManager->getSchoolByName($_SESSION['school']);
-		RenderView::render('template.php', 'backend/addSchoolPostView.php', ['groups' => $school->getListSchoolGroups(), 'option' => ['addPost', 'tinyMCE']]);
+		if ($_SESSION['school'] !== ALL_SCHOOL) {
+			$SchoolManager = new SchoolManager();
+			$school = $SchoolManager->getSchoolByName($_SESSION['school']);
+			RenderView::render('template.php', 'backend/addSchoolPostView.php', ['groups' => $school->getListSchoolGroups(), 'option' => ['addPost', 'tinyMCE']]);
+		} else {$this->incorrectInformation();}
 	}
 
 	public function uploadSchoolPost()
@@ -378,5 +457,20 @@ class Backend extends Controller
 			} else {$this->accessDenied();}
 		}
 		header('Location: indexAdmin.php?action=schoolProfile&school=' . $_SESSION['school']);
+	}
+
+	public function addWarning() {
+		$UserManager = new UserManager();
+		if (!empty($_SESSION) && $_SESSION['school'] === ALL_SCHOOL && isset($_GET['idUser']) && $UserManager->exists(intval($_GET['idUser']))) {
+			$user = $UserManager->getOneById(intval($_GET['idUser']));
+			if (($user->getNbWarning() + 1) >= 3) {
+				$UserManager->updateById(intval($_GET['idUser']), 'isBan', true, true);
+				$UserManager->updateById(intval($_GET['idUser']), 'dateBan', date('Y-m-d H:i:s'));
+				$UserManager->updateById(intval($_GET['idUser']), 'nbWarning', 0);
+			} else {
+				$UserManager->updateById(intval($_GET['idUser']), 'nbWarning', ($user->getNbWarning() + 1));
+			}
+			echo 'true';
+		} else {echo 'false';}
 	}
 }

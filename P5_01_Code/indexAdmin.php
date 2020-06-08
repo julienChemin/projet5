@@ -25,8 +25,9 @@ const STUDENT = 'student';
 const USER = 'user';
 
 /*---------------------------------*/
-$Backend = new Backend();
 try {
+	$Backend = new Backend();
+	$Backend->verifyInformation();
 	if (isset($_GET['action'])) {
 		switch ($_GET['action']) {
 			case 'resetPassword' :
@@ -49,6 +50,24 @@ try {
 			break;
 			case 'moderatUsers' :
 				$Backend->moderatUsers();
+			break;
+			case 'moderatReports' :
+				$Backend->moderatReports();
+			break;
+			case 'getReports' :
+				$Backend->getReports();
+			break;
+			case 'getReportsFromElem' :
+				$Backend->getReportsFromElem();
+			break;
+			case 'getCountReports' :
+				$Backend->getCountReports();
+			break;
+			case 'deleteReport' :
+				$Backend->deleteReport();
+			break;
+			case 'deleteReportsFromElem' :
+				$Backend->deleteReportsFromElem();
 			break;
 			case 'createGroup' :
 				$Backend->createGroup();
@@ -94,6 +113,9 @@ try {
 			break;
 			case 'uploadSchoolPost' :
 				$Backend->uploadSchoolPost();
+			break;
+			case 'addWarning' :
+				$Backend->addWarning();
 			break;
 			default :
 				//"action" value is unknow

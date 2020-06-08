@@ -6,45 +6,39 @@
 			</span>
 			<nav>
 				<ul>
-					<li title="Modérer les utilisateurs">
-						<a href="indexAdmin.php?action=moderatUsers">
-							<i class="fas fa-list-ul"></i>
-						</a>
-					</li>
-					<hr class="hrNavbar">
-
 					<?php
-					if ($_SESSION['grade'] === ADMIN) {
-						?>
-						<li title="Modérer l'administration">
-							<a href="indexAdmin.php?action=moderatAdmin">
-								<i class="fas fa-user-cog"></i>
-							</a>
-						</li>
-						<hr class="hrNavbar">
-						<?php
-					}
-
 					if ($_SESSION['school'] === ALL_SCHOOL) {
 						?>
-						<li title="Ajout / édition des établissements">
-							<a href="indexAdmin.php?action=addSchool">
-								<i class="fas fa-school"></i>
+						<li title="Gérer les signalements">
+							<a href="indexAdmin.php?action=moderatReports">
+								<i class="far fa-flag"></i>
 							</a>
 						</li>
 						<hr class="hrNavbar">
+						<li title="Historique">
+							<a href="indexAdmin.php?action=schoolHistory">
+								<i class="fas fa-history"></i>
+							</a>
+						</li>
 						<?php
-					} elseif ($_SESSION['grade'] === ADMIN) {
+					} else {
 						?>
-						<li title="Modérer mon établissement">
-							<a href="indexAdmin.php?action=moderatSchool">
-								<i class="fas fa-school"></i>
+						<li title="Publier pour l'établissement">
+							<a href="indexAdmin.php?action=addSchoolPost">
+								<i class="fas fa-file-import"></i>
 							</a>
 						</li>
 						<hr class="hrNavbar">
+						
+						<li title="Profil de l'établissement">
+							<a href="indexAdmin.php?action=schoolProfile&school=<?=$_SESSION['school']?>">
+								<i class="fas fa-school"></i>
+							</a>
+						</li>
 						<?php
 					}
 					?>
+					<hr class="hrNavbar">
 
 					<li id="pseudo">
 						<?=$_SESSION['pseudo']?>
@@ -59,7 +53,7 @@
 
 					<li title="Se Déconnecter">
 						<a href="indexAdmin.php?action=disconnect">
-							<i class="fas fa-power-off"></i>
+							<i class="fas fa-sign-out-alt"></i>
 						</a>
 					</li>
 				</ul>
@@ -80,7 +74,6 @@
 							Modérer les utilisateurs<i class="fas fa-list-ul"></i>
 						</a>
 					</li>
-
 					<?php
 					if ($_SESSION['grade'] === ADMIN) {
 						?>
@@ -96,7 +89,7 @@
 						?>
 						<li>
 							<a href="indexAdmin.php?action=addSchool">
-								Ajout / édition des établissements<i class="fas fa-school"></i>
+								Ajout / édition des établissements<i class="fas fa-tools"></i>
 							</a>
 						</li>
 						<?php
@@ -104,7 +97,7 @@
 						?>
 						<li>
 							<a href="indexAdmin.php?action=moderatSchool">
-								Modérer mon établissement<i class="fas fa-school"></i>
+								Modérer mon établissement<i class="fas fa-tools"></i>
 							</a>
 						</li>
 						<?php
@@ -112,18 +105,22 @@
 					?>
 					<hr>
 
-					<li>
-						<a href="indexAdmin.php?action=schoolProfile&school=<?=$_SESSION['school']?>">
-							Profil de l'établissement<i class="far fa-address-card"></i>
-						</a>
-					</li>
-
-					<li>
-						<a href="indexAdmin.php?action=addSchoolPost">
-							Publier pour l'établissement<i class="fas fa-file-import"></i>
-						</a>
-					</li>
-
+					<?php
+					if ($_SESSION['school'] !== ALL_SCHOOL) {
+						?>
+						<li>
+							<a href="indexAdmin.php?action=schoolProfile&school=<?=$_SESSION['school']?>">
+								Profil de l'établissement<i class="fas fa-school"></i>
+							</a>
+						</li>
+						<li>
+							<a href="indexAdmin.php?action=addSchoolPost">
+								Publier pour l'établissement<i class="fas fa-file-import"></i>
+							</a>
+						</li>
+						<?php
+					}
+					?>
 					<li>
 						<a href="indexAdmin.php?action=schoolHistory">
 							Historique<i class="fas fa-history"></i>
@@ -140,7 +137,7 @@
 
 					<li>
 						<a href="indexAdmin.php?action=disconnect">
-							Se déconnecter<i class="fas fa-power-off"></i>
+							Se déconnecter<i class="fas fa-sign-out-alt"></i>
 						</a>
 					</li>
 				</ul>

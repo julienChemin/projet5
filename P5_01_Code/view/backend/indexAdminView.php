@@ -27,7 +27,7 @@
 				?>
 				<a href="indexAdmin.php?action=addSchool">
 					<div class="itemHomeAdmin">
-						<i class="fas fa-school"></i>
+						<i class="fas fa-tools"></i>
 						<span>Modération des Art Schools</span>
 					</div>
 				</a>
@@ -36,7 +36,7 @@
 				?>
 				<a href="indexAdmin.php?action=moderatSchool">
 					<div class="itemHomeAdmin">
-						<i class="fas fa-school"></i>
+						<i class="fas fa-tools"></i>
 						<span>Modérer mon Art School</span>
 					</div>
 				</a>
@@ -44,24 +44,28 @@
 			}
 			?>
 		</article>
-		<aside id="slowSlide" class="sliderPosts">
-			<input type="hidden" name="schoolName" id="schoolName" value="<?=$_SESSION['school']?>">
-			<div class="container">
-				<h2>Récemment posté par des élèves de votre établissement</h2>
-				<a href="index.php">Tout voir</a>
-			</div>
-			<hr>
-			<div class="container posts">
-				<div class="arrow arrowLeft">
-					<i class="fas fa-chevron-circle-left"></i>
-				</div>
-				<div class="arrow arrowRight">
-					<i class="fas fa-chevron-circle-left"></i>
-				</div>
-				<div class="slider"></div>
-			</div>
-		</aside>
 		<?php
+		if ($_SESSION['school'] !== ALL_SCHOOL) {
+			?>
+			<aside id="slowSlide" class="sliderPosts">
+				<input type="hidden" name="schoolName" id="schoolName" value="<?=$_SESSION['school']?>">
+				<div class="container">
+					<h2>Récemment posté par des élèves de votre établissement</h2>
+					<a href="index.php">Tout voir</a>
+				</div>
+				<hr>
+				<div class="container posts">
+					<div class="arrow arrowLeft">
+						<i class="fas fa-chevron-circle-left"></i>
+					</div>
+					<div class="arrow arrowRight">
+						<i class="fas fa-chevron-circle-left"></i>
+					</div>
+					<div class="slider"></div>
+				</div>
+			</aside>
+			<?php
+		}
 	} else {
 		// try to connect
 		?>

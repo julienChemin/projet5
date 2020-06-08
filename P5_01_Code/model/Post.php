@@ -18,6 +18,7 @@ class Post
 			$onFolder,
 			$tags,
 			$listTags,
+			$nbLike,
 			$comments;
 
 	public function __construct(array $data = null)
@@ -45,6 +46,9 @@ class Post
 		}
 		if ($this->getAuthorizedGroups() !== null) {
 			$this->setListAuthorizedGroups($this->getAuthorizedGroups());
+		}
+		if ($this->getNbLike() === null) {
+			$this->setNbLike(0);
 		}
 	}
 
@@ -127,6 +131,11 @@ class Post
 	public function getListTags()
 	{
 		return $this->listTags;
+	}
+
+	public function getNbLike()
+	{
+		return $this->nbLike;
 	}
 
 	public function getComments()
@@ -257,6 +266,14 @@ class Post
 		if ($list !== null) {
 			$listTags = explode(',', $list);
 			$this->listTags = array_slice($listTags, 1);
+		}
+		return $this;
+	}
+
+	public function setNbLike(int $nbLike)
+	{
+		if (strlen($nbLike) >= 0){
+			$this->nbLike = $nbLike;
 		}
 		return $this;
 	}
