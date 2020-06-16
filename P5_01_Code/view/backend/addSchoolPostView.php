@@ -1,5 +1,5 @@
 <section id="addSchoolPost" class="container">
-	<h1>Publication</h1>
+	<h1>Publication pour l'établissement</h1>
 	<form method="POST" action="indexAdmin.php?action=uploadSchoolPost" enctype="multipart/form-data">
 		<input type="hidden" name="postType" value="schoolPost">
 		<input type="hidden" name="uploadType" value="public">

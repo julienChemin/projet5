@@ -24,6 +24,7 @@
 						<p>
 							<label for="schoolDuration">Durée de l'abonnement</label>
 							<select name="schoolDuration" id="schoolDuration" required="">
+								<option value="0">0 mois</option>
 								<option value="1">1 mois</option>
 								<option value="3">3 mois</option>
 								<option value="6">6 mois</option>

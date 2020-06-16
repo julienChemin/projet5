@@ -282,6 +282,9 @@ class School
 			$this->setNoBanner(true);
 		} elseif (is_string($profileBannerInfo) && strlen($profileBannerInfo) > 0) {
 			$infos = explode(' ', $profileBannerInfo);
+			if (strpos($infos[0], 'http://') === 0) {
+				$infos[0] = str_replace('http://localhost/P5_Chemin_Julien/P5_01_Code/', '', $infos[0]);
+			}
 			$this->setProfileBanner($infos[0]);
 			if ($infos[1] === 'true') {
 				$this->setNoBanner(true);
@@ -314,6 +317,9 @@ class School
 			$this->setProfilePictureSize('smallPicture');
 		} elseif (is_string($profilePictureInfo) && strlen($profilePictureInfo) > 0){
 			$infos = explode(' ', $profilePictureInfo);
+			if (strpos($infos[0], 'http://') === 0) {
+				$infos[0] = str_replace('http://localhost/P5_Chemin_Julien/P5_01_Code/', '', $infos[0]);
+			}
 			$this->setProfilePicture($infos[0]);
 			$this->setProfilePictureOrientation($infos[1]);
 			$this->setProfilePictureSize($infos[2]);

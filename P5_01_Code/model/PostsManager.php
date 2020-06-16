@@ -19,7 +19,7 @@ class PostsManager extends LikeManager
 							LEFT JOIN ' . static::$TABLE_COMMENTS . ' AS c 
 							ON a.id = c.idPost 
 							WHERE a.id = :id 
-							ORDER BY commentDatePublication', 
+							ORDER BY c.datePublication', 
 							[':id' => $id]);
 			$result = $q->fetch();
 			$post = new Post($result);
@@ -166,20 +166,18 @@ class PostsManager extends LikeManager
 
 	public function deleteFolder(int $idFolder)
 	{
-		if ($idFolder > 0) {
-			if ($this->exists($idFolder)) {
-				$postsOnFolder = $this->getPostsOnFolder($idFolder);
-				if (strlen($postsOnFolder) > 0) {
-					foreach ($postsOnFolder as $post) {
-						if ($post->getFileType() === 'folder') {
-							$this->deleteFolder($post->getId());
-						} else {
-							$this->deletePost($post->getId());
-						}
+		if ($this->exists($idFolder)) {
+			$postsOnFolder = $this->getPostsOnFolder($idFolder);
+			if (count($postsOnFolder) > 0) {
+				foreach ($postsOnFolder as $post) {
+					if ($post->getFileType() === 'folder') {
+						$this->deleteFolder($post->getId());
+					} else {
+						$this->deletePost($post->getId());
 					}
 				}
-				$this->deletePost($idFolder);
-			} 
+			}
+			$this->deletePost($idFolder);
 		}
 	}
 
@@ -372,7 +370,7 @@ class PostsManager extends LikeManager
 	public function canPostOnFolder(Post $post)
 	{
 		if (isset($_SESSION) && $post->getFileType() === 'folder') {
-			if ($post->getIdAuthor() === $_SESSION['id']) {
+			if ($post->getIdAuthor() === intval($_SESSION['id'])) {
 				//folder belong to user
 				return true;
 			} elseif ($post->getSchool() === $_SESSION['school'] && ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN)) {

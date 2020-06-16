@@ -372,6 +372,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	let formModal = document.querySelector('#modal form');
 	let allButtonsEditProfile = document.querySelectorAll('.editable > .iconeEditProfile');
 	let allBlockContentProfile = document.querySelectorAll('.blockContentProfile');
+	let allIdBlockContentProfile = document.querySelectorAll('.blockContentProfile + .hide');
 	let contentMenuEditBlock = document.getElementById('contentMenuEditBlock');
 	let blockProfileListOrder = document.getElementById('blockProfileListOrder');
 	let listContentOrderProfile = document.getElementById('profileContentOrder');
@@ -389,6 +390,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			toggleMenuTop(contentMenuEditBlock, blockMenuEditingTop, modal);
 			blockProfileListOrder.style.display = "flex";
 			//set form modal inputs value
+			formModal.elements.idProfileContent.value = allIdBlockContentProfile[i].textContent;
 			formModal.elements.type.value = "profile";
 			formModal.elements.blockOrderValue.value = blockOrderValue;
 			formModal.elements.newOrderValue.value = blockOrderValue;
@@ -457,6 +459,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			listContentOrderProfile.appendChild(option);
 		}
 
+		formModal.elements.idProfileContent.value = 'new';
 		formModal.elements.type.value = "profile";
 		formModal.elements.blockOrderValue.value = "new";
 		formModal.elements.newOrderValue.value = "last";
@@ -533,6 +536,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	//MENU EDIT NEWS
 	let allButtonsEditNews = document.querySelectorAll('.editable > .iconeEditNews');
 	let allBlockContentNews = document.querySelectorAll('.blockContentNews');
+	let allIdBlockContentNews = document.querySelectorAll('.blockContentNews + .hide');
 	let blockNewsListOrder = document.getElementById('blockNewsListOrder');
 	let listContentOrderNews = document.getElementById('newsContentOrder');
 
@@ -547,6 +551,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			toggleMenuTop(contentMenuEditBlock, blockMenuEditingTop, modal);
 			blockNewsListOrder.style.display = "flex";
 			//set form modal inputs value
+			formModal.elements.idProfileContent.value = allIdBlockContentNews[i].textContent;
 			formModal.elements.type.value = "news";
 			formModal.elements.blockOrderValue.value = blockOrderValue;
 			formModal.elements.newOrderValue.value = blockOrderValue;
@@ -615,6 +620,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			listContentOrderNews.appendChild(option);
 		}
 
+		formModal.elements.idProfileContent.value = 'new';
 		formModal.elements.type.value = "news";
 		formModal.elements.blockOrderValue.value = "new";
 		formModal.elements.newOrderValue.value = "last";
@@ -631,6 +637,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	//MENU EDIT ABOUT
 	let allButtonsEditAbout = document.querySelectorAll('.editable > .iconeEditAbout');
 	let allBlockContentAbout = document.querySelectorAll('.blockContentAbout');
+	let allIdBlockContentAbout = document.querySelectorAll('.blockContentAbout + .hide');
 	let blockAboutListOrder = document.getElementById('blockAboutListOrder');
 	let listContentOrderAbout = document.getElementById('aboutContentOrder');
 
@@ -645,6 +652,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			toggleMenuTop(contentMenuEditBlock, blockMenuEditingTop, modal);
 			blockAboutListOrder.style.display = "flex";
 			//set form modal inputs value
+			formModal.elements.idProfileContent.value = allIdBlockContentAbout[i].textContent;
 			formModal.elements.type.value = "about";
 			formModal.elements.blockOrderValue.value = blockOrderValue;
 			formModal.elements.newOrderValue.value = blockOrderValue;
@@ -713,6 +721,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			listContentOrderAbout.appendChild(option);
 		}
 
+		formModal.elements.idProfileContent.value = 'new';
 		formModal.elements.type.value = "about";
 		formModal.elements.blockOrderValue.value = "new";
 		formModal.elements.newOrderValue.value = "last";

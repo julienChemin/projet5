@@ -7,15 +7,25 @@ $user = $data['user'];
 	<article class="fullWidth">
 		<section>
 			<aside id="authorProfile">
-				<a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
-					<img src="<?=$author->getProfilePicture()?>">
-				</a>
-				<a href="index.php?action=userProfile&userId=<?=$author->getId()?>" class="<?=$data['author']->getProfileTextPseudo()?>">
-					<span><?=$author->getName()?></span>
-				</a>
-				<a href="index.php?action=schoolProfile&school=<?=$author->getSchool()?>" class="<?=$data['author']->getProfileTextSchool()?>">
-					<span><?=$author->getSchool()?></span>
-				</a>
+				<?php
+				if ($author !== null) {
+					?>
+					<a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
+						<img src="<?=$author->getProfilePicture()?>">
+					</a>
+					<div>
+						<a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
+							<span><?=$author->getName()?></span>
+						</a>
+						<a href="index.php?action=schoolProfile&school=<?=$author->getSchool()?>">
+							<span><?=$author->getSchool()?></span>
+						</a>
+					</div>
+					<?php
+				} else {
+					echo '<div>L\'auteur de cette publication n\'existe plus</div>';
+				}
+				?>
 			</aside>
 			<aside id="optionList">
 				<nav>
@@ -25,7 +35,7 @@ $user = $data['user'];
 							echo '<li id="heart"><i class="far fa-heart" idpost="' . $post->getId() . '"></i></li>';
 						}
 						echo '<li id="nbLike"><span><span>' . $post->getNbLike() . '</span><i class="fas fa-heart"></i></span></li>';
-						if (!empty($_SESSION['id']) && ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['school'] === ALL_SCHOOL || ($post->getPostType() === 'schoolPost' && $_SESSION['grade'] === ADMIN))) {
+						if (!empty($_SESSION['id']) && ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['school'] === ALL_SCHOOL || ($post->getPostType() === 'schoolPost' && $_SESSION['grade'] === ADMIN && $post->getSchool() === $_SESSION['school']))) {
 							echo '<li id="deletePost" title="Supprimer la publication"><i class="far fa-trash-alt"></i></li>';
 							echo '<a href="index.php?action=deletePost&id=' . $post->getId() . '" id="confirmDeletePost" title="Supprimer la publication">Supprimer définitivement la publication ?</i></a>';
 						} elseif (!empty($_SESSION['id'])) {
@@ -60,7 +70,6 @@ $user = $data['user'];
 		echo '<p id="warningMsg">Ne téléchargez un fichier seulement si vous savez d\'où il vient et ce qu\'il contient</p>';
 	}
 	?>
-	<hr>
 	<div id="blockDescription" class="fullWidth">
 		<?php
 		if (!empty($post->getTitle())) {
@@ -75,7 +84,6 @@ $user = $data['user'];
 		echo '<span>Publié le ' . $post->getDatePublication() . ' </span>';
 		?>
 	</div>
-	<hr>
 	<?php
 	if (!empty($post->getlistTags())) {
 		echo '<section id="listTags">';
@@ -87,6 +95,7 @@ $user = $data['user'];
 		echo '</aside></section>';
 	}
 	?>
+	<hr>
 	<section id="commentsAndRelatedPosts">
 		<div id="blockComments">
 			<form id="addComment">

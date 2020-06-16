@@ -62,7 +62,7 @@ class ProfileContentManager extends AbstractManager
 			}
 		} else {
 			if ($newOrderValue < $blockOrderValue) {
-				$offset = ($this->getCount($profileId, $tab, true) + 1) - intval($blockOrderValue);
+				$offset = ($this->getCount($profileId, $tab) + 1) - intval($blockOrderValue);
 				$limit = intval($blockOrderValue) - intval($newOrderValue);
 				$query = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
 									FROM ' . static::$TABLE_NAME . ' 
@@ -112,7 +112,7 @@ class ProfileContentManager extends AbstractManager
 	public function getContentForDelete(int $profileId, string $tab, int $contentOrder, bool $schoolProfile = false)
 	{
 		$offset = $contentOrder - 1;
-		$limit = $this->getCount($profileId, $tab, true) - $offset;
+		$limit = $this->getCount($profileId, $tab, $schoolProfile) - $offset;
 		if ($schoolProfile) {
 			$query = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
 								FROM ' . static::$TABLE_NAME . ' 
@@ -209,11 +209,17 @@ class ProfileContentManager extends AbstractManager
 		return intval($result[0]);
 	}
 
-	public function updateProfileContent($arrPOST)
+	public function updateProfileContent(array $arrPOST)
 	{
 		if (!empty($arrPOST['deleteBlock'])) {
 			//delete content
 			$this->deleteByProfileId($_SESSION['id'], $arrPOST['type'], $arrPOST['deleteBlock']);
+			$imgEntries = $this->getImgEntries($arrPOST['idProfileContent']);
+			if (count($imgEntries) > 0) {
+				foreach ($imgEntries as $entry) {
+					$this->deleteImgEntry($arrPOST['idProfileContent'], $entry['filePath']);
+				}
+			}
 			$order = intval($arrPOST['deleteBlock']);
 			$contentToUpdate = $this->getContentForDelete($_SESSION['id'], $arrPOST['type'], $arrPOST['deleteBlock']);
 			foreach ($contentToUpdate as $content) {
@@ -222,8 +228,8 @@ class ProfileContentManager extends AbstractManager
 			}
 		} else {
 			if ($this->checkForScriptInsertion([$arrPOST['tinyMCEtextarea']])) {
-				//add new content
 				if ($arrPOST['blockOrderValue'] === 'new') {
+					//add new content
 					if ($arrPOST['newOrderValue'] === 'last') {
 						//new content go to last place
 						$order = $this->getCount($_SESSION['id'], $arrPOST['type']) + 1;
@@ -242,21 +248,28 @@ class ProfileContentManager extends AbstractManager
 													'contentOrder' => $order, 
 													'align' => $arrPOST['alignValue'], 
 													'content' => $arrPOST['tinyMCEtextarea']]));
+					$idProfileContent = $this->getLastInsertId();
+					$imgOnContent = $this->checkForImgEntries($arrPOST['tinyMCEtextarea']);
+					if (count($imgOnContent) > 0) {
+						foreach ($imgOnContent as $filePath) {
+							$this->setImgEntry($idProfileContent, $filePath);
+						}
+					}
 				} else {
 					//edit content
 					if ($arrPOST['blockOrderValue'] === $arrPOST['newOrderValue']) {
 						//content keep his place number
-						$order = intval($arrPOST['newOrderValue']);
 						$this->update($arrPOST['blockOrderValue'], new ProfileContent(['userId' => $_SESSION['id'], 
 																						'tab' => $arrPOST['type'], 
 																						'size' => $arrPOST['sizeValue'], 
-																						'contentOrder' => $order, 
+																						'contentOrder' => intval($arrPOST['newOrderValue']), 
 																						'align' => $arrPOST['alignValue'], 
 																						'content' => $arrPOST['tinyMCEtextarea']]));
+						$newImgEntries = $this->checkForImgEntries($arrPOST['tinyMCEtextarea']);
+						$this->updateImgEntries($arrPOST['idProfileContent'], $newImgEntries);
 					} else {
 						//content change place number
 						$this->deleteByProfileId($_SESSION['id'], $arrPOST['type'], $arrPOST['blockOrderValue']);
-						$order = intval($arrPOST['newOrderValue']);
 						$contentToUpdate = $this->getContentForUpdate($_SESSION['id'], $arrPOST['type'], $arrPOST['blockOrderValue'], $arrPOST['newOrderValue']);
 						if ($arrPOST['newOrderValue'] < $arrPOST['blockOrderValue']) {
 							foreach ($contentToUpdate as $content) {
@@ -272,12 +285,148 @@ class ProfileContentManager extends AbstractManager
 						$this->add(new ProfileContent(['userId' => $_SESSION['id'], 
 														'tab' => $arrPOST['type'], 
 														'size' => $arrPOST['sizeValue'], 
-														'contentOrder' => $order, 
+														'contentOrder' => intval($arrPOST['newOrderValue']), 
 														'align' => $arrPOST['alignValue'], 
 														'content' => $arrPOST['tinyMCEtextarea']]));
+						$newIdProfileContent = $this->getLastInsertId();
+						$oldImgEntries = $this->getImgEntries($arrPOST['idProfileContent']);
+						$this->editIdProfileContent($oldImgEntries, $arrPOST['idProfileContent'], $newIdProfileContent);
+						$newImgEntries = $this->checkForImgEntries($arrPOST['tinyMCEtextarea']);
+						$this->updateImgEntries($newIdProfileContent, $newImgEntries);
 					}
 				}
 			}
 		}
+	}
+
+	public function setImgEntry(int $idProfileContent, string $filePath)
+	{
+		if ($idProfileContent > 0 && strlen($filePath) > 0) {
+			$this->sql('INSERT INTO as_profile_content_img (idProfileContent, filePath) 
+					VALUES(:idProfileContent, :filePath)', 
+					[':idProfileContent' => $idProfileContent, ':filePath' => $filePath]);
+		}
+		return $this;
+	}
+
+	public function getImgEntries(int $idProfileContent)
+	{
+		if ($idProfileContent > 0) {
+			$q = $this->sql('SELECT * 
+							FROM as_profile_content_img 
+							WHERE idProfileContent = :idProfileContent', 
+							[':idProfileContent' => $idProfileContent]);
+			return $q->fetchAll();
+		}
+	}
+
+	public function updateImgEntries(int $idProfileContent, array $newImgEntries)
+	{
+		//delete unused images and set entries for new images
+		if ($idProfileContent > 0) {
+			$oldImgEntries = $this->getImgEntries($idProfileContent);
+			if (count($newImgEntries) > 0 && count($oldImgEntries) > 0) {
+				//check if old entries stay on updated profileContent
+				for ($i = 0; $i < count($oldImgEntries); $i++) {
+					$finded = false;
+					for ($j = 0; $j < count($newImgEntries); $j++) {
+						if ($oldImgEntries[$i]['filePath'] === $newImgEntries[$j]) {
+							if ($oldImgEntries[$i]['toDelete']) {
+								$this->unsetToDelete($oldImgEntries[$i]['id']);
+							}
+							unset($newImgEntries[$j]);
+							$finded = true;
+						}
+					}
+					if (!$finded) {
+						$this->deleteImgEntry($idProfileContent, $oldImgEntries[$i]['filePath']);
+					}
+				}
+				//set new img entries
+				if (count($newImgEntries) > 0) {
+					foreach ($newImgEntries as $entry) {
+						$this->setImgEntry($idProfileContent, $entry);
+					}
+				}
+			} elseif (count($newImgEntries) > 0) {
+				foreach ($newImgEntries as $entry) {
+					$this->setImgEntry($idProfileContent, $entry);
+				}
+			} elseif (count($oldImgEntries) > 0) {
+				foreach ($oldImgEntries as $entry) {
+					$this->deleteImgEntry($idProfileContent, $entry['filePath']);
+				}
+			}
+		}
+	}
+
+	public function deleteImgEntry(int $idProfileContent, string $filePathInBdd)
+	{
+		if (strpos($filePathInBdd, 'http://') === 0) {
+			$filePath = str_replace('http://localhost/P5_Chemin_Julien/P5_01_Code/', '', $filePathInBdd);
+		} else {
+			$filePath = $filePathInBdd;
+		}
+		if ($idProfileContent > 0 && file_exists($filePath)) {
+			unlink($filePath);
+			$this->sql('DELETE FROM as_profile_content_img 
+						WHERE idProfileContent = :idProfileContent AND filePath = :filePath', 
+						[':idProfileContent' => $idProfileContent, ':filePath' => $filePathInBdd]);
+		}
+		return $this;
+	}
+
+	public function editIdProfileContent(array $imgEntries, int $oldId, int $newId)
+	{
+		if (count($imgEntries) > 0 && $oldId > 0 && $newId > 0) {
+			$test = $this->sql('UPDATE as_profile_content_img 
+						SET idProfileContent = :newId 
+						WHERE idProfileContent = :oldId', 
+						[':newId' => $newId, ':oldId' => $oldId]);
+		}
+		return $this;
+	}
+
+	public function unsetToDelete(int $idEntry)
+	{
+		if ($idEntry > 0) {
+			$this->sql('UPDATE as_profile_content_img 
+						SET toDelete = :toDelete 
+						WHERE id = :idEntry', 
+						[':toDelete' => 0, ':idEntry' => $idEntry]);
+		}
+		return $this;
+	}
+
+	public function checkForImgEntries(string $content)
+	{
+		if (strlen($content) > 0) {
+			$regex = '/src=\"(.+)\"/U';
+			preg_match_all($regex, $content, $matches, PREG_OFFSET_CAPTURE);
+			$imgEntries = [];
+			if (!empty($matches[1])) {
+				foreach ($matches[1] as $filePath) {
+					$imgEntries[] = $filePath[0];
+				}
+			}
+			return($imgEntries);
+		}
+	}
+
+	public function imgEntryExists(int $idProfileContent, string $filePath)
+	{
+		if ($idProfileContent > 0 && strlen($filePath) > 0) {
+			$q = $this->sql('SELECT * 
+							FROM as_profile_content_img 
+							WHERE idProfileContent = :idProfileContent AND filePath = :filePath', 
+							[':idProfileContent' => $idProfileContent, ':filePath' => $filePath]);
+			if ($result = $q->fetch()) {
+				$q->closeCursor();
+				return true;
+			} else {
+				$q->closeCursor();
+				return false;
+			}
+		} else {return false;}
 	}
 }

@@ -36,6 +36,16 @@ class TagsManager extends Database
 		return $this;
 	}
 
+	public function setRelationPostTag(string $tagName, int $idPost)
+	{
+		if (strlen($tagName) > 0 && $idPost > 0) {
+			$this->sql('INSERT INTO as_tag_post (idPost, tagName) 
+						VALUES(:idPost, :tagName)', 
+						[':idPost' => $idPost, ':tagName' => $tagName]);
+		}
+		return $this;
+	}
+
 	public function exists(string $name)
 	{
 		if (strlen($name) > 0) {
@@ -63,14 +73,15 @@ class TagsManager extends Database
 		return $this;
 	}
 
-	public function checkForNewTag(string $listTags)
+	public function checkForNewTag(string $listTags, int $idPost)
 	{
-		if (!empty($listTags)) {
+		if (!empty($listTags) && $idPost > 0) {
 			$arrTags = explode(',', $listTags);
 			for ($i=1; $i<count($arrTags); $i++) {
 				if (!$this->exists($arrTags[$i])) {
 					$this->set($arrTags[$i]);
 				}
+				$this->setRelationPostTag($arrTags[$i], $idPost);
 			}
 		}
 	}

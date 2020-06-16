@@ -333,15 +333,22 @@ class Backend extends Controller
 	{
 		$SchoolManager = new SchoolManager();
 		if (!empty($_GET['school']) && !empty($_GET['elem']) && $_GET['school'] === $_SESSION['school']) {
+			$school = $SchoolManager->getSchoolByName($_SESSION['school']);
 			switch ($_GET['elem']) {
 				case 'profileBanner' :
 					if (isset($_GET['noBanner'], $_GET['value'])) {
+						if (strpos($_GET['value'], $school->getProfileBanner()) === false && file_exists($school->getProfileBanner())) {
+							unlink($school->getProfileBanner());
+						}
 						$infos = $_GET['value'] . ' ' . $_GET['noBanner'];
 						$SchoolManager->updateByName($_GET['school'], 'profileBannerInfo', $infos);
 					}
 				break;
 				case 'profilePicture' :
 					if (isset($_GET['orientation'], $_GET['size'], $_GET['value'])) {
+						if (strpos($_GET['value'], $school->getProfilePicture()) === false && file_exists($school->getProfilePicture())) {
+							unlink($school->getProfilePicture());
+						}
 						$infos = $_GET['value'] . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
 						$SchoolManager->updateByName($_GET['school'], 'profilePictureInfo', $infos);
 					}
@@ -386,7 +393,11 @@ class Backend extends Controller
 	{
 		$validBannerValue = array('true', 'false');
 		if (!empty($GET['noBanner']) && in_array($GET['noBanner'], $validBannerValue)) {
-			$SchoolManager = new SchoolManager();	
+			$SchoolManager = new SchoolManager();
+			$school = $SchoolManager->getSchoolByName($_SESSION['school']);
+			if (file_exists($school->getProfileBanner())) {
+				unlink($school->getProfileBanner());
+			}	
 			$infos = $finalPath . ' ' . $GET['noBanner'];
 			$SchoolManager->updateByName($_SESSION['school'], 'profileBannerInfo', $infos);
 		} else {$this->incorrectInformation();}
@@ -398,7 +409,11 @@ class Backend extends Controller
 		$validSizeValue = array('smallPicture', 'mediumPicture', 'bigPicture');
 		if (!empty($GET['orientation']) && in_array($GET['orientation'], $validOrientationValue)
 		&& !empty($GET['size']) && in_array($GET['size'], $validSizeValue)) {
-			$SchoolManager = new SchoolManager();	
+			$SchoolManager = new SchoolManager();
+			$school = $SchoolManager->getSchoolByName($_SESSION['school']);
+			if (file_exists($school->getProfilePicture())) {
+				unlink($school->getProfilePicture());
+			}
 			$infos = $finalPath . ' ' . $GET['orientation'] . ' ' . $GET['size'];
 			$SchoolManager->updateByName($_SESSION['school'], 'profilePictureInfo', $infos);
 		} else {$this->incorrectInformation();}

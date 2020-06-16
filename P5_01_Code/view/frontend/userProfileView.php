@@ -230,7 +230,7 @@
 					</div>
 					<div id="blockToDelete">
 						<hr class="hrNavbar">
-						<i class="fas fa-times"></i>
+						<i title="Supprimer" class="fas fa-times"></i>
 						<hr class="hrNavbar">
 					</div>
 				</form>
@@ -244,7 +244,7 @@
 		$data['user']->getNoBanner() ? $classForBanner = 'hide' : $classForBanner = "";
 		echo '<img class="' . $classForBanner . '" src="' . $data['user']->getProfileBanner() . '" alt="banner picture">';
 		if ($authorizedUser) {
-			echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader"></i>';
+			echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la bannière"></i>';
 		}
 		?>
 	</div>
@@ -255,7 +255,7 @@
 				<img src="<?=$data['user']->getProfilePicture()?>" alt="profile picture" class="<?=$data['user']->getProfilePictureOrientation()?>">
 				<?php
 				if ($authorizedUser) {
-					echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader"></i>';
+					echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la photo de profil"></i>';
 				}
 				?>
 			</div>
@@ -266,7 +266,7 @@
 				</a>
 				<?php
 				if ($authorizedUser) {
-					echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader"></i>';
+					echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la position du texte"></i>';
 				}
 				?>
 			</div>
@@ -331,6 +331,7 @@
 										?>
 										<?=$profileContent->getContent()?>
 									</div>
+									<span class="hide"><?=$profileContent->getId()?></span>
 									<?php
 									if (!empty($profileContent->getAlign())) {
 										echo '</div>';
@@ -381,6 +382,7 @@
 										?>
 										<?=$profileContent->getContent()?>
 									</div>
+									<span class="hide"><?=$profileContent->getId()?></span>
 									<?php
 									if (!empty($profileContent->getAlign())) {
 										echo '</div>';
@@ -421,6 +423,7 @@ if ($authorizedUser) {
 				<input type="hidden" name="sizeValue" value="small">
 				<input type="hidden" name="alignValue" value="">
 				<input type="hidden" name="deleteBlock" value="">
+				<input type="hidden" name="idProfileContent" value="">
 
 				<input type="submit" name="submit" value="Valider">
 				<input type="button" name="cancel" value="Annuler">

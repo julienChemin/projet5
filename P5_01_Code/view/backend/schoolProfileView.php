@@ -222,7 +222,7 @@
 					</div>
 					<div id="blockToDelete">
 						<hr class="hrNavbar">
-						<i class="fas fa-times"></i>
+						<i title="Supprimer" class="fas fa-times"></i>
 						<hr class="hrNavbar">
 					</div>
 				</form>
@@ -236,7 +236,7 @@
 		$data['school']->getNoBanner() ? $classForBanner = 'hide' : $classForBanner = "";
 		echo '<img class="' . $classForBanner . '" src="' . $data['school']->getProfileBanner() . '" alt="banner picture">';
 		if ($_SESSION['grade'] === ADMIN) {
-			echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader"></i>';
+			echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la bannière"></i>';
 		}
 		?>
 	</div>
@@ -248,7 +248,7 @@
 				<?php
 				if ($_SESSION['grade'] === ADMIN) {
 					?>
-					<i class="fas fa-pencil-alt iconeEdit iconeEditHeader"></i>
+					<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la photo de profil"></i>
 					<?php
 				}
 				?>
@@ -258,7 +258,7 @@
 				<?php
 				if ($_SESSION['grade'] === ADMIN) {
 					?>
-					<i class="fas fa-pencil-alt iconeEdit iconeEditHeader"></i>
+					<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la position du texte"></i>
 					<?php
 				}
 				?>
@@ -312,6 +312,7 @@
 										echo $profileContent->getContent();
 										?>
 									</div>
+									<span class="hide"><?=$profileContent->getId()?></span>
 									<?php
 									if (!empty($profileContent->getAlign())) {
 										echo '</div>';
@@ -356,6 +357,7 @@
 										echo $profileContent->getContent();
 										?>
 									</div>
+									<span class="hide"><?=$profileContent->getId()?></span>
 									<?php
 									if (!empty($profileContent->getAlign())) {
 										echo '</div>';
@@ -416,6 +418,7 @@
 										echo $profileContent->getContent();
 										?>
 									</div>
+									<span class="hide"><?=$profileContent->getId()?></span>
 									<?php
 									if (!empty($profileContent->getAlign())) {
 										echo '</div>';
@@ -456,6 +459,7 @@ if ($_SESSION['grade'] === ADMIN) {
 				<input type="hidden" name="sizeValue" value="small">
 				<input type="hidden" name="alignValue" value="">
 				<input type="hidden" name="deleteBlock" value="">
+				<input type="hidden" name="idProfileContent" value="">
 
 				<input type="submit" name="submit" value="Valider">
 				<input type="button" name="cancel" value="Annuler">

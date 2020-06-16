@@ -34,7 +34,24 @@ class Frontend extends Controller
 	public function home()
 	{
 		$PostsManager = new PostsManager();
-		RenderView::render('template.php', 'frontend/indexView.php');
+		//check url
+		$url = explode('/', $_SERVER['PHP_SELF']);
+		$url = $url[count($url) - 1];
+		if ($url !== static::$INDEX) {
+			//url is school name or user name
+			$UserManager = new UserManager();
+			$SchoolManager = new SchoolManager();
+			if ($UserManager->nameExists($url)) {
+				$user = $UserManager->getUserByName($url);
+				header('Location: ../index.php?action=userProfile&userId=' . $user->getId());
+			} elseif ($SchoolManager->nameExists($url)) {
+				header('Location: ../index.php?action=schoolProfile&school=' . $url);
+			} else {
+				RenderView::render('template.php', 'frontend/indexView.php');
+			}
+		} else {
+			RenderView::render('template.php', 'frontend/indexView.php');	
+		}
 	}
 
 	public function signUp()
@@ -142,15 +159,22 @@ class Frontend extends Controller
 	{
 		$UserManager = new UserManager();
 		if (!empty($_GET['userId']) && !empty($_GET['elem']) && $UserManager->exists($_GET['userId']) && $_GET['userId'] === $_SESSION['id']) {
+			$user = $UserManager->getOneById($_SESSION['id']);
 			switch ($_GET['elem']) {
 				case 'profileBanner' :
 					if (isset($_GET['noBanner'], $_GET['value'])) {
+						if (strpos($_GET['value'], $user->getProfileBanner()) === false && file_exists($user->getProfileBanner())) {
+							unlink($user->getProfileBanner());
+						}
 						$infos = $_GET['value'] . ' ' . $_GET['noBanner'];
 						$UserManager->updateById($_GET['userId'], 'profileBannerInfo', $infos);
 					}
 				break;
 				case 'profilePicture' :
 					if (isset($_GET['orientation'], $_GET['size'], $_GET['value'])) {
+						if (strpos($_GET['value'], $user->getProfilePicture()) === false && file_exists($user->getProfilePicture())) {
+							unlink($user->getProfilePicture());
+						}
 						$infos = $_GET['value'] . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
 						$UserManager->updateById($_GET['userId'], 'profilePictureInfo', $infos);
 					}
@@ -197,6 +221,10 @@ class Frontend extends Controller
 		$validBannerValue = array('true', 'false');
 		if (!empty($GET['noBanner']) && in_array($GET['noBanner'], $validBannerValue)) {
 			$UserManager = new UserManager();
+			$user = $UserManager->getOneById($_SESSION['id']);
+			if (file_exists($user->getProfileBanner())) {
+				unlink($user->getProfileBanner());
+			}
 			$infos = $finalPath . ' ' . $GET['noBanner'];
 			$UserManager->updateById($_SESSION['id'], 'profileBannerInfo', $infos);
 		} else {$this->incorrectInformation();}
@@ -208,7 +236,11 @@ class Frontend extends Controller
 		$validSizeValue = array('smallPicture', 'mediumPicture', 'bigPicture');
 		if (!empty($GET['orientation']) && in_array($GET['orientation'], $validOrientationValue)
 		&& !empty($GET['size']) && in_array($GET['size'], $validSizeValue)) {
-			$UserManager = new UserManager();	
+			$UserManager = new UserManager();
+			$user = $UserManager->getOneById($_SESSION['id']);
+			if ($user->getProfilePicture() !== 'public/images/question-mark.png' && file_exists($user->getProfilePicture())) {
+				unlink($user->getProfilePicture());
+			}
 			$infos = $finalPath . ' ' . $GET['orientation'] . ' ' . $GET['size'];
 			$UserManager->updateById($_SESSION['id'], 'profilePictureInfo', $infos);
 		} else {$this->incorrectInformation();}
@@ -220,7 +252,9 @@ class Frontend extends Controller
 		$PostsManager = new PostsManager();
 		if (!empty($_GET['id']) && $PostsManager->exists($_GET['id'])) {
 			$post = $PostsManager->getOneById($_GET['id']);
-			$author = $UserManager->getOneById($post->getIdAuthor());
+			if ($UserManager->exists($post->getIdAuthor())) {
+				$author = $UserManager->getOneById($post->getIdAuthor());
+			} else {$author = null;}
 			if (!empty($_SESSION)) {
 				$user = $UserManager->getOneById($_SESSION['id']);
 			} else {$user = null;}
@@ -239,7 +273,7 @@ class Frontend extends Controller
 					RenderView::render('template.php', 'frontend/postView.php', ['post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
 				}
 			}
-		} else {$this->incorrectInformation();}
+		} else {$this->invalidLink();}
 	}
 
 	public function addPost()
@@ -257,11 +291,11 @@ class Frontend extends Controller
 			if ($PostsManager->canUploadPost($_POST, $TagsManager)) {
 				if ($PostsManager->uploadPost($_POST)) {
 					if (!empty($_POST['listTags'])) {
-						$TagsManager->checkForNewTag($_POST['listTags']);
+						$TagsManager->checkForNewTag($_POST['listTags'], $PostsManager->getLastInsertId());
 					}
 					header('Location: index.php?action=userProfile&userId=' . $_SESSION['id']);
 				} else {throw new \Exception("Le fichier n'est pas conforme");}
-			} else {$this->incorrectInformation();}
+			} else {throw new \Exception("Le fichier n'est pas conforme");}
 		} else {$this->accessDenied();}
 	}
 
@@ -274,6 +308,25 @@ class Frontend extends Controller
 			$arrTags[$i] = $listTags[$i]['name'];
 		}
 		echo json_encode($arrTags);
+	}
+
+	public function addSchool()
+	{
+		$message = null;//@todo !empty session pr pouvoir voir la vue - editer la vue pour frontend
+		if (empty($_SESSION) || $_SESSION['school'] === NO_SCHOOL) {
+			if (!empty($_POST['adminPassword']) && !empty($_GET['option']) && $_GET['option'] === 'add') {
+				//if form to add school is filled
+				$SchoolManager = new SchoolManager();
+				$HistoryManager = new HistoryManager();
+				$UserManager = new UserManager();
+				$arrCanAddSchool = $SchoolManager->canAddSchool($_POST, $UserManager);
+				if ($arrCanAddSchool['canAdd']) {
+					//add school and school administrator
+					$message = $SchoolManager->addSchool($_POST, $UserManager, $HistoryManager);
+				} else {$message = $arrCanAddSchool['message'];}
+			}
+			RenderView::render('template.php', 'backend/addSchoolView.php', ['option' => ['addSchool'], 'message' => $message]);
+		} else {header('Location: index.php');}
 	}
 
 	public function getSchools()
@@ -430,5 +483,10 @@ class Frontend extends Controller
 				header('Location: index.php?action=post&id=' . $_POST['idPost']);
 			} else {$this->redirection();}
 		} else {$this->incorrectInformation();}
+	}
+
+	public function faq()
+	{
+
 	}
 }

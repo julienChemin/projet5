@@ -29,7 +29,12 @@
 							</a>
 						</li>
 						<hr class="hrNavbar">
-						
+						<li title="Profil">
+							<a href="index.php?action=userProfile&userId=<?=$_SESSION['id']?>">
+							<i class="far fa-address-card"></i>
+							</a>
+						</li>
+						<hr class="hrNavbar">
 						<li title="Profil de l'établissement">
 							<a href="indexAdmin.php?action=schoolProfile&school=<?=$_SESSION['school']?>">
 								<i class="fas fa-school"></i>
@@ -108,6 +113,11 @@
 					<?php
 					if ($_SESSION['school'] !== ALL_SCHOOL) {
 						?>
+						<li>
+							<a href="index.php?action=userProfile&userId=<?=$_SESSION['id']?>">
+							Profil<i class="far fa-address-card"></i>
+							</a>
+						</li>
 						<li>
 							<a href="indexAdmin.php?action=schoolProfile&school=<?=$_SESSION['school']?>">
 								Profil de l'établissement<i class="fas fa-school"></i>

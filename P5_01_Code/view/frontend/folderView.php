@@ -100,7 +100,7 @@ $post->getPostType() === 'schoolPost' ? $postIsSchoolPost = true : $postIsSchool
 						if (!empty($user) && ($userIsAuthor || ($postIsSchoolPost && $post->getSchool() === $user->getSchool() && ($userIsAdmin || $userIsModerator || $post->getAuthorizedGroups() === null || in_array($user->getSchoolGroup(), $post->getAuthorizedGroups()))))) {
 							echo '<li id="postOnFolder"><a href="index.php?action=addPost&folder=' . $post->getId() . '"><i class="fas fa-folder-plus"></i></a></li>';
 						}
-						if (!empty($user) && ($userIsAuthor || $_SESSION['school'] === ALL_SCHOOL || ($postIsSchoolPost && $userIsAdmin))) {
+						if (!empty($user) && ($userIsAuthor || $_SESSION['school'] === ALL_SCHOOL || ($postIsSchoolPost && $post->getSchool() === $_SESSION['school'] && $userIsAdmin))) {
 							echo '<li id="deletePost" title="Supprimer la publication"><i class="far fa-trash-alt"></i></li>';
 							echo '<a href="index.php?action=deletePost&id=' . $post->getId() . '" id="confirmDeletePost" title="Supprimer la publication">Supprimer définitivement la publication ?</i></a>';
 						} elseif (!empty($user)) {
@@ -111,17 +111,25 @@ $post->getPostType() === 'schoolPost' ? $postIsSchoolPost = true : $postIsSchool
 				</nav>
 			</div>
 			<div id="authorProfile">
-				<a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
-					<img src="<?=$author->getProfilePicture()?>">
-				</a>
-				<div>
+				<?php
+				if ($author !== null) {
+					?>
 					<a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
-						<span><?=$author->getName()?></span>
+						<img src="<?=$author->getProfilePicture()?>">
 					</a>
-					<a href="index.php?action=schoolProfile&school=<?=$author->getSchool()?>">
-						<span><?=$author->getSchool()?></span>
-					</a>
-				</div>
+					<div>
+						<a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
+							<span><?=$author->getName()?></span>
+						</a>
+						<a href="index.php?action=schoolProfile&school=<?=$author->getSchool()?>">
+							<span><?=$author->getSchool()?></span>
+						</a>
+					</div>
+					<?php
+				} else {
+					echo '<div>L\'auteur de cette publication n\'existe plus</div>';
+				}
+				?>
 			</div>
 		</aside>
 	</section>

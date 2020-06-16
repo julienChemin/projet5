@@ -385,12 +385,18 @@ class UserManager extends AbstractManager
 	public function deleteUser($GET, SchoolManager $SchoolManager)
 	{
 		$HistoryManager = new HistoryManager();
+		$PostsManager = new PostsManager();
 		$user = $this->getUserByName($GET['userName']);
 		$school = $SchoolManager->getSchoolByName($GET['schoolName']);
+		$posts = $PostsManager->getPostsByAuthor($user->getName());
 		if (!$user->getIsAdmin()) {
 			//if account is active and not moderator, nb active account -1
 			if ($user->getIsActive() && !$user->getIsModerator()) {
 				$SchoolManager->updateByName($GET['schoolName'], 'nbActiveAccount', $school->getNbActiveAccount() - 1);
+			}
+			//delete posts
+			foreach ($posts as $post) {
+				$PostsManager->deletePost($post->getId());
 			}
 			//delete account
 			$this->delete($user->getId());

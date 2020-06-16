@@ -11,16 +11,18 @@
 			<article>
 				<h3>En savoir plus</h3>
 				<p>
-					Vous pouvez consulter la <a href="#">F.A.Q</a> , ou rejoindre le discord ArtSchool
+					Vous pouvez consulter la <a href="index.php?action=faq">F.A.Q</a> , ou rejoindre le <a href="">discord</a> ArtSchool
+				</p>
+				<p>
+					<a href="index.php?action=addSchool">Cliquez ici si vous possédez un établissement scolaire et souhaitez obtenir un espace dédié</a>
 				</p>
 			</article>
 			<hr class="hrFooter">
 			<article id="contact">
 				<h3>Contact</h3>
 				<ul>
-					<li><a href="">icone</a></li>
-					<li><a href="">icone 2</a></li>
-					<li><a href="">icone 3</a></li>
+					<li><a href=""><i class="fas fa-envelope-square"></i></a></li>
+					<li><a href=""><i class="fab fa-discord"></i></a></li>
 				</ul>
 			</article>
 		</div>

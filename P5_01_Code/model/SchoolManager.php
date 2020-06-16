@@ -442,12 +442,18 @@ class SchoolManager extends AbstractManager
 													'category' => 'account', 
 													'entry' => $_SESSION['pseudo'] . ' a passé ' . $user->getName() . ' au grade : ' . $grade]));
 	}
-	 public function updateProfileContent($GET, $POST, ProfileContentManager $ProfileContentManager)
+	 public function updateProfileContent(array $GET, array $POST, ProfileContentManager $ProfileContentManager)
 	 {
 	 	$school = $this->getSchoolByName($GET['school']);
 		if (!empty($POST['deleteBlock'])) {
 			//delete content
 			$ProfileContentManager->deleteByProfileId($school->getId(), $POST['type'], $POST['deleteBlock'], true);
+			$imgEntries = $ProfileContentManager->getImgEntries($POST['idProfileContent']);
+			if (count($imgEntries) > 0) {
+				foreach ($imgEntries as $entry) {
+					$ProfileContentManager->deleteImgEntry($POST['idProfileContent'], $entry['filePath']);
+				}
+			}
 			$order = intval($POST['deleteBlock']);
 			$contentToUpdate = $ProfileContentManager->getContentForDelete($school->getId(), $POST['type'], $POST['deleteBlock'], true);
 			foreach ($contentToUpdate as $content) {
@@ -476,6 +482,13 @@ class SchoolManager extends AbstractManager
 																	'contentOrder' => $order, 
 																	'align' => $POST['alignValue'], 
 																	'content' => $POST['tinyMCEtextarea']]));
+					$idProfileContent = $this->getLastInsertId();
+					$imgOnContent = $ProfileContentManager->checkForImgEntries($POST['tinyMCEtextarea']);
+					if (count($imgOnContent) > 0) {
+						foreach ($imgOnContent as $filePath) {
+							$ProfileContentManager->setImgEntry($idProfileContent, $filePath);
+						}
+					}
 				} else {
 					//edit content
 					if ($POST['blockOrderValue'] === $POST['newOrderValue']) {
@@ -486,6 +499,8 @@ class SchoolManager extends AbstractManager
 																									'contentOrder' => intval($POST['newOrderValue']), 
 																									'align' => $POST['alignValue'], 
 																									'content' => $POST['tinyMCEtextarea']]), true);
+						$newImgEntries = $ProfileContentManager->checkForImgEntries($POST['tinyMCEtextarea']);
+						$ProfileContentManager->updateImgEntries($POST['idProfileContent'], $newImgEntries);
 					} else {
 						//content change place number
 						$ProfileContentManager->deleteByProfileId($school->getId(), $POST['type'], $POST['blockOrderValue'], true);
@@ -507,6 +522,11 @@ class SchoolManager extends AbstractManager
 																		'contentOrder' => intval($POST['newOrderValue']), 
 																		'align' => $POST['alignValue'], 
 																		'content' => $POST['tinyMCEtextarea']]));
+						$newIdProfileContent = $this->getLastInsertId();
+						$oldImgEntries = $ProfileContentManager->getImgEntries($POST['idProfileContent']);
+						$ProfileContentManager->editIdProfileContent($oldImgEntries, $POST['idProfileContent'], $newIdProfileContent);
+						$newImgEntries = $ProfileContentManager->checkForImgEntries($POST['tinyMCEtextarea']);
+						$ProfileContentManager->updateImgEntries($newIdProfileContent, $newImgEntries);
 					}
 				}
 			}

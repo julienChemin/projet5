@@ -65,6 +65,9 @@ try {
 			case 'getTags' :
 				$Frontend->getTags();
 			break;
+			case 'addSchool' :
+				$Frontend->addSchool();
+			break;
 			case 'getSchools' :
 				$Frontend->getSchools();
 			break;
@@ -100,6 +103,9 @@ try {
 			break;
 			case 'setReport' :
 				$Frontend->setReport();
+			break;
+			case 'faq' :
+				$Frontend->faq();
 			break;
 			default :
 				//"action" value is unknow
