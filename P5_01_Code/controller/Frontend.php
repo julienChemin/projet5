@@ -7,6 +7,7 @@ class Frontend extends Controller
 	public static $SIDE = 'frontend';
 	public static $INDEX = 'index.php';
 
+
 	public function verifyInformation()
 	{
 		if (isset($_SESSION['pseudo'])) {
@@ -38,7 +39,7 @@ class Frontend extends Controller
 		$url = explode('/', $_SERVER['PHP_SELF']);
 		$url = $url[count($url) - 1];
 		if ($url !== static::$INDEX) {
-			//url is school name or user name
+			//$url is school name or user name
 			$UserManager = new UserManager();
 			$SchoolManager = new SchoolManager();
 			if ($UserManager->nameExists($url)) {
@@ -50,7 +51,10 @@ class Frontend extends Controller
 				RenderView::render('template.php', 'frontend/indexView.php');
 			}
 		} else {
-			RenderView::render('template.php', 'frontend/indexView.php');	
+			$SchoolManager = new SchoolManager();
+			$TagsManager = new TagsManager();
+			$posts = $PostsManager->getPostsForHome($SchoolManager, $TagsManager);
+			RenderView::render('template.php', 'frontend/indexView.php', ['posts' => $posts, 'option' => ['home']]);	
 		}
 	}
 
@@ -129,6 +133,107 @@ class Frontend extends Controller
 		} else {$this->invalidLink();}	
 	}
 
+	public function search()
+	{
+		$PostsManager = new PostsManager();
+		$SchoolManager = new SchoolManager();
+		$TagsManager = new TagsManager();
+		if (!empty($_POST['keyWord'])) {
+			//search by key word
+			$result = $this->searchForKeyWord($_POST['keyWord']);
+			RenderView::render('template.php', 'frontend/searchView.php', ['PostsManager' => $PostsManager, 'result' => $result]);
+		} elseif (!empty($_GET['sortBy'])) {
+			//sort by last posted / most liked / post on school $school / tag $tag
+			$nbPostsByPage = 12;
+			!empty($_GET['offset']) && $_GET['offset'] % $nbPostsByPage === 0 ? $offset = $_GET['offset'] : $offset = 0;
+			switch ($_GET['sortBy']) {
+				case 'lastPosted' :
+					$items = $PostsManager->getLastPosted($nbPostsByPage, $offset);
+					$nbPage = ceil($PostsManager->getCountReferencedPosts() / $nbPostsByPage);
+				break;
+				case 'mostLiked' :
+					$items = $PostsManager->getMostLikedPosts($nbPostsByPage, $offset);
+					$nbPage = ceil($PostsManager->getCountReferencedPosts() / $nbPostsByPage);
+				break;
+				case 'school' :
+					if (empty($_GET['school'])) {
+						$items = $SchoolManager->getSchoolByName(ALL_SCHOOL);
+						$nbPage = 0;
+					} else {
+						if ($SchoolManager->nameExists($_GET['school']) && $_GET['school'] !== NO_SCHOOL) {
+							$items = $PostsManager->getPostsBySchool($_GET['school'], false, $offset, $nbPostsByPage);
+							$nbPage = ceil($PostsManager->getCountPostsBySchool($_GET['school']) / $nbPostsByPage);
+						} else {$this->incorrectInformation();}
+					}
+				break;
+				case 'tag' :
+					if (!empty($_GET['tag']) && $TagsManager->exists($_GET['tag'])) {
+						$items = $PostsManager->getPostsBytag($_GET['tag'], $nbPostsByPage, $offset);
+						$nbPage = ceil($PostsManager->getCountPostsByTag($_GET['tag']) / $nbPostsByPage);
+					} else {$this->incorrectInformation();}
+				break;
+				default :
+					$this->redirection('index.php?action=search');
+			}
+			RenderView::render('template.php', 'frontend/searchView.php', ['nbPage' => $nbPage, 'nbPostsByPage' => $nbPostsByPage, 'items' => $items]);
+		} else {RenderView::render('template.php', 'frontend/searchView.php');}
+	}
+
+	public function searchForKeyWord($word)
+	{
+		$SchoolManager = new SchoolManager();
+		$UserManager = new UserManager();
+		$PostsManager = new PostsManager();
+		$TagsManager = new TagsManager();
+		$result = [];
+		if ($PostsManager->checkForScriptInsertion([$word])) {
+			$result['school'] = $SchoolManager->searchForKeyWord($word);
+			$result['user'] = $UserManager->searchForKeyWord($word);
+			$result['post'] = $PostsManager->searchForKeyWord($word);
+			$result['tag'] = $TagsManager->searchForKeyWord($word);
+		}
+		//$result have to be empty if all array on it are empty
+		$check = 0;
+		foreach ($result as $arr) {
+			if (empty($arr)) {
+				$check++;
+			}
+		}
+		if ($check === count($result)) {
+			$result = [];
+		}
+		return $result;
+	}
+
+	public function advancedSearch()
+	{
+		if (empty($_POST)) {
+			$SchoolManager = new SchoolManager();
+			$schools = $SchoolManager->getSchoolByName(ALL_SCHOOL);
+			RenderView::render('template.php', 'frontend/advancedSearchView.php', ['schools' => $schools, 'option' => ['advancedSearch']]);
+		} else {
+			$PostsManager = new PostsManager();
+			$nbPostsByPage = 12;
+			$posts = $PostsManager->advancedSearch($_POST, $nbPostsByPage);
+			$nbPage = ceil($posts['count'] / $nbPostsByPage);
+			RenderView::render('template.php', 'frontend/advancedSearchView.php', ['nbPage' => $nbPage, 'nbPostsByPage' => $nbPostsByPage, 'posts' => $posts, 'option' => ['advancedSearch']]);
+		}
+	}
+
+	public function listTags()
+	{
+		$TagsManager = new TagsManager();
+		$tags = $TagsManager->sortByAlphabeticalOrder($TagsManager->get(null, 0, 'name'));
+		RenderView::render('template.php', 'frontend/listTagsView.php', ['tags' => $tags]);
+	}
+
+	public function listSchools()
+	{
+		$SchoolManager = new SchoolManager();
+		$schools = $SchoolManager->getSchoolByName(ALL_SCHOOL);
+		RenderView::render('template.php', 'frontend/listSchoolsView.php', ['schools' => $schools, 'option' => ['listSchools']]);
+	}
+
 	public function userProfile()
 	{
 		if (!empty($_GET['userId']) && $_GET['userId'] !== '1') {
@@ -144,7 +249,7 @@ class Frontend extends Controller
 
 	public function schoolProfile()
 	{
-		if (!empty($_GET['school']) && $_GET['school'] !== ALL_SCHOOL) {
+		if (!empty($_GET['school']) && $_GET['school'] !== ALL_SCHOOL && $_GET['school'] !== NO_SCHOOL) {
 			$SchoolManager = new SchoolManager();
 			if ($SchoolManager->nameExists($_GET['school'])) {
 				$ProfileContentManager = new ProfileContentManager();
@@ -250,8 +355,10 @@ class Frontend extends Controller
 	{
 		$UserManager = new UserManager();
 		$PostsManager = new PostsManager();
+		$TagsManager = new TagsManager();
 		if (!empty($_GET['id']) && $PostsManager->exists($_GET['id'])) {
 			$post = $PostsManager->getOneById($_GET['id']);
+			$asidePosts = $PostsManager->getAsidePosts($post, $TagsManager);
 			if ($UserManager->exists($post->getIdAuthor())) {
 				$author = $UserManager->getOneById($post->getIdAuthor());
 			} else {$author = null;}
@@ -259,18 +366,18 @@ class Frontend extends Controller
 				$user = $UserManager->getOneById($_SESSION['id']);
 			} else {$user = null;}
 			if ($post->getIsPrivate()) {
-				if (!empty($_SESSION) && ($post->getSchool() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL) && ($post->getIdAuthor() === $_SESSION['id'] || $_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || $post->getListAuthorizedGroups() === null || in_array($_SESSION['group'], $post->getListAuthorizedGroups()))) {
+				if (!empty($_SESSION) && ($post->getSchool() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL) && ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || $post->getListAuthorizedGroups() === null || in_array($_SESSION['group'], $post->getListAuthorizedGroups()))) {
 					if ($post->getFileType() === 'folder') {
-						RenderView::render('template.php', 'frontend/folderView.php', ['post' => $post, 'user' => $user, 'author' => $author, 'option' => ['folderView']]);
+						RenderView::render('template.php', 'frontend/folderView.php', ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['folderView']]);
 					} else {
-						RenderView::render('template.php', 'frontend/postView.php', ['post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
+						RenderView::render('template.php', 'frontend/postView.php', ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
 					}
 				} else {$this->accessDenied();}
 			} else {
 				if ($post->getFileType() === 'folder') {
-					RenderView::render('template.php', 'frontend/folderView.php', ['post' => $post, 'user' => $user, 'author' => $author, 'option' => ['folderView']]);
+					RenderView::render('template.php', 'frontend/folderView.php', ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['folderView']]);
 				} else {
-					RenderView::render('template.php', 'frontend/postView.php', ['post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
+					RenderView::render('template.php', 'frontend/postView.php', ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
 				}
 			}
 		} else {$this->invalidLink();}
@@ -279,7 +386,16 @@ class Frontend extends Controller
 	public function addPost()
 	{
 		if (!empty($_SESSION['id']) && $_SESSION['school'] !== ALL_SCHOOL) {
-			RenderView::render('template.php', 'frontend/addPostView.php', ['option' => ['addPost', 'tinyMCE']]);
+			//if user try to post on folder and folder is a schoolPost -> display input to upload other type file (zip rar)
+			if (!empty($_GET['folder'])) {
+				$PostsManager = new PostsManager();
+				if ($PostsManager->exists($_GET['folder'])) {
+					$folder = $PostsManager->getOneById($_GET['folder']);
+					if ($folder->getPostType() === 'schoolPost') {
+						RenderView::render('template.php', 'backend/addSchoolPostView.php', ['option' => ['addPost', 'tinyMCE']]);
+					}  else {RenderView::render('template.php', 'frontend/addPostView.php', ['option' => ['addPost', 'tinyMCE']]);}
+				} else {$this->incorrectInformation();}
+			} else {RenderView::render('template.php', 'frontend/addPostView.php', ['option' => ['addPost', 'tinyMCE']]);}
 		} else {$this->accessDenied();}
 	}
 
@@ -288,21 +404,52 @@ class Frontend extends Controller
 		$PostsManager = new PostsManager();
 		$TagsManager = new TagsManager();
 		if (isset($_SESSION['id'], $_POST)) {
-			if ($PostsManager->canUploadPost($_POST, $TagsManager)) {
-				if ($PostsManager->uploadPost($_POST)) {
-					if (!empty($_POST['listTags'])) {
-						$TagsManager->checkForNewTag($_POST['listTags'], $PostsManager->getLastInsertId());
-					}
-					header('Location: index.php?action=userProfile&userId=' . $_SESSION['id']);
-				} else {throw new \Exception("Le fichier n'est pas conforme");}
-			} else {throw new \Exception("Le fichier n'est pas conforme");}
+			if ($response = $PostsManager->canUploadPost($_POST, $TagsManager)) {
+				$_POST['postType'] === 'schoolPost' ? $isSchoolPost = true : $isSchoolPost = false;
+				if ($isSchoolPost) {
+					//user post on school folder
+					$_POST['uploadType'] === 'private';
+					if ($PostsManager->uploadPost($response, true, 'none')) {
+						header('Location: index.php?action=schoolProfile&school=' . $_SESSION['school']);
+					} else {throw new \Exception("Le fichier n'est pas conforme");}
+				} else {
+					//userPost
+					if ($PostsManager->uploadPost($response)) {
+						if (!empty($_POST['listTags'])) {
+							$TagsManager->checkForNewTag($_POST['listTags'], $PostsManager->getLastInsertId());
+						}
+						header('Location: index.php?action=userProfile&userId=' . $_SESSION['id']);
+					} else {throw new \Exception("Le fichier n'est pas conforme");}
+				}
+			} else {$this->incorrectInformation();}
 		} else {$this->accessDenied();}
+	}
+
+	public function deletePost()
+	{
+		$PostsManager = new PostsManager();
+		$TagsManager = new TagsManager();
+		if (isset($_GET['id'], $_SESSION['id']) && $PostsManager->exists($_GET['id'])) {
+			$post = $PostsManager->getOneById($_GET['id']);
+			if ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['school'] === ALL_SCHOOL) {
+				if ($post->getFileType() === 'folder') {
+					$PostsManager->deleteFolder($post->getId());
+				} else {
+					$PostsManager->deletePost($post->getId());
+				}
+				//at the same time, delete unused tags
+				$TagsManager->deleteUselessTags();
+				if ($post->getPostType() === 'schoolPost') {
+					header('Location: index.php?action=schoolProfile&school=' . $_SESSION['school']);
+				} else {header('Location: index.php?action=userProfile&userId=' . $_SESSION['id']);}
+			} else {$this->accessDenied();}
+		} else {$this->incorrectInformation();}
 	}
 
 	public function getTags()
 	{
 		$TagsManager = new TagsManager();
-		$listTags = $TagsManager->getAll();
+		$listTags = $TagsManager->get();
 		$arrTags = [];
 		for ($i=0; $i<count($listTags); $i++) {
 			$arrTags[$i] = $listTags[$i]['name'];
@@ -310,9 +457,9 @@ class Frontend extends Controller
 		echo json_encode($arrTags);
 	}
 
-	public function addSchool()
+	/*public function addSchool()		@TODO view for user who want to add his school
 	{
-		$message = null;//@todo !empty session pr pouvoir voir la vue - editer la vue pour frontend
+		$message = null; 
 		if (empty($_SESSION) || $_SESSION['school'] === NO_SCHOOL) {
 			if (!empty($_POST['adminPassword']) && !empty($_GET['option']) && $_GET['option'] === 'add') {
 				//if form to add school is filled
@@ -327,7 +474,7 @@ class Frontend extends Controller
 			}
 			RenderView::render('template.php', 'backend/addSchoolView.php', ['option' => ['addSchool'], 'message' => $message]);
 		} else {header('Location: index.php');}
-	}
+	}*/
 
 	public function getSchools()
 	{
@@ -351,14 +498,22 @@ class Frontend extends Controller
 			empty($_GET['limit']) ? $limit = null : $limit = $_GET['limit'];
 			empty($_GET['withFolder']) ? $withFolder = false : $withFolder = true;
 			$posts = $PostsManager->getPostsBySchool($_GET['school'], $withFolder, $offset, $limit);
-			$arrPosts = [];
 			if (count($posts) > 0) {
-				foreach ($posts as $post) {
-					$arrPosts[] = $PostsManager->toArray($post);
-				}
-				echo json_encode($arrPosts);
-			} else {echo false;}
-		} else {echo false;}
+				echo json_encode($PostsManager->toArray($posts));
+			} else {echo 'false';}
+		} else {echo 'false';}
+	}
+
+	public function getUsersBySchool()
+	{
+		$SchoolManager = new SchoolManager();
+		$UserManager = new UserManager();
+		if (!empty($_GET['school']) && $SchoolManager->nameExists($_GET['school'])) {
+			$users = $UserManager->getUsersBySchool($_GET['school']);
+			if (count($users) > 0) {
+				echo json_encode($UserManager->sortByGrade($users));
+			} else {echo 'false';}
+		} else {echo 'false';}
 	}
 
 	public function getUserPosts()
@@ -370,8 +525,8 @@ class Frontend extends Controller
 			if (count($posts) > 0) {
 				$arrSortedPosts = $PostsManager->sortForProfile($posts);
 				echo json_encode($arrSortedPosts);
-			} else {echo false;}
-		} else {echo false;}
+			} else {echo 'false';}
+		} else {echo 'false';}
 	}
 
 	public function getSchoolPosts()
@@ -383,8 +538,8 @@ class Frontend extends Controller
 			if (count($posts) > 0) {
 				$arrSortedPosts = $PostsManager->sortForProfile($posts);
 				echo json_encode($arrSortedPosts);
-			} else {echo false;}
-		} else {echo false;}
+			} else {echo 'false';}
+		} else {echo 'false';}
 	}
 
 	public function getProfilePosts()
@@ -392,8 +547,46 @@ class Frontend extends Controller
 		$PostsManager = new PostsManager();
 		if (!empty($_GET['idFolder']) && intval($_GET['idFolder']) > 0) {
 			$posts = $PostsManager->getPostsOnFolder(intval($_GET['idFolder']));
-			echo json_encode($PostsManager->sortForProfile($posts));
-		} else {echo false;}
+			if (count($posts) > 0) {
+				echo json_encode($PostsManager->sortForProfile($posts));
+			} else {echo 'false';}
+		} else {echo 'false';}
+	}
+
+	public function getLastPosted()
+	{
+		if (!empty($_GET['limit']) && !empty($_GET['offset'])) {
+			$PostsManager = new PostsManager();
+			$lastPosts = $PostsManager->getLastPosted($_GET['limit'], $_GET['offset']);
+			if (!empty($lastPosts)) {
+				echo json_encode($PostsManager->toArray($lastPosts));
+			} else {echo 'false';}
+		} else {echo 'false';}
+	}
+
+	public function getMostLikedPosts()
+	{
+		if (!empty($_GET['limit']) && !empty($_GET['offset'])) {
+			$PostsManager = new PostsManager();
+			$mostLikedPosts = $PostsManager->getMostLikedPosts($_GET['limit'], $_GET['offset']);
+			if (!empty($mostLikedPosts)) {
+				echo json_encode($PostsManager->toArray($mostLikedPosts));
+			} else {echo 'false';}
+		} else {echo 'false';}
+	}
+
+	public function getPostsByTag()
+	{
+		$PostsManager = new PostsManager();
+		$TagsManager = new TagsManager();
+		if (!empty($_GET['tag']) && $TagsManager->exists($_GET['tag'])) {
+			empty($_GET['offset']) ? $offset = 0 : $offset = $_GET['offset'];
+			empty($_GET['limit']) ? $limit = null : $limit = $_GET['limit'];
+			$posts = $PostsManager->getPostsByTag($_GET['tag'], $limit, $offset);
+			if (count($posts) > 0) {
+				echo json_encode($PostsManager->toArray($posts));
+			} else {echo 'false';}
+		} else {echo 'false';}
 	}
 
 	public function setComment()
@@ -416,22 +609,6 @@ class Frontend extends Controller
 				echo true;
 			} else {echo false;}
 		} else {echo false;}
-	}
-
-	public function deletePost()
-	{
-		$PostsManager = new PostsManager();
-		if (isset($_GET['id'], $_SESSION['id']) && $PostsManager->exists($_GET['id'])) {
-			$post = $PostsManager->getOneById($_GET['id']);
-			if ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['school'] === ALL_SCHOOL) {
-				if ($post->getFileType() === 'folder') {
-					$PostsManager->deleteFolder($post->getId());
-				} else {
-					$PostsManager->deletePost($post->getId());
-				}
-				header('Location: index.php?action=userProfile&userId=' . $_SESSION['id']);
-			} else {$this->accessDenied();}
-		} else {$this->incorrectInformation();}
 	}
 
 	public function userAlreadyLikePost()

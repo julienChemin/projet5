@@ -327,14 +327,13 @@ footer{
 	display: flex;
 	justify-content: center;
 	align-items: center;
-
 	width: 100%;
 	min-height: 20vh;
 	background-color: #161617;
 	padding: 70px 0px;
 }
 footer section{
-	width: 85%;
+	width: 85%
 }
 footer section > div{
 	display: flex;
@@ -394,26 +393,39 @@ footer ul{
 	transform: rotate(90deg);
 }
 
+/* ------------------------------------------------------ */
 /* ------------------------ HOME ------------------------ */
-
-#blockSearch{
-	background-color: #222224;
-
-	height: 50px;
-}
-#blockSearch > .container{
-	height: 100%;
-
-	display: flex;
-	align-items: center;
-}
-
+/* ------------------------------------------------------ */
 /*SLIDERS POSTS*/
-#slidersPosts{
+#home{
 	background-color: #161617;
+	min-height: 80vh;
+}
+#home .blockStyleOne{
+	background-color: #222224;
+}
+#home .slide{
+	flex-wrap: nowrap;
+}
+#home .items{
+	height: 200px;
 }
 .sliderPosts{
-	margin-top: 10px;
+	padding: 50px 0;
+}
+.sliderPosts > a{
+	display: inline-block;
+	width: 100%;
+	text-align: right;
+}
+.sliderPosts > h1{
+	margin-top: 0;
+	padding-top: 25px;
+	font-size: 1.4em;
+	color: #CF8B3F;
+}
+.sliderPosts hr{
+	margin-bottom: 0px;
 }
 .sliderPosts .posts{
 	display: flex;
@@ -421,17 +433,7 @@ footer ul{
 	align-items: center;
 	flex-wrap: nowrap;
 	overflow-x: hidden;
-
 	position: relative;
-}
-.sliderPosts > .container:first-child{
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-.sliderPosts h2{
-	margin: 10px;
-
 }
 .slider{
 	display: flex;
@@ -443,11 +445,24 @@ footer ul{
 }
 .slide{
 	display: flex;
-	justify-content: space-around;
-	min-width: 100%;
+	justify-content: flex-start;
+	align-items: center;
+	flex-wrap: wrap;
+	min-width: 90%;
+	min-height: 200px;
+	margin: 20px 0;
+	padding: 0 5%;
 }
 .items{
-	max-width: 19.5%;
+	width: 20%;
+	margin: 10px 0 0 0;
+	border-radius: 15px;
+	position: relative;
+	transition: 0.2s linear;
+	-webkit-transition: 0.2s linear;
+}
+.items:hover{
+	background-color: #222224;
 }
 figure{
 	height: 300px;
@@ -474,13 +489,24 @@ figure img{
 	display: flex;
 	justify-content: center;
 	align-items: center;
-
 	height: 100%;
 	width: 5%;
 	z-index: 1000;
-	background: linear-gradient(to right, transparent, #161617 10%, transparent 90%);
-
 	cursor: pointer;
+	transition: 0.2s linear;
+	-webkit-transition: 0.2s linear;
+}
+.arrow:hover{
+	border-left: solid 1px #CF8B3F;
+}
+.arrow > i{
+	font-size: 1.5em;
+	transition: 0.1s linear;
+	-webkit-transition: 0.1s linear;
+}
+.arrow:hover > i{
+	font-size: 2.5em;
+	color: #CF8B3F;
 }
 .arrowLeft{
 	position: absolute;
@@ -494,12 +520,301 @@ figure img{
 
 	transform: rotate(180deg);
 }
-
+/* ------------------------------------------------------ */
+/* ------------------------ SEARCH ---------------------- */
+/* ------------------------------------------------------ */
+#searchView{
+	padding-top: 50px;
+}
+#homeSearch, #alsoSee{
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	margin: 40px 0;
+}
+#searchView > h2{
+	margin-top: 50px;
+}
+#homeSearch > div{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 30%;
+	height: 200px;
+	border-radius: 5px;
+	background-color: #161617;
+}
+#alsoSee > div{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 45%;
+	border-radius: 5px;
+	background-color: #161617;
+}
+#searchView h1, #searchView h2, #searchView h3{
+	color: #CF8B3F;
+}
+#searchView h2{
+	font-size: 1.2em;
+}
+#searchByKeyWord h2 + form{
+	margin-top: 30px;
+}
+#formSearchByKeyWord{
+	padding: 10px;
+}
+#frequentlySearched > div{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 90%;
+}
+#frequentlySearched > div > a{
+	margin: 7px 0;
+	padding: 3px 0;
+	border: solid 1px #CF8B3F;
+	border-radius: 5px;
+	text-align: center;
+}
+#advancedSearch > p:last-of-type{
+	border: solid 1px #CF8B3F;
+	border-radius: 5px;
+	padding: 4px;
+	font-weight: bold;
+	background-color: #222224;
+}
+/*result of search by key word*/
+.blockResult{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.blockResult a{
+	width: 100%;
+	position: relative;
+}
+.figureProfilePicture{
+	height: 100%;
+	margin : 0;
+	background-color: #161617;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+}
+.figureProfilePicture > div{
+	width: 90%;
+	height: 50%;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.figureProfilePicture img{
+	height: auto;
+	max-height: 100%;
+	width: auto;
+	max-width: 100%;
+}
+.figureProfilePicture figcaption{
+	font-size: 1.4em;
+	word-break: break-word;
+	padding: 5px;
+}
+.blockResultUser > div, .blockResultSchool > div, .blockResultPost > div{
+	width: 19.5%;
+	height: 300px;
+	margin: 20px 2.5%;
+	border-radius: 5px;
+	overflow: hidden;
+}
+.blockResultSchool > div{
+	width: 44.8%;
+}
+.blockResultSchool .figureProfilePicture{
+	flex-direction: row;
+}
+.blockResultSchool .figureProfilePicture > div{
+	width: 40%;
+}
+.blockResultTag > div{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 33%;
+	height: 80px;
+}
+#searchView .tag{
+	background-color: #161617;
+}
+/*result for quick search*/
+#resultQuickSearch{
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+}
+#resultQuickSearch figure{
+	width: 20%;
+	margin: 0 2.5%;
+	position: relative;
+}
+#pagingQuickSearch ol{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#pagingQuickSearch li{
+	margin: 20px 5px;
+	list-style-type: none;
+}
+.actualPage{
+	font-weight: bolder;
+	font-size: 1.5em;
+}
+/* -------------------------------------------------------------- */
+/* ------------------------ LIST SCHOOLS ------------------------ */
+/* -------------------------------------------------------------- */
+#listSchoolsView h1, #listSchoolsView h2{
+	color: #CF8B3F;
+	transition: 0.1s linear;
+	-webkit-transition: 0.1s linear;
+}
+#schoolInformation{
+	display: none;
+}
+#linkSchoolProfile{
+	font-size: 1.3em;
+	text-align: right;
+}
+#adminSection, #moderatorSection, #studentSection{
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	flex-wrap: wrap;
+	margin-bottom: 100px;
+}
+/* ----------------------------------------------------------- */
+/* ------------------------ LIST TAGS ------------------------ */
+/* ----------------------------------------------------------- */
+#listTagsView{
+	padding: 100px 0;
+}
+#listTagsView h1, #listTagsView h2{
+	color: #CF8B3F;
+}
+#listTagsView .blockResultTag{
+	background-color: #161617;
+	padding: 20px 0;
+	border-radius: 5px;
+}
+#listTagsView .blockResultTag a{
+	width: auto;
+}
+.tagsCategory{
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.tagsCategory h2{
+	padding: 40px 0;
+}
+/* ----------------------------------------------------------------- */
+/* ------------------------ ADVANCED SEARCH ------------------------ */
+/* ----------------------------------------------------------------- */
+#advancedSearchView{
+	padding: 100px 0;
+}
+#advancedSearchView h1, #advancedSearchView h2{
+	color: #CF8B3F;
+	padding-bottom: 20px;
+}
+#advancedSearchView input[type="radio"]{
+	display: none;
+}
+#advancedSearchView input[type="radio"] + label{
+	border-radius: 5px;
+	background-color: #222224;
+	padding: 10px;
+	margin: 15px;
+	font-size: 1.5em;
+	overflow: hidden;
+    word-break: break-word;
+	cursor: pointer;
+}
+#advancedSearchView input[type="radio"] + label:hover{
+	color: #CF8B3F!important;
+}
+#formAdvancedSearch{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+#formAdvancedSearch #blockFilterBySchool i[class~="fa-times"]{
+	font-size: 2em;
+}
+#formAdvancedSearch > div{
+	padding: 50px 0;
+	margin-bottom: 20px;
+}
+#formAdvancedSearch > div > div{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+}
+#blockFilterBySchool input[type="radio"] + label{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+	width: 15%;
+	height: 200px;
+	padding: 5px;
+}
+#blockFilterBySchool input[type="radio"] + label > div{
+	height: 80%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#blockFilterBySchool input[type="radio"] + label img{
+	max-height: 80%;
+	max-width: 80%;
+}
+#formAdvancedSearch #blockFilterBySchool > div{
+	justify-content: space-around;
+	flex-wrap: wrap;
+}
+#blockSortBy > div{
+	justify-content: space-around;
+}
+#blockSortWithTag > div{
+	display: flex;
+	flex-direction: row;
+}
+#blockSortWithTag > div > div:nth-of-type(1), #blockSortWithTag > #selectedTag{
+	width: 49%;
+}
+#blockFilterAdvancedSearch{
+	margin-bottom: 20px;
+}
+#blockFilterAdvancedSearch .tag{
+	cursor: default;
+}
+#pagingQuickSearch li{
+	cursor: pointer;
+	color: #CF8B3F;
+}
+/* ------------------------------------------------------------------------ */
 /* ------------------------ SIGN IN / SIGN UP FORM ------------------------ */
+/* ------------------------------------------------------------------------ */
 
 #signIn, #signUp{
 	padding: 100px 0px;
-
 	display: flex;
     justify-content: center;
     align-items: center;
@@ -1001,9 +1316,9 @@ figure img{
 	transition: 0.3s ease;
 	-webkit-transition: 0.3s ease;
 }
-figure a:hover .iconeVideo{
+figure:hover .iconeVideo{
 	opacity: 1;
-	width: 100px;
+	width: 30%;
 }
 .thumbnailFolder{
 	z-index: 500;
@@ -1012,6 +1327,10 @@ figure a:hover .iconeVideo{
 	border-radius: 20px;
 	max-width: 80%;
 	max-height: 60%;
+}
+.postOnAside .thumbnailFolder{
+	border-radius: 5px;
+	max-width: 75%;
 }
 .thumbnailFolder + img{
 	height: 100%;
@@ -1522,7 +1841,7 @@ i[class="fas fa-download"]{
 #commentsAndRelatedPosts{
 	display: flex;
 	justify-content: space-around;
-	align-items: center;
+	align-items: flex-start;
 	margin-top: 40px;
 }
 /*comments*/
@@ -1610,7 +1929,41 @@ i[class="fas fa-download"]{
 }
 /*aside recommanded posts*/
 #relatedPosts{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 	width: 23%;
+}
+#relatedPosts h1{
+	margin-bottom: 50px;
+}
+#relatedPosts > div{
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	width: 100%;
+}
+.postOnAside{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	height: 100px;
+    width: 33%;
+    margin: 5px 0 0 0;
+    overflow: hidden;
+    border-radius: 10px;
+    transition: 0.2s ease;
+	-webkit-transition: 0.2s ease;
+}
+.postOnAside:hover{
+	background-color: #161617;
+}
+.postOnAside > img{
+	max-height: 90%;
+	max-width: 90%;
+    border-radius: 5px;
 }
 /* ------------------------------------------------------------ */
 /* ------------------------- FOLDER VIEW ---------------------- */
@@ -1671,6 +2024,9 @@ i[class="fas fa-download"]{
 	align-self: flex-start;
 	width: 25%;
 	margin-top: 50px;
+}
+#viewFolder #relatedPosts{
+	width: 100%;
 }
 #viewFolder #heart + #nbLike{
 	top: -50px;
@@ -1817,7 +2173,6 @@ form > div{
 	justify-content: space-around;
 	align-items: center;
 }
-
 #menuHome > a{
 	width: 24%;
 }
@@ -1827,24 +2182,19 @@ form > div{
 	justify-content: space-around;
 	align-items: center;
 	flex-wrap: wrap;
-
 	height: 300px;
 	width: 100%;
-
 	background: linear-gradient(to bottom, #161617 10px, transparent, #161617 290px);
 }
-
 .itemHomeAdmin i{
 	color: #CF8B3F;
 	transform: scale(3);
 }
-
 .itemHomeAdmin > span{
 	font-size: 1.5em;
 	text-align:  center;
 	margin: 0px 15px;
 }
-
 #slowSlide{
 	height: 250px;
 	width: 100%;
@@ -1853,7 +2203,7 @@ form > div{
 	height: 150px;
 }
 #slowSlide .items{
-	max-width: 19%;
+	max-width: 20%;
 }
 #slowSlide > div:first-of-type{
 	display: flex;

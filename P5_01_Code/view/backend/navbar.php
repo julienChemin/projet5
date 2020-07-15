@@ -52,7 +52,7 @@
 					<hr class="hrNavbar">
 
 					<li title="Vers ArtSchool">
-						<a href="index.php"><i class="fas fa-external-link-alt"></i></a>
+						<a href="index.php"><i class="fas fa-home"></i></a>
 					</li>
 					<hr class="hrNavbar">
 
@@ -140,7 +140,7 @@
 
 					<li>
 						<a href="index.php">
-							Vers le site ArtSchool<i class="fas fa-external-link-alt"></i>
+							Vers le site ArtSchool<i class="fas fa-home"></i>
 						</a>
 					</li>
 					<hr>

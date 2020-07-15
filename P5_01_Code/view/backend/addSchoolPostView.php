@@ -1,17 +1,23 @@
+<?php
+if ($_SESSION['grade'] === STUDENT) {
+	$isStudent = 'true';
+	$urlForm = 'index.php?action=uploadPost';
+	$uploadType = 'private';
+} else {
+	$isStudent = 'false';
+	$urlForm = 'indexAdmin.php?action=uploadSchoolPost';
+	$uploadType = 'public';
+}
+?>
 <section id="addSchoolPost" class="container">
 	<h1>Publication pour l'établissement</h1>
-	<form method="POST" action="indexAdmin.php?action=uploadSchoolPost" enctype="multipart/form-data">
+	<form method="POST" action="<?=$urlForm?>" enctype="multipart/form-data">
 		<input type="hidden" name="postType" value="schoolPost">
-		<input type="hidden" name="uploadType" value="public">
+		<input type="hidden" name="uploadType" value="<?=$uploadType?>">
 		<input type="hidden" name="fileTypeValue" value="">
 		<input type="hidden" name="folder" value="">
 		<input type="hidden" name="listAuthorizedGroups" value="">
 		<input type="hidden" name="listTags" id="listTags" value="">
-		<?php
-		if ($_SESSION['grade'] === STUDENT) {
-			$isStudent = 'true';
-		} else {$isStudent = 'false';}
-		?>
 		<input type="hidden" name="isStudent" id="isStudent" value="<?=$isStudent?>">
 
 		<div id="blockUploadType">
@@ -23,29 +29,35 @@
 				<figcaption>Fichier</figcaption>
 				<img src="public/images/schoolFile.png">
 			</figure>
-			<div id="blockIsPrivate" class="fullWidth">
-				<div>
+			<?php
+			if ($isStudent === 'false') {
+				?>
+				<div id="blockIsPrivate" class="fullWidth">
 					<div>
-						<input type="checkbox" name="isPrivate" id="isPrivate">
-						<label for="isPrivate">Publication privée</label>
-					</div>
-					<div>
-						<label for="listGroup">Qui peut voir la publication : </label>
-						<select id="listGroup" name="listGroup">
-							<option value="all">Tous les groupes</option>
-							<option value="" selected></option>
-							<?php
-							if (!empty($data['groups'])) {
-								foreach ($data['groups'] as $group) {
-									echo '<option value=' . $group . '>' . $group . '</option>';
+						<div>
+							<input type="checkbox" name="isPrivate" id="isPrivate">
+							<label for="isPrivate">Publication privée</label>
+						</div>
+						<div>
+							<label for="listGroup">Qui peut voir la publication : </label>
+							<select id="listGroup" name="listGroup">
+								<option value="all">Tous les groupes</option>
+								<option value="" selected></option>
+								<?php
+								if (!empty($data['groups'])) {
+									foreach ($data['groups'] as $group) {
+										echo '<option value=' . $group . '>' . $group . '</option>';
+									}
 								}
-							}
-							?>
-						</select>
+								?>
+							</select>
+						</div>
 					</div>
+					<div id="authorizedGroups"></div>
 				</div>
-				<div id="authorizedGroups"></div>
-			</div>
+				<?php
+			}
+			?>
 		</div>
 		<div id="blockAddFile">
 			<hr>

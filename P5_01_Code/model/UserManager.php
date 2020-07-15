@@ -243,6 +243,63 @@ class UserManager extends AbstractManager
 		mail($user->getMail(), $subject, $content, $headers);
 	}
 
+	public function searchForKeyWord($word)
+	{
+		$result = [];
+		$regex = "'.*" . $word . ".*'";
+		$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+						FROM ' . static::$TABLE_NAME . ' 
+						WHERE name REGEXP ' . $regex);
+		$result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
+		return $result;
+	}
+
+	public function toArray($elem)
+	{
+		if (is_array($elem)) {
+			$result = [];
+			foreach ($elem as $user) {
+				$result[] = $this->objectPostToArray($user);
+			}
+		} elseif (is_object($elem)) {
+			$result = $this->objectPostToArray($elem);
+		}
+		return $result;
+	}
+
+	public function objectPostToArray(User $user)
+	{
+		$arr = ['id' => $user->getId(),
+				'name' => $user->getName(),
+				'school' => $user->getSchool(), 
+				'schoolGroup' => $user->getSchoolGroup(), 
+				'nbWarning' => $user->getNbWarning(), 
+				'isBan' => $user->getIsBan(), 
+				'dateBan' => $user->getDateBan(), 
+				'isAdmin' => $user->getIsAdmin(), 
+				'isModerator' => $user->getIsModerator(), 
+				'isActive' => $user->getIsActive(), 
+				'profilePicture' => $user->getProfilePicture()];
+		return $arr;
+	}
+
+	public function sortByGrade($users)
+	{
+		if (count($users) > 0) {
+			$sortedUsers = ['admin' => [], 'moderator' => [], 'student' => []];
+			foreach ($users as $user) {
+				if ($user->getIsAdmin()) {
+					$sortedUsers['admin'][] = $this->toArray($user);
+				} elseif ($user->getIsModerator()) {
+					$sortedUsers['moderator'][] = $this->toArray($user);
+				} else {
+					$sortedUsers['student'][] = $this->toArray($user);
+				}
+			}
+			return $sortedUsers;
+		}
+	}
+
 	public function moderatAdminSorting($users)
 	{
 		if ($_SESSION['school'] === ALL_SCHOOL) {

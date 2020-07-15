@@ -103,6 +103,17 @@ class SchoolManager extends AbstractManager
 		}
 	}
 
+	public function searchForKeyWord($word)
+	{
+		$result = [];
+		$regex = "'.*" . $word . ".*'";
+		$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+						FROM ' . static::$TABLE_NAME . ' 
+						WHERE name REGEXP ' . $regex);
+		$result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
+		return $result;
+	}
+
 	public function canAddSchool(array $POST, UserManager $UserManager)
 	{
 		$result = ['canAdd' => true, 'message' => null];

@@ -6,9 +6,15 @@
 			</span>
 			<nav>
 				<ul>
+					<li title="Rechercher">
+						<a href="index.php?action=search">
+							<i class="fas fa-search"></i>
+						</a>
+					</li>
 					<?php
-					if (!isset($_SESSION['grade'])) {
+					if (!isset($_SESSION['school'])) {
 						?>
+						<hr class="hrNavbar">
 						<li title="Se connecter">
 							<a href="index.php?action=signIn">Se connecter</a>
 						</li>
@@ -19,6 +25,7 @@
 					} else {
 						if ($_SESSION['school'] !== ALL_SCHOOL) {
 							?>
+							<hr class="hrNavbar">
 							<li title="Publication">
 								<a href="index.php?action=addPost">
 									<i class="fas fa-file-import"></i>
@@ -30,13 +37,17 @@
 								<i class="far fa-address-card"></i>
 								</a>
 							</li>
-							<hr class="hrNavbar">
-							<li title="Profil de mon établissement">
-								<a href="index.php?action=schoolProfile&school=<?=$_SESSION['school']?>">
-									<i class="fas fa-school"></i>
-								</a>
-							</li>
 							<?php
+							if ($_SESSION['school'] !== NO_SCHOOL) {
+								?>
+								<hr class="hrNavbar">
+								<li title="Profil de mon établissement">
+									<a href="index.php?action=schoolProfile&school=<?=$_SESSION['school']?>">
+										<i class="fas fa-school"></i>
+									</a>
+								</li>
+								<?php
+							}
 						}
 						?>
 						<hr class="hrNavbar">
@@ -50,7 +61,7 @@
 							<hr class="hrNavbar">
 							<li title="vers l'interface d'administration">
 								<a href="indexAdmin.php">
-									<i class="fas fa-external-link-alt"></i>
+									<i class="fas fa-cogs"></i>
 								</a>
 							</li>
 							<?php
@@ -74,6 +85,12 @@
 			<div id="menuNavbar">
 				<div>
 					<ul>
+						<li>
+							<a href="index.php?action=search">
+								Rechercher<i class="fas fa-search"></i>
+							</a>
+						</li>
+						<hr>
 						<?php
 						if ($_SESSION['school'] !== ALL_SCHOOL) {
 							?>
@@ -87,26 +104,29 @@
 								Profil<i class="far fa-address-card"></i>
 								</a>
 							</li>
-							<hr>
-							<li>
-								<a href="index.php?action=schoolProfile&school=<?=$_SESSION['school']?>">
-									Profil de mon établissement<i class="fas fa-school"></i>
-								</a>
-							</li>
-							<hr>
 							<?php
+							if ($_SESSION['school'] !== NO_SCHOOL) {
+								?>
+								<li>
+									<a href="index.php?action=schoolProfile&school=<?=$_SESSION['school']?>">
+										Profil de mon établissement<i class="fas fa-school"></i>
+									</a>
+								</li>
+								<?php
+							}
 						}
 						if ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {
 							?>
+							<hr>
 							<li title="Vers l'interface d'administration">
 								<a href="indexAdmin.php">
-									Vers l'interface d'administration<i class="fas fa-external-link-alt"></i>
+									Vers l'interface d'administration<i class="fas fa-cogs"></i>
 								</a>
 							</li>
-							<hr>
 							<?php
 						}
 						?>
+						<hr>
 						<li title="Se Déconnecter">
 							<a href="index.php?action=disconnect">
 								Se Déconnecter<i class="fas fa-sign-out-alt"></i>

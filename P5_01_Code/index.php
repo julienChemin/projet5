@@ -1,5 +1,8 @@
 <?php
-
+if (!empty($_GET['action']) && ($_GET['action'] === 'search' || $_GET['action'] === 'advancedSearch')) {
+	//disable validation of form by the browser
+	session_cache_limiter('private_no_expire');
+}
 session_start();
 
 use \Chemin\ArtSchool\Model\Frontend;
@@ -29,9 +32,6 @@ try {
 	$Frontend->verifyInformation();
 	if (isset($_GET['action'])) {
 		switch ($_GET['action']) {
-			case 'resetPassword' :
-				$Frontend->resetPassword();
-			break;
 			case 'disconnect' :
 				$Frontend->disconnect();
 			break;
@@ -40,6 +40,21 @@ try {
 			break;
 			case 'signIn' :
 				$Frontend->signIn();
+			break;
+			case 'resetPassword' :
+				$Frontend->resetPassword();
+			break;
+			case 'search' :
+				$Frontend->search();
+			break;
+			case 'advancedSearch' :
+				$Frontend->advancedSearch();
+			break;
+			case 'listTags' :
+				$Frontend->listTags();
+			break;
+			case 'listSchools' :
+				$Frontend->listSchools();
 			break;
 			case 'userProfile' :
 				$Frontend->userProfile();
@@ -74,6 +89,9 @@ try {
 			case 'getPostsBySchool' :
 				$Frontend->getPostsBySchool();
 			break;
+			case 'getUsersBySchool' :
+				$Frontend->getUsersBySchool();
+			break;
 			case 'getUserPosts' :
 				$Frontend->getUserPosts();
 			break;
@@ -82,6 +100,15 @@ try {
 			break;
 			case 'getProfilePosts' :
 				$Frontend->getProfilePosts();
+			break;
+			case 'getLastPosted' :
+				$Frontend->getLastPosted();
+			break;
+			case 'getMostLikedPosts' :
+				$Frontend->getMostLikedPosts();
+			break;
+			case 'getPostsByTag' :
+				$Frontend->getPostsByTag();
 			break;
 			case 'setComment' :
 				$Frontend->setComment();

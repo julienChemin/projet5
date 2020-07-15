@@ -61,4 +61,17 @@ abstract class AbstractManager extends Database
 		}
 		return true;
 	}
+
+	public function arrayWithoutEmptyEntries(array $arr)
+	{
+		if (count($arr) > 0) {
+			$sortedArray = [];
+			foreach ($arr as $value) {
+				if ($value !== null) {
+					$sortedArray[] = $value;
+				}
+			}
+			return $sortedArray;
+		} else {return $arr;}
+	}
 }

@@ -49,17 +49,17 @@
 			?>
 			<aside id="slowSlide" class="sliderPosts">
 				<input type="hidden" name="schoolName" id="schoolName" value="<?=$_SESSION['school']?>">
-				<div class="container">
+				<div>
 					<h2>Récemment posté par des élèves de votre établissement</h2>
 					<a href="index.php">Tout voir</a>
 				</div>
 				<hr>
-				<div class="container posts">
+				<div class="posts">
 					<div class="arrow arrowLeft">
-						<i class="fas fa-chevron-circle-left"></i>
+						<i class="fas fa-chevron-left"></i>
 					</div>
 					<div class="arrow arrowRight">
-						<i class="fas fa-chevron-circle-left"></i>
+						<i class="fas fa-chevron-left"></i>
 					</div>
 					<div class="slider"></div>
 				</div>

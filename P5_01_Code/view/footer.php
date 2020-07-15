@@ -1,5 +1,5 @@
 <footer>
-	<section>
+	<section class="container">
 		<div>
 			<article id="linksList">
 				<h3>Établissement inscrit sur ArtSchool</h3>

@@ -1,5 +1,6 @@
 <?php
 $post = $data['post'];
+$asidePosts = $data['asidePosts'];
 $author = $data['author'];
 $user = $data['user'];
 $post->getPostType() === 'schoolPost' ? $postIsSchoolPost = true : $postIsSchoolPost = false;
@@ -128,6 +129,129 @@ $post->getPostType() === 'schoolPost' ? $postIsSchoolPost = true : $postIsSchool
 					<?php
 				} else {
 					echo '<div>L\'auteur de cette publication n\'existe plus</div>';
+				}
+				?>
+			</div>
+			<div id="relatedPosts">
+				<?php
+				echo '<hr>';
+				if (!empty($asidePosts['onFolder'])) {
+					//post is on folder, display other post on this folder
+					echo '<h1>Autres publications dans ce dossier</h1>';
+					echo '<div>';
+					foreach ($asidePosts['onFolder'] as $post) {
+						if (empty($post['filePath']) || $post['fileType'] === 'compressed') {
+							switch ($post['fileType']) {
+								case 'image' :
+									$post['filePath'] = 'public/images/fileImage.png';
+								break;
+								case 'video' :
+									$post['filePath'] = 'public/images/defaultVideoThumbnail.png';
+								break;
+								case 'folder' :
+									$post['filePath'] = 'public/images/folder.png';
+								break;
+								case 'compressed' :
+									$post['filePath'] = 'public/images/fileOther.png';
+								break;
+							}
+						}
+						if ($post['fileType'] === 'folder' && $post['filePath'] !== 'public/images/folder.png') {
+							echo '<figure title="' . $post['title'] . '" class="postOnAside">';
+							echo '<a title="' . $post['title'] . '" class="postOnAside" href="index.php?action=post&id=' . $post['id'] . '">';
+							echo '<img class="thumbnailFolder" src="' . $post['filePath'] . '">';
+							echo '<img src="public/images/folder.png">';
+							echo '</a></figure>';
+						} else {
+							echo '<figure title="' . $post['title'] . '" class="postOnAside">';
+							echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
+							if ($post['fileType'] === 'video' && $post['filePath'] !== 'public/images/defaultVideoThumbnail.png') {
+								echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+							}
+							echo '<img src="' . $post['filePath'] . '">';
+							echo '</a></figure>';
+						}
+					}
+					echo '</div><hr>';
+				}
+				if (!empty($asidePosts['public'])) {
+					//display public post of this user/school
+					$asidePosts['postType'] === 'userPost' ? $entity = 'utilisateur' : $entity = 'établissement';
+					echo '<h1>Publications de cet ' . $entity . '</h1>';
+					echo '<div>';
+					foreach ($asidePosts['public'] as $post) {
+						if (empty($post['filePath']) || $post['fileType'] === 'compressed') {
+							switch ($post['fileType']) {
+								case 'image' :
+									$post['filePath'] = 'public/images/fileImage.png';
+								break;
+								case 'video' :
+									$post['filePath'] = 'public/images/defaultVideoThumbnail.png';
+								break;
+								case 'folder' :
+									$post['filePath'] = 'public/images/folder.png';
+								break;
+								case 'compressed' :
+									$post['filePath'] = 'public/images/fileOther.png';
+								break;
+							}
+						}
+						if ($post['fileType'] === 'folder' && $post['filePath'] !== 'public/images/folder.png') {
+							echo '<figure title="' . $post['title'] . '" class="postOnAside">';
+							echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
+							echo '<img class="thumbnailFolder" src="' . $post['filePath'] . '">';
+							echo '<img src="public/images/folder.png">';
+							echo '</a></figure>';
+						} else {
+							echo '<figure title="' . $post['title'] . '" class="postOnAside">';
+							echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
+							if ($post['fileType'] === 'video' && $post['filePath'] !== 'public/images/defaultVideoThumbnail.png') {
+								echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+							}
+							echo '<img src="' . $post['filePath'] . '">';
+							echo '</a></figure>';
+						}
+					}
+					echo '</div><hr>';
+				}
+				if (!empty($asidePosts['lastPosted'])) {
+					//display most recent post
+					echo '<h1>Posté récemment</h1>';
+					echo '<div>';
+					foreach ($asidePosts['lastPosted'] as $post) {
+						if (empty($post->getFilePath()) || $post->getFileType() === 'compressed') {
+							switch ($post->getFileType()) {
+								case 'image' :
+									$post->setFilePath('public/images/fileImage.png');
+								break;
+								case 'video' :
+									$post->setFilePath('public/images/defaultVideoThumbnail.png');
+								break;
+								case 'folder' :
+									$post->setFilePath('public/images/folder.png');
+								break;
+								case 'compressed' :
+									$post->setFilePath('public/images/fileOther.png');
+								break;
+							}
+						}
+						if ($post->getFileType() === 'folder' && $post->getFilePath() !== 'public/images/folder.png') {
+							echo '<figure title="' . $post->getTitle() . '" class="postOnAside">';
+							echo '<a href="index.php?action=post&id=' . $post->getId() . '">';
+							echo '<img class="thumbnailFolder" src="' . $post->getFilePath() . '">';
+							echo '<img src="public/images/folder.png">';
+							echo '</a></figure>';
+						} else {
+							echo '<figure title="' . $post->getTitle() . '" class="postOnAside">';
+							echo '<a href="index.php?action=post&id=' . $post->getId() . '">';
+							if ($post->getFileType() === 'video' && $post->getFilePath() !== 'public/images/defaultVideoThumbnail.png') {
+								echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+							}
+							echo '<img src="' . $post->getFilePath() . '">';
+							echo '</a></figure>';
+						}
+					}
+					echo '</div><hr>';
 				}
 				?>
 			</div>

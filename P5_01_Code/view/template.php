@@ -41,9 +41,15 @@
 		if (isset($data['option'])) {
 			foreach ($data['option'] as $option) {
 				switch ($option) {
-					case 'homeAdmin' :
+					case 'home' :
 						echo '<script src="public/js/slide.js"></script>';
-						echo '<script src="public/js/homeAdmin.js"></script>';
+						echo '<script src="public/js/home.js"></script>';
+					break;
+					case 'advancedSearch' :
+						echo '<script src="public/js/advancedSearch.js"></script>';
+					break;
+					case 'listSchools' :
+						echo '<script src="public/js/listSchools.js"></script>';
 					break;
 					case 'buttonToggleSchool' :
 						echo '<script src="public/js/buttonToggleSchool.js"></script>';

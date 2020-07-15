@@ -6,24 +6,84 @@ class TagsManager extends Database
 {
 	public static $TABLE_NAME = 'as_tag';
 
-	public function getAll()
+	public function get(int $limit = null, int $offset = 0, string $orderBy = 'tagCount DESC')
 	{
-		$q = $this->sql('SELECT name 
-						FROM ' . static::$TABLE_NAME);
+		if (!empty($limit)) {
+			$q = $this->sql('SELECT * 
+							FROM ' . static::$TABLE_NAME . ' 
+							ORDER BY ' . $orderBy . ' 
+							LIMIT :limit OFFSET :offset', 
+							[':limit' => $limit, ':offset' => $offset]);
+		} else {
+			//all tags
+			$q = $this->sql('SELECT * 
+							FROM ' . static::$TABLE_NAME . ' 
+							ORDER BY ' . $orderBy);
+		}
 		$result = $q->fetchAll();	
 		$q->closeCursor();
 		return $result;
 	}
 
+	public function getMany(array $tags)
+	{
+		if (count($tags) > 0) {
+			$clauseWhere = '';
+			$arrayValue = [];
+			for ($i = 0; $i < count($tags); $i++) {
+				$tagWithoutSpace = str_replace(' ', '', $tags[$i]) . $i;
+				if ($i === 0) {
+					$clauseWhere = $clauseWhere . 'WHERE name = :' . $tagWithoutSpace;
+				} else {
+					$clauseWhere = $clauseWhere . ' OR name = :' . $tagWithoutSpace;
+				}
+				$arrayValue[':' . $tagWithoutSpace] = $tags[$i];
+			}
+			$q = $this->sql('SELECT * 
+							FROM ' . static::$TABLE_NAME . ' 
+							' . $clauseWhere . ' 
+							ORDER BY tagCount DESC', 
+							$arrayValue);
+			$result = $q->fetchAll();
+			$q->closeCursor();
+			return $result;
+		}
+	}
+
 	public function getOneByName(string $name)
 	{
-		$q = $this->sql('SELECT name 
+		$q = $this->sql('SELECT * 
 						FROM ' . static::$TABLE_NAME . ' 
 						WHERE name = :name', 
 						[':name' => $name]);
 		$result = $q->fetch();	
 		$q->closeCursor();
 		return $result;
+	}
+
+	public function getMostPopularTags(int $limit = null, int $offset = 0, array $tags = null)
+	{
+		$mostPopularTags = [];
+		if (!empty($tags) && count($tags) > 0) {
+			//tags on this post
+			$sortedTags = $this->getMany($tags);
+			if (!empty($limit)) {
+				count($sortedTags) > $limit ? $loop = $limit : $loop = count($sortedTags);
+				for ($i = 0; $i < $loop; $i++) {
+					$mostPopularTags[] = $sortedTags[$i];
+				}
+			} else {
+				$mostPopularTags = $sortedTags;
+			}
+		} else {
+			//all tags
+			if (!empty($limit)) {
+				$mostPopularTags = $this->get($limit, $offset);
+			} else {
+				$mostPopularTags = $this->get();
+			}
+		}
+		return $mostPopularTags;
 	}
 
 	public function set(string $name)
@@ -63,13 +123,11 @@ class TagsManager extends Database
 		} else {return false;}
 	}
 
-	public function delete(string $name)
+	public function deleteUselessTags()
 	{
-		if ($this->exists($name)) {
-			$this->sql('DELETE FROM ' . static::$TABLE_NAME . ' 
-						WHERE name = :name', 
-						[':name' => $name]);
-		}
+		$this->sql('DELETE FROM ' . static::$TABLE_NAME . ' 
+					WHERE tagCount <= :zero', 
+					[':zero' => 0]);
 		return $this;
 	}
 
@@ -86,6 +144,17 @@ class TagsManager extends Database
 		}
 	}
 
+	public function searchForKeyWord($word)
+	{
+		$result = [];
+		$regex = "'.*" . $word . ".*'";
+		$q = $this->sql('SELECT name, tagCount 
+						FROM ' . static::$TABLE_NAME . ' 
+						WHERE name REGEXP ' . $regex);
+		$result = $q->fetchAll();
+		return $result;
+	}
+
 	public function tagsAreValide(array $tags)
 	{
 		$regex = '/^[a-z0-9]+[a-z0-9 ]*[a-z0-9]+$/i';
@@ -95,5 +164,16 @@ class TagsManager extends Database
 			}
 		}
 		return true;
+	}
+
+	public function sortByAlphabeticalOrder(array $tags)
+	{
+		if (count($tags) > 0) {
+			$sortedTags = [];
+			foreach ($tags as $tag) {
+				$sortedTags[strtoupper($tag['name'][0])][] = $tag;
+			}
+			return $sortedTags;
+		} else {return [];}
 	}
 }

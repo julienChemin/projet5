@@ -17,7 +17,7 @@ let blockTinyMce = document.getElementById('blockTinyMce');
 let inputSubmit = document.querySelector("input[type='submit']");
 
 window.addEventListener('load', function(){
-	//look if post is in folder
+	//look if user try to post in folder
 	let url = window.location.search.split('&');
 	let arr = [];
 	for (let i=1; i<url.length; i++) {
@@ -120,43 +120,45 @@ if (document.getElementById('addSchoolPost') !== null) {
 		document.querySelector('option[value=""]').selected = true;
 	}
 
-	//display / hide private mode
-	checkboxIsPrivate.addEventListener('change', function(e){
-		if (formAddPost.elements.fileTypeValue.value === 'compressed' && !checkboxIsPrivate.checked) {
-			//compressed file can't be public
-			e.preventDefault();
-			checkboxIsPrivate.checked = true;
-		}
-		if (!checkboxIsPrivate.checked) {
-			blockListGroup.style.display = 'none';
-			blockAuthorizedGroups.style.display = 'none';
-			formAddPost.elements.uploadType.value = 'public';
-			if (document.getElementById('addSchoolPost') === null && (formAddPost.elements.fileTypeValue.value === 'video' || formAddPost.elements.fileTypeValue.value === 'image')) {
-				blockTags.style.display = 'flex';
+	if (formAddPost.elements.isStudent.value === 'false') {
+		//display / hide private mode
+		checkboxIsPrivate.addEventListener('change', function(e){
+			if (formAddPost.elements.fileTypeValue.value === 'compressed' && !checkboxIsPrivate.checked) {
+				//compressed file can't be public
+				e.preventDefault();
+				checkboxIsPrivate.checked = true;
 			}
-		} else {
-			blockListGroup.style.display = 'inline-block';
-			formAddPost.elements.uploadType.value = 'private';
-			if (listGroup.value !== "all") {
-				blockAuthorizedGroups.style.display = 'flex';
+			if (!checkboxIsPrivate.checked) {
+				blockListGroup.style.display = 'none';
+				blockAuthorizedGroups.style.display = 'none';
+				formAddPost.elements.uploadType.value = 'public';
+				if (document.getElementById('addSchoolPost') === null && (formAddPost.elements.fileTypeValue.value === 'video' || formAddPost.elements.fileTypeValue.value === 'image')) {
+					blockTags.style.display = 'flex';
+				}
+			} else {
+				blockListGroup.style.display = 'inline-block';
+				formAddPost.elements.uploadType.value = 'private';
+				if (listGroup.value !== "all") {
+					blockAuthorizedGroups.style.display = 'flex';
+				}
+				if (blockTags.style.display === 'flex') {
+					blockTags.style.display = 'none';
+				}
 			}
-			if (blockTags.style.display === 'flex') {
-				blockTags.style.display = 'none';
-			}
-		}
-	});
+		});
 
-	//add group to list authorized group
-	listGroup.addEventListener('change', function(e){
-		if (e.target.value === "all") {
-			blockAuthorizedGroups.style.display = 'none';
-		} else if (e.target.value === "") {
-			blockAuthorizedGroups.style.display = 'flex';
-		} else {
-			blockAuthorizedGroups.style.display = 'flex';
-			addGroupToAuthorizedList(e.target.value);
-		}
-	});
+		//add group to list authorized group
+		listGroup.addEventListener('change', function(e){
+			if (e.target.value === "all") {
+				blockAuthorizedGroups.style.display = 'none';
+			} else if (e.target.value === "") {
+				blockAuthorizedGroups.style.display = 'flex';
+			} else {
+				blockAuthorizedGroups.style.display = 'flex';
+				addGroupToAuthorizedList(e.target.value);
+			}
+		});
+	}
 }
 
 //button type file
@@ -218,7 +220,7 @@ btnVideo.addEventListener('click', function(){
 
 if (document.getElementById('addSchoolPost') !== null) {
 	btnOther.addEventListener('click', function(){
-		if (!formAddPost.elements.isPrivate.checked) {
+		if (formAddPost.elements.isStudent.value === 'false' && !formAddPost.elements.isPrivate.checked) {
 			formAddPost.elements.isPrivate.click();
 		}
 		blockTitle.style.display  = "flex";
@@ -271,7 +273,9 @@ let textTagRules = document.querySelector('.tagRules');
 let existingTags;
 window.addEventListener('load', function(){
 	ajaxGet('index.php?action=getTags', function(response){
-		existingTags = JSON.parse(response);
+		if (response.length > 0) {
+			existingTags = JSON.parse(response);
+		}
 	});
 });
 

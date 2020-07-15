@@ -37,6 +37,38 @@ class PostsManager extends LikeManager
 		}
 	}
 
+	public function getLastPosted(int $limit = null, int $offset = 0, string $schoolName = null)
+	{
+		!empty($schoolName) ? $clauseWhere = 'AND school = "' . $schoolName . '"' : $clauseWhere = '';
+		if (!empty($limit)) {
+			$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+							FROM ' . static::$TABLE_NAME . ' 
+							WHERE postType = "userPost" AND isPrivate = "0" AND tags != "null" ' . $clauseWhere . ' 
+							ORDER BY id DESC 
+							LIMIT :limit OFFSET :offset', 
+							[':offset' => $offset, ':limit' => $limit]);
+		} else {
+			$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+							FROM ' . static::$TABLE_NAME . ' 
+							WHERE postType = "userPost" AND isPrivate = "0" AND tags != "null" ' . $clauseWhere . ' 
+							ORDER BY id DESC');
+		}
+		$result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
+		
+		$q->closeCursor();
+		return $result;
+	}
+
+	public function getCountReferencedPosts(string $schoolName = null)
+	{
+		!empty($schoolName) ? $clauseWhere = 'AND school = "' . $schoolName . '"' : $clauseWhere = '';
+		$q = $this->sql('SELECT COUNT(*) 
+						FROM ' . static::$TABLE_NAME . ' 
+						WHERE postType = "userPost" AND isPrivate = "0" AND tags != "null" ' . $clauseWhere);
+		$result = $q->fetch();
+		return intval($result[0]);
+	}
+
 	public function getPostsByAuthor(int $idAuthor, int $offset = 0, int $limit = null)
 	{
 		if ($idAuthor > 0) {
@@ -63,6 +95,7 @@ class PostsManager extends LikeManager
 
 	public function getPostsBySchool(string $school, bool $withFolder = false, int $offset = 0, int $limit = null)
 	{
+		//get users posts affiliated to $school
 		if (strlen($school) > 0) {
 			if ($withFolder) {
 				if (!empty($limit)) {
@@ -102,9 +135,71 @@ class PostsManager extends LikeManager
 		}
 	}
 
+	public function getCountPostsBySchool(string $school, bool $withFolder = false)
+	{
+		if (strlen($school) > 0) {
+			if ($withFolder) {
+				$q = $this->sql('SELECT COUNT(*) 
+								FROM ' . static::$TABLE_NAME . ' 
+								WHERE school = :school AND postType = "userPost" AND onFolder IS NULL AND isPrivate = "0"', 
+								[':school' => $school]);
+			} else {
+				$q = $this->sql('SELECT COUNT(*) 
+								FROM ' . static::$TABLE_NAME . ' 
+								WHERE school = :school AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0"', 
+								[':school' => $school]);
+			}
+			$result = $q->fetch();
+			
+			$q->closeCursor();
+			return intval($result[0]);
+		}
+	}
+
+	public function getPostsByTag(string $tag, int $limit = null, int $offset = 0)
+	{
+		$TagsManager = new TagsManager();
+		if ($TagsManager->exists($tag)) {
+			$regex = "'(," . $tag . ",.+)|(," . $tag . "$)'";
+			if (!empty($limit)) {
+				$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+								FROM ' . static::$TABLE_NAME . ' 
+								WHERE tags REGEXP ' . $regex . ' 
+								ORDER BY id DESC 
+								LIMIT :limit OFFSET :offset', 
+								[':limit' => $limit, ':offset' => $offset]);
+			} else {
+				$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+								FROM ' . static::$TABLE_NAME . ' 
+								WHERE tags REGEXP ' . $regex . ' 
+								ORDER BY id DESC');
+			}
+			$result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
+			
+			$q->closeCursor();
+			return $result;
+		}
+	}
+
+	public function getCountPostsByTag(string $tag = null)
+	{
+		$TagsManager = new TagsManager();
+		if ($tag !== null && $TagsManager->exists($tag)) {
+			$regex = "'(," . $tag . ",.+)|(," . $tag . "$)'";
+			$q = $this->sql('SELECT COUNT(*) 
+							FROM ' . static::$TABLE_NAME . ' 
+							WHERE tags REGEXP ' . $regex . ' 
+							ORDER BY id DESC');
+			$result = $q->fetch();
+			
+			$q->closeCursor();
+			return intval($result[0]);
+		} else {return 0;}
+	}
+
 	public function getSchoolPosts(string $school)
 	{
-		if (strlen($school)) {
+		if (strlen($school) > 0) {
 			$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
 							FROM ' . static::$TABLE_NAME . ' 
 							WHERE school = :school AND (postType = "schoolPost" OR (postType = "userPost" AND onFolder != "null" AND tags IS NULL)) 
@@ -128,6 +223,98 @@ class PostsManager extends LikeManager
 			$q->closeCursor();
 			return $result;
 		}
+	}
+
+	public function getMostLikedPosts(int $limit = null, int $offset = 0, string $school = null)
+	{
+		if (!empty($school)) {
+			//by school
+			if (!empty($limit)) {
+				$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+								FROM ' . static::$TABLE_NAME . ' 
+								WHERE school = :school AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0" 
+								ORDER BY nbLike DESC 
+								LIMIT :limit OFFSET :offset', 
+								[':school' => $school, ':limit' => $limit, ':offset' => $offset]);
+			} else {
+				$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+								FROM ' . static::$TABLE_NAME . ' 
+								WHERE school = :school AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0" 
+								ORDER BY nbLike DESC', 
+								[':school' => $school]);
+			}
+		} else {
+			//all school
+			if (!empty($limit)) {
+				$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+								FROM ' . static::$TABLE_NAME . ' 
+								WHERE postType = "userPost" AND fileType != "folder" AND isPrivate = "0" 
+								ORDER BY nbLike DESC 
+								LIMIT :limit OFFSET :offset', 
+								[':limit' => $limit, ':offset' => $offset]);
+			} else {
+				$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+								FROM ' . static::$TABLE_NAME . ' 
+								WHERE postType = "userPost" AND fileType != "folder" AND isPrivate = "0" 
+								ORDER BY nbLike DESC');
+			}
+		}
+		$result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
+		$q->closeCursor();
+		return $result;
+	}
+
+	public function advancedSearch(array $POST, int $limit = 12, int $offset = 0)
+	{
+		$clauseWhere = '';
+		$clauseOrderBy = '';
+		if (!empty($POST['pageToGo'])) {
+			$offset = (intval($POST['pageToGo'])-1)*$limit;
+		}
+		$arrValue = [':offset' => $offset, ':limit' => $limit];
+		$arrValueForCount = [];
+		if ($POST['schoolFilter'] !== 'noSchoolFilter') {
+			$clauseWhere .= 'AND school = :school ';
+			$arrValue[':school'] = $POST['schoolFilter'];
+			$arrValueForCount[':school'] = $POST['schoolFilter'];
+		}
+		if ($POST['sortBy'] === 'lastPosted') {
+			$clauseOrderBy = 'ORDER BY id DESC ';
+		} elseif ($POST['sortBy'] === 'firstPosted') {
+			$clauseOrderBy = 'ORDER BY id ';
+		} elseif ($POST['sortBy'] === 'mostLiked') {
+			$clauseOrderBy = 'ORDER BY nbLike DESC ';
+		}
+		if (!empty($POST['listTags'])) {
+			$listTags = explode(',', $POST['listTags']);
+			$clauseWhereTag = '';
+			for ($i=1; $i<count($listTags); $i++) {
+				if ($i !== 1) {
+					$clauseWhereTag .= 'OR ';
+				}
+				$regex = "'(," . $listTags[$i] . ",.+)|(," . $listTags[$i] . "$)'";
+				$clauseWhereTag .= 'tags REGEXP ' . $regex . ' ';
+			}
+			$clauseWhere .= 'AND (' . $clauseWhereTag . ') ';
+		}
+
+		$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+						FROM ' . static::$TABLE_NAME . ' 
+						WHERE postType = "userPost" AND isPrivate = "0" AND tags != "null" ' . $clauseWhere . 
+						$clauseOrderBy . ' 
+						LIMIT :limit OFFSET :offset', 
+						$arrValue);
+		$result['posts'] = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
+		$q->closeCursor();
+		$q = $this->sql('SELECT COUNT(*) 
+						FROM ' . static::$TABLE_NAME . ' 
+						WHERE postType = "userPost" AND isPrivate = "0" AND tags != "null" ' . $clauseWhere . 
+						$clauseOrderBy, 
+						$arrValueForCount);
+		$result['count'] = $q->fetch();
+		$result['count'] = intval($result['count'][0]);
+		$q->closeCursor();
+		return $result;
 	}
 
 	public function set(Post $Post)
@@ -181,7 +368,20 @@ class PostsManager extends LikeManager
 		}
 	}
 
-	public function toArray(Post $post)
+	public function toArray($elem)
+	{
+		if (is_array($elem)) {
+			$result = [];
+			foreach ($elem as $post) {
+				$result[] = $this->objectPostToArray($post);
+			}
+		} elseif (is_object($elem)) {
+			$result = $this->objectPostToArray($elem);
+		}
+		return $result;
+	}
+
+	public function objectPostToArray(Post $post)
 	{
 		$arr = ['id' => $post->getId(),
 				'idAuthor' => $post->getIdAuthor(), 
@@ -200,9 +400,135 @@ class PostsManager extends LikeManager
 		return $arr;
 	}
 
+	public function searchForKeyWord($word)
+	{
+		$result = [];
+		$regex = "'.*" . $word . ".*'";
+		$q = $this->sql('SELECT ' . static::$TABLE_CHAMPS . ' 
+						FROM ' . static::$TABLE_NAME . ' 
+						WHERE postType = "userPost" AND tags != "null" AND isPrivate = "0" AND title REGEXP ' . $regex);
+		$result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
+		return $result;
+	}
+
+	public function displayResultSearchByKeyWord(array $result, string $elem)
+	{
+		if (count($result) > 0 && strlen($elem) > 0) {
+			switch ($elem) {
+				case 'school' :
+					echo '<div>';
+						echo '<h2>Établissements</h2>';
+					echo '</div>';
+
+					echo '<div class="blockResult blockResultSchool fullWidth">';
+					for($i=0; $i<count($result); $i++) {
+						if ($result[$i]->getName() !== NO_SCHOOL) {
+							echo '<div><a href="index.php?action=schoolProfile&school=' . $result[$i]->getName() . '">';
+								echo '<figure class="figureProfilePicture fullWidth">';
+									echo '<div><img src="' . $result[$i]->getLogo() . '"></div>';
+									echo '<figcaption>';
+										echo '<p>' . $result[$i]->getName() . '</p>';
+									echo '</figcaption>';
+								echo '</figure>';
+							echo '</a></div>';
+						}
+					}
+					echo '</div>';
+				break;
+				case 'user' :
+					echo '<div>';
+						echo '<h2>Utilisateurs</h2>';
+					echo '</div>';
+
+					echo '<div class="blockResult blockResultUser fullWidth">';
+					for($i=0; $i<count($result); $i++) {
+						if ($result[$i]->getSchool() !== ALL_SCHOOL) {
+							echo '<div><a href="index.php?action=userProfile&userId=' . $result[$i]->getId() . '">';
+								echo '<figure class="figureProfilePicture fullWidth">';
+									echo '<div><img src="' . $result[$i]->getProfilePicture() . '"></div>';
+									echo '<figcaption>';
+										echo '<p>' . $result[$i]->getName() . '</p>';
+									echo '</figcaption>';
+								echo '</figure>';
+							echo '</a></div>';
+						}
+					}
+					echo '</div>';
+				break;
+				case 'post' :
+					echo '<div>';
+						echo '<h2>Publications</h2>';
+					echo '</div>';
+
+					echo '<div class="blockResult blockResultPost fullWidth">';
+					for($i=0; $i<count($result); $i++) {
+						echo '<div><a href="index.php?action=post&id=' . $result[$i]->getId() . '">';
+							if (empty($result[$i]->getFilePath())) {
+								switch ($result[$i]->getFileType()) {
+									case 'image' :
+										$result[$i]->setFilePath('public/images/fileImage.png');
+									break;
+									case 'video' :
+										$result[$i]->setFilePath('public/images/defaultVideoThumbnail.png');
+									break;
+								}
+							} elseif ($result[$i]->getFileType() === 'video') {
+								echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+							}
+							echo '<figure class="figureProfilePicture fullWidth">';
+								echo '<figcaption>';
+									echo '<p>' . $result[$i]->getTitle() . '</p>';
+								echo '</figcaption>';
+								echo '<div><img src="' . $result[$i]->getFilePath() . '"></div>';
+							echo '</figure>';
+						echo '</a></div>';
+					}
+					echo '</div>';
+				break;
+				case 'tag' :
+					echo '<div>';
+						echo '<h2>Tags</h2>';
+					echo '</div>';
+
+					echo '<div class="blockResult blockResultTag fullWidth">';
+					for($i=0; $i<count($result); $i++) {
+						echo '<div><a href="index.php?action=search&sortBy=tag&tag=' . $result[$i]['name'] . '">';
+							echo '<span class="tag">' . $result[$i]['name'] . '</span>';
+							echo '<span>- (' . $result[$i]['tagCount'] . ')</span>';
+						echo '</a></div>';
+					}
+					echo '</div>';
+				break;
+			}
+		}
+	}
+
 	public function canUploadPost(array $arrPOST, TagsManager $TagsManager)
 	{
 		if (!empty($arrPOST['fileTypeValue']) && $this->checkForScriptInsertion([$arrPOST])) {
+			//set folder, postType and privacy
+			$arrPOST['uploadType'] === "private" ? $isPrivate = true : $isPrivate = false;
+			if (!empty($arrPOST['folder'])) {
+				$folder = $this->getOneById(intval($arrPOST['folder']));
+				if ($folder->getPostType() === "schoolPost") {
+					//user post on school folder, authorizedGroups must be "none" so the publisher is the only one (with admin and moderator) who can see the post
+					if ($arrPOST['postType'] === 'schoolPost') {
+						$arrPOST['listTags'] = null;
+					}
+					//if folder is schoolPost, post is set as schoolPost
+					$arrPOST['postType'] = 'schoolPost';
+				} else {$arrPOST['postType'] = 'userPost';}
+				if ($arrPOST['uploadType'] === 'public' && $folder->getIsPrivate()) {
+					//post public on private folder -> post become private
+					$arrPOST['uploadType'] = 'private';
+					$arrPOST['folder'] = intval($arrPOST['folder']);
+				} elseif ($arrPOST['uploadType'] === 'private' && !$folder->getIsPrivate()) {
+					//post private on public folder -> don't post on folder
+					$arrPOST['folder'] = null;
+				} else {
+					$arrPOST['folder'] = intval($arrPOST['folder']);
+				}
+			} else {$arrPOST['folder'] = null;}
 			//check list tag
 			if (!empty($arrPOST['listTags'])) {
 				$listTags = explode(',', $arrPOST['listTags']);
@@ -251,35 +577,12 @@ class PostsManager extends LikeManager
 					return false;
 			}
 		} else {return false;}
-		return true;
+		return $arrPOST;
 	}
 
 	public function uploadPost(array $arrPOST, $schoolPost = false, $authorizedGroups = null)
-	{	
-		//set folder, postType and privacy
+	{
 		$arrPOST['uploadType'] === "private" ? $isPrivate = true : $isPrivate = false;
-		if (!empty($arrPOST['folder'])) {
-			$folder = $this->getOneById(intval($arrPOST['folder']));
-			if ($folder->getPostType() === "schoolPost") {
-				//if folder is schoolPost, post must be schoolPost too
-				$postType = 'schoolPost';
-			} else {
-				$postType = 'userPost';
-			}
-			if ($arrPOST['uploadType'] === 'public' && $folder->getIsPrivate()) {
-				//post public on private folder -> post become private
-				$isPrivate = true;
-				$folder = intval($arrPOST['folder']);
-			} elseif ($arrPOST['uploadType'] === 'private' && !$folder->getIsPrivate()) {
-				//post private on public folder -> don't post on folder
-				$folder = null;
-			} else {
-				$folder = intval($arrPOST['folder']);
-			}
-		} else {
-			$folder = null;
-			$postType = $arrPOST['postType'];
-		}
 		!$isPrivate ? $authorizedGroups = null : $authorizedGroups = $authorizedGroups;
 		switch ($arrPOST['fileTypeValue']) {
 			case 'image':
@@ -293,9 +596,9 @@ class PostsManager extends LikeManager
 										'description' => $arrPOST['tinyMCEtextarea'], 
 										'isPrivate' => $isPrivate, 
 										'authorizedGroups' => $authorizedGroups, 
-										'postType' => $postType, 
+										'postType' => $arrPOST['postType'], 
 										'fileType' => $arrPOST['fileTypeValue'], 
-										'onFolder' => $folder, 
+										'onFolder' => $arrPOST['folder'], 
 										'tags' => $arrPOST['listTags']]));
 					return true;
 				} else {return false;}
@@ -317,9 +620,9 @@ class PostsManager extends LikeManager
 									'description' => $arrPOST['tinyMCEtextarea'], 
 									'isPrivate' => $isPrivate, 
 									'authorizedGroups' => $authorizedGroups, 
-									'postType' => $postType, 
+									'postType' => $arrPOST['postType'], 
 									'fileType' => $arrPOST['fileTypeValue'], 
-									'onFolder' => $folder, 
+									'onFolder' => $arrPOST['folder'], 
 									'tags' => $arrPOST['listTags']]));
 				return true;
 			break;
@@ -328,17 +631,16 @@ class PostsManager extends LikeManager
 					$arrAcceptedExtention = array("zip", "rar");
 					require('view/upload.php');
 					if (!empty($final_path)) {
-						$this->set(new Post([
-							'idAuthor' => $_SESSION['id'], 
-							'school' => $_SESSION['school'], 
-							'title' => $arrPOST['title'], 
-							'filePath' => $final_path, 
-							'description' => $arrPOST['tinyMCEtextarea'], 
-							'isPrivate' => $isPrivate, 
-							'authorizedGroups' => $authorizedGroups, 
-							'postType' => $postType, 
-							'fileType' => $arrPOST['fileTypeValue'], 
-							'onFolder' => $folder]));
+						$this->set(new Post(['idAuthor' => $_SESSION['id'], 
+											'school' => $_SESSION['school'], 
+											'title' => $arrPOST['title'], 
+											'filePath' => $final_path, 
+											'description' => $arrPOST['tinyMCEtextarea'], 
+											'isPrivate' => $isPrivate, 
+											'authorizedGroups' => $authorizedGroups, 
+											'postType' => $arrPOST['postType'], 
+											'fileType' => $arrPOST['fileTypeValue'], 
+											'onFolder' => $arrPOST['folder']]));
 						return true;
 					} else {return false;}
 				} else {return false;}
@@ -359,9 +661,9 @@ class PostsManager extends LikeManager
 									'description' => $arrPOST['tinyMCEtextarea'], 
 									'isPrivate' => $isPrivate, 
 									'authorizedGroups' => $authorizedGroups, 
-									'postType' => $postType, 
+									'postType' => $arrPOST['postType'], 
 									'fileType' => $arrPOST['fileTypeValue'], 
-									'onFolder' => $folder]));
+									'onFolder' => $arrPOST['folder']]));
 				return true;
 			break;
 		}
@@ -387,7 +689,7 @@ class PostsManager extends LikeManager
 	{
 		$arrSortedPosts = ['folder' => [], 'private' => [], 'public' => []];
 		foreach ($posts as $post) {
-			//sort post on folder, public post and private post
+			//sort post by onFolder, public and private
 			$post = $this->toArray($post);
 			if ($post['onFolder'] !== null) {
 				$idFolder = $post['onFolder'];
@@ -417,5 +719,114 @@ class PostsManager extends LikeManager
 			}
 		}
 		return $arrSortedPosts;
+	}
+
+	public function getAsidePosts(Post $post, TagsManager $TagsManager)
+	{
+		//return posts to display on post view and folder view as aside
+		$asidePosts = [];
+		$post->getPostType() === 'userPost' ? $posts = $this->sortForProfile($this->getPostsByAuthor($post->getIdAuthor())) : $posts = $this->sortForProfile($this->getSchoolPosts($post->getSchool()));
+		$postedByUser = array_merge($posts['public'], $posts['private']);
+		foreach ($posts['folder'] as $arr) {
+			$postedByUser = array_merge($postedByUser, $arr);
+		}
+
+		$asidePosts['postType'] = $post->getPostType();
+		$asidePosts['lastPosted'] = $this->getLastPosted(6);
+		if (!empty($posts['folder'][$post->getOnFolder()])) {
+			$asidePosts['onFolder'] = $this->getElemOnArray($posts['folder'][$post->getOnFolder()], $post->getId());
+		}
+		$asidePosts['public'] = $this->getElemOnArray($postedByUser, $post->getId());
+		if (!empty($post->getTags())) {
+			$asidePosts['withTag'] = $this->getTagsPostsForAside($post, $TagsManager);
+		}
+		return $asidePosts;
+	}
+
+	public function getTagsPostsForAside(Post $post, TagsManager $TagsManager, int $nbPosts = 6, int $nbTags = 3)
+	{
+		//this function is only use on 'getAsidePosts' function
+		//return array with 3 most popular tags of the post, with 6 random posts for each
+		if (!empty($post) && !empty($TagsManager)) {
+			$tagsPostsForAside = [];
+			$mostPopularTags = $TagsManager->getMostPopularTags($nbTags, 0, $post->getListTags());
+			foreach ($mostPopularTags as $tag) {
+				$posts = $this->getPostsByTag($tag['name'], 100);
+				$tagsPostsForAside[$tag['name']] = $this->getElemOnArray($posts, $post->getId());
+			}
+			return $tagsPostsForAside;
+		} else {return [];}
+	}
+
+	public function getPostsForHome(SchoolManager $SchoolManager, TagsManager $TagsManager)
+	{
+		//return posts for home
+		$homePosts = [];
+		$homePosts['lastPosted'] = $this->getLastPosted(5);
+		$homePosts['mostLiked'] = $this->getMostLikedPosts(5);
+		//pick 4 most popular tag then pick 5 posts of them
+		$mostPopularTags = $this->getElemOnArray($TagsManager->getMostPopularTags(5), -1, true, 4);
+		$arrPostsByTags = [];
+		foreach ($mostPopularTags as $tag) {
+			$posts = $this->getPostsByTag($tag['name'], 100);
+			$arrPostsByTags[$tag['name']] = $this->getElemOnArray($posts, -1, true, 5);
+		}
+		$homePosts['withTag'] = $arrPostsByTags;
+		//pick 2 school random then pick 5 posts of them
+		$noSchool = $SchoolManager->getSchoolByName(NO_SCHOOL);
+		$allSchool = $SchoolManager->getSchoolByName(ALL_SCHOOL);
+		$randomSchool = $this->getElemOnArray($allSchool, $noSchool->getId(), true, 2);
+		$arrPostsBySchool = [];
+		foreach ($randomSchool as $school) {
+			$posts = $this->getPostsBySchool($school->getName(), false, 0, 100);
+			$arrPostsBySchool[$school->getName()] = $this->getElemOnArray($posts, -1, true, 5);
+		}
+		$homePosts['bySchool'] = $arrPostsBySchool;
+		return $homePosts;
+	}
+
+	public function getElemOnArray(array $elements, int $unwantedElem = -1, bool $random = true, int $qtt = 6)
+	{
+		//'unwantedElem' is the id of unwanted elem, this is a specific treatment for posts
+		//can work for other elem if array $elements have one of this form : (array) $elements[(int) index][(int) 'id'] OR (array) $elements[(int) index][(int) object->getId()]
+		//after doing this function, i discovered array.rand...whatever
+		if (count($elements) > 0 && $qtt > 0) {
+			$response = [];
+			if ($random) {
+				while (count($elements) > 0 && count($response) < $qtt) {
+					do {
+						$badNumber = false;
+						$randomNumber = rand(0, (count($elements) - 1));
+						if ($unwantedElem !== -1 && ((is_array($elements[$randomNumber]) && intval($elements[$randomNumber]['id']) === $unwantedElem) 
+													|| (is_object($elements[$randomNumber]) && intval($elements[$randomNumber]->getId()) === $unwantedElem))) {
+							$badNumber = true;
+							unset($elements[$randomNumber]);
+							$elements = $this->arrayWithoutEmptyEntries($elements);
+						}
+					} while ($badNumber && count($elements) > 0);
+					if (count($elements) > 0) {
+						$response[] = $elements[$randomNumber];
+						unset($elements[$randomNumber]);
+						$elements = $this->arrayWithoutEmptyEntries($elements);
+					}
+				}
+				return $response;
+			} else {
+				$i = 0;
+				while (count($elements) > 0 && count($response) < $qtt) {
+					$i++;
+					if ($unwantedElem !== -1 && ((is_array($elements[$i]) && intval($elements[$i]['id']) === $unwantedElem) 
+												|| (is_object($elements[$i]) && intval($elements[$i]->getId()) === $unwantedElem))) {
+						unset($elements[$i]);
+						$elements = $this->arrayWithoutEmptyEntries($elements);
+					} else {
+						$response[] = $elements[$i];
+						unset($elements[$i]);
+						$elements = $this->arrayWithoutEmptyEntries($elements);
+					}
+				}
+				return $response;
+			}
+		} else {return [];}
 	}
 }

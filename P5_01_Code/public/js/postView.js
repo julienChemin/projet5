@@ -170,6 +170,7 @@ if (btnLike !== null) {
 		});
 	}
 	window.addEventListener('load', function(){
+		//set like btn
 		setTimeout(function(){
 			ajaxGet(urlAlreadyLike, function(response) {
 				if (response === 'true') {
@@ -192,6 +193,6 @@ if (btnLike !== null) {
 					}, 200);
 				}
 			});
-		}, 500)
+		}, 500);
 	});
 }

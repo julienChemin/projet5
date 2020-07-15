@@ -61,7 +61,7 @@ class Backend extends Controller
 		if (!empty($_SESSION) && $_SESSION['school'] === ALL_SCHOOL) {
 			RenderView::render('template.php', 'backend/indexAdminView.php');
 		} else {
-			RenderView::render('template.php', 'backend/indexAdminView.php', ['option' => ['forgetPassword', 'signIn', 'homeAdmin'], 'message' => $message]);
+			RenderView::render('template.php', 'backend/indexAdminView.php', ['option' => ['forgetPassword', 'signIn', 'home'], 'message' => $message]);
 		}
 	}
 
@@ -461,11 +461,8 @@ class Backend extends Controller
 			//check upload type
 			$_POST['listGroup'] === "all" ? $authorizedGroups = null : $authorizedGroups = $_POST['listAuthorizedGroups'];
 			if (isset($_SESSION['id'], $_POST)) {
-				if ($PostsManager->canUploadPost($_POST, $TagsManager)) {
-					if ($PostsManager->uploadPost($_POST, true, $authorizedGroups)) {
-						if (!empty($_POST['listTags'])) {
-							$TagsManager->checkForNewTag($_POST['listTags']);
-						}
+				if ($response = $PostsManager->canUploadPost($_POST, $TagsManager)) {
+					if ($PostsManager->uploadPost($response, true, $authorizedGroups)) {
 						header('Location: indexAdmin.php?action=schoolProfile&school=' . $_SESSION['school']);
 					} else {throw new \Exception("Le fichier n'est pas conforme");}
 				} else {$this->incorrectInformation();}
