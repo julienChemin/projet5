@@ -31,14 +31,14 @@ try {
     $Backend->verifyInformation();
     if (isset($_GET['action'])) {
         switch ($_GET['action']) {
-        case 'resetPassword' :
-            $Backend->resetPassword();
-            break;
         case 'disconnect' :
             $Backend->disconnect();
             break;
         case 'addSchool' :
             $Backend->addSchool();
+            break;
+        case 'manageContract' :
+            $Backend->manageContract();
             break;
         case 'moderatSchool' :
             $Backend->moderatSchool();
@@ -87,9 +87,6 @@ try {
             break;
         case 'toggleUserIsActive' :
             $Backend->toggleUserIsActive();
-            break;
-        case 'toggleSchoolIsActive' :
-            $Backend->toggleSchoolIsActive();
             break;
         case 'delete' :
             $Backend->delete();

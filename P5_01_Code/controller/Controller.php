@@ -147,4 +147,26 @@ abstract class Controller
     {
         RenderView::render('template.php', static::$SIDE . '/errorView.php', ['error_msg' => $error_msg]);
     }
+
+    public function manageContract()
+    {
+        if (!empty($_SESSION) && !empty($_GET['elem']) && (($_GET['elem'] === 'user' && !empty($_GET['user']) && $_SESSION['pseudo'] ===$_GET['user']) 
+        || ($_GET['elem'] === 'school' && !empty($_GET['school']) && $_SESSION['school'] === $_GET['school']))) {
+            if (static::$SIDE === 'frontend') {
+                $UserManager = new UserManager();
+                $elem = $UserManager->getUserByName($_GET['user']);
+            } elseif (static::$SIDE === 'backend') {
+                $SchoolManager = new SchoolManager();
+                $elem = $SchoolManager->getSchoolByName($_SESSION['school']);
+            }
+            
+            if (!empty($elem)) {
+                RenderView::render('template.php', 'backend/manageContractView.php', ['elem' => $elem]);
+            } else {
+                $this->accessDenied();
+            }
+        } else {
+            $this->accessDenied();
+        }
+    }
 }

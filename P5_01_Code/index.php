@@ -45,6 +45,9 @@ try {
         case 'resetPassword' :
             $Frontend->resetPassword();
             break;
+        case 'manageContract' :
+            $Frontend->manageContract();
+            break;
         case 'search' :
             $Frontend->search();
             break;

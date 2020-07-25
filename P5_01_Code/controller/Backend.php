@@ -527,7 +527,7 @@ class Backend extends Controller
         if (!empty($_GET['school']) && ($_SESSION['school'] === ALL_SCHOOL || (!empty($_GET['schoolName']) && $_GET['schoolName'] === $_SESSION['school']))) {
             $HistoryManager = new HistoryManager();
             $SchoolManager = new SchoolManager();
-            if ($SchoolManager->exists($_GET['school'])) {
+            if ($SchoolManager->exists(intval($_GET['school']))) {
                 echo json_encode($HistoryManager->getSchoolHistory($_GET));
             } else {
                 $this->incorrectInformation();

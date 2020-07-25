@@ -532,7 +532,9 @@ class Frontend extends Controller
         echo json_encode($arrTags);
     }
 
-    /*public function addSchool()        @TODO view for user who want to add his school
+    /*TODO find a way to get only real school
+    //view for user who want to add his school
+    public function addSchool()
     {
     $message = null; 
     if (empty($_SESSION) || $_SESSION['school'] === NO_SCHOOL) {
@@ -789,6 +791,6 @@ class Frontend extends Controller
 
     public function faq()
     {
-
+        RenderView::render('template.php', 'frontend/faqView.php');
     }
 }

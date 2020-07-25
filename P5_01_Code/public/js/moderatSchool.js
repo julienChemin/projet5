@@ -30,7 +30,7 @@ if (document.getElementById('blockModeratSchool') !== null) {
         for (let i=0;i<blockSchool.length;i++) {
             allBtnDisplaySchool[i].addEventListener(
                 'click', function () {
-                    formModal.elements.schoolName.value = allSchoolName[i].textContent;console.log(allSchoolName[i].textContent);
+                    formModal.elements.schoolName.value = allSchoolName[i].textContent;
                 }
             );
         }

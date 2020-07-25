@@ -12,11 +12,11 @@ class SchoolManager extends AbstractManager
     public function add(School $school)
     {
         $this->sql(
-            'INSERT INTO ' . static::$TABLE_NAME . ' (idAdmin, name, nameAdmin, code, nbEleve, dateInscription, dateDeadline, logo) 
-            VALUE (:idAdmin, :name, :nameAdmin, :code, :nbEleve, NOW(), :dateDeadline, :logo)', 
+            'INSERT INTO ' . static::$TABLE_NAME . ' (idAdmin, name, nameAdmin, code, nbEleve, dateInscription, dateDeadline, logo, isActive) 
+            VALUE (:idAdmin, :name, :nameAdmin, :code, :nbEleve, NOW(), :dateDeadline, :logo, :isActive)', 
             [':idAdmin' => $school->getIdAdmin(), ':name' => $school->getName(), ':nameAdmin' => $school->getNameAdmin(), 
             ':code' => $school->getCode(), ':nbEleve' => $school->getNbEleve(), ':dateDeadline' => $school->getDateDeadline(), 
-            ':logo' => $school->getLogo()]
+            ':logo' => $school->getLogo(), ':isActive' => intval($school->getIsActive())]
         );
         return $this;
     }
@@ -180,14 +180,19 @@ class SchoolManager extends AbstractManager
     public function addSchool(array $POST, UserManager $UserManager, HistoryManager $HistoryManager)
     {
         if ($POST['adminPassword'] === $POST['adminConfirmPassword']) {
+            // add school administrator
             $UserManager->add(new User(
                 ["name" => $POST['adminName'], 
                 "mail" => $POST['adminMail'], 
                 "password" => password_hash($POST['adminPassword'], PASSWORD_DEFAULT), 
                 "school" => $POST['schoolName'], 
                 "isAdmin" => true, 
-                "isModerator" => false])
+                "isModerator" => false,
+                "dateDeadline" => date('Y/m/d H:m:s', time())])
             );
+            // create new school
+            $POST['schoolDuration'] === '0' ? $isActive = false : $isActive = true;
+            $POST['schoolDuration'] === '0' ? $nbEleve = 0 : $nbEleve = $POST['schoolNbEleve'];
             $deadline = date('Y/m/d H:m:s', strtotime('+' . $POST['schoolDuration'] . 'month', time()));
             $formatedDateDeadline = date('d/m/Y', strtotime('+' . $POST['schoolDuration'] . 'month', time()));
             $this->add(new School(
@@ -195,15 +200,23 @@ class SchoolManager extends AbstractManager
                 'name' => $POST['schoolName'], 
                 'nameAdmin' => $POST['adminName'], 
                 'code' => $POST['schoolCode'], 
-                'nbEleve' => $POST['schoolNbEleve'], 
+                'nbEleve' => $nbEleve, 
                 'dateDeadline' => $deadline, 
-                'logo' => 'public/images/question-mark.png'])
+                'logo' => 'public/images/question-mark.png', 
+                'isActive' => $isActive])
             );
-            //first history entry
+            // first history entry
+            if ($POST['schoolDuration'] === '0') {
+                $entry = 'Bienvenue sur ArtSchool !';
+            } else {
+                $entry = 'Bienvenue sur ArtSchool ! Vous vous êtes inscrit pour une période de ' . $POST['schoolDuration'] . 
+                    ' mois, avec ' . $nbEleve . ' compte(s) affiliés a votre établissement. 
+                    L\'abonnement prendra fin le ' . $formatedDateDeadline;
+            }
             $HistoryManager->addEntry(new HistoryEntry(
                 ['idSchool' => $this->getLastInsertId(), 
                 'category' => 'activityPeriod', 
-                'entry' => "Bienvenue sur ArtSchool ! Vous vous êtes inscrit pour une période de " . $POST['schoolDuration'] . " mois, avec " . $POST['schoolNbEleve'] . " compte(s) affiliés a votre établissement. L'abonnement prendra fin le " . $formatedDateDeadline])
+                'entry' => $entry])
             );
             return "L'établissement a bien été ajouté";
         } else {
@@ -430,7 +443,8 @@ class SchoolManager extends AbstractManager
                 "password" => password_hash($POST['moderatorPassword'], PASSWORD_DEFAULT), 
                 "school" => $POST['schoolName'], 
                 "isAdmin" => false, 
-                "isModerator" => true])
+                "isModerator" => true, 
+                "dateDeadline" => date('Y/m/d H:m:s', time())])
             );
             //add history entry
             $HistoryManager->addEntry(new HistoryEntry(

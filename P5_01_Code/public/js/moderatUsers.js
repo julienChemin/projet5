@@ -17,7 +17,7 @@ if (document.getElementById('moderatUsers') !== null) {
 
 	for (let i=0;i<linksToModo.length;i++) {
 		linksToModo[i].addEventListener('click', function(){
-			let name = linksToModo[i].parentNode.parentNode.childNodes[1].textContent;
+			let name = linksToModo[i].parentNode.parentNode.childNodes[1].childNodes[1].textContent;
 			let schoolName = linksToModo[i].getAttribute('schoolname');
 
 			modal.style.display = 'flex';
@@ -28,7 +28,7 @@ if (document.getElementById('moderatUsers') !== null) {
 
 	for (let i=0;i<linksToActive.length;i++) {
 		linksToActive[i].addEventListener('click', function(){
-			let name = linksToActive[i].parentNode.parentNode.childNodes[1].textContent;
+			let name = linksToActive[i].parentNode.parentNode.childNodes[1].childNodes[1].textContent;
 			let schoolName = linksToActive[i].getAttribute('schoolname');
 
 			modal.style.display = 'flex';
@@ -39,7 +39,7 @@ if (document.getElementById('moderatUsers') !== null) {
 
 	for (let i=0;i<linksToInactive.length;i++) {
 		linksToInactive[i].addEventListener('click', function(){
-			let name = linksToInactive[i].parentNode.parentNode.childNodes[1].textContent;
+			let name = linksToInactive[i].parentNode.parentNode.childNodes[1].childNodes[1].textContent;
 			let schoolName = linksToInactive[i].getAttribute('schoolname');
 
 			modal.style.display = 'flex';
@@ -50,7 +50,7 @@ if (document.getElementById('moderatUsers') !== null) {
 
 	for (let i=0;i<linksToDelete.length;i++) {
 		linksToDelete[i].addEventListener('click', function(){
-			let name = linksToDelete[i].parentNode.parentNode.childNodes[1].textContent;
+			let name = linksToDelete[i].parentNode.parentNode.childNodes[1].childNodes[1].textContent;
 			let schoolName = linksToDelete[i].getAttribute('schoolname');
 
 			modal.style.display = 'flex';

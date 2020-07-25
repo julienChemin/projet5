@@ -7,15 +7,18 @@ class UserManager extends AbstractManager
     public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\User';
     public static $TABLE_NAME = 'as_user';
     public static $TABLE_PK = 'id';
-    public static $TABLE_CHAMPS ='id, name, password, mail, school, schoolGroup, temporaryPassword, beingReset, nbWarning, isBan, DATE_FORMAT(dateBan, "%d/%m/%Y") AS dateBan, isAdmin, isModerator, isActive, profileBannerInfo, profilePictureInfo, profileTextInfo';
+    public static $TABLE_CHAMPS ='id, name, password, mail, school, schoolGroup, temporaryPassword, beingReset, 
+        nbWarning, isBan, DATE_FORMAT(dateBan, "%d/%m/%Y") AS dateBan, isAdmin, isModerator, 
+        isActive, DATE_FORMAT(dateDeadline, "%d/%m/%Y") AS dateDeadline, profileBannerInfo, profilePictureInfo, profileTextInfo';
 
     public function add(User $user)
     {
         $this->sql(
-            'INSERT INTO ' . static::$TABLE_NAME . ' (name, mail, school, password, isAdmin, isModerator, isActive) 
-            VALUES (:name, :mail, :school, :password, :isAdmin, :isModerator, :isActive)', 
+            'INSERT INTO ' . static::$TABLE_NAME . ' (name, mail, school, password, isAdmin, isModerator, isActive, dateDeadline) 
+            VALUES (:name, :mail, :school, :password, :isAdmin, :isModerator, :isActive, :dateDeadline)', 
             [':name' => $user->getName(), ':mail' => $user->getMail(), ':school' => $user->getSchool(), 
-            ':password' => $user->getPassword(), ':isAdmin' => intval($user->getIsAdmin()), ':isModerator' => intval($user->getIsModerator()), ':isActive' => intval($user->getIsActive())]
+            ':password' => $user->getPassword(), ':isAdmin' => intval($user->getIsAdmin()), ':isModerator' => intval($user->getIsModerator()), 
+            ':isActive' => intval($user->getIsActive()), ':dateDeadline' => $user->getDateDeadline()]
         );
         return $this;
     }
@@ -35,7 +38,7 @@ class UserManager extends AbstractManager
         }
     }
 
-    public function getUserByMail(string $adress)
+    public function getUserByMail(string $mail)
     {
         if (strlen($mail) > 0) {
             $q = $this->sql(
@@ -206,9 +209,9 @@ class UserManager extends AbstractManager
         }
     }
 
-    public function mailExists(string $adress)
+    public function mailExists(string $mail)
     {
-        $mail = htmlspecialchars($adress);
+        $mail = htmlspecialchars($mail);
         if (strlen($mail) > 0) {
             $q = $this->sql(
                 'SELECT name 
@@ -443,7 +446,8 @@ class UserManager extends AbstractManager
                                         'password' => password_hash($POST['password'], PASSWORD_DEFAULT), 
                                         'school' => $schoolName, 
                                         'isAdmin' => false, 
-                                        'isModerator' => false])
+                                        'isModerator' => false, 
+                                        "dateDeadline" => date('Y/m/d H:m:s', time())])
                                     );
                                     //add history entry
                                     $HistoryManager->addEntry(new HistoryEntry(
@@ -467,7 +471,8 @@ class UserManager extends AbstractManager
                                 'school' => NO_SCHOOL, 
                                 'isAdmin' => false, 
                                 'isModerator' => false, 
-                                'isActive' => false])
+                                'isActive' => false, 
+                                "dateDeadline" => date('Y/m/d H:m:s', time())])
                             );
                             return $message = "Le compte à bien été créé, vous pouvez maintenant <a href='index.php?action=signIn'>vous connecter</a>";
                         }

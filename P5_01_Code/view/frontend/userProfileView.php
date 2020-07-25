@@ -301,6 +301,12 @@
                                 <i class="fas fa-exclamation-triangle iconeEdit <?=$class?>" iduser="<?=$data['user']->getId()?>"></i>
                             </li>
                             <?php
+                        } elseif ($_SESSION['school'] === NO_SCHOOL) {
+                            ?>
+                            <li>
+                                <a href="index.php?action=manageContract&elem=user&user=<?=$data['user']->getName()?>" class="iconeEdit">Gérer mon compte</a>
+                            </li>
+                            <?php
                         }
                         ?>
                     </ul>
@@ -344,7 +350,7 @@
                             ?>
                             <div class="blockContentProfile blockTuto big">
                                 <p>
-                                    Cliquez sur  <i class="fas fa-pencil-alt orang"></i>  pour éditer votre profil. Vous pouvez aussi consulter la <a href="index.php?action=Faq">F.A.Q</a> pour plus d'informations
+                                    Cliquez sur  <i class="fas fa-pencil-alt orang"></i>  pour éditer votre profil. Vous pouvez aussi consulter la <a href="index.php?action=faq">F.A.Q</a> pour plus d'informations
                                 </p>
                             </div>
                             <?php
@@ -395,7 +401,7 @@
                             ?>
                             <div class="blockContentAbout blockTuto big">
                                 <p>
-                                    Cliquez sur  <i class="fas fa-pencil-alt orang"></i>  pour éditer votre profil. Vous pouvez aussi consulter la <a href="index.php?action=Faq">F.A.Q</a> pour plus d'informations
+                                    Cliquez sur  <i class="fas fa-pencil-alt orang"></i>  pour éditer votre profil. Vous pouvez aussi consulter la <a href="index.php?action=faq">F.A.Q</a> pour plus d'informations
                                 </p>
                             </div>
                             <?php

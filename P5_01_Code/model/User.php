@@ -17,6 +17,7 @@ class User
     $dateBan,
     $isAdmin,
     $isModerator,
+    $dateDeadline,
     $isActive,
     $profileBannerInfo = null,
     $profileBanner,
@@ -54,8 +55,10 @@ class User
         $this->setProfileBannerInfo($this->getProfileBannerInfo());
         $this->setProfilePictureInfo($this->getProfilePictureInfo());
         $this->setProfileTextInfo($this->getProfileTextInfo());
-        if ($this->getIsActive() !== false) {
+        if ($this->getIsActive() === '1') {
             $this->setIsActive(true);
+        } else {
+            $this->setIsActive(false);
         }
     }
 
@@ -128,6 +131,11 @@ class User
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    public function getDateDeadline()
+    {
+        return $this->dateDeadline;
     }
 
     public function getProfileBannerInfo()
@@ -283,6 +291,14 @@ class User
     {
         $this->isActive = $isActive;
         return $this;
+    }
+
+    public function setDateDeadline($date)
+    {
+        if (!empty($date)) {
+            $this->dateDeadline = $date;
+            return $this;
+        }
     }
 
     public function setProfileBannerInfo($profileBannerInfo)

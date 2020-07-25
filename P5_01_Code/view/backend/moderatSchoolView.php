@@ -3,7 +3,7 @@
         <?php
         if (!empty($data['schools'])) {
             if ($_SESSION['school'] === ALL_SCHOOL) {
-                //consulting all school
+                //webmaster consulting all school
                 foreach ($data['schools'] as $school) {
                     ?>
                     <div class="blockSchool">
@@ -22,6 +22,8 @@
                             </div>
                         </div>
                         <div>
+                            <span>Établissement : <?=$school->getIsActive() ? 'Actif' : 'Inactif'?></span>
+                            <span><button class="btnEdit<?=$school->getIsActive() ? "ToInactive" : "ToActive"?>"><?=$school->getIsActive() ? "Désactiver" : "Activer"?></button></span>
                             <table>
                                 <tr>
                                     <td>
@@ -89,24 +91,13 @@
                                         <button class="btnEditDateDeadline">Modifier</button>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        Établissement
-                                    </td>
-                                    <td>
-                                        <?=$school->getIsActive() ? 'Actif' : 'Inactif'?>
-                                    </td>
-                                    <td>
-                                        <button class="btnEdit<?=$school->getIsActive() ? "ToInactive" : "ToActive"?>"><?=$school->getIsActive() ? "Désactiver" : "Activer"?></button>
-                                    </td>
-                                </tr>
                             </table>
                         </div>
                     </div>
                     <?php
                 }
             } elseif ($_SESSION['grade'] === ADMIN) {
-                //consulting user school
+                //admin consulting his school
                 $school = $data['schools'];
                 if ($school->getName() === $_SESSION['school']) {
                     ?>
@@ -124,6 +115,9 @@
                             </div>
                         </div>
                         <div>
+                            <span>Établissement : <?=$school->getIsActive() ? 'Actif' : 'Inactif'?></span>
+                            <span>Date de fin de contrat : <?=$school->getDateDeadline()?></span>
+                            <span><button><a href="indexAdmin.php?action=manageContract&elem=school&school=<?=$school->getName()?>">Gérer le contrat</a></button></span>
                             <table>
                                 <tr>
                                     <td>
@@ -178,28 +172,6 @@
                                     </td>
                                     <td>
                                         <button class="btnEditLogo">Modifier</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Date de fin du contrat
-                                    </td>
-                                    <td>
-                                        <?=$school->getDateDeadline()?>
-                                    </td>
-                                    <td>
-                                        <a href="indexAdmin.php?action=schoolHistory"><button>Consulter</button></a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Établissement
-                                    </td>
-                                    <td>
-                                        <?=$school->getIsActive() ? 'Actif' : 'Inactif'?>
-                                    </td>
-                                    <td>
-                                        -
                                     </td>
                                 </tr>
                             </table>
