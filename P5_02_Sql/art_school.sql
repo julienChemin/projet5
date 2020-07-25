@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  lun. 25 mai 2020 à 20:08
+-- Généré le :  sam. 25 juil. 2020 à 11:45
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -37,11 +37,22 @@ CREATE TABLE IF NOT EXISTS `as_comment` (
   `profilePictureAuthor` varchar(355) NOT NULL DEFAULT 'public/images/question-mark.png',
   `content` text NOT NULL,
   `datePublication` datetime NOT NULL,
-  `nbReport` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `idPost` (`idPost`,`idAuthor`),
   KEY `idAuthor` (`idAuthor`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `as_comment`
+--
+
+INSERT INTO `as_comment` (`id`, `idPost`, `idAuthor`, `nameAuthor`, `profilePictureAuthor`, `content`, `datePublication`) VALUES
+(55, 59, 2, 'school 1 admin 1', 'public/images/question-mark.png', 'retry\r\n', '2020-05-27 11:49:15'),
+(58, 58, 2, 'school 1 admin 1', 'public/images/question-mark.png', 'try', '2020-06-04 15:03:46'),
+(59, 57, 1, 'Julien Chemin', 'public/images/question-mark.png', 'try\r\n', '2020-06-07 01:55:25'),
+(60, 57, 1, 'Julien Chemin', 'public/images/question-mark.png', 'tyry\r\n', '2020-06-07 01:55:30'),
+(63, 59, 2, 'school 1 admin 1', 'http://localhost/P5_Chemin_Julien/P5_01_Code/public/images/dl/abc10638ccdf9a3e0a4e8a5c30ed13c4.png', 'try', '2020-06-11 18:07:40'),
+(71, 59, 6, 'school 1 user 1', 'public/images/question-mark.png', 'tr', '2020-06-12 12:37:49');
 
 -- --------------------------------------------------------
 
@@ -58,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `as_history` (
   `dateEntry` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idSchool` (`idSchool`)
-) ENGINE=InnoDB AUTO_INCREMENT=131 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=144 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_history`
@@ -194,7 +205,12 @@ INSERT INTO `as_history` (`id`, `idSchool`, `category`, `entry`, `dateEntry`) VA
 (127, 1, 'profil', 'school 1 admin 1 a modifié le logo de l\'établissement', '2020-05-14 15:32:54'),
 (128, 1, 'profil', 'school 1 admin 1 a modifié le logo de l\'établissement', '2020-05-14 15:32:59'),
 (129, 1, 'account', 'school 1 admin 1 a activé le compte de school 1 user inactif 1', '2020-05-20 01:37:27'),
-(130, 1, 'account', 'school 1 admin 1 a supprimé le compte de testuser', '2020-05-25 18:03:06');
+(130, 1, 'account', 'school 1 admin 1 a supprimé le compte de testuser', '2020-05-25 18:03:06'),
+(131, 1, 'account', 'school 1 admin 1 a désactivé le compte de school 1 user inactif 1', '2020-05-28 11:55:34'),
+(132, 1, 'account', 'retryag a créé un compte affilié à votre établissement', '2020-05-30 12:01:38'),
+(133, 5, 'profil', 'Julien Chemin a modifié le logo de l\'établissement', '2020-07-07 13:03:38'),
+(134, 2, 'activityPeriod', 'La date de fin d\'abonnement a été repoussé jusqu\'au 16/07/2021', '2020-07-19 23:13:43'),
+(135, 2, 'activityPeriod', 'La date de fin d\'abonnement a été repoussé jusqu\'au 16/10/2021', '2020-07-20 01:19:58');
 
 -- --------------------------------------------------------
 
@@ -209,6 +225,30 @@ CREATE TABLE IF NOT EXISTS `as_like_post` (
   PRIMARY KEY (`idUser`,`idPost`),
   KEY `idPost` (`idPost`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `as_like_post`
+--
+
+INSERT INTO `as_like_post` (`idUser`, `idPost`) VALUES
+(1, 57),
+(1, 59),
+(1, 73),
+(1, 74),
+(2, 57),
+(2, 59),
+(2, 73),
+(2, 74),
+(2, 104),
+(2, 106),
+(2, 107),
+(2, 108),
+(4, 59),
+(6, 57),
+(6, 105),
+(6, 107),
+(9, 59),
+(11, 136);
 
 -- --------------------------------------------------------
 
@@ -232,18 +272,48 @@ CREATE TABLE IF NOT EXISTS `as_post` (
   `fileType` varchar(10) NOT NULL,
   `onFolder` int(11) DEFAULT NULL,
   `tags` text DEFAULT NULL,
+  `nbLike` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `idAuthor` (`idAuthor`)
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=138 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_post`
 --
 
-INSERT INTO `as_post` (`id`, `idAuthor`, `school`, `title`, `filePath`, `urlVideo`, `description`, `datePublication`, `isPrivate`, `authorizedGroups`, `postType`, `fileType`, `onFolder`, `tags`) VALUES
-(57, 2, 'school 1', 'private folder', NULL, NULL, NULL, '2020-05-20 00:42:17', 1, NULL, 'schoolPost', 'folder', NULL, NULL),
-(58, 2, 'school 1', 'dossier public', NULL, NULL, NULL, '2020-05-20 00:53:44', 0, NULL, 'schoolPost', 'folder', NULL, NULL),
-(59, 2, 'school 1', NULL, 'public/images/dl/ae37345f9327c55aeee0bae57301b7ef.jpg', NULL, NULL, '2020-05-20 01:36:28', 1, ',group_1', 'schoolPost', 'image', 57, NULL);
+INSERT INTO `as_post` (`id`, `idAuthor`, `school`, `title`, `filePath`, `urlVideo`, `description`, `datePublication`, `isPrivate`, `authorizedGroups`, `postType`, `fileType`, `onFolder`, `tags`, `nbLike`) VALUES
+(57, 2, 'school 1', 'private folder', NULL, NULL, NULL, '2020-05-20 00:42:17', 1, NULL, 'schoolPost', 'folder', NULL, NULL, 3),
+(58, 2, 'school 1', 'dossier public', NULL, NULL, NULL, '2020-05-20 00:53:44', 0, NULL, 'schoolPost', 'folder', NULL, NULL, 0),
+(59, 2, 'school 1', NULL, 'public/images/dl/ae37345f9327c55aeee0bae57301b7ef.jpg', NULL, NULL, '2020-05-20 01:36:28', 1, ',group_1', 'schoolPost', 'image', 57, NULL, 4),
+(73, 2, 'school 1', 'test on folder in moz', 'public/images/dl/eb751063869b270c92745a174d2b3cf6.jpg', NULL, '<p>rttyyyq</p>', '2020-06-06 14:55:39', 1, NULL, 'schoolPost', 'image', 57, NULL, 2),
+(74, 2, 'school 1', 'fold on fold', 'public/images/dl/91fe17fe055329a63f7f9f04472860d0.png', NULL, '<p>fopld on fold try</p>', '2020-06-06 14:57:10', 1, NULL, 'schoolPost', 'folder', 57, NULL, 2),
+(75, 2, 'school 1', 'try', 'public/images/dl/db47319546035e1bb9b2bfb32ee3b305.png', NULL, '<p>vbfxwbgf</p>', '2020-06-08 15:01:29', 1, NULL, 'schoolPost', 'image', 74, NULL, 0),
+(104, 6, 'school 1', NULL, 'public/images/dl/c4c28408776c0f11c2ef152ddcf734c9.jpg', NULL, NULL, '2020-06-17 15:43:32', 0, NULL, 'userPost', 'image', NULL, ',jaune,rouge,violet,bleu', 1),
+(105, 6, 'school 1', NULL, 'public/images/dl/18f99ad5de71d9ac0a3f405e5203d27f.jpg', NULL, NULL, '2020-06-17 15:43:53', 0, NULL, 'userPost', 'image', NULL, ',rouge,noir', 1),
+(106, 6, 'school 1', NULL, 'public/images/dl/9bff7b9fb9878bac52823fcf51bdfe43.jpg', NULL, NULL, '2020-06-17 15:44:17', 0, NULL, 'userPost', 'image', NULL, ',bleu,rouge,rose', 1),
+(107, 6, 'school 1', NULL, 'public/images/dl/f6ef284aa880352baf900abd065b926e.jpg', NULL, NULL, '2020-06-17 15:44:39', 0, NULL, 'userPost', 'image', NULL, ',jaune,bleu,rouge', 2),
+(108, 6, 'school 1', NULL, 'public/images/dl/6f4084b508ceb582f87d69c9dfbf342d.jpg', NULL, NULL, '2020-06-17 15:45:03', 0, NULL, 'userPost', 'image', NULL, ',orange,blanc,bleu,rouge', 1),
+(110, 6, 'school 1', 'fold user 1 on school profil', 'public/images/dl/dd12d1e066650b9f9125bc4c677eef0e.jpg', NULL, '<p>fold user 1 on school profil</p>', '2020-06-23 14:05:08', 1, 'none', 'schoolPost', 'folder', 74, NULL, 0),
+(123, 6, 'school 1', NULL, 'public/images/dl/7e3c1de89f0ff9c5be64748c0a172a61.jpg', NULL, NULL, '2020-06-25 20:08:01', 1, 'none', 'schoolPost', 'image', 110, NULL, 0),
+(125, 19, 'noSchool', 'non ref img user incatif', 'public/images/dl/f892349d6d90e062f3fdf591bf71bf98.jpg', NULL, NULL, '2020-06-28 13:21:00', 0, NULL, 'userPost', 'image', NULL, NULL, 0),
+(128, 6, 'school 1', 'test', 'public/images/dl/b813a1af99c8cdc702848013bde054ab.jpg', NULL, NULL, '2020-06-28 17:32:44', 0, NULL, 'userPost', 'image', NULL, ',bleu,rouge', 0),
+(129, 6, 'school 1', 'test video', NULL, 'TdVnV5RRVNg', NULL, '2020-07-02 16:24:47', 0, NULL, 'userPost', 'video', NULL, ',video,dormir chez vous', 0),
+(131, 6, 'school 1', NULL, 'public/images/dl/f9d0690c89b13808a28e5b7e8ac1fc45.jpg', NULL, NULL, '2020-07-03 01:13:26', 0, NULL, 'userPost', 'image', NULL, ',rouge rose,rougeatre,rouuuuge,rougir,roger,roller', 0),
+(132, 6, 'school 1', 'test vid with  thumbnai', 'public/images/dl/8aaec28d8c77d2b72bc802a80b524fd1.jpg', '2JsYHpiH2xs', NULL, '2020-07-04 18:08:59', 0, NULL, 'userPost', 'video', NULL, ',test,video', 0),
+(133, 6, 'school 1', NULL, 'public/images/dl/6ee0f6971096d5191f7c63f01e6f1958.jpg', NULL, NULL, '2020-07-06 10:19:48', 0, NULL, 'userPost', 'image', NULL, ',rouge,rouge rose,rougeatre,rouuuuge', 0),
+(134, 6, 'school 1', NULL, 'public/images/dl/26b290d7da33ac2cf27f3fa2f25a24b6.jpg', NULL, NULL, '2020-07-06 16:00:17', 0, NULL, 'userPost', 'image', NULL, ',rouge,rouge rose', 0),
+(135, 6, 'school 1', NULL, 'public/images/dl/0de0765ab01c1219dfdc6e3be58942ed.jpg', NULL, NULL, '2020-07-06 16:00:32', 0, NULL, 'userPost', 'image', NULL, ',rouuuuge,rougeatre,rougir,rouge rose', 0),
+(136, 6, 'school 1', NULL, 'public/images/dl/9f4ad7554ad15738409856052f9a18a8.jpg', NULL, NULL, '2020-07-06 16:00:50', 0, NULL, 'userPost', 'image', NULL, ',rouge,bleu,blanc', 1),
+(137, 6, 'school 1', NULL, 'public/images/dl/48f1e5861b0cf1f685027cdfa1c6c8ae.jpg', NULL, NULL, '2020-07-07 12:39:24', 0, NULL, 'userPost', 'image', NULL, ',vert', 0);
+
+--
+-- Déclencheurs `as_post`
+--
+DROP TRIGGER IF EXISTS `post_delete`;
+DELIMITER $$
+CREATE TRIGGER `post_delete` AFTER DELETE ON `as_post` FOR EACH ROW DELETE FROM as_tag_post WHERE OLD.id = as_tag_post.idPost
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -264,14 +334,13 @@ CREATE TABLE IF NOT EXISTS `as_profile_content` (
   PRIMARY KEY (`id`),
   KEY `userId` (`userId`),
   KEY `schoolId` (`schoolId`)
-) ENGINE=InnoDB AUTO_INCREMENT=237 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=308 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_profile_content`
 --
 
 INSERT INTO `as_profile_content` (`id`, `userId`, `schoolId`, `tab`, `size`, `contentOrder`, `align`, `content`) VALUES
-(204, NULL, 1, 'profile', 'small', 1, '', '<p>1</p>'),
 (205, NULL, 1, 'profile', 'small', 2, '', '<p>2</p>'),
 (210, NULL, 1, 'about', 'medium', 2, 'elemCenter', '<p style=\"text-align: center;\">2</p>'),
 (211, NULL, 1, 'about', 'small', 3, 'elemEnd', '<p style=\"text-align: right;\">3</p>'),
@@ -280,42 +349,69 @@ INSERT INTO `as_profile_content` (`id`, `userId`, `schoolId`, `tab`, `size`, `co
 (218, NULL, 1, 'news', 'medium', 4, 'elemCenter', '<p style=\"text-align: center;\">3</p>'),
 (219, NULL, 1, 'news', 'small', 2, '', '<p>1</p>'),
 (222, NULL, 1, 'news', 'medium', 1, '', '<p style=\"text-align: center;\">test</p>'),
-(231, NULL, 1, 'profile', 'medium', 3, 'elemEnd', '<p style=\"text-align: center;\">3</p>');
+(231, NULL, 1, 'profile', 'medium', 3, 'elemEnd', '<p style=\"text-align: center;\">3</p>'),
+(246, NULL, 2, 'profile', 'small', 1, '', '<p>1</p>'),
+(248, NULL, 2, 'profile', 'small', 3, '', '<p>3</p>'),
+(250, NULL, 2, 'profile', 'small', 2, '', '<p>2</p>'),
+(305, NULL, 1, 'profile', 'small', 1, '', '<p>1</p>\r\n<p>&nbsp;</p>');
+
+--
+-- Déclencheurs `as_profile_content`
+--
+DROP TRIGGER IF EXISTS `delete_profile_content`;
+DELIMITER $$
+CREATE TRIGGER `delete_profile_content` AFTER DELETE ON `as_profile_content` FOR EACH ROW UPDATE as_profile_content_img SET toDelete = 1 WHERE as_profile_content_img.idProfileContent = OLD.id
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `as_reporte_comment`
+-- Structure de la table `as_profile_content_img`
 --
 
-DROP TABLE IF EXISTS `as_reporte_comment`;
-CREATE TABLE IF NOT EXISTS `as_reporte_comment` (
+DROP TABLE IF EXISTS `as_profile_content_img`;
+CREATE TABLE IF NOT EXISTS `as_profile_content_img` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `idComment` int(11) NOT NULL,
-  `idAuthor` int(11) NOT NULL,
-  `dateReport` datetime NOT NULL,
-  `reason` int(11) NOT NULL,
+  `idProfileContent` int(11) NOT NULL,
+  `filePath` varchar(355) NOT NULL,
+  `toDelete` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  KEY `idComment` (`idComment`,`idAuthor`),
-  KEY `idAuthor` (`idAuthor`)
+  KEY `as_profile_content_img_ibfk_1` (`idProfileContent`)
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `as_report_comment`
+--
+
+DROP TABLE IF EXISTS `as_report_comment`;
+CREATE TABLE IF NOT EXISTS `as_report_comment` (
+  `idComment` int(11) NOT NULL,
+  `idUser` int(11) NOT NULL,
+  `userName` varchar(355) NOT NULL,
+  `dateReport` datetime NOT NULL,
+  `content` text DEFAULT NULL,
+  KEY `idComment` (`idComment`,`idUser`),
+  KEY `idAuthor` (`idUser`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `as_reporte_post`
+-- Structure de la table `as_report_post`
 --
 
-DROP TABLE IF EXISTS `as_reporte_post`;
-CREATE TABLE IF NOT EXISTS `as_reporte_post` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `as_report_post`;
+CREATE TABLE IF NOT EXISTS `as_report_post` (
   `idPost` int(11) NOT NULL,
-  `idAuthor` int(11) NOT NULL,
+  `idUser` int(11) NOT NULL,
+  `userName` varchar(355) NOT NULL,
   `dateReport` datetime NOT NULL,
-  `reason` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idPost` (`idPost`,`idAuthor`),
-  KEY `idAuthor` (`idAuthor`)
+  `content` text DEFAULT NULL,
+  KEY `idPost` (`idPost`,`idUser`),
+  KEY `idAuthor` (`idUser`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -332,7 +428,7 @@ CREATE TABLE IF NOT EXISTS `as_school` (
   `nameAdmin` varchar(255) NOT NULL,
   `schoolGroups` text DEFAULT NULL,
   `code` varchar(255) NOT NULL,
-  `nbEleve` int(11) NOT NULL,
+  `nbEleve` int(11) DEFAULT 0,
   `nbActiveAccount` int(11) NOT NULL DEFAULT 0,
   `dateInscription` datetime NOT NULL,
   `dateDeadline` datetime NOT NULL,
@@ -343,18 +439,18 @@ CREATE TABLE IF NOT EXISTS `as_school` (
   `profileTextInfo` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idAdmin` (`idAdmin`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_school`
 --
 
 INSERT INTO `as_school` (`id`, `idAdmin`, `name`, `nameAdmin`, `schoolGroups`, `code`, `nbEleve`, `nbActiveAccount`, `dateInscription`, `dateDeadline`, `logo`, `isActive`, `profileBannerInfo`, `profilePictureInfo`, `profileTextInfo`) VALUES
-(1, 2, 'school 1', 'school 1 admin 1', ',group_1,group_2', 'code 1', 3, 2, '2020-01-16 13:55:33', '2020-07-16 00:07:00', 'https://images.pexels.com/photos/2040125/pexels-photo-2040125.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940', 1, NULL, NULL, 'elemEnd elemCenter'),
-(2, 3, 'school 2', 'school 2 admin 1', NULL, 'code 2 edité', 0, 0, '2020-01-16 14:32:24', '2021-04-16 00:04:00', 'https://c.wallhere.com/photos/e8/ac/anime_anime_girls_kawaii_girl_pink_white_dress_Mahou_Shoujo_Madoka_Magica_Kaname_Madoka_pink_hair-1309355.jpg!d', 0, NULL, NULL, NULL),
+(1, 2, 'school 1', 'school 1 admin 1', ',group_1,group_2', 'code 1', 3, 2, '2020-01-16 13:55:33', '2020-07-16 00:07:00', 'https://images.pexels.com/photos/2040125/pexels-photo-2040125.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940', 1, 'https://user-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_9000,w_1200,f_auto,q_auto/1069337/957406e8-14df-4164-b700-038326d3f938_eyt7ln.png false', 'https://a.wattpad.com/cover/105177276-352-k551553.jpg highPicture bigPicture', 'elemCenter elemCenter'),
+(2, 3, 'school 2', 'school 2 admin 1', NULL, 'code 2 edité', 0, 0, '2020-01-16 14:32:24', '2021-10-16 00:10:00', 'https://c.wallhere.com/photos/e8/ac/anime_anime_girls_kawaii_girl_pink_white_dress_Mahou_Shoujo_Madoka_Magica_Kaname_Madoka_pink_hair-1309355.jpg!d', 0, NULL, NULL, NULL),
 (3, 12, 'noSchool', 'no school admin 1', NULL, 'Ysiiac42kilsfog4ac23b2b', 100000000, 1, '2020-01-24 13:23:47', '3000-01-24 00:01:00', 'https://cdn.pixabay.com/photo/2014/04/03/11/47/people-312122_960_720.png', 1, NULL, NULL, NULL),
 (4, 16, 'school test again', 'school test admin 1', NULL, 'recode test', 5, 0, '2020-02-19 00:21:10', '2021-02-18 00:02:00', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwoVnrRrJNmKa3zqCu8PtZQqhCFwKXHuLAGOQ0qZcBjb1y04UhkQ&s', 1, NULL, NULL, NULL),
-(5, 17, 'retest', 'osef', NULL, 'testeditcode', 8, 0, '2020-02-26 20:56:43', '2020-08-26 00:08:00', 'https://i.ytimg.com/vi/AocEZTv9eqs/hqdefault.jpg', 1, NULL, NULL, NULL);
+(5, 17, 'retest', 'osef', NULL, 'testeditcode', 8, 0, '2020-02-26 20:56:43', '2020-08-26 00:08:00', 'public/images/dl/df169c72f9a085766d5a80aaec52bcf6.png', 1, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -366,8 +462,109 @@ DROP TABLE IF EXISTS `as_tag`;
 CREATE TABLE IF NOT EXISTS `as_tag` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(355) NOT NULL,
+  `tagCount` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `as_tag`
+--
+
+INSERT INTO `as_tag` (`id`, `name`, `tagCount`) VALUES
+(45, 'rouge', 9),
+(46, 'bleu', 6),
+(47, 'jaune', 2),
+(48, 'violet', 1),
+(49, 'noir', 1),
+(50, 'rose', 1),
+(51, 'orange', 1),
+(52, 'blanc', 2),
+(56, 'video', 2),
+(57, 'dormir chez vous', 1),
+(58, 'rouge rose', 4),
+(59, 'rougeatre', 3),
+(60, 'rouuuuge', 3),
+(61, 'rougir', 2),
+(62, 'roger', 1),
+(63, 'roller', 1),
+(64, 'test', 1),
+(65, 'vert', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `as_tag_post`
+--
+
+DROP TABLE IF EXISTS `as_tag_post`;
+CREATE TABLE IF NOT EXISTS `as_tag_post` (
+  `idPost` int(11) NOT NULL,
+  `tagName` varchar(355) NOT NULL,
+  KEY `idPost` (`idPost`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `as_tag_post`
+--
+
+INSERT INTO `as_tag_post` (`idPost`, `tagName`) VALUES
+(104, 'jaune'),
+(104, 'rouge'),
+(104, 'violet'),
+(104, 'bleu'),
+(105, 'rouge'),
+(105, 'noir'),
+(106, 'bleu'),
+(106, 'rouge'),
+(106, 'rose'),
+(107, 'jaune'),
+(107, 'bleu'),
+(107, 'rouge'),
+(108, 'orange'),
+(108, 'blanc'),
+(108, 'bleu'),
+(108, 'rouge'),
+(128, 'bleu'),
+(128, 'rouge'),
+(129, 'video'),
+(129, 'dormir chez vous'),
+(131, 'rouge rose'),
+(131, 'rougeatre'),
+(131, 'rouuuuge'),
+(131, 'rougir'),
+(131, 'roger'),
+(131, 'roller'),
+(132, 'test'),
+(132, 'video'),
+(133, 'rouge'),
+(133, 'rouge rose'),
+(133, 'rougeatre'),
+(133, 'rouuuuge'),
+(134, 'rouge'),
+(134, 'rouge rose'),
+(135, 'rouuuuge'),
+(135, 'rougeatre'),
+(135, 'rougir'),
+(135, 'rouge rose'),
+(136, 'rouge'),
+(136, 'bleu'),
+(136, 'blanc'),
+(137, 'vert');
+
+--
+-- Déclencheurs `as_tag_post`
+--
+DROP TRIGGER IF EXISTS `tag_post_delete`;
+DELIMITER $$
+CREATE TRIGGER `tag_post_delete` AFTER DELETE ON `as_tag_post` FOR EACH ROW UPDATE as_tag SET tagCount = tagCount - 1 WHERE as_tag.name = OLD.tagName
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `tag_post_new`;
+DELIMITER $$
+CREATE TRIGGER `tag_post_new` AFTER INSERT ON `as_tag_post` FOR EACH ROW UPDATE as_tag SET tagCount = tagCount + 1 
+WHERE NEW.tagName = name
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -391,32 +588,34 @@ CREATE TABLE IF NOT EXISTS `as_user` (
   `isAdmin` tinyint(1) NOT NULL DEFAULT 0,
   `isModerator` tinyint(1) NOT NULL DEFAULT 0,
   `isActive` tinyint(1) NOT NULL DEFAULT 1,
+  `dateDeadline` datetime DEFAULT NULL,
   `profileBannerInfo` text DEFAULT NULL,
   `profilePictureInfo` text DEFAULT NULL,
   `profileTextInfo` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_user`
 --
 
-INSERT INTO `as_user` (`id`, `name`, `mail`, `school`, `schoolGroup`, `password`, `temporaryPassword`, `beingReset`, `nbWarning`, `isBan`, `dateBan`, `isAdmin`, `isModerator`, `isActive`, `profileBannerInfo`, `profilePictureInfo`, `profileTextInfo`) VALUES
-(1, 'Julien Chemin', 'julchemin@orange.fr', 'allSchool', NULL, '$2y$10$kJ1W2sEancIUJPVp3Ecq2ef1Od9BxzF4bpyoyjVkyPuyn72cARy26', '$2y$10$lcWyVNH7ojRtvEjQpBUkMurrgamS1b7XMSiAD9lDQaNUl/eMkfUKu', 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
-(2, 'school 1 admin 1', 'school1@admin1.fr', 'school 1', NULL, '$2y$10$XUkx5w1ZeA8o2fCZVA4jnugiINucVGgVojX7PFcHiUXZO6JfKbh4O', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
-(3, 'school 2 admin 1', 'school2@admin1.fr', 'school 2', NULL, '$2y$10$osVD3E3cOBsNZAKgnyV/8uaL7wI5Y.V/G4GCO89ckBtGJ8nP6yCGu', NULL, 0, 0, 0, NULL, 1, 0, 0, NULL, NULL, NULL),
-(4, 'school 1 admin 2', 'school1@admin2.fr', 'school 1', NULL, '$2y$10$AMPHmJItKJDb/w5p93.RaemOPMOJOG1W9uOKpcl87ldcvA.jBH3pa', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
-(5, 'school 1 moderator 1', 'school1@moderator1.fr', 'school 1', NULL, '$2y$10$DKQbFIdAh0ow1kfgDKBFhOiX8Gdy8Hc7ylI0yrGVyC8zC84Rm3l9e', NULL, 0, 0, 0, NULL, 0, 1, 1, NULL, NULL, NULL),
-(6, 'school 1 user 1', 'school1@user1.fr', 'school 1', 'group_1', '$2y$10$9hRf3BcZJUr17hCBw133IOi66snjV6Du/bN/FtI5g2SX6hNuUqdJu', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL),
-(9, 'school 1 user inactif 1', 'school1@userinactif1.fr', 'school 1', 'group_2', '$2y$10$tVn4/UttJTo/ioodoijOceJIq5c6G1qWKXGHwL6Yrw6epGudMWJSG', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL),
-(11, 'noschool user 1', 'noschool@user1.fr', 'noSchool', NULL, '$2y$10$8nJej/tAJSkLXhxSPnvjIe2Kkrq3MYgtyBAdkeCGEt.Dgl5oF28Mq', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL),
-(12, 'no school admin 1', 'noschool@admin1.fr', 'noSchool', NULL, '$2y$10$GT4./enDDg41G6xCfl2El.lBgJIbCr3gyTRQcJSiDb9rPqVehWKQS', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
-(13, 'school 2 moderator 1', 'school2@moderator1.fr', 'school 2', NULL, '$2y$10$g5M3SrNEpIy8sRmw.jXe7eb22aVE9MTFE6wpqlAjNSMZ7e4xhHXkq', NULL, 0, 0, 0, NULL, 0, 1, 0, NULL, NULL, NULL),
-(15, 'school 1 moderator 2', 'school1@moderator2.fr', 'school 1', NULL, '$2y$10$CerSWFudtNUvgOxlDj3gy..fXqZiF2cqvze28LMdP4f2e.kYx1pDm', NULL, 0, 0, 0, NULL, 0, 1, 1, NULL, NULL, NULL),
-(16, 'school test admin 1', 'schooltest@admin1.fr', 'school test again', NULL, '$2y$10$lYHijLF9fL1plpl.eOKZOO/RmaJHfBmy5V2nOyubgWYj/TLnwcwyW', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
-(17, 'osef', 'osef@osef.fr', 'retest', NULL, '$2y$10$utsERJZtLXjgvSFR4pVm1O3/kNb20u4arWkYoHFz6wTknV/EQp3lS', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL),
-(18, 'test', 'tse@tetete.fr', 'noSchool', NULL, '$2y$10$LrLt4zxeHCOg63PXPFk.EOnNNLEmIjItn24J.r2sDIdmHVt3FauKy', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL),
-(19, 'test2', 'test2@test.fr', 'noSchool', NULL, '$2y$10$0AxewiEBDmHShmbV..NjC.EQjjcwZ72iGfETZP3SVcqdVQ.RjP0Ha', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL);
+INSERT INTO `as_user` (`id`, `name`, `mail`, `school`, `schoolGroup`, `password`, `temporaryPassword`, `beingReset`, `nbWarning`, `isBan`, `dateBan`, `isAdmin`, `isModerator`, `isActive`, `dateDeadline`, `profileBannerInfo`, `profilePictureInfo`, `profileTextInfo`) VALUES
+(1, 'Julien Chemin', 'julchemin@orange.fr', 'allSchool', NULL, '$2y$10$kJ1W2sEancIUJPVp3Ecq2ef1Od9BxzF4bpyoyjVkyPuyn72cARy26', '$2y$10$lcWyVNH7ojRtvEjQpBUkMurrgamS1b7XMSiAD9lDQaNUl/eMkfUKu', 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL, NULL),
+(2, 'school 1 admin 1', 'school1@admin1.fr', 'school 1', NULL, '$2y$10$XUkx5w1ZeA8o2fCZVA4jnugiINucVGgVojX7PFcHiUXZO6JfKbh4O', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, 'public/images/dl/a25885687877726e8f8808880c2db453.jpg false', 'public/images/dl/f60cbcd2d8f00cffa4b9ac781f26eaec.jpg highPicture bigPicture', 'elemCenter elemCenter elemEnd'),
+(3, 'school 2 admin 1', 'school2@admin1.fr', 'school 2', NULL, '$2y$10$osVD3E3cOBsNZAKgnyV/8uaL7wI5Y.V/G4GCO89ckBtGJ8nP6yCGu', NULL, 0, 0, 0, NULL, 1, 0, 0, NULL, NULL, NULL, NULL),
+(4, 'school 1 admin 2', 'school1@admin2.fr', 'school 1', NULL, '$2y$10$AMPHmJItKJDb/w5p93.RaemOPMOJOG1W9uOKpcl87ldcvA.jBH3pa', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL, NULL),
+(5, 'school 1 moderator 1', 'school1@moderator1.fr', 'school 1', NULL, '$2y$10$DKQbFIdAh0ow1kfgDKBFhOiX8Gdy8Hc7ylI0yrGVyC8zC84Rm3l9e', NULL, 0, 0, 0, NULL, 0, 1, 1, NULL, NULL, NULL, NULL),
+(6, 'school 1 user 1', 'school1@user1.fr', 'school 1', 'group_1', '$2y$10$9hRf3BcZJUr17hCBw133IOi66snjV6Du/bN/FtI5g2SX6hNuUqdJu', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL, NULL),
+(9, 'school 1 user inactif 1', 'school1@userinactif1.fr', 'school 1', 'group_2', '$2y$10$tVn4/UttJTo/ioodoijOceJIq5c6G1qWKXGHwL6Yrw6epGudMWJSG', NULL, 0, 0, 0, NULL, 0, 0, 0, NULL, NULL, NULL, NULL),
+(11, 'noschool user 1', 'noschool@user1.fr', 'noSchool', NULL, '$2y$10$8nJej/tAJSkLXhxSPnvjIe2Kkrq3MYgtyBAdkeCGEt.Dgl5oF28Mq', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL, NULL),
+(12, 'no school admin 1', 'noschool@admin1.fr', 'noSchool', NULL, '$2y$10$GT4./enDDg41G6xCfl2El.lBgJIbCr3gyTRQcJSiDb9rPqVehWKQS', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL, NULL),
+(13, 'school 2 moderator 1', 'school2@moderator1.fr', 'school 2', NULL, '$2y$10$g5M3SrNEpIy8sRmw.jXe7eb22aVE9MTFE6wpqlAjNSMZ7e4xhHXkq', NULL, 0, 0, 0, NULL, 0, 1, 0, NULL, NULL, NULL, NULL),
+(15, 'school 1 moderator 2', 'school1@moderator2.fr', 'school 1', NULL, '$2y$10$CerSWFudtNUvgOxlDj3gy..fXqZiF2cqvze28LMdP4f2e.kYx1pDm', NULL, 0, 0, 0, NULL, 0, 1, 1, NULL, NULL, NULL, NULL),
+(16, 'school test admin 1', 'schooltest@admin1.fr', 'school test again', NULL, '$2y$10$lYHijLF9fL1plpl.eOKZOO/RmaJHfBmy5V2nOyubgWYj/TLnwcwyW', NULL, 0, 0, 0, NULL, 1, 0, 1, NULL, NULL, NULL, NULL),
+(17, 'osef', 'osef@osef.fr', 'retest', NULL, '$2y$10$utsERJZtLXjgvSFR4pVm1O3/kNb20u4arWkYoHFz6wTknV/EQp3lS', NULL, 0, 1, 0, NULL, 1, 0, 1, NULL, NULL, NULL, NULL),
+(18, 'test', 'tse@tetete.fr', 'noSchool', NULL, '$2y$10$LrLt4zxeHCOg63PXPFk.EOnNNLEmIjItn24J.r2sDIdmHVt3FauKy', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL, NULL),
+(19, 'test2', 'test2@test.fr', 'noSchool', NULL, '$2y$10$0AxewiEBDmHShmbV..NjC.EQjjcwZ72iGfETZP3SVcqdVQ.RjP0Ha', NULL, 0, 0, 0, NULL, 0, 0, 1, NULL, NULL, NULL, NULL),
+(40, 'tyty', 'ty@ty.fr', 'noSchool', NULL, '$2y$10$RRxJ5BldsmRVbQslGsEBp.jFRcnV6.wxEyLP8ial.oykzQ3WV9/7O', NULL, 0, 0, 0, NULL, 0, 0, 0, '2020-07-20 19:07:18', NULL, NULL, NULL);
 
 --
 -- Contraintes pour les tables déchargées
@@ -443,12 +642,6 @@ ALTER TABLE `as_like_post`
   ADD CONSTRAINT `as_like_post_ibfk_2` FOREIGN KEY (`idUser`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `as_post`
---
-ALTER TABLE `as_post`
-  ADD CONSTRAINT `as_post_ibfk_1` FOREIGN KEY (`idAuthor`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Contraintes pour la table `as_profile_content`
 --
 ALTER TABLE `as_profile_content`
@@ -456,18 +649,18 @@ ALTER TABLE `as_profile_content`
   ADD CONSTRAINT `as_profile_content_ibfk_2` FOREIGN KEY (`schoolId`) REFERENCES `as_school` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `as_reporte_comment`
+-- Contraintes pour la table `as_report_comment`
 --
-ALTER TABLE `as_reporte_comment`
-  ADD CONSTRAINT `as_reporte_comment_ibfk_1` FOREIGN KEY (`idAuthor`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `as_reporte_comment_ibfk_2` FOREIGN KEY (`idComment`) REFERENCES `as_comment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `as_report_comment`
+  ADD CONSTRAINT `as_report_comment_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `as_report_comment_ibfk_2` FOREIGN KEY (`idComment`) REFERENCES `as_comment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `as_reporte_post`
+-- Contraintes pour la table `as_report_post`
 --
-ALTER TABLE `as_reporte_post`
-  ADD CONSTRAINT `as_reporte_post_ibfk_1` FOREIGN KEY (`idAuthor`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `as_reporte_post_ibfk_2` FOREIGN KEY (`idPost`) REFERENCES `as_post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `as_report_post`
+  ADD CONSTRAINT `as_report_post_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `as_report_post_ibfk_2` FOREIGN KEY (`idPost`) REFERENCES `as_post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `as_school`
