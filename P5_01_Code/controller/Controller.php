@@ -50,16 +50,13 @@ abstract class Controller
     public function connect(User $user)
     {
         if ($user->getIsBan()) {
-            $today = \DateTime::createFromFormat("d/m/Y", date('d/m/Y'));
-            $dateBan = \DateTime::createFromFormat("d/m/Y", $user->getDateBan());
-            $strDateEndBan = date('d/m/Y', strtotime('+' . 1 . ' month', strtotime($dateBan->format('Y/m/d'))));
-            $dateEndBan = \DateTime::createFromFormat('d/m/Y', $strDateEndBan);
-            if ($today < $dateEndBan) {
-                throw new \Exception("Votre compte a reçu 3 avertissements et est bloqué jusqu'aux " . $strDateEndBan);
-            } else {
+            $WarningManager = new WarningManager();
+            if ($WarningManager->canUnban($user)) {
                 $UserManager = new UserManager();
-                $UserManager->updateById($user->getId(), 'isBan', false, true);
-                $UserManager->updateById($user->getId(), 'dateBan', null);
+                $WarningManager->unBan($user, $UserManager);
+            } else {
+                $banEntry = $WarningManager->getBanEntry($user);
+                throw new \Exception("Votre compte a reçu 3 avertissements et est bloqué jusqu'aux " . $banEntry['dateUnbanishment']);
             }
         }
 
@@ -146,27 +143,5 @@ abstract class Controller
     public function error(string $error_msg)
     {
         RenderView::render('template.php', static::$SIDE . '/errorView.php', ['error_msg' => $error_msg]);
-    }
-
-    public function manageContract()
-    {
-        if (!empty($_SESSION) && !empty($_GET['elem']) && (($_GET['elem'] === 'user' && !empty($_GET['user']) && $_SESSION['pseudo'] ===$_GET['user']) 
-        || ($_GET['elem'] === 'school' && !empty($_GET['school']) && $_SESSION['school'] === $_GET['school']))) {
-            if (static::$SIDE === 'frontend') {
-                $UserManager = new UserManager();
-                $elem = $UserManager->getUserByName($_GET['user']);
-            } elseif (static::$SIDE === 'backend') {
-                $SchoolManager = new SchoolManager();
-                $elem = $SchoolManager->getSchoolByName($_SESSION['school']);
-            }
-            
-            if (!empty($elem)) {
-                RenderView::render('template.php', 'backend/manageContractView.php', ['elem' => $elem]);
-            } else {
-                $this->accessDenied();
-            }
-        } else {
-            $this->accessDenied();
-        }
     }
 }

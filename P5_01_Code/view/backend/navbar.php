@@ -20,6 +20,12 @@
                                 <i class="fas fa-history"></i>
                             </a>
                         </li>
+                        <hr class="hrNavbar">
+                        <li title="Modération du site">
+                            <a href="indexAdmin.php?action=moderatWebsite">
+                                <i class="fas fa-hourglass-half"></i>
+                            </a>
+                        </li>
                         <?php
                     } else {
                         ?>
@@ -146,7 +152,11 @@
                         </a>
                     </li>
                     <hr>
-
+                    <li title="paramètres">
+                        <a href="indexAdmin.php?action=settings">
+                            Paramètres<i class="fas fa-cog"></i>
+                        </a>
+                    </li>
                     <li>
                         <a href="indexAdmin.php?action=disconnect">
                             Se déconnecter<i class="fas fa-sign-out-alt"></i>

@@ -390,22 +390,39 @@ class ProfileContentManager extends AbstractManager
                         $this->deleteImgEntry($idProfileContent, $oldImgEntries[$i]['filePath']);
                     }
                 }
-                //set new img entries
+                //then set new img entries
                 if (count($newImgEntries) > 0) {
                     foreach ($newImgEntries as $entry) {
                         $this->setImgEntry($idProfileContent, $entry);
                     }
                 }
             } elseif (count($newImgEntries) > 0) {
+                //only new imgEntry, set them
                 foreach ($newImgEntries as $entry) {
                     $this->setImgEntry($idProfileContent, $entry);
                 }
             } elseif (count($oldImgEntries) > 0) {
+                //no new imgEntry, delete the old one
                 foreach ($oldImgEntries as $entry) {
                     $this->deleteImgEntry($idProfileContent, $entry['filePath']);
                 }
             }
         }
+    }
+
+    public function deleteUnusedImg()
+    {
+        $unusedImg = $this->getUnusedImg();
+        if (count($unusedImg) > 0) {
+            foreach ($unusedImg as $img) {
+                unlink($img['filePath']);
+            }
+            $this->sql(
+                'DELETE FROM as_profile_content_img 
+                WHERE toDelete = 1'
+            );
+        }
+        return count($unusedImg);
     }
 
     public function deleteImgEntry(int $idProfileContent, string $filePathInBdd)
@@ -486,5 +503,15 @@ class ProfileContentManager extends AbstractManager
         } else {
             return false;
         }
+    }
+
+    private function getUnusedImg()
+    {
+        $q = $this->sql(
+            'SELECT * 
+            FROM as_profile_content_img 
+            WHERE toDelete = 1'
+        );
+        return $q->fetchAll();
     }
 }

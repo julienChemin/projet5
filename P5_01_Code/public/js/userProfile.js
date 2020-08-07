@@ -85,25 +85,6 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		}
 	});
 
-	//btn add warning to user
-	let btnAddWarning = document.querySelector('.fa-exclamation-triangle');
-	let alreadyBan = document.querySelector('.alreadyBan');
-	if (btnAddWarning !== null && alreadyBan === null) {
-		btnAddWarning.addEventListener('click', function() {
-			let url = 'indexAdmin.php?action=addWarning&idUser=' + btnAddWarning.getAttribute('iduser');
-			ajaxGet(url, function(response) {
-				if (response === "true") {
-					btnAddWarning.classList.remove('fa-exclamation-triangle');
-					btnAddWarning.classList.add('fa-check');
-					btnAddWarning.style.color = 'green';
-					setTimeout(function() {
-						btnAddWarning.remove();
-					}, 1500);
-				}
-			});
-		}, {'once' : true});
-	}
-
 	//MENUS EDIT HEADER ( BANNER / PROFILE PICTURE / TEXT)
 	for (let i=0; i<allButtonsEditHeader.length; i++) {
 		allButtonsEditHeader[i].addEventListener('click', function(){

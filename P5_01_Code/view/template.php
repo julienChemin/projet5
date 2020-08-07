@@ -63,6 +63,12 @@
                 case 'moderatSchool' :
                     echo '<script src="public/js/moderatSchool.js"></script>';
                     break;
+                case 'warnUser' :
+                    echo '<script src="public/js/warnUser.js"></script>';
+                    break;
+                case 'moderatWebsite' :
+                    echo '<script src="public/js/moderatWebsite.js"></script>';
+                    break;
                 case 'moderatAdmin' :
                     echo '<script src="public/js/moderatAdmin.js"></script>';
                     break;

@@ -8,17 +8,17 @@ class UserManager extends AbstractManager
     public static $TABLE_NAME = 'as_user';
     public static $TABLE_PK = 'id';
     public static $TABLE_CHAMPS ='id, name, password, mail, school, schoolGroup, temporaryPassword, beingReset, 
-        nbWarning, isBan, DATE_FORMAT(dateBan, "%d/%m/%Y") AS dateBan, isAdmin, isModerator, 
-        isActive, DATE_FORMAT(dateDeadline, "%d/%m/%Y") AS dateDeadline, profileBannerInfo, profilePictureInfo, profileTextInfo';
+        nbWarning, isBan, isAdmin, isModerator, 
+        isActive, profileBannerInfo, profilePictureInfo, profileTextInfo';
 
     public function add(User $user)
     {
         $this->sql(
-            'INSERT INTO ' . static::$TABLE_NAME . ' (name, mail, school, password, isAdmin, isModerator, isActive, dateDeadline) 
-            VALUES (:name, :mail, :school, :password, :isAdmin, :isModerator, :isActive, :dateDeadline)', 
+            'INSERT INTO ' . static::$TABLE_NAME . ' (name, mail, school, password, isAdmin, isModerator, isActive) 
+            VALUES (:name, :mail, :school, :password, :isAdmin, :isModerator, :isActive)', 
             [':name' => $user->getName(), ':mail' => $user->getMail(), ':school' => $user->getSchool(), 
             ':password' => $user->getPassword(), ':isAdmin' => intval($user->getIsAdmin()), ':isModerator' => intval($user->getIsModerator()), 
-            ':isActive' => intval($user->getIsActive()), ':dateDeadline' => $user->getDateDeadline()]
+            ':isActive' => intval($user->getIsActive())]
         );
         return $this;
     }
@@ -200,8 +200,8 @@ class UserManager extends AbstractManager
                 [':name' => $name]
             );
             if ($q->fetch()) {
-                   $q->closeCursor();
-                   return true;
+                $q->closeCursor();
+                return true;
             } else {
                 $q->closeCursor();
                 return false;
@@ -220,8 +220,8 @@ class UserManager extends AbstractManager
                 [':mail' => $mail]
             );
             if ($q->fetch()) {
-                   $q->closeCursor();
-                   return true;
+                $q->closeCursor();
+                return true;
             } else {
                 $q->closeCursor();
                 return false;
@@ -323,8 +323,7 @@ class UserManager extends AbstractManager
             'school' => $user->getSchool(), 
             'schoolGroup' => $user->getSchoolGroup(), 
             'nbWarning' => $user->getNbWarning(), 
-            'isBan' => $user->getIsBan(), 
-            'dateBan' => $user->getDateBan(), 
+            'isBan' => $user->getIsBan(),  
             'isAdmin' => $user->getIsAdmin(), 
             'isModerator' => $user->getIsModerator(), 
             'isActive' => $user->getIsActive(), 
@@ -446,8 +445,7 @@ class UserManager extends AbstractManager
                                         'password' => password_hash($POST['password'], PASSWORD_DEFAULT), 
                                         'school' => $schoolName, 
                                         'isAdmin' => false, 
-                                        'isModerator' => false, 
-                                        "dateDeadline" => date('Y/m/d H:m:s', time())])
+                                        'isModerator' => false])
                                     );
                                     //add history entry
                                     $HistoryManager->addEntry(new HistoryEntry(
@@ -471,8 +469,7 @@ class UserManager extends AbstractManager
                                 'school' => NO_SCHOOL, 
                                 'isAdmin' => false, 
                                 'isModerator' => false, 
-                                'isActive' => false, 
-                                "dateDeadline" => date('Y/m/d H:m:s', time())])
+                                'isActive' => false])
                             );
                             return $message = "Le compte à bien été créé, vous pouvez maintenant <a href='index.php?action=signIn'>vous connecter</a>";
                         }
@@ -486,7 +483,7 @@ class UserManager extends AbstractManager
                 return $message = "Vous devez entrer deux mot de passe identiques";
             }
         } else {
-            $message = "Les informations renseignées sont incorrectes";
+            return $message = "Les informations renseignées sont incorrectes";
         }
     }
 

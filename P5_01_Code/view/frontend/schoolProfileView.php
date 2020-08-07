@@ -20,7 +20,7 @@
         </header>
         <?php
         if (!$data['school']->getIsActive()) {
-            echo '<div class="fullWidth inactiveSchool">Cette établissement n\'est plus actif sur le site depuis le ' . $data['school']->getDateDeadline() . '</div>';
+            echo '<div class="fullWidth inactiveSchool">' . $data['contractInfo'] . '</div>';
         }
         ?>
         <div>

@@ -14,10 +14,8 @@ class User
     $beingReset,
     $nbWarning,
     $isBan,
-    $dateBan,
     $isAdmin,
     $isModerator,
-    $dateDeadline,
     $isActive,
     $profileBannerInfo = null,
     $profileBanner,
@@ -113,11 +111,6 @@ class User
         return boolval($this->isBan);
     }
 
-    public function getDateBan()
-    {
-        return $this->dateBan;
-    }
-
     public function getIsAdmin()
     {
         return $this->isAdmin;
@@ -131,11 +124,6 @@ class User
     public function getIsActive()
     {
         return $this->isActive;
-    }
-
-    public function getDateDeadline()
-    {
-        return $this->dateDeadline;
     }
 
     public function getProfileBannerInfo()
@@ -268,13 +256,6 @@ class User
         return $this;
     }
 
-    public function setDateBan($dateBan)
-    {
-        if (!empty($dateBan)) {
-            $this->dateBan = $dateBan;
-        }
-    }
-
     public function setIsAdmin(bool $isAdmin)
     {
         $this->isAdmin = $isAdmin;
@@ -291,14 +272,6 @@ class User
     {
         $this->isActive = $isActive;
         return $this;
-    }
-
-    public function setDateDeadline($date)
-    {
-        if (!empty($date)) {
-            $this->dateDeadline = $date;
-            return $this;
-        }
     }
 
     public function setProfileBannerInfo($profileBannerInfo)

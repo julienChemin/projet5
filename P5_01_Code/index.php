@@ -33,114 +33,114 @@ try {
     $Frontend->verifyInformation();
     if (isset($_GET['action'])) {
         switch ($_GET['action']) {
-        case 'disconnect' :
-            $Frontend->disconnect();
-            break;
-        case 'signUp' :
-            $Frontend->signUp();
-            break;
-        case 'signIn' :
-            $Frontend->signIn();
-            break;
-        case 'resetPassword' :
-            $Frontend->resetPassword();
-            break;
-        case 'manageContract' :
-            $Frontend->manageContract();
-            break;
-        case 'search' :
-            $Frontend->search();
-            break;
-        case 'advancedSearch' :
-            $Frontend->advancedSearch();
-            break;
-        case 'listTags' :
-            $Frontend->listTags();
-            break;
-        case 'listSchools' :
-            $Frontend->listSchools();
-            break;
-        case 'userProfile' :
-            $Frontend->userProfile();
-            break;
-        case 'schoolProfile' :
-            $Frontend->schoolProfile();
-            break;
-        case 'updateProfile' :
-            $Frontend->updateProfile();
-            break;
-        case 'upload' :
-            $Frontend->upload();
-            break;
-        case 'post' :
-            $Frontend->post();
-            break;
-        case 'addPost' :
-            $Frontend->addPost();
-            break;
-        case 'uploadPost' :
-            $Frontend->uploadPost();
-            break;
-        case 'getTags' :
-            $Frontend->getTags();
-            break;
-        case 'addSchool' :
-            $Frontend->addSchool();
-            break;
-        case 'getSchools' :
-            $Frontend->getSchools();
-            break;
-        case 'getPostsBySchool' :
-            $Frontend->getPostsBySchool();
-            break;
-        case 'getUsersBySchool' :
-            $Frontend->getUsersBySchool();
-            break;
-        case 'getUserPosts' :
-            $Frontend->getUserPosts();
-            break;
-        case 'getSchoolPosts' :
-            $Frontend->getSchoolPosts();
-            break;
-        case 'getProfilePosts' :
-            $Frontend->getProfilePosts();
-            break;
-        case 'getLastPosted' :
-            $Frontend->getLastPosted();
-            break;
-        case 'getMostLikedPosts' :
-            $Frontend->getMostLikedPosts();
-            break;
-        case 'getPostsByTag' :
-            $Frontend->getPostsByTag();
-            break;
-        case 'setComment' :
-            $Frontend->setComment();
-            break;
-        case 'deleteComment' :
-            $Frontend->deleteComment();
-            break;
-        case 'deletePost' :
-            $Frontend->deletePost();
-            break;
-        case 'userAlreadyLikePost' :
-            $Frontend->userAlreadyLikePost();
-            break;
-        case 'toggleLikePost' :
-            $Frontend->toggleLikePost();
-            break;
-        case 'report' :
-            $Frontend->report();
-            break;
-        case 'setReport' :
-            $Frontend->setReport();
-            break;
-        case 'faq' :
-            $Frontend->faq();
-            break;
-        default :
-            //"action" value is unknow
-            throw new Exception('L\'action renseignée est inexistante.');
+            case 'disconnect' :
+                $Frontend->disconnect();
+                break;
+            case 'signUp' :
+                $Frontend->signUp();
+                break;
+            case 'signIn' :
+                $Frontend->signIn();
+                break;
+            case 'resetPassword' :
+                $Frontend->resetPassword();
+                break;
+            case 'settings' :
+                $Frontend->settings();
+                break;
+            case 'search' :
+                $Frontend->search();
+                break;
+            case 'advancedSearch' :
+                $Frontend->advancedSearch();
+                break;
+            case 'listTags' :
+                $Frontend->listTags();
+                break;
+            case 'listSchools' :
+                $Frontend->listSchools();
+                break;
+            case 'userProfile' :
+                $Frontend->userProfile();
+                break;
+            case 'schoolProfile' :
+                $Frontend->schoolProfile();
+                break;
+            case 'updateProfile' :
+                $Frontend->updateProfile();
+                break;
+            case 'upload' :
+                $Frontend->upload();
+                break;
+            case 'post' :
+                $Frontend->post();
+                break;
+            case 'addPost' :
+                $Frontend->addPost();
+                break;
+            case 'uploadPost' :
+                $Frontend->uploadPost();
+                break;
+            case 'getTags' :
+                $Frontend->getTags();
+                break;
+            /*case 'addSchool' :
+                $Frontend->addSchool();
+                break;*/
+            case 'getSchools' :
+                $Frontend->getSchools();
+                break;
+            case 'getPostsBySchool' :
+                $Frontend->getPostsBySchool();
+                break;
+            case 'getUsersBySchool' :
+                $Frontend->getUsersBySchool();
+                break;
+            case 'getUserPosts' :
+                $Frontend->getUserPosts();
+                break;
+            case 'getSchoolPosts' :
+                $Frontend->getSchoolPosts();
+                break;
+            case 'getProfilePosts' :
+                $Frontend->getProfilePosts();
+                break;
+            case 'getLastPosted' :
+                $Frontend->getLastPosted();
+                break;
+            case 'getMostLikedPosts' :
+                $Frontend->getMostLikedPosts();
+                break;
+            case 'getPostsByTag' :
+                $Frontend->getPostsByTag();
+                break;
+            case 'setComment' :
+                $Frontend->setComment();
+                break;
+            case 'deleteComment' :
+                $Frontend->deleteComment();
+                break;
+            case 'deletePost' :
+                $Frontend->deletePost();
+                break;
+            case 'userAlreadyLikePost' :
+                $Frontend->userAlreadyLikePost();
+                break;
+            case 'toggleLikePost' :
+                $Frontend->toggleLikePost();
+                break;
+            case 'report' :
+                $Frontend->report();
+                break;
+            case 'setReport' :
+                $Frontend->setReport();
+                break;
+            case 'faq' :
+                $Frontend->faq();
+                break;
+            default :
+                //"action" value is unknow
+                throw new Exception('L\'action renseignée est inexistante.');
         }
     } else {
         //"action" undefined

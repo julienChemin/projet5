@@ -26,7 +26,7 @@ class Backend extends Controller
             //user is connect but not as admin or moderator
             header('Location: index.php');
         } elseif (isset($_COOKIE['artSchoolAdminId'])) {
-            //user is not connect, looking for cookie
+            //user is not connect but there is a cookie to sign in
             $this->useCookieToSignIn();
         } elseif (isset($_GET['action']) && $_GET['action'] !== 'resetPassword') {
             //home
@@ -84,6 +84,12 @@ class Backend extends Controller
                 if ($arrCanAddSchool['canAdd']) {
                     //add school and school administrator
                     $message = $SchoolManager->addSchool($_POST, $UserManager, $HistoryManager);
+                    $ContractManager = new ContractManager('school', $SchoolManager);
+                    $school = $SchoolManager->getSchoolByName($_POST['schoolName']);
+                    $ContractManager->extendContract($school, $_POST['schoolDuration']);
+                    if ($_POST['schoolDuration'] === '0') {
+                        $SchoolManager->schoolToInactive($school->getId(), $UserManager);
+                    }
                 } else {
                     $message = $arrCanAddSchool['message'];
                 }
@@ -94,16 +100,60 @@ class Backend extends Controller
         }
     }
 
+    public function settings()
+    {
+        if (!empty($_SESSION) && $_SESSION['grade'] === ADMIN && !empty($_SESSION['school'])) {
+            $SchoolManager = new SchoolManager();
+            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+            $ContractManager = new ContractManager('school', $SchoolManager);
+            if ($dateEndContract = $ContractManager->getDateContractEnd($school->getId())) {
+                if ($school->getIsActive()) {
+                    $contractInfo = 'Votre établissement est actif jusqu\'au ' . $dateEndContract;
+                } else {
+                    $contractInfo = 'Votre établissement est inactif depuis le ' . $dateEndContract;
+                }
+            } else {
+                $contractInfo = 'Votre établissement est inactif';
+            }
+            RenderView::render('template.php', 'backend/settingsView.php', ['school' => $school, 'contractInfo' => $contractInfo]);
+        } else {
+            $this->accessDenied();
+        }
+    }
+
     public function moderatSchool()
     {
         if ($_SESSION['grade'] === ADMIN) {
             $SchoolManager = new SchoolManager();
             $schools = $SchoolManager->getSchoolByName($_SESSION['school']);
-            if (!empty($schools)) {
-                RenderView::render('template.php', 'backend/moderatSchoolView.php', ['option' => ['buttonToggleSchool', 'moderatSchool'], 'schools' => $schools]);
+            $ContractManager = new ContractManager('school', $SchoolManager);
+            if (is_array($schools) && count($schools) > 1) {
+                $contractInfo = [];
+                foreach ($schools as $school) {
+                    if ($dateContractEnd = $ContractManager->getDateContractEnd($school->getId())) {
+                        if ($school->getIsActive()) {
+                            $contractInfo[] = 'Cet établissement est actif jusqu\'au ' . $dateContractEnd;
+                        } else {
+                            $contractInfo[] = 'Cet établissement n\'est plus actif depuis le ' . $dateContractEnd;
+                        }
+                    } else {
+                        $contractInfo[] = 'Cet établissement n\'est pas actif';
+                    }
+                }
             } else {
-                RenderView::render('template.php', 'backend/moderatSchoolView.php', ['option' => ['buttonToggleSchool', 'moderatSchool']]);
+                if ($dateContractEnd = $ContractManager->getDateContractEnd($schools->getId())) {
+                    if ($schools->getIsActive()) {
+                        $contractInfo = 'Cet établissement est actif jusqu\'au ' . $dateContractEnd;
+                    } else {
+                        $contractInfo = 'Cet établissement n\'est plus actif depuis le ' . $dateContractEnd;
+                    }
+                } else {
+                    $contractInfo = 'Cet établissement n\'est pas actif';
+                }
             }
+            RenderView::render('template.php', 'backend/moderatSchoolView.php', 
+                ['schools' => $schools, 'contractInfo' => $contractInfo, 
+                'option' => ['buttonToggleSchool', 'moderatSchool']]);
         } else {
             header('Location: indexAdmin.php');
         }
@@ -112,23 +162,143 @@ class Backend extends Controller
     public function editSchool()
     {
         if ($_SESSION['grade'] === ADMIN 
-            && ($_SESSION['school'] === ALL_SCHOOL || (!empty($_POST['schoolName']) && $_POST['schoolName'] === $_SESSION['school']))
-        ) {
-            $UserManager = new UserManager();
+        && ($_SESSION['school'] === ALL_SCHOOL || (!empty($_POST['schoolName']) && $_POST['schoolName'] === $_SESSION['school']))) {
             $SchoolManager = new SchoolManager();
-            $HistoryManager = new HistoryManager();
             $message = null;
             if (!empty($_POST['elem'])) {
                 //consulting form to edit school information
-                if ($SchoolManager->nameExists($_POST['schoolName'])) {
-                    $message = $SchoolManager->editSchool($_POST, $UserManager, $HistoryManager);
-                } else {
-                    $this->incorrectInformation();
-                }
+                $message = $SchoolManager->editSchool($_POST, new UserManager(), new HistoryManager());
             }
             RenderView::render('template.php', 'backend/editSchoolView.php', ['message' => $message]);
         } else {
             $this->accessDenied();
+        }
+    }
+
+    public function moderatWebsite()
+    {
+        if ($_SESSION['school'] === ALL_SCHOOL) {
+            RenderView::render('template.php', 'backend/moderatWebsiteView.php', ['option' => ['moderatWebsite']]);
+        } else {
+            $this->redirection();
+        }
+    }
+
+    public function checkContract()
+    {
+        $arrAcceptedValues = ['user', 'school'];
+        if (!empty($_SESSION['school']) && $_SESSION['school'] === ALL_SCHOOL 
+        && !empty($_GET['type']) && in_array($_GET['type'], $arrAcceptedValues)) {
+            if ($_GET['type'] === 'user') {
+                $Manager = new UserManager();
+            } elseif ($_GET['type'] === 'school') {
+                $Manager = new SchoolManager();
+            }
+            $ContractManager = new ContractManager($_GET['type'], $Manager);
+            $result = $ContractManager->checkRemind();
+            echo json_encode($result);
+        } else {
+            echo 'false';
+        }
+    }
+
+    public function checkWarnings()
+    {
+        if (!empty($_SESSION['school']) && $_SESSION['school'] === ALL_SCHOOL) {
+            $WarningManager = new WarningManager();
+            $allWarnEntries = $WarningManager->getAllActiveWarn();
+            $response['nbActiveWarn'] = count($allWarnEntries);
+            $response['nbEntriesUnwarned'] = 0;
+            foreach ($allWarnEntries as $warn) {
+                if ($WarningManager->canUnwarn($warn['dateUnwarning'])) {
+                    $WarningManager->unWarnEntry(intval($warn['id']));
+                    $response['nbEntriesUnwarned'] += 1;
+                }
+            }
+            echo json_encode($response);
+        } else {
+            echo 'false';
+        }
+    }
+
+    public function checkBanishments()
+    {
+        if (!empty($_SESSION['school']) && $_SESSION['school'] === ALL_SCHOOL) {
+            $UserManager = new UserManager();
+            $WarningManager = new WarningManager();
+            $allBanEntries = $WarningManager->getAllActiveBan();
+            $response['nbActiveBan'] = count($allBanEntries);
+            $response['nbEntriesUnbanished'] = 0;
+            foreach ($allBanEntries as $ban) {
+                $user = $UserManager->getOneById(intval($ban['idUser']));
+                if ($WarningManager->canUnban($user)) {
+                    $WarningManager->unBan($user, $UserManager);
+                    $response['nbEntriesUnbanished'] += 1;
+                }
+            }
+            echo json_encode($response);
+        } else {
+            return 'false';
+        }
+    }
+
+    public function checkUnusedImg()
+    {
+        if (!empty($_SESSION['school']) && $_SESSION['school'] === ALL_SCHOOL) {
+            $ProfileContentManager = new ProfileContentManager();
+            $response = $ProfileContentManager->deleteUnusedImg();
+            echo json_encode($response);
+        } else {
+            return 'false';
+        }
+    }
+
+    public function checkUnusedTag()
+    {
+        if (!empty($_SESSION['school']) && $_SESSION['school'] === ALL_SCHOOL) {
+            $TagsManager = new TagsManager();
+            $TagsManager->deleteUnusedTags();
+            return 'true';
+        } else {
+            return 'false';
+        }
+    }
+
+    public function warnUser()
+    {
+        if (!empty($_SESSION) && $_SESSION['school'] === ALL_SCHOOL) {
+            $UserManager = new UserManager();
+            if (isset($_GET['idUser']) && $UserManager->exists(intval($_GET['idUser']))) {
+                $user = $UserManager->getOneById(intval($_GET['idUser']));
+                $WarningManager = new WarningManager();
+                $nbActiveWarn = $WarningManager->getNbActiveWarn($user);
+                if ($WarningManager->isBan($user)) {
+                    $banishmentInfo = $WarningManager->getBanEntry($user);
+                } else {
+                    $banishmentInfo = null;
+                }
+                RenderView::render(
+                    'template.php', 'backend/warnUserView.php', 
+                    ['user' => $user, 'nbActiveWarn' => $nbActiveWarn, 'banishmentInfo' => $banishmentInfo, 
+                        'option' => ['warnUser']]);
+            } else {
+                $this->incorrectInformation();
+            }
+        } else {
+            $this->accessDenied();
+        } 
+    }
+
+    public function addWarning()
+    {
+        $UserManager = new UserManager();
+        if (!empty($_SESSION) && $_SESSION['school'] === ALL_SCHOOL && isset($_POST['idUser']) && $UserManager->exists(intval($_POST['idUser']))) {
+            $WarningManager = new WarningManager();
+            $user = $UserManager->getOneById(intval($_POST['idUser']));
+            $WarningManager->warn($user, $_POST['reasonWarn'], $UserManager);
+            echo 'true';
+        } else {
+            echo 'false';
         }
     }
 
@@ -154,7 +324,10 @@ class Backend extends Controller
             }
             $schools = $SchoolManager->getSchoolByName($_SESSION['school']);
             $sorting = $UserManager->moderatAdminSorting($UserManager->getUsersBySchool($_SESSION['school'], 'admin'));
-            RenderView::render('template.php', 'backend/moderatAdminView.php', ['users' => $sorting['users'], 'schools' => $schools, 'nbModerator' => $sorting['nbModerator'], 'message' => $message, 'option' => ['moderatAdmin', 'buttonToggleSchool']]);
+            RenderView::render(
+                'template.php', 'backend/moderatAdminView.php', 
+                ['users' => $sorting['users'], 'schools' => $schools, 'nbModerator' => $sorting['nbModerator'], 'message' => $message, 
+                    'option' => ['moderatAdmin', 'buttonToggleSchool']]);
         } else {
             $this->accessDenied();
         }
@@ -170,7 +343,8 @@ class Backend extends Controller
             $sorting = $UserManager->moderatUsersSorting($users, $schools);
             RenderView::render(
                 'template.php', 'backend/moderatUsersView.php', 
-                ['users' => $sorting['users'], 'schools' => $schools, 'isActive' => $sorting['isActive'], 'option' => ['moderatUsers', 'buttonToggleSchool']]
+                ['users' => $sorting['users'], 'schools' => $schools, 'isActive' => $sorting['isActive'], 
+                    'option' => ['moderatUsers', 'buttonToggleSchool']]
             );
         } else {
             $this->accessDenied();
@@ -392,16 +566,25 @@ class Backend extends Controller
 
     public function schoolProfile()
     {
-        if (!empty($_GET['school']) && ($_GET['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL) && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) {
+        if (!empty($_GET['school']) 
+        && ($_GET['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)
+        && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) {
             $SchoolManager = new SchoolManager();
-            if ($SchoolManager->nameExists($_GET['school'])) {
-                $ProfileContentManager = new ProfileContentManager();
-                $school = $SchoolManager->getSchoolByName($_GET['school']);
-                $profileContent = $ProfileContentManager->getByProfileId($school->getId(), true);
-                RenderView::render('template.php', 'backend/schoolProfileView.php', ['school' => $school, 'profileContent' => $profileContent, 'option' => ['schoolProfile', 'tinyMCE']]);
-            } else {
-                $this->invalidLink();
+            $school = $SchoolManager->getSchoolByName($_GET['school']);
+            $contractInfo = null;
+            if (!$school->getIsActive()) {
+                $ContractManager = new ContractManager('school', $SchoolManager);
+                if ($dateContractEnd = $ContractManager->getDateContractEnd($school->getId())) {
+                    $contractInfo = 'Cet établissement n\'est plus actif sur le site depuis le ' .$dateContractEnd;
+                } else {
+                    $contractInfo = 'Cet établissement n\'est pas actif sur le site';
+                }
             }
+            $ProfileContentManager = new ProfileContentManager();
+            $profileContent = $ProfileContentManager->getByProfileId($school->getId(), true);
+            RenderView::render('template.php', 'backend/schoolProfileView.php', 
+                ['school' => $school, 'profileContent' => $profileContent, 'contractInfo' => $contractInfo, 
+                'option' => ['schoolProfile', 'tinyMCE']]);
         } else {
             $this->incorrectInformation();
         }
@@ -568,23 +751,5 @@ class Backend extends Controller
             }
         }
         header('Location: indexAdmin.php?action=schoolProfile&school=' . $_SESSION['school']);
-    }
-
-    public function addWarning()
-    {
-        $UserManager = new UserManager();
-        if (!empty($_SESSION) && $_SESSION['school'] === ALL_SCHOOL && isset($_GET['idUser']) && $UserManager->exists(intval($_GET['idUser']))) {
-            $user = $UserManager->getOneById(intval($_GET['idUser']));
-            if (($user->getNbWarning() + 1) >= 3) {
-                $UserManager->updateById(intval($_GET['idUser']), 'isBan', true, true);
-                $UserManager->updateById(intval($_GET['idUser']), 'dateBan', date('Y-m-d H:i:s'));
-                $UserManager->updateById(intval($_GET['idUser']), 'nbWarning', 0);
-            } else {
-                $UserManager->updateById(intval($_GET['idUser']), 'nbWarning', ($user->getNbWarning() + 1));
-            }
-            echo 'true';
-        } else {
-            echo 'false';
-        }
     }
 }

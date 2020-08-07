@@ -139,7 +139,7 @@ class TagsManager extends Database
         }
     }
 
-    public function deleteUselessTags()
+    public function deleteUnusedTags()
     {
         $this->sql(
             'DELETE FROM ' . static::$TABLE_NAME . ' 

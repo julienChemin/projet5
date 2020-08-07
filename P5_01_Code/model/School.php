@@ -8,13 +8,13 @@ class School
     $idAdmin,
     $name,
     $nameAdmin,
+    $mail, 
     $schoolGroups,
     $listSchoolGroups,
     $code,
     $nbEleve,
     $nbActiveAccount,
     $dateInscription,
-    $dateDeadline,
     $logo,
     $isActive,
     $profileBannerInfo = null,
@@ -63,12 +63,12 @@ class School
     //GETTERS
     public function getId()
     {
-        return $this->id;
+        return intval($this->id);
     }
 
     public function getIdAdmin()
     {
-        return $this->idAdmin;
+        return intval($this->idAdmin);
     }
 
     public function getName()
@@ -79,6 +79,11 @@ class School
     public function getNameAdmin()
     {
         return $this->nameAdmin;
+    }
+
+    public function getMail()
+    {
+        return $this->mail;
     }
 
     public function getSchoolGroups()
@@ -103,17 +108,12 @@ class School
 
     public function getNbActiveAccount()
     {
-        return $this->nbActiveAccount;
+        return intval($this->nbActiveAccount);
     }
 
     public function getDateInscription()
     {
         return $this->dateInscription;
-    }
-
-    public function getDateDeadline()
-    {
-        return $this->dateDeadline;
     }
 
     public function getLogo()
@@ -209,6 +209,14 @@ class School
         }
     }
 
+    public function setMail(string $mail)
+    {
+        if (strlen($mail) > 0) {
+            $this->mail = $mail;
+            return $this;
+        }
+    }
+
     public function setSchoolGroups(string $schoolGroups)
     {
         if (strlen($schoolGroups) > 0) {
@@ -254,14 +262,6 @@ class School
     {
         if (!empty($date)) {
             $this->dateInscription = $date;
-            return $this;
-        }
-    }
-
-    public function setDateDeadline($date)
-    {
-        if (!empty($date)) {
-            $this->dateDeadline = $date;
             return $this;
         }
     }

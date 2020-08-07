@@ -7,7 +7,7 @@ if (document.getElementById('blockModeratSchool') !== null) {
     let blockCode = document.getElementById('blockCode');
     let blockNbEleve = document.getElementById('blockNbEleve');
     let blockLogo = document.getElementById('blockLogo');
-    let blockDateDeadline = document.getElementById('blockDateDeadline');
+    let blockMail = document.getElementById('blockMail');
     let blockToActive = document.getElementById('blockToActive');
     let blockToInactive = document.getElementById('blockToInactive');
 
@@ -16,7 +16,7 @@ if (document.getElementById('blockModeratSchool') !== null) {
     let btnEditCode = document.querySelectorAll('.btnEditCode');
     let btnEditNbEleve = document.querySelectorAll('.btnEditNbEleve');
     let btnEditLogo = document.querySelectorAll('.btnEditLogo');
-    let btnEditDateDeadline = document.querySelectorAll('.btnEditDateDeadline');
+    let btnEditMail = document.querySelectorAll('.btnEditMail');
     let btnEditToActive = document.querySelectorAll('.btnEditToActive');
     let btnEditToInactive = document.querySelectorAll('.btnEditToInactive');
 
@@ -86,11 +86,11 @@ if (document.getElementById('blockModeratSchool') !== null) {
         );
     });
 
-    btnEditDateDeadline.forEach(btn => {
+    btnEditMail.forEach(btn => {
         btn.addEventListener(
             'click', function () {
-                formModal.elements.elem.value = "dateDeadline";
-                blockDateDeadline.style.display = "flex";
+                formModal.elements.elem.value = "mail";
+                blockMail.style.display = "flex";
                 modal.style.display = "flex";
             }
         );
@@ -134,8 +134,8 @@ if (document.getElementById('blockModeratSchool') !== null) {
                 case 'logo' :
                     blockLogo.style.display = "none";
                     break;
-                case 'dateDeadline' :
-                    blockDateDeadline.style.display = "none";
+                case 'mail' :
+                    blockMail.style.display = "none";
                     break;
                 case 'toActive' :
                     blockToActive.style.display = "none";

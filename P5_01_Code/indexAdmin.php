@@ -31,93 +31,111 @@ try {
     $Backend->verifyInformation();
     if (isset($_GET['action'])) {
         switch ($_GET['action']) {
-        case 'disconnect' :
-            $Backend->disconnect();
-            break;
-        case 'addSchool' :
-            $Backend->addSchool();
-            break;
-        case 'manageContract' :
-            $Backend->manageContract();
-            break;
-        case 'moderatSchool' :
-            $Backend->moderatSchool();
-            break;
-        case 'editSchool' :
-            $Backend->editSchool();
-            break;
-        case 'moderatAdmin' :
-            $Backend->moderatAdmin();
-            break;
-        case 'moderatUsers' :
-            $Backend->moderatUsers();
-            break;
-        case 'moderatReports' :
-            $Backend->moderatReports();
-            break;
-        case 'getReports' :
-            $Backend->getReports();
-            break;
-        case 'getReportsFromElem' :
-            $Backend->getReportsFromElem();
-            break;
-        case 'getCountReports' :
-            $Backend->getCountReports();
-            break;
-        case 'deleteReport' :
-            $Backend->deleteReport();
-            break;
-        case 'deleteReportsFromElem' :
-            $Backend->deleteReportsFromElem();
-            break;
-        case 'createGroup' :
-            $Backend->createGroup();
-            break;
-        case 'getGroup' :
-            $Backend->getGroup();
-            break;
-        case 'setGroup' :
-            $Backend->setGroup();
-            break;
-        case 'deleteGroup' :
-            $Backend->deleteGroup();
-            break;
-        case 'editGrade' :
-            $Backend->editGrade();
-            break;
-        case 'toggleUserIsActive' :
-            $Backend->toggleUserIsActive();
-            break;
-        case 'delete' :
-            $Backend->delete();
-            break;
-        case 'schoolProfile' :
-            $Backend->schoolProfile();
-            break;
-        case 'updateProfile' :
-            $Backend->updateProfile();
-            break;
-        case 'upload' :
-            $Backend->upload();
-            break;
-        case 'schoolHistory' :
-            $Backend->schoolHistory();
-            break;
-        case 'getSchoolHistory' :
-            $Backend->getSchoolHistory();
-            break;
-        case 'addSchoolPost' :
-            $Backend->addSchoolPost();
-            break;
-        case 'uploadSchoolPost' :
-            $Backend->uploadSchoolPost();
-            break;
-        case 'addWarning' :
-            $Backend->addWarning();
-            break;
-        default :
-            //"action" value is unknow
-            throw new Exception('L\'action renseignée est inexistante.');
+            case 'disconnect' :
+                $Backend->disconnect();
+                break;
+            case 'addSchool' :
+                $Backend->addSchool();
+                break;
+            case 'settings' :
+                $Backend->settings();
+                break;
+            case 'moderatSchool' :
+                $Backend->moderatSchool();
+                break;
+            case 'editSchool' :
+                $Backend->editSchool();
+                break;
+            case 'moderatWebsite' :
+                $Backend->moderatWebsite();
+                break;
+            case 'checkContract' :
+                $Backend->checkContract();
+                break;
+            case 'checkWarnings' :
+                $Backend->checkWarnings();
+                break;
+            case 'checkBanishments' :
+                $Backend->checkBanishments();
+                break;
+            case 'checkUnusedImg' :
+                $Backend->checkUnusedImg();
+                break;
+            case 'warnUser' :
+                $Backend->warnUser();
+                break;
+            case 'addWarning' :
+                $Backend->addWarning();
+                break;
+            case 'moderatAdmin' :
+                $Backend->moderatAdmin();
+                break;
+            case 'moderatUsers' :
+                $Backend->moderatUsers();
+                break;
+            case 'moderatReports' :
+                $Backend->moderatReports();
+                break;
+            case 'getReports' :
+                $Backend->getReports();
+                break;
+            case 'getReportsFromElem' :
+                $Backend->getReportsFromElem();
+                break;
+            case 'getCountReports' :
+                $Backend->getCountReports();
+                break;
+            case 'deleteReport' :
+                $Backend->deleteReport();
+                break;
+            case 'deleteReportsFromElem' :
+                $Backend->deleteReportsFromElem();
+                break;
+            case 'createGroup' :
+                $Backend->createGroup();
+                break;
+            case 'getGroup' :
+                $Backend->getGroup();
+                break;
+            case 'setGroup' :
+                $Backend->setGroup();
+                break;
+            case 'deleteGroup' :
+                $Backend->deleteGroup();
+                break;
+            case 'editGrade' :
+                $Backend->editGrade();
+                break;
+            case 'toggleUserIsActive' :
+                $Backend->toggleUserIsActive();
+                break;
+            case 'delete' :
+                $Backend->delete();
+                break;
+            case 'schoolProfile' :
+                $Backend->schoolProfile();
+                break;
+            case 'updateProfile' :
+                $Backend->updateProfile();
+                break;
+            case 'upload' :
+                $Backend->upload();
+                break;
+            case 'schoolHistory' :
+                $Backend->schoolHistory();
+                break;
+            case 'getSchoolHistory' :
+                $Backend->getSchoolHistory();
+                break;
+            case 'addSchoolPost' :
+                $Backend->addSchoolPost();
+                break;
+            case 'uploadSchoolPost' :
+                $Backend->uploadSchoolPost();
+                break;
+            default :
+                //"action" value is unknow
+                throw new Exception('L\'action renseignée est inexistante.');
         }
     } else {
         //"action" undefined

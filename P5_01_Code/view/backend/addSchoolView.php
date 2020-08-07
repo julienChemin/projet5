@@ -14,6 +14,10 @@
                             <input type="text" name="schoolName" required="">
                         </p>
                         <p>
+                            <label for="schoolMail">Adresse email</label>
+                            <input type="email" name="schoolMail" required="">
+                        </p>
+                        <p>
                             <label for="schoolCode">Code d'affiliation</label>
                             <input type="text" name="schoolCode" required="">
                         </p>

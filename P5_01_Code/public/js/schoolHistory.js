@@ -409,7 +409,6 @@ buttonShowMore.addEventListener('click', function(){
 				getHistory(activeSchool, content, offset, sortBy.value, '2020-01-01', secondDate);
 			} else if (firstDate) {
 				let date = getFormatedDate();
-				console.log(category);
 				getHistory(activeSchool, content, offset, sortBy.value, firstDate, date);
 			} else {
 				getHistory(activeSchool, content, offset);

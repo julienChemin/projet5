@@ -9,6 +9,7 @@ if (document.getElementById('addSchool')) {
 
     let form = document.getElementById('formAddSchool');
     let inputSchoolName = form.elements.schoolName;
+    let inputSchoolMail = form.elements.schoolMail;
     let inputSchoolCode = form.elements.schoolCode;
     let inputSchoolNbEleve = form.elements.schoolNbEleve;
 
@@ -29,7 +30,7 @@ if (document.getElementById('addSchool')) {
     //btn next
     btnNext.addEventListener(
         'click', function () {
-            if (inputSchoolName.value !== "" && inputSchoolCode.value !== "" && inputSchoolNbEleve.value !== "") {
+            if (inputSchoolName.value !== "" && inputSchoolMail.value !== "" && inputSchoolCode.value !== "" && inputSchoolNbEleve.value !== "") {
                 form.style.transform = 'scale(0.9)';
                 setTimeout(function () {
                     blockOne.style.display = 'none';
@@ -39,6 +40,8 @@ if (document.getElementById('addSchool')) {
             } else {
                 if (inputSchoolName.value === "") {
                     blink(inputSchoolName);
+                } else if (inputSchoolMail.value === "") {
+                    blink(inputSchoolMail);
                 } else if (inputSchoolCode.value === "") {
                     blink(inputSchoolCode);
                 } else if (inputSchoolNbEleve.value === "") {

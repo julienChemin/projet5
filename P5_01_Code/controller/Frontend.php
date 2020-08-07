@@ -27,7 +27,7 @@ class Frontend extends Controller
                 }
             }
         } elseif (isset($_COOKIE['artSchoolId']) || isset($_COOKIE['artSchoolAdminId'])) {
-            //user is not connect, looking for cookie
+            //user is not connect but there is a cookie to sign in
             $this->useCookieToSignIn();
         }
     }
@@ -151,6 +151,27 @@ class Frontend extends Controller
         } else {
 			$this->invalidLink();
         }    
+    }
+
+    public function settings()
+    {
+        if (!empty($_SESSION) && $_SESSION['school'] === NO_SCHOOL) {
+            $UserManager = new UserManager();
+            $user = $UserManager->getUserByName($_SESSION['pseudo']);
+            $ContractManager = new ContractManager('user', $UserManager);
+            if ($dateContractEnd = $ContractManager->getDateContractEnd($user->getId())) {
+                if ($user->getIsActive()) {
+                    $contractInfo = 'Votre compte est actif jusqu\'au ' . $dateContractEnd;
+                } else {
+                    $contractInfo = 'Votre compte est inactif depuis le ' . $dateContractEnd;
+                }
+            } else {
+                $contractInfo = 'Votre compte est inactif';
+            }
+            RenderView::render('template.php', 'frontend/settingsView.php', ['user' => $user, 'contractInfo' => $contractInfo]);
+        } else {
+            $this->redirection('index.php?action=signUp');
+        }
     }
 
     public function search()
@@ -507,8 +528,10 @@ class Frontend extends Controller
                     $PostsManager->deletePost($post->getId());
                 }
                 //at the same time, delete unused tags
-                $TagsManager->deleteUselessTags();
-                if ($post->getPostType() === 'schoolPost') {
+                $TagsManager->deleteUnusedTags();
+                if ($_SESSION['school'] === ALL_SCHOOL) {
+                    header('Location: index.php');
+                } elseif ($post->getPostType() === 'schoolPost') {
                     header('Location: index.php?action=schoolProfile&school=' . $_SESSION['school']);
                 } else {
 					header('Location: index.php?action=userProfile&userId=' . $_SESSION['id']);
@@ -532,7 +555,7 @@ class Frontend extends Controller
         echo json_encode($arrTags);
     }
 
-    /*TODO find a way to get only real school
+    /*TODO ** waiting for payment system--> find a way to get only real school
     //view for user who want to add his school
     public function addSchool()
     {

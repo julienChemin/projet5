@@ -128,6 +128,11 @@
                             <?php
                         }
                         ?>
+                        <li title="paramètres">
+                            <a href="index.php?action=settings">
+                                Paramètres<i class="fas fa-cog"></i>
+                            </a>
+                        </li>
                         <hr>
                         <li title="Se Déconnecter">
                             <a href="index.php?action=disconnect">

@@ -291,14 +291,16 @@
                         if ($_SESSION['school'] === ALL_SCHOOL) {
                             if ($data['user']->getIsBan()) {
                                 $class = 'alreadyBan';
-                                $titleForWarnIcone = 'l\'utilisateur est banni depuis le ' . $data['user']->getDateBan();
+                                $titleForWarnIcone = 'Ce compte est suspendu';
                             } else {
                                 $class = '';
-                                $titleForWarnIcone = 'ajouter un warning a cet utilisateur';
+                                $titleForWarnIcone = 'ajouter un avertissement à cet utilisateur';
                             }
                             ?>
                             <li title="<?=$titleForWarnIcone?>">
-                                <i class="fas fa-exclamation-triangle iconeEdit <?=$class?>" iduser="<?=$data['user']->getId()?>"></i>
+                                <a href="indexAdmin.php?action=warnUser&idUser=<?=$data['user']->getId()?>">
+                                    <i class="fas fa-exclamation-triangle iconeEdit <?=$class?>"></i>
+                                </a>
                             </li>
                             <?php
                         } elseif ($_SESSION['school'] === NO_SCHOOL) {

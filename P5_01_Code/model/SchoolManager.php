@@ -7,15 +7,17 @@ class SchoolManager extends AbstractManager
     public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\School';
     public static $TABLE_NAME = 'as_school';
     public static $TABLE_PK = 'id';
-    public static $TABLE_CHAMPS ='id, idAdmin, name, nameAdmin, schoolGroups, code, nbEleve, nbActiveAccount, DATE_FORMAT(dateInscription, "%d/%m/%Y") AS dateInscription, DATE_FORMAT(dateDeadline, "%d/%m/%Y") AS dateDeadline, logo, isActive, profileBannerInfo, profilePictureInfo, profileTextInfo';
+    public static $TABLE_CHAMPS ='id, idAdmin, name, nameAdmin, mail, schoolGroups, code, nbEleve, 
+        nbActiveAccount, DATE_FORMAT(dateInscription, "%d/%m/%Y") AS dateInscription, 
+        logo, isActive, profileBannerInfo, profilePictureInfo, profileTextInfo';
 
     public function add(School $school)
     {
         $this->sql(
-            'INSERT INTO ' . static::$TABLE_NAME . ' (idAdmin, name, nameAdmin, code, nbEleve, dateInscription, dateDeadline, logo, isActive) 
-            VALUE (:idAdmin, :name, :nameAdmin, :code, :nbEleve, NOW(), :dateDeadline, :logo, :isActive)', 
+            'INSERT INTO ' . static::$TABLE_NAME . ' (idAdmin, name, nameAdmin, mail, code, nbEleve, dateInscription, logo, isActive) 
+            VALUE (:idAdmin, :name, :nameAdmin, :mail, :code, :nbEleve, NOW(), :logo, :isActive)', 
             [':idAdmin' => $school->getIdAdmin(), ':name' => $school->getName(), ':nameAdmin' => $school->getNameAdmin(), 
-            ':code' => $school->getCode(), ':nbEleve' => $school->getNbEleve(), ':dateDeadline' => $school->getDateDeadline(), 
+            ':mail' => $school->getMail(), ':code' => $school->getCode(), ':nbEleve' => $school->getNbEleve(), 
             ':logo' => $school->getLogo(), ':isActive' => intval($school->getIsActive())]
         );
         return $this;
@@ -187,21 +189,18 @@ class SchoolManager extends AbstractManager
                 "password" => password_hash($POST['adminPassword'], PASSWORD_DEFAULT), 
                 "school" => $POST['schoolName'], 
                 "isAdmin" => true, 
-                "isModerator" => false,
-                "dateDeadline" => date('Y/m/d H:m:s', time())])
+                "isModerator" => false])
             );
             // create new school
             $POST['schoolDuration'] === '0' ? $isActive = false : $isActive = true;
             $POST['schoolDuration'] === '0' ? $nbEleve = 0 : $nbEleve = $POST['schoolNbEleve'];
-            $deadline = date('Y/m/d H:m:s', strtotime('+' . $POST['schoolDuration'] . 'month', time()));
-            $formatedDateDeadline = date('d/m/Y', strtotime('+' . $POST['schoolDuration'] . 'month', time()));
             $this->add(new School(
                 ['idAdmin' => $this->getLastInsertId(), 
                 'name' => $POST['schoolName'], 
                 'nameAdmin' => $POST['adminName'], 
+                'mail' => $POST['schoolMail'], 
                 'code' => $POST['schoolCode'], 
-                'nbEleve' => $nbEleve, 
-                'dateDeadline' => $deadline, 
+                'nbEleve' => $nbEleve,  
                 'logo' => 'public/images/question-mark.png', 
                 'isActive' => $isActive])
             );
@@ -210,8 +209,7 @@ class SchoolManager extends AbstractManager
                 $entry = 'Bienvenue sur ArtSchool !';
             } else {
                 $entry = 'Bienvenue sur ArtSchool ! Vous vous êtes inscrit pour une période de ' . $POST['schoolDuration'] . 
-                    ' mois, avec ' . $nbEleve . ' compte(s) affiliés a votre établissement. 
-                    L\'abonnement prendra fin le ' . $formatedDateDeadline;
+                    ' mois, avec ' . $nbEleve . ' compte(s) affiliés a votre établissement';
             }
             $HistoryManager->addEntry(new HistoryEntry(
                 ['idSchool' => $this->getLastInsertId(), 
@@ -227,180 +225,201 @@ class SchoolManager extends AbstractManager
     public function editSchool(array $POST, UserManager $UserManager, HistoryManager $HistoryManager)
     {
         switch ($POST['elem']) {
-        case 'name' :
-            if ($POST['editName'] !== ALL_SCHOOL && !$this->nameExists($POST['editName'])) {
-                 //edit school name in user info
-                 $users = $UserManager->getUsersBySchool($POST['schoolName']);
-                foreach ($users as $user) {
-                    $UserManager->updateById($user->getId(), 'school', $POST['editName']);
-                }
-                //edit school name
-                $this->updateByName($POST['schoolName'], 'name', $POST['editName']);
-                //MAJ school name in session
-                if ($_SESSION['school'] !== ALL_SCHOOL) {
-                    $_SESSION['school'] = $POST['editName'];
-                }
-                    //add history entry
-                    $school = $this->getSchoolByName($POST['editName']);
-                    $HistoryManager->addEntry(new HistoryEntry(
-                            ['idSchool' => $school->getId(), 
-                            'category' => 'profil', 
-                            'entry' => $_SESSION['pseudo'] . ' a modifié le nom de votre établissement en : ' . $POST['editName']])
-                    );
-                 return "Le nom de l'établissement a été modifié";
-            } else {
-                return "Ce nom est déja utilisé";
-            }
-            break;
-        case 'admin' :
-            if ($UserManager->nameExists($POST['editAdmin'])) {
-                $newAdmin = $UserManager->getUserByName($POST['editAdmin']);
-                $school = $this->getSchoolByName($POST['schoolName']);
-                if ($school->getName() === $newAdmin->getSchool()) {
-                    if ($newAdmin->getIsActive()) {
-                         $UserManager->updateByName($newAdmin->getName(), 'grade', ['isAdmin' => true, 'isModerator' => false]);
-                         $this->updateByName($POST['schoolName'], 'idAdmin', $newAdmin->getId())
-                             ->updateByName($POST['schoolName'], 'nameAdmin', $newAdmin->getName());
-                         //add history entry
+            case 'name' :
+                if ($POST['editName'] !== ALL_SCHOOL && !$this->nameExists($POST['editName'])) {
+                    $users = $UserManager->getUsersBySchool($POST['schoolName']);
+                    foreach ($users as $user) {
+                        $UserManager->updateById($user->getId(), 'school', $POST['editName']);
+                    }
+                    $this->updateByName($POST['schoolName'], 'name', $POST['editName']);
+                    if ($_SESSION['school'] !== ALL_SCHOOL) {
+                        $_SESSION['school'] = $POST['editName'];
+                    }
+                        //add history entry
+                        $school = $this->getSchoolByName($POST['editName']);
                         $HistoryManager->addEntry(new HistoryEntry(
-                            ['idSchool' => $school->getId(), 
-                            'category' => 'profil', 
-                            'entry' => $_SESSION['pseudo'] . ' a remplacé l\'administrateur principal par : ' . $newAdmin->getName()])
+                                ['idSchool' => $school->getId(), 
+                                'category' => 'profil', 
+                                'entry' => $_SESSION['pseudo'] . ' a modifié le nom de votre établissement en : ' . $POST['editName']])
                         );
-                              return "L'administrateur de l'établissement a été modifié";
+                    return "Le nom de l'établissement a été modifié";
+                } else {
+                    return "Ce nom est déja utilisé";
+                }
+                break;
+            case 'admin' :
+                if ($UserManager->nameExists($POST['editAdmin'])) {
+                    $newAdmin = $UserManager->getUserByName($POST['editAdmin']);
+                    $school = $this->getSchoolByName($POST['schoolName']);
+                    if ($school->getName() === $newAdmin->getSchool()) {
+                        if ($newAdmin->getIsActive()) {
+                            $UserManager->updateByName($newAdmin->getName(), 'grade', ['isAdmin' => true, 'isModerator' => false]);
+                            $this->updateByName($POST['schoolName'], 'idAdmin', $newAdmin->getId())
+                                ->updateByName($POST['schoolName'], 'nameAdmin', $newAdmin->getName());
+                            //add history entry
+                            $HistoryManager->addEntry(new HistoryEntry(
+                                ['idSchool' => $school->getId(), 
+                                'category' => 'profil', 
+                                'entry' => $_SESSION['pseudo'] . ' a remplacé l\'administrateur principal par : ' . $newAdmin->getName()])
+                            );
+                                return "L'administrateur de l'établissement a été modifié";
+                        } else {
+                            return "Ce compte est inactif";
+                        }
                     } else {
-                        return "Ce compte est inactif";
+                        return "Cette personne ne fait pas parti de cet établissement";
                     }
                 } else {
-                    return "Cette personne ne fait pas parti de cet établissement";
+                    return "Ce nom d'utilisateur ne correspond à aucun compte éxistant";
                 }
-            } else {
-                return "Ce nom d'utilisateur ne correspond à aucun compte éxistant";
-            }
-            break;
-        case 'code' :
-            if (!$this->affiliationCodeExists($POST['editCode'])["exist"]) {
-                $this->updateByName($POST['schoolName'], 'code', $POST['editCode']);
+                break;
+            case 'mail' :
+                $this->updateByName($POST['schoolName'], 'mail', $POST['editMail']);
                 //add history entry
                 $school = $this->getSchoolByName($POST['schoolName']);
                 $HistoryManager->addEntry(new HistoryEntry(
                     ['idSchool' => $school->getId(),
                     'category' => 'profil',
-                    'entry' => $_SESSION['pseudo'] . ' a modifié le code d\'affiliation en : ' . $POST['editCode']])
+                    'entry' => $_SESSION['pseudo'] . ' a modifié l\'adresse mail en : ' . $POST['editCode']])
                 );
-                return "Le code d'affiliation a été modifié";
-            } else {
-                return "Veuillez choisir un autre code";
-            }
-            break;
-        case 'nbEleve' :
-            if ($_SESSION['school'] === ALL_SCHOOL) {
-                $school = $this->getSchoolByName($POST['schoolName']);
-                if (intval($school->getNbActiveAccount()) <= $POST['editNbEleve']) {
-                    $this->updateByName($POST['schoolName'], 'nbEleve', intval($POST['editNbEleve']));
+                return "L'adresse mail a été modifié";
+                break;
+            case 'code' :
+                if (!$this->affiliationCodeExists($POST['editCode'])["exist"]) {
+                    $this->updateByName($POST['schoolName'], 'code', $POST['editCode']);
                     //add history entry
+                    $school = $this->getSchoolByName($POST['schoolName']);
                     $HistoryManager->addEntry(new HistoryEntry(
-                        ['idSchool' => $school->getId(), 
-                        'category' => 'profil', 
-                        'entry' => 'Le nombre maximum de compte affilié à votre établissement est passé à ' . $POST['editNbEleve']])
+                        ['idSchool' => $school->getId(),
+                        'category' => 'profil',
+                        'entry' => $_SESSION['pseudo'] . ' a modifié le code d\'affiliation en : ' . $POST['editCode']])
                     );
-                    return "Le nombre d'élèves a été modifié";
+                    return "Le code d'affiliation a été modifié";
                 } else {
-                    return "Le nombre de compte(s) actif(s) pour cette établissement est supérieur au nombre de compte(s) disponible(s) que vous annoncez";
+                    return "Veuillez choisir un autre code";
                 }
-            } else {
-                return "Vous n'avez pas accès à cette option";
-            }
-            break;
-        case 'logo' :
-            if (!empty($POST['editLogo'])) {
-                $this->updateByName($POST['schoolName'], 'logo', $POST['editLogo']);
-                //add history entry
-                $school = $this->getSchoolByName($POST['schoolName']);
-                $HistoryManager->addEntry(new HistoryEntry(
-                    ['idSchool' => $school->getId(), 
-                    'category' => 'profil', 
-                    'entry' => $_SESSION['pseudo'] . ' a modifié le logo de l\'établissement'])
-                );
-                return "Le logo de votre établissement a été modifié";
-            } elseif (!empty($_FILES['uploadLogo'])) {
-                $schoolName = $POST['schoolName'];
-                $arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
-                require 'view/upload.php';
-                if (!empty($final_path)) {
-                    $this->updateByName($schoolName, 'logo', $final_path);
+                break;
+            case 'nbEleve' :
+                if ($_SESSION['school'] === ALL_SCHOOL) {
+                    $school = $this->getSchoolByName($POST['schoolName']);
+                    if (intval($school->getNbActiveAccount()) <= $POST['editNbEleve']) {
+                        $this->updateByName($POST['schoolName'], 'nbEleve', intval($POST['editNbEleve']));
+                        //add history entry
+                        $HistoryManager->addEntry(new HistoryEntry(
+                            ['idSchool' => $school->getId(), 
+                            'category' => 'profil', 
+                            'entry' => 'Le nombre maximum de compte affilié à votre établissement est passé à ' . $POST['editNbEleve']])
+                        );
+                        return "Le nombre d'élèves a été modifié";
+                    } else {
+                        return "Le nombre de compte(s) actif(s) pour cette établissement est supérieur au nombre de compte(s) disponible(s) que vous annoncez";
+                    }
+                } else {
+                    return "Vous n'avez pas accès à cette option";
+                }
+                break;
+            case 'logo' :
+                if (!empty($POST['editLogo'])) {
+                    $this->updateByName($POST['schoolName'], 'logo', $POST['editLogo']);
                     //add history entry
-                    $school = $this->getSchoolByName($schoolName);
+                    $school = $this->getSchoolByName($POST['schoolName']);
                     $HistoryManager->addEntry(new HistoryEntry(
                         ['idSchool' => $school->getId(), 
                         'category' => 'profil', 
                         'entry' => $_SESSION['pseudo'] . ' a modifié le logo de l\'établissement'])
                     );
+                    return "Le logo de votre établissement a été modifié";
+                } elseif (!empty($_FILES['uploadLogo'])) {
+                    $schoolName = $POST['schoolName'];
+                    $arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
+                    require 'view/upload.php';
+                    if (!empty($final_path)) {
+                        $this->updateByName($schoolName, 'logo', $final_path);
+                        //add history entry
+                        $school = $this->getSchoolByName($schoolName);
+                        $HistoryManager->addEntry(new HistoryEntry(
+                            ['idSchool' => $school->getId(), 
+                            'category' => 'profil', 
+                            'entry' => $_SESSION['pseudo'] . ' a modifié le logo de l\'établissement'])
+                        );
+                    }
+                    header('Location: indexAdmin.php?action=moderatSchool');
+                } else {
+                    header('Location: indexAdmin.php?action=moderatSchool');
                 }
-                header('Location: indexAdmin.php?action=moderatSchool');
-            } else {
-                header('Location: indexAdmin.php?action=moderatSchool');
-            }
-            break;
-        case 'dateDeadline' :
-            $school = $this->getSchoolByName($POST['schoolName']);
-            $dateDeadline = \DateTime::createFromFormat("d/m/Y", $school->getDateDeadline());
-            $strDeadline = $dateDeadline->format('Y/m/d');
-            $newDeadline = date('Y/m/d H:m:s', strtotime('+' . $POST['editDateDeadline'] . 'month', strtotime($strDeadline)));
-            $formatedNewDeadline = date('d/m/Y', strtotime('+' . $POST['editDateDeadline'] . 'month', strtotime($strDeadline)));
-            $this->updateByName($POST['schoolName'], 'dateDeadline', $newDeadline);
-            //add history entry
-            $HistoryManager->addEntry(new HistoryEntry(
-                ['idSchool' => $school->getId(), 
-                'category' => 'activityPeriod', 
-                'entry' => 'La date de fin d\'abonnement a été repoussé jusqu\'au ' . $formatedNewDeadline])
-            );
-            return "La date d'échéance a été modifié";
-            break;
-        case 'toActive' :
-            if ($_SESSION['school'] === ALL_SCHOOL) {
-                $users = $UserManager->getUsersBySchool($POST['schoolName'], 'admin');
-                foreach ($users as $user) {
-                    $UserManager->updateByName($user->getName(), 'isActive', true, true);
+                break;
+            case 'toActive' :
+                if ($_SESSION['school'] === ALL_SCHOOL) {
+                    if (intval($POST['editToActiveDuration']) > 0) {
+                        $ContractManager = new ContractManager('school',$this);
+                        $ContractManager->extendContract($this->getSchoolByName($POST['schoolName']), intval($POST['editToActiveDuration']), intval($POST['editToActive']));
+                        return "L'établissement a été activé, avec " . $POST['editToActive'] . " compte affilié maximum, 
+                            pour une période de " . $POST['editToActiveDuration'] . " mois";
+                    } else {
+                        throw new \Exception("La période d'extension de contrat doit être supérieur a 0");
+                    }
+                } else {
+                    throw new \Exception("Vous ne pouvez pas accéder a cette page");
                 }
-                $this->updateByName($POST['schoolName'], 'isActive', true, true)
-                    ->updateByName($POST['schoolName'], 'nbEleve', intval($POST['editToActive']));
-                //add history entry
-                $school = $this->getSchoolByName($POST['schoolName']);
-                $HistoryManager->addEntry(new HistoryEntry(
-                    ['idSchool' => $school->getId(), 
-                    'category' => 'activityPeriod', 
-                    'entry' => 'L\'établissement a été activé'])
-                );
-                return "L'établissement a été activé, avec " . $POST['editToActive'] . " compte affilié maximum";
-            } else {
-                throw new \Exception("Vous ne pouvez pas accéder a cette page");
-            }
-            break;
-        case 'toInactive' :
-            if ($_SESSION['school'] === ALL_SCHOOL) {
-                $users = $UserManager->getUsersBySchool($POST['schoolName']);
-                foreach ($users as $user) {
-                    $UserManager->updateByName($user->getName(), 'isActive', false, true);
+                break;
+            case 'toInactive' :
+                if ($_SESSION['school'] === ALL_SCHOOL) {
+                    $this->schoolToInactive($POST['schoolName'], $UserManager);
+                    $ContractManager = new ContractManager('school',$this);
+                    $ContractManager->deleteRemind($this->getSchoolByName($POST['schoolName']));
+                    return "L'établissement a été désactivé";
+                } else {
+                    throw new \Exception("Vous ne pouvez pas accéder a cette page");
                 }
-                $this->updateByName($POST['schoolName'], 'isActive', false, true)
-                    ->updateByName($POST['schoolName'], 'nbEleve', 0)
-                    ->updateByName($POST['schoolName'], 'nbActiveAccount', 0);
-                //add history entry
-                $school = $this->getSchoolByName($POST['schoolName']);
-                $HistoryManager->addEntry(new HistoryEntry(
-                    ['idSchool' => $school->getId(), 
-                    'category' => 'activityPeriod', 
-                    'entry' => 'L\'établissement a été désactivé'])
-                );
-                return "L'établissement a été désactivé";
-            } else {
-                throw new \Exception("Vous ne pouvez pas accéder a cette page");
-            }
-            break;
-        default :
-            return "Les informations renseignées sont incorrectes";
+                break;
+            default :
+                return "Les informations renseignées sont incorrectes";
         }
+    }
+
+    public function schoolToActive($schoolIdOrStr, UserManager $userManager, int $nbEleve = 0)
+    {
+        if (is_int($schoolIdOrStr) && $schoolIdOrStr > 0) {
+            $school = $this->getOneById($schoolIdOrStr);
+        } elseif (is_string($schoolIdOrStr) && strlen($schoolIdOrStr) > 0) {
+            $school = $this->getSchoolByName($schoolIdOrStr);
+        }
+        $users = $userManager->getUsersBySchool($school->getName(), 'admin');
+        foreach ($users as  $user) {
+            $userManager->updateById($user->getId(), 'isActive', true, true);
+        }
+        $this->updateById($school->getId(), 'isActive', true, true)
+            ->updateById($school->getId(), 'nbEleve', $nbEleve);
+        //add history entry
+        $HistoryManager = new HistoryManager();
+        $HistoryManager->addEntry(new HistoryEntry(
+            ['idSchool' => $school->getId(), 
+            'category' => 'activityPeriod', 
+            'entry' => 'L\'établissement a été activé'])
+        );
+    }
+
+    public function schoolToInactive($schoolIdOrStr, UserManager $userManager)
+    {
+        if (is_int($schoolIdOrStr) && $schoolIdOrStr > 0) {
+            $school = $this->getOneById($schoolIdOrStr);
+        } elseif (is_string($schoolIdOrStr) && strlen($schoolIdOrStr) > 0) {
+            $school = $this->getSchoolByName($schoolIdOrStr);
+        }
+        $users = $userManager->getUsersBySchool($school->getName());
+        foreach ($users as  $user) {
+            $userManager->updateById($user->getId(), 'isActive', false, true);
+        }
+        $this->updateById($school->getId(), 'isActive', false, true)
+            ->updateById($school->getId(), 'nbEleve', 0)
+            ->updateById($school->getId(), 'nbActiveAccount', 0);
+        //add history entry
+        $HistoryManager = new HistoryManager();
+        $HistoryManager->addEntry(new HistoryEntry(
+            ['idSchool' => $school->getId(), 
+            'category' => 'activityPeriod', 
+            'entry' => 'L\'établissement n\'est plus actif'])
+        );
     }
 
     public function canAddModerator(array $POST, UserManager $UserManager)
@@ -443,8 +462,7 @@ class SchoolManager extends AbstractManager
                 "password" => password_hash($POST['moderatorPassword'], PASSWORD_DEFAULT), 
                 "school" => $POST['schoolName'], 
                 "isAdmin" => false, 
-                "isModerator" => true, 
-                "dateDeadline" => date('Y/m/d H:m:s', time())])
+                "isModerator" => true])
             );
             //add history entry
             $HistoryManager->addEntry(new HistoryEntry(
