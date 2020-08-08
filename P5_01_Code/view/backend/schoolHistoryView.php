@@ -1,4 +1,6 @@
 <section id="blockSchoolHistory" class="container">
+    <h1>Historique</h1>
+    <hr>
     <article id="schoolHistory">
         <?php
         if ($_SESSION['school'] === ALL_SCHOOL) {

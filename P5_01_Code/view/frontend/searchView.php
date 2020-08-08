@@ -22,25 +22,17 @@
             </div>
             <div id="advancedSearch">
                 <h2>Recherche avancée</h2>
-                <p>
-                    Pour mélanger plusieurs critères de recherche
-                </p>
-                <p>
-                    <a href="index.php?action=advancedSearch">Cliquez ici</a>
-                </p>
+                <p>Pour mélanger plusieurs critères de recherche</p>
+                <p><a href="index.php?action=advancedSearch">Cliquez ici</a></p>
             </div>
         </div>
         <h2>Voir aussi</h2>
         <div id="alsoSee">
             <div>
-                <p>
-                    <a href="index.php?action=listSchools">Voir la liste des établissement scolaire</a>
-                </p>
+                <p><a href="index.php?action=listSchools">Voir la liste des établissement scolaire</a></p>
             </div>
             <div>
-                <p>
-                    <a href="index.php?action=listTags">Voir la liste des tags</a>
-                </p>
+                <p><a href="index.php?action=listTags">Voir la liste des tags</a></p>
             </div>
         </div>
         <?php
@@ -120,7 +112,7 @@
                                 case 'video' :
                                     $post->setFilePath('public/images/defaultVideoThumbnail.png');
                                     break;
-                                }
+                            }
                         } elseif ($post->getFileType() === 'video') {
                             echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
                         }

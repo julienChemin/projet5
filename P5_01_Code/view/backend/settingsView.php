@@ -1,14 +1,14 @@
 <section id="blockManageContract" class="container">
+    <h1>Paramètres</h1>
+    <hr>
     <div class="blockStyleOne">
         <p><?=$data['contractInfo']?></p>
         <p>Nombre de comptes : <?=$data['school']->getNbEleve()?> dont <?=$data['school']->getNbActiveAccount()?> actif(s)</p>
     </div>
     <div>
-        <h1>Prolongation du contrat</h1>
+        <h2>Prolongation du contrat</h2>
         <form id="formExtendContract">
-            <p class="orang">
-                Le nombre de compte ne peut être inférieur au nombre de comptes actif
-            </p>
+            <p class="orang">Le nombre de compte ne peut être inférieur au nombre de comptes actif</p>
             <p>
                 <label for="nbAccount">Nombre de compte</label>
                 <input type="text" name="nbAccount" id="nbAccount">
@@ -28,10 +28,11 @@
         if ($data['school']->getIsActive()) {
             ?>
             <div>
-                <h1>Ajout de compte utilisateur</h1>
+                <h2>Ajout de compte utilisateur</h2>
                 <form id="formAddUsersAccounts">
                     <p class="orang">
                         La durée d'activité de ces nouveaux comptes s'ajustera sur la date de fin de contrat de votre établissement.
+                        (<a href="index.php?action=faq">Plus d'info</a>)
                     </p>
                     <p>
                         <label for="nbNewAccount">Nombre de compte à ajouter</label>
@@ -40,7 +41,7 @@
                 </form>
             </div>
             <?php
-            /*display option like :'etre averti par mail lorsqu'un de mes eleve recoit un avertissement' / 'inst' */
+            /*display option like :'etre averti par mail lorsqu'un de mes eleve recoit un avertissement' / 'inst url' */
         }
     ?>
 </section>

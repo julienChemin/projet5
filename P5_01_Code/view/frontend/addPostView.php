@@ -6,13 +6,7 @@
         <input type="hidden" name="fileTypeValue" value="">
         <input type="hidden" name="folder" value="">
         <input type="hidden" name="listTags" id="listTags" value="">
-        <?php
-        if ($_SESSION['grade'] === STUDENT) {
-            $isStudent = 'true';
-        } else {
-            $isStudent = 'false';
-        }
-        ?>
+        <?php $_SESSION['grade'] === STUDENT ? $isStudent = 'true' : $isStudent = 'false'; ?>
         <input type="hidden" name="isStudent" id="isStudent" value="<?=$isStudent?>">
 
         <div id="blockUploadType">

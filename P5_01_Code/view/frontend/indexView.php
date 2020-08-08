@@ -81,7 +81,7 @@ $posts = $data['posts'];
             <?php
         }
         if (count($posts['bySchool']) > 0) {
-            //display posts for the 4 random popular tags
+            //display posts for 4 random popular tags
             foreach ($posts['bySchool'] as $key => $arrSchoolPosts) {
                 if (!empty($arrSchoolPosts)) {
                     ?>

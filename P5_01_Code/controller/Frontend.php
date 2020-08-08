@@ -306,7 +306,18 @@ class Frontend extends Controller
                 $ProfileContentManager = new ProfileContentManager();
                 $school = $SchoolManager->getSchoolByName($_GET['school']);
                 $profileContent = $ProfileContentManager->getByProfileId($school->getId(), true);
-                RenderView::render('template.php', 'frontend/schoolProfileView.php', ['school' => $school, 'profileContent' => $profileContent, 'option' => ['schoolProfile']]);
+                $contractInfo = null;
+                if (!$school->getIsActive()) {
+                    $ContractManager = new ContractManager('school', $SchoolManager);
+                    if ($dateContractEnd = $ContractManager->getDateContractEnd($school->getId())) {
+                        $contractInfo = 'Cet établissement n\'est plus actif sur le site depuis le ' . $dateContractEnd;
+                    } else {
+                        $contractInfo = 'Cet établissement n\'est pas actif sur le site';
+                    }
+                }
+                RenderView::render(
+                    'template.php', 'frontend/schoolProfileView.php', 
+                    ['school' => $school, 'profileContent' => $profileContent, 'contractInfo' => $contractInfo, 'option' => ['schoolProfile']]);
             } else {
 				$this->invalidLink();
             }
@@ -421,10 +432,9 @@ class Frontend extends Controller
     {
         $UserManager = new UserManager();
         $PostsManager = new PostsManager();
-        $TagsManager = new TagsManager();
         if (!empty($_GET['id']) && $PostsManager->exists($_GET['id'])) {
             $post = $PostsManager->getOneById($_GET['id']);
-            $asidePosts = $PostsManager->getAsidePosts($post, $TagsManager);
+            $asidePosts = $PostsManager->getAsidePosts($post, new TagsManager());
             if ($UserManager->exists($post->getIdAuthor())) {
                 $author = $UserManager->getOneById($post->getIdAuthor());
             } else {
@@ -438,7 +448,12 @@ class Frontend extends Controller
             if ($post->getIsPrivate()) {
                 if (!empty($_SESSION) && ($post->getSchool() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL) && ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || $post->getListAuthorizedGroups() === null || in_array($_SESSION['group'], $post->getListAuthorizedGroups()))) {
                     if ($post->getFileType() === 'folder') {
-                        RenderView::render('template.php', 'frontend/folderView.php', ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['folderView']]);
+                        $userInfo = $this->getFolderViewInfo($user, $post);
+                        RenderView::render(
+                            'template.php', 'frontend/folderView.php', 
+                            ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 
+                                'userInfo' => $userInfo, 'option' => ['folderView']]
+                        );
                     } else {
                         RenderView::render('template.php', 'frontend/postView.php', ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
                     }
@@ -447,7 +462,12 @@ class Frontend extends Controller
                 }
             } else {
                 if ($post->getFileType() === 'folder') {
-                    RenderView::render('template.php', 'frontend/folderView.php', ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['folderView']]);
+                    $userInfo = $this->getFolderViewInfo($user, $post);
+                    RenderView::render(
+                        'template.php', 'frontend/folderView.php', 
+                        ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 
+                            'userInfo' => $userInfo, 'option' => ['folderView']]
+                    );
                 } else {
                     RenderView::render('template.php', 'frontend/postView.php', ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
                 }
@@ -455,6 +475,14 @@ class Frontend extends Controller
         } else {
 			$this->invalidLink();
         }
+    }
+
+    private function getFolderViewInfo($user, Post $post)
+    {
+        !empty($user) && $post->getIdAuthor() === intval($user->getId()) ? $userIsAuthor = true : $userIsAuthor = false;
+        !empty($_SESSION['grade']) && $_SESSION['grade'] === ADMIN ? $userIsAdmin = true : $userIsAdmin = false;
+        !empty($_SESSION['grade']) && $_SESSION['grade'] === MODERATOR ? $userIsModerator = true : $userIsModerator = false;
+        return ['userIsAuthor' => $userIsAuthor, 'userIsAdmin' => $userIsAdmin, 'userIsModerator' => $userIsModerator];
     }
 
     public function addPost()
@@ -465,8 +493,21 @@ class Frontend extends Controller
                 $PostsManager = new PostsManager();
                 if ($PostsManager->exists($_GET['folder'])) {
                     $folder = $PostsManager->getOneById($_GET['folder']);
-                    if ($folder->getPostType() === 'schoolPost') {
-                        RenderView::render('template.php', 'backend/addSchoolPostView.php', ['option' => ['addPost', 'tinyMCE']]);
+                    if ($folder->getFileType() === 'folder' && $folder->getPostType() === 'schoolPost') {
+                        //TODO create frontend view for user who post on school folder
+                        if ($_SESSION['grade'] === STUDENT) {
+                            $isStudent = 'true';
+                            $urlForm = 'index.php?action=uploadPost';
+                            $uploadType = 'private';
+                        } else {
+                            $isStudent = 'false';
+                            $urlForm = 'indexAdmin.php?action=uploadSchoolPost';
+                            $uploadType = 'public';
+                        }
+                        RenderView::render(
+                            'template.php', 'backend/addSchoolPostView.php', 
+                            ['isStudent' => $isStudent, 'urlForm' => $urlForm, 'uploadType' => $uploadType, 
+                                'option' => ['addPost', 'tinyMCE']]);
                     }  else {
 						RenderView::render('template.php', 'frontend/addPostView.php', ['option' => ['addPost', 'tinyMCE']]);
                     }

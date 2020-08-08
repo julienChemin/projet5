@@ -1,4 +1,5 @@
 <section id="moderatReports" class="container">
+    <h1 class="fullWidth">Modération des signalements</h1>
     <?php
     if (isset($data['reportsFromElem'])) {
         $_GET['elem'] === 'post' ? $idPost = $data['reportsFromElem']->getId() : $idPost = $data['reportsFromElem']->getIdPost();

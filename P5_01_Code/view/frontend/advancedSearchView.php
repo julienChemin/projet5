@@ -61,9 +61,11 @@ if (empty($_POST)) {
     //display filter for the advanced search
     echo '<div id="blockFilterAdvancedSearch">';
     echo '<span>Filtres de recherche : </span>';
+
     if ($_POST['schoolFilter'] !== 'noSchoolFilter') {
         echo '<span class="tag">' . $_POST['schoolFilter'] . '</span>';
     }
+
     if ($_POST['sortBy'] === 'lastPosted') {
         echo '<span class="tag">Les plus récentes</span>';
     } elseif ($_POST['sortBy'] === 'firstPosted') {
@@ -71,6 +73,7 @@ if (empty($_POST)) {
     } elseif ($_POST['sortBy'] === 'mostLiked') {
         echo '<span class="tag">Les plus appréciées</span>';
     }
+    
     if ($_POST['listTags'] !== '') {
         $listTags = explode(',', $_POST['listTags']);
         for ($i = 1; $i < count($listTags); $i++) {

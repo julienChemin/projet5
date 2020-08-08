@@ -1,34 +1,8 @@
 new stuff
-    - new way to moderat warning and banishment
-        -> warning and banishment have their own table in bdd
-        -> one entry by warn or ban, set as inactive(instead of delete) when user is unwarn / unban (allow to keep logs)
-        -> model WarningManager to manage warn / ban entries
-    - moderat website view
-        -> suppose to be for manage unused images, unused tags, contract reminder (mail before contract end) and warn/ban. 
-            But unused tags and images are frequently deleted, so for now this will be usefull only for contract reminder and warn / ban managing
-        -> later i'll use a 'cron', which execute some code automaticaly at precise date or every X day/month etc
-    - add warning view
-        -> because of the new way to moderat warning ans banishment, there is now a view to add a warning, with a text. 
-        -> banishment come itself after 3 active warning
-        -> unbanishment can happen itself if a banished user connect on the website and if dateToday >= date of unbanishment
-        -> remove dateBan from user table (information is now on warn/ban table).we keep 'nbWarning' and 'isBan' field on user table cause its usefull
-    - new way to moderat contract
-        -> have their own table (user contract / school contract)
-        -> each entries are a remind. remind one month before contract end, one week, and the last remind tell that the contract is over
-    - settings view
-        -> to see account/contract information
-        -> also some option
+    - 
         
 fixed issues
-    - moderatUser / moderatAdmin :
-        -> URL to edit grade is now OK (was a Js error)
-        -> also, inactive users were not display because i was comparing int with string 
-            (look like models are not hydrated when we use fetchObject.. so their attributs are only of type string for most of them)
-            but its fixed 
-    - warn/ban
-        -> replace every use of user->dateBan
-    - contract
-        -> add field mail for school, to remind theme when contract is near to end
-        -> replace every "User/School->dateDeadline" and delete field 'dateDeadline' for both user and school models
-            replace by $contractManager entries
-        -> webmaster can activate and disable school
+    - warn and ban entries are delete when an user is delete
+    - add titles on every administrator sections 
+    - externalize some var from view to controlleur
+

@@ -7,7 +7,7 @@
         foreach ($data['schools'] as $school) {
             if ($school->getName() !== NO_SCHOOL) {
                 !$school->getIsActive() ? $classIsActive = 'inactiveSchool' : $classIsActive = '';
-                !$school->getIsActive() ? $title = ' Cet établissement est inactif sur le site' : $title = '';
+                !$school->getIsActive() ? $title = ' Cet établissement n\'est plus actif sur le site' : $title = '';
                 ?>
                 <div class="blockSchool" title="<?=$title?>">
                     <div class="<?=$classIsActive?>">

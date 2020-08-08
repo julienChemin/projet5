@@ -12,17 +12,27 @@ font :
 */
 body{
     margin: 0px;
-
     color: white;
     background-color: #222224;
-
     font-family: 'Slabo 27px', serif;
 }
 main{
     min-height: 80vh;
 }
+h1{
+    font-size: 1.4em;
+}
+h2{
+    font-size: 1.2em;
+}
+h1, h2{
+    color: #CF8B3F;
+}
 h1, h2, h3, h4, h5, h6, caption{
     font-family: 'Asap', sans-serif;
+}
+section > h1{
+    text-align: left;
 }
 .container{
     max-width: 90%;
@@ -424,8 +434,6 @@ footer ul{
 .sliderPosts > h1{
     margin-top: 0;
     padding-top: 25px;
-    font-size: 1.4em;
-    color: #CF8B3F;
 }
 .sliderPosts hr{
     margin-bottom: 0px;
@@ -561,7 +569,7 @@ figure img{
     border-radius: 5px;
     background-color: #161617;
 }
-#searchView h1, #searchView h2, #searchView h3{
+#searchView h3{
     color: #CF8B3F;
 }
 #searchView h2{
@@ -687,7 +695,6 @@ figure img{
 /* ------------------------ LIST SCHOOLS ------------------------ */
 /* -------------------------------------------------------------- */
 #listSchoolsView h1, #listSchoolsView h2{
-    color: #CF8B3F;
     transition: 0.1s linear;
     -webkit-transition: 0.1s linear;
 }
@@ -710,9 +717,6 @@ figure img{
 /* ----------------------------------------------------------- */
 #listTagsView{
     padding: 100px 0;
-}
-#listTagsView h1, #listTagsView h2{
-    color: #CF8B3F;
 }
 #listTagsView .blockResultTag{
     background-color: #161617;
@@ -737,7 +741,6 @@ figure img{
     padding: 100px 0;
 }
 #advancedSearchView h1, #advancedSearchView h2{
-    color: #CF8B3F;
     padding-bottom: 20px;
 }
 #advancedSearchView input[type="radio"]{
@@ -1362,11 +1365,9 @@ figure:hover .iconeVideo{
     -webkit-transition: 0.5s ease;
 }
 a:hover > .previewTitle, div:hover > .previewTitle{
-    top: 45%;
-    font-size: 1.5em;
     padding :5px 0;
-    border-top : solid 1px #CF8B3F;
-    border-bottom : solid 1px #CF8B3F;
+    background-color: transparent;
+    color: white;
 }
 .post img[src='public/images/fileOther.png']{
     max-height: 75%;
@@ -1377,9 +1378,6 @@ a:hover > .previewTitle, div:hover > .previewTitle{
 }
 #addSchoolPost hr, #addPost hr{
     margin: 50px 0;
-}
-#addSchoolPost h1, #addSchoolPost h2, #addPost h1,#addPost h2{
-    color: #CF8B3F;
 }
 #addSchoolPost figcaption, #addPost figcaption{
     margin-bottom: 20px;
@@ -2055,9 +2053,6 @@ i[class="fas fa-download"]{
 /* ------------------------------------------------------------ */
 /* ------------------------ REPORT VIEW ----------------------- */
 /* ------------------------------------------------------------ */
-#reportView h1, #reportView h2{
-    color: #CF8B3F;
-}
 #reportView > div{
     display: flex;
     flex-direction: column;
@@ -2233,9 +2228,9 @@ form > div{
 /* ------------------------ MODERAT - EDIT SCHOOL ------------------------ */
 #blockModeratSchool, #blockEditSchool{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-
     padding: 100px 0px;
 }
 #blockModeratSchool > article{
@@ -2248,7 +2243,7 @@ form > div{
 #blockModeratSchool .blockSchool > div:nth-child(2) > span{
     text-align: left;
     width: 100%;
-    padding: 20px 0;;
+    padding: 20px 0;
 }
 /*--home moderat school--*/
 #homeModeratSchool{
@@ -2259,7 +2254,6 @@ form > div{
 #homeModeratSchool > a{
     border: solid 2px #161617;
     border-radius: 5px;
-
     width: 30%;
 }
 
@@ -2268,16 +2262,13 @@ form > div{
     display: flex;
     flex-wrap: nowrap;
     overflow: hidden;
-
     height: 100%;
-
     transition: transform 0.2s ease;
     -webkit-transition: transform 0.2s ease;
 }
 #formAddSchool > div{
     justify-content: center;
     align-items: center;
-    
     min-width: 100%;
 }
 #formAddSchool > div:nth-of-type(2), #formAddSchool > div:nth-of-type(3){
@@ -2296,7 +2287,6 @@ form > div{
     display: flex;
     justify-content: space-around;
     align-items: center;
-
     flex-wrap: wrap;
 }
 .inactiveSchool{
@@ -2305,7 +2295,6 @@ form > div{
 .blockSchool{
     display: flex;
     flex-direction: column;
-
     width: 80%;
     margin: 40px 0;
 }
@@ -2322,7 +2311,6 @@ form > div{
 .blockSchool > div:first-child > div{
     width: 33%;
     height: 180px;
-
     display: flex;
     justify-content: center;
     align-items: center;
@@ -2337,9 +2325,7 @@ form > div{
 }
 .blockSchool i{
     color: #CF8B3F;
-
     transform: scale(2.5);
-
     cursor: pointer;
 }
 .blockSchool .fa-caret-square-up{
@@ -2380,17 +2366,8 @@ form > div{
     display: block;
 }
 /* ----------------------------------------------------------------- */
-/* --------------------------- WARN USER --------------------------- */
-/* ----------------------------------------------------------------- */
-#blockWarnUser h1{
-    color: #CF8B3F;
-}
-/* ----------------------------------------------------------------- */
 /* ------------------------ MODERAT WEBSITE ------------------------ */
 /* ----------------------------------------------------------------- */
-#blockModeratWebsite h1{
-    color: #CF8B3F;
-}
 #blockModeratWebsite article{
     margin: 50px 0;
 }
@@ -2402,18 +2379,16 @@ form > div{
 /* ------------------------ MODERAT ADMIN / MODERATOR ------------------------ */    
 #blockModeratAdmin{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-
     padding: 100px 0px;
 }
 #moderatAdmin{
     display: flex;
     justify-content: space-around;
     align-items: center;
-
     flex-wrap: wrap;
-
     width: 100%;
 }
 #moderatAdmin .blockSchool{
@@ -2501,18 +2476,16 @@ form > div{
 /* ------------------------ MODERAT USERS ------------------------ */
 #blockModeratUsers{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-
     padding: 100px 0px;
 }
 #moderatUsers{
     display: flex;
     justify-content: space-around;
     align-items: center;
-
     flex-wrap: wrap;
-
     width: 100%;
 }
 #moderatUsers .blockSchool > div:nth-of-type(2){

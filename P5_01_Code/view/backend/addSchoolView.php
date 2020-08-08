@@ -4,6 +4,7 @@
         //add school
         ?>
         <article id="addSchool">
+            <h1>Ajouter un établissement</h1>
             <form id="formAddSchool" method="POST" action="indexAdmin.php?action=addSchool&amp;option=add">
                 <div>
                     <hr>
@@ -70,16 +71,16 @@
                     </div>
                     <hr>
                 </div>
-        <?php
-        if (isset($data['message'])) {    
-            ?>
+                <?php
+                if (isset($data['message'])) {    
+                    ?>
                     <div>
                         <p class="msg orang"><?=$data['message']?></p>
                         <input type="button" id="addSchoolBtnOk" name="addSchoolBtnOk" value="Ok">
                     </div>
-            <?php
-        }
-        ?>
+                    <?php
+                }
+                ?>
             </form>
         </article>
         <?php

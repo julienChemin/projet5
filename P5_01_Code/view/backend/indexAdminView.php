@@ -51,7 +51,7 @@
                 <input type="hidden" name="schoolName" id="schoolName" value="<?=$_SESSION['school']?>">
                 <div>
                     <h2>Récemment posté par des élèves de votre établissement</h2>
-                    <a href="index.php">Tout voir</a>
+                    <a href="index.php?action=search&sortBy=school&school=<?=$_SESSION['school']?>">Tout voir</a>
                 </div>
                 <hr>
                 <div class="posts">

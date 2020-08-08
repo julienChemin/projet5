@@ -1,5 +1,7 @@
 
 <section id="blockManageContract" class="container">
+    <h1>Paramètres</h1>
+    <hr>
     <div>
         <h1>Activation du compte</h1>
         <p>Activer votre compte vous donne accès a plusieurs fonctionnalitées - <a href="index.php?action=faq">Voir les avantages</a></p>

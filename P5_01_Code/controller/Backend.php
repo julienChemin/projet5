@@ -340,10 +340,10 @@ class Backend extends Controller
             $SchoolManager = new SchoolManager();
             $users = $UserManager->getUsersBySchool($_SESSION['school'], 'user');
             $schools = $SchoolManager->getSchoolByName($_SESSION['school']);
-            $sorting = $UserManager->moderatUsersSorting($users, $schools);
+            $sorting = $UserManager->moderatUsersSorting($users, $schools);//TODO incremental id onle for webM
             RenderView::render(
                 'template.php', 'backend/moderatUsersView.php', 
-                ['users' => $sorting['users'], 'schools' => $schools, 'isActive' => $sorting['isActive'], 
+                ['incrementalId' => 0, 'users' => $sorting['users'], 'schools' => $schools, 'isActive' => $sorting['isActive'], 
                     'option' => ['moderatUsers', 'buttonToggleSchool']]
             );
         } else {
@@ -356,6 +356,7 @@ class Backend extends Controller
         if ($_SESSION['school'] === ALL_SCHOOL) {
             $arrAcceptedValue = array('post', 'comment');
             if (!empty($_GET['elem']) && in_array($_GET['elem'], $arrAcceptedValue) && !empty($_GET['idElem']) && intval($_GET['idElem']) > 0) {
+                //TODO $this->reportFromElem (private)
                 switch ($_GET['elem']) {
                 case 'post':
                     $PostsManager = new PostsManager();
@@ -575,7 +576,7 @@ class Backend extends Controller
             if (!$school->getIsActive()) {
                 $ContractManager = new ContractManager('school', $SchoolManager);
                 if ($dateContractEnd = $ContractManager->getDateContractEnd($school->getId())) {
-                    $contractInfo = 'Cet établissement n\'est plus actif sur le site depuis le ' .$dateContractEnd;
+                    $contractInfo = 'Cet établissement n\'est plus actif sur le site depuis le ' . $dateContractEnd;
                 } else {
                     $contractInfo = 'Cet établissement n\'est pas actif sur le site';
                 }
@@ -723,7 +724,9 @@ class Backend extends Controller
         if ($_SESSION['school'] !== ALL_SCHOOL) {
             $SchoolManager = new SchoolManager();
             $school = $SchoolManager->getSchoolByName($_SESSION['school']);
-            RenderView::render('template.php', 'backend/addSchoolPostView.php', ['groups' => $school->getListSchoolGroups(), 'option' => ['addPost', 'tinyMCE']]);
+            RenderView::render(
+                'template.php', 'backend/addSchoolPostView.php', 
+                ['groups' => $school->getListSchoolGroups(), 'option' => ['addPost', 'tinyMCE']]);
         } else {
             $this->incorrectInformation();
         }

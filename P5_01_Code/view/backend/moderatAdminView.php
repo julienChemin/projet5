@@ -1,4 +1,6 @@
 <section id="blockModeratAdmin" class="container">
+    <h1 class="fullWidth">Modération de l'administration</h1>
+    <hr>
     <article id="moderatAdmin">
         <?php
         if (isset($data['users'])) {
@@ -23,9 +25,7 @@
                                     </figure>
                                 </div>
                                 <div>
-                                    <h1>
-                                        <a href="index.php?action=schoolProfile&school=<?=$school->getName()?>"><?=$school->getName()?></a>
-                                    </h1>
+                                    <h2><a href="index.php?action=schoolProfile&school=<?=$school->getName()?>"><?=$school->getName()?></a></h2>
                                 </div>
                                 <div>
                                     <i class="far fa-caret-square-down"></i>
@@ -35,21 +35,15 @@
                             <div class="tableAdminModerator">
                                 <table> 
                                     <tr>
-                                        <th>
-                                            Administrateur(s)
-                                        </th>
-                                        <th>
-                                            Passer en modérateur
-                                        </th>
+                                        <th>Administrateur(s)</th>
+                                        <th>Passer en modérateur</th>
                                     </tr>
                                     <?php
                                     foreach ($data['users'][$school->getName()] as $user) {
                                         if ($user->getIsAdmin()) {
                                             ?>
                                             <tr>
-                                                <td>
-                                                    <a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a>
-                                                </td>
+                                                <td><a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a></td>
                                             <?php
                                             if ($user->getId() !== $school->getIdAdmin() && $user->getId() !== $_SESSION['id']) {
                                                 echo '<td><i class="far fa-minus-square toModerator" schoolname="' . $school->getName() . '"></i></td>';
@@ -68,18 +62,10 @@
                                     ?>
                                     <table> 
                                         <tr>
-                                            <th>
-                                                Modérateur(s)
-                                            </th>
-                                            <th>
-                                                Passer en administrateur
-                                            </th>
-                                            <th>
-                                                Enlever les droits de modérateur
-                                            </th>
-                                            <th>
-                                                Supprimer
-                                            </th>
+                                            <th>Modérateur(s)</th>
+                                            <th>Passer en administrateur</th>
+                                            <th>Enlever les droits de modérateur</th>
+                                            <th>Supprimer</th>
                                         </tr>
                                         <?php
                                         foreach ($data['users'][$school->getName()] as $user) {
@@ -108,9 +94,7 @@
                                 } else {
                                     ?>
                                     <div class="blockStyleOne fullWidth">
-                                        <p class="msg orang textCenter">
-                                            Aucun modérateur actuellement
-                                        </p>
+                                        <p class="msg orang textCenter">Aucun modérateur actuellement</p>
                                     </div>
                                     <?php
                                 }
@@ -119,7 +103,7 @@
                                     <p class="orang">Ajouter un modérateur >></p>
                                     <div>
                                         <hr>
-                                        <h2>Information sur le nouveau modérateur</h2>
+                                        <h3>Information sur le nouveau modérateur</h3>
                                         <div>
                                             <p>
                                                 <label for="moderatorName">Identifiant</label>
@@ -156,9 +140,7 @@
                     //no school to display
                     ?>
                     <div class="blockStyleOne">
-                        <p class="msg orang textCenter">
-                            Il n'y a pas d'école à afficher
-                        </p>
+                        <p class="msg orang textCenter">Il n'y a pas d'école à afficher</p>
                     </div>
                     <?php
                 }
@@ -183,20 +165,14 @@
                                 </figure>
                             </div>
                             <div>
-                                <h1>
-                                    <a href="indexAdmin.php?action=schoolProfile&school=<?=$school->getName()?>"><?=$school->getName()?></a>
-                                </h1>
+                                <h2><a href="indexAdmin.php?action=schoolProfile&school=<?=$school->getName()?>"><?=$school->getName()?></a></h2>
                             </div>
                         </div>
                         <div class="tableAdminModerator">
                             <table> 
                                 <tr>
-                                    <th>
-                                        Administrateur(s)
-                                    </th>
-                                    <th>
-                                        Passer en modérateur
-                                    </th>
+                                    <th>Administrateur(s)</th>
+                                    <th>Passer en modérateur</th>
                                 </tr>
                                 <?php
                                 //display all admins
@@ -204,9 +180,7 @@
                                     if ($user->getIsAdmin()) {
                                         ?>
                                         <tr>
-                                            <td>
-                                                <a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a>
-                                            </td>
+                                            <td><a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a></td>
                                             <?php
                                             if (($user->getId() !== $school->getIdAdmin() && $user->getId() !== $_SESSION['id'])) {
                                                 echo '<td><i class="far fa-minus-square toModerator" schoolname="' . $school->getName() . '"></i></td>';
@@ -226,18 +200,10 @@
                                 ?>
                                 <table> 
                                     <tr>
-                                        <th>
-                                            Modérateur(s)
-                                        </th>
-                                        <th>
-                                            Passer en administrateur
-                                        </th>
-                                        <th>
-                                            Enlever les droits de modérateur
-                                        </th>
-                                        <th>
-                                            Supprimer
-                                        </th>
+                                        <th>Modérateur(s)</th>
+                                        <th>Passer en administrateur</th>
+                                        <th>Enlever les droits de modérateur</th>
+                                        <th>Supprimer</th>
                                     </tr>
                                     <?php
                                     foreach ($data['users'] as $user) {
@@ -267,9 +233,7 @@
                                 // there is no moderator to display
                                 ?>
                                 <div class="blockStyleOne fullWidth">
-                                    <p class="msg orang textCenter">
-                                        Aucun modérateur actuellement
-                                    </p>
+                                    <p class="msg orang textCenter">Aucun modérateur actuellement</p>
                                 </div>
                                 <?php
                             }
@@ -278,7 +242,7 @@
                                 <p class="orang">Ajouter un modérateur >></p>
                                 <div>
                                     <hr>
-                                    <h2>Information sur le nouveau modérateur</h2>
+                                    <h3>Information sur le nouveau modérateur</h3>
                                     <div>
                                         <p>
                                             <label for="moderatorName">Identifiant</label>

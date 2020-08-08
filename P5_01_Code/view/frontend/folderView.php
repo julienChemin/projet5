@@ -3,10 +3,9 @@ $post = $data['post'];
 $asidePosts = $data['asidePosts'];
 $author = $data['author'];
 $user = $data['user'];
-$post->getPostType() === 'schoolPost' ? $postIsSchoolPost = true : $postIsSchoolPost = false;
-!empty($user) && $post->getIdAuthor() === intval($user->getId()) ? $userIsAuthor = true : $userIsAuthor = false;
-!empty($_SESSION['grade']) && $_SESSION['grade'] === ADMIN ? $userIsAdmin = true : $userIsAdmin = false;
-!empty($_SESSION['grade']) && $_SESSION['grade'] === MODERATOR ? $userIsModerator = true : $userIsModerator = false;
+$userIsAuthor = $data['userInfo']['userIsAuthor'];
+$userIsAdmin = $data['userInfo']['userIsAdmin'];
+$userIsModerator = $data['userInfo']['userIsModerator'];
 ?>
 <section id="viewFolder" class="container">
     <article class="fullWidth">
@@ -98,10 +97,10 @@ $post->getPostType() === 'schoolPost' ? $postIsSchoolPost = true : $postIsSchool
                             echo '<li id="heart"><i class="far fa-heart" idpost="' . $post->getId() . '"></i></li>';
                         }
                         echo '<li id="nbLike"><span><span>' . $post->getNbLike() . '</span><i class="fas fa-heart"></i></span></li>';
-                        if (!empty($user) && ($userIsAuthor || ($postIsSchoolPost && $post->getSchool() === $user->getSchool() && ($userIsAdmin || $userIsModerator || $post->getAuthorizedGroups() === null || in_array($user->getSchoolGroup(), $post->getAuthorizedGroups()))))) {
+                        if (!empty($user) && ($userIsAuthor || ($post->getPostType() === 'schoolPost' && $post->getSchool() === $user->getSchool() && ($userIsAdmin || $userIsModerator || $post->getAuthorizedGroups() === null || in_array($user->getSchoolGroup(), $post->getAuthorizedGroups()))))) {
                             echo '<li id="postOnFolder"><a href="index.php?action=addPost&folder=' . $post->getId() . '"><i class="fas fa-folder-plus"></i></a></li>';
                         }
-                        if (!empty($user) && ($userIsAuthor || $_SESSION['school'] === ALL_SCHOOL || ($postIsSchoolPost && $post->getSchool() === $_SESSION['school'] && $userIsAdmin))) {
+                        if (!empty($user) && ($userIsAuthor || $_SESSION['school'] === ALL_SCHOOL || ($post->getPostType() === 'schoolPost' && $post->getSchool() === $_SESSION['school'] && $userIsAdmin))) {
                             echo '<li id="deletePost" title="Supprimer la publication"><i class="far fa-trash-alt"></i></li>';
                             echo '<a href="index.php?action=deletePost&id=' . $post->getId() . '" id="confirmDeletePost" title="Supprimer la publication">Supprimer définitivement la publication ?</i></a>';
                         } elseif (!empty($user)) {
