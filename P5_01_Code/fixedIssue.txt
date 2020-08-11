@@ -1,7 +1,11 @@
 new stuff
-    - navbar split in fiew view depending of the user's grade ( webmaster / admin - modo / logged user / unlog user)
+    - 
         
 fixed issues
-    - empty folder display message 'ce dossier est vide'
-    - 
-
+    - backend schoolProfileView -> view depend if user is admin or moderator ( allow me to delete all the condition 'if grade=admin') that more readable
+    - spliting some view into admin / webmaster side (more readable)
+        -> moderatSchoolView
+        -> moderatAdminView
+        -> moderatUsersView
+        -> schoolHistory
+        -> schoolProfileView
