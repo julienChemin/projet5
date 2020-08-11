@@ -106,9 +106,8 @@ if (empty($_POST)) {
             echo '</figure>';
         }
         echo '</div>';
-        //paging
+        //display paging
         if (!empty($data['posts']['posts'])) {
-            //display paging
             echo '<nav id="pagingQuickSearch" class="fullWidth">';
             echo '<ol>';
             !empty($POST['pageToGo']) ? $actualPage = intval($POST['pageToGo']) : $actualPage = 1;

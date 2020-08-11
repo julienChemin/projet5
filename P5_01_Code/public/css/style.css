@@ -1525,10 +1525,8 @@ a:hover > .previewTitle, div:hover > .previewTitle{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
     border: solid 1px #CF8B3F;
     border-radius: 20px;
-
     width: 40%;
     min-height: 100px;
     overflow: hidden;
@@ -1537,9 +1535,7 @@ a:hover > .previewTitle, div:hover > .previewTitle{
     display: flex;
     justify-content: center;
     align-items: center;
-
     border: none;
-
     width: 40%;
     min-height: 100px;
 }
@@ -1547,7 +1543,6 @@ a:hover > .previewTitle, div:hover > .previewTitle{
     display: none;
     justify-content: center;
     align-items: center;
-
     height: 500px;
 }
 #blockUploadFile #preview img{

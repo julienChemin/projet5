@@ -83,7 +83,7 @@ abstract class Controller
             session_destroy();
         }
         $this->cookieDestroy();
-        header('Location: ' . static::$INDEX);
+        header('Location: index.php');
     }
 
     public function forceDisconnect()

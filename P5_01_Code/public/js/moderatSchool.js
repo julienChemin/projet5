@@ -24,7 +24,7 @@ if (document.getElementById('blockModeratSchool') !== null) {
 
     if (blockSchool.length > 1) {
         //all schools are display, add event to know which school is selected
-        let allSchoolName = document.querySelectorAll('.blockSchool h1');
+        let allSchoolName = document.querySelectorAll('.blockSchool h2');
         let allBtnDisplaySchool = document.querySelectorAll('.blockSchool i[class~="fa-caret-square-down"]');
 
         for (let i=0;i<blockSchool.length;i++) {

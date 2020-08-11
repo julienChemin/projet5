@@ -1,8 +1,7 @@
 <section id="moderatReports" class="container">
     <h1 class="fullWidth">Modération des signalements</h1>
     <?php
-    if (isset($data['reportsFromElem'])) {
-        $_GET['elem'] === 'post' ? $idPost = $data['reportsFromElem']->getId() : $idPost = $data['reportsFromElem']->getIdPost();
+    if (isset($data['idElem'])) {
         //reports from one comment / post
         ?>
         <article id="content" class="moderatReportsFromElem">
@@ -10,7 +9,7 @@
                 <p>Définir ce contenu comme traité</p>
                 <i class="fas fa-check"></i>
             </div>
-            <p><a href="index.php?action=post&id=<?=$idPost?>">Voir le contenu concerné</a></p>
+            <p><a href="index.php?action=post&id=<?=$data['idElem']?>">Voir le contenu concerné</a></p>
             <table>
                 <thead>
                     <th>Qui a signalé</th>

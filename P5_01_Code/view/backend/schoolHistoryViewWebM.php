@@ -2,6 +2,28 @@
     <h1>Historique</h1>
     <hr>
     <article id="schoolHistory">
+        <div id="blockSchools">
+        <?php
+        foreach ($data['schools'] as $school) {
+            $school->getIsActive() ? $classIsActive = "" : $classIsActive = "inactiveSchool";
+            ?>
+            <div class="blockSchool">
+                <div class="<?=$classIsActive?>">
+                    <div>
+                        <figure>
+                            <img src='<?=$school->getLogo()?>'>
+                        </figure>
+                    </div>
+                    <div>
+                        <h2><?=$school->getName()?></h2>
+                        <span class="hide"><?=$school->getId()?></span>
+                    </div>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
+        </div>
         <div>
             <div>
                 <div id="search">
@@ -11,8 +33,6 @@
                     <button value="categoryAndDate">Catégorie et date</button>
                 </div>
                 <form>
-                    <span class="hide"><?=$data['school']->getId()?></span>
-                    <input type="hidden" name="schoolName" id="schoolName" value="<?=$data['school']->getName()?>">
                     <input type="hidden" name="sortBy" id="sortBy" value="">
                     <div>
                         <label for="tagCategory">Catégorie</label>
@@ -34,24 +54,7 @@
                     </div>
                 </form>
             </div>
-            <div id="blockEntries">
-                <?php
-                if (!empty($data['entries'])) {
-                    foreach ($data['entries'] as $entry) {
-                        echo '<div class="entry">';
-                        echo '<span>' . $entry->getDateEntry() . '</span>';
-                        echo '<span>' . $entry->getEntry() . '</span>';
-                        echo '</div>';
-                    }
-                } else {
-                    //no school entry to display
-                    echo '<div class="entry">';
-                    echo '<span></span>';
-                    echo '<span>Il n\'y a pas d\'historique à afficher</span>';
-                    echo '</div>';
-                }
-                ?>
-            </div>
+            <div id="blockEntries"></div>
             <p id="showMore" class="orang">Afficher plus</p>
         </div>
     </article>

@@ -4,123 +4,60 @@
     <article id="moderatSchool">
         <?php
         if (!empty($data['schools'])) {
-            if ($_SESSION['school'] === ALL_SCHOOL) {
-                //webmaster consulting all school
-                $schools = $data['schools'];
-                for ($i = 0; $i < count($schools); $i++) {
-                    ?>
-                    <div class="blockSchool">
-                        <div class="<?=$schools[$i]->getIsActive() ? "" : "inactiveSchool"?>">
-                            <div>
-                                <figure>
-                                    <img src='<?=$schools[$i]->getLogo()?>'>
-                                </figure>
-                            </div>
-                            <div>
-                                <h2><a href="index.php?action=schoolProfile&school=<?=$schools[$i]->getName()?>"><?=$schools[$i]->getName()?></a></h2>
-                            </div>
-                            <div>
-                                <i class="far fa-caret-square-down"></i>
-                                <i class="far fa-caret-square-up"></i>
-                            </div>
-                        </div>
-                        <div>
-                            <span><?=$data['contractInfo'][$i]?></span>
-                            <span>
-                                <button class="btnEdit<?=$schools[$i]->getIsActive() ? "ToInactive" : "ToActive"?>"><?=$schools[$i]->getIsActive() ? "Désactiver" : "Activer"?></button>
-                            </span>
-                            <table>
-                                <tr>
-                                    <td>Nom de l'établissement</td>
-                                    <td><?=$schools[$i]->getName()?></td>
-                                    <td><button class="btnEditName">Modifier</button></td>
-                                </tr>
-                                <tr>
-                                    <td>Administrateur</td>
-                                    <td><?=$schools[$i]->getNameAdmin()?></td>
-                                    <td><button class="btnEditAdmin">Modifier</button></td>
-                                </tr>
-                                <tr>
-                                    <td>Mail</td>
-                                    <td><?=$schools[$i]->getMail()?></td>
-                                    <td><button class="btnEditMail">Modifier</button></td>
-                                </tr>
-                                <tr>
-                                    <td>Code d'affiliation</td>
-                                    <td><?=$schools[$i]->getCode()?></td>
-                                    <td><button class="btnEditCode">Modifier</button></td>
-                                </tr>
-                                <tr>
-                                    <td>Nombre de comptes</td>
-                                    <td>Total - <?=$schools[$i]->getNbEleve()?> | Actif - <?=$schools[$i]->getNbActiveAccount()?></td>
-                                    <td><button class="btnEditNbEleve">Modifier</button></td>
-                                </tr>
-                                <tr>
-                                    <td>Logo</td>
-                                    <td><?=$schools[$i]->getLogo() === 'public/images/question-mark.png' ? 'Logo par défaut' : 'Logo personnalisé';?></td>
-                                    <td><button class="btnEditLogo">Modifier</button></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <?php
-                }
-            } elseif ($_SESSION['grade'] === ADMIN) {
-                //admin consulting his school
-                $school = $data['schools'];
-                ?>
-                <div class="blockSchool">
-                    <div class="<?=$school->getIsActive() ? "" : "inactiveSchool"?>">
-                        <div>
-                            <figure>
-                                <img src='<?=$school->getLogo()?>'>
-                            </figure>
-                        </div>
-                        <div>
-                            <h2><a href="indexAdmin.php?action=schoolProfile&school=<?=$school->getName()?>"><?=$school->getName()?></a></h2>
-                        </div>
+            //admin consulting his school
+            $school = $data['schools'];
+            ?>
+            <div class="blockSchool">
+                <div class="<?=$school->getIsActive() ? "" : "inactiveSchool"?>">
+                    <div>
+                        <figure>
+                            <img src='<?=$school->getLogo()?>'>
+                        </figure>
                     </div>
                     <div>
-                        <span><?=$data['contractInfo']?></span>
-                        <span>
-                            <button><a href="indexAdmin.php?action=settings">Gérer le contrat</a></button>
-                        </span>
-                        <table>
-                            <tr>
-                                <td>Nom de l'établissement</td>
-                                <td><?=$school->getName()?></td>
-                                <td><button class="btnEditName">Modifier</button></td>
-                            </tr>
-                            <tr>
-                                <td>Administrateur</td>
-                                <td><?=$school->getNameAdmin()?></td>
-                                <td><button class="btnEditAdmin">Modifier</button></td>
-                            </tr>
-                            <tr>
-                                <td>Mail</td>
-                                <td><?=$school->getMail()?></td>
-                                <td><button class="btnEditMail">Modifier</button></td>
-                            </tr>
-                            <tr>
-                                <td>Code d'affiliation</td>
-                                <td><?=$school->getCode()?></td>
-                                <td><button class="btnEditCode">Modifier</button></td>
-                            </tr>
-                            <tr>
-                                <td>Nombre de comptes</td>
-                                <td>Total - <?=$school->getNbEleve()?> | Actif - <?=$school->getNbActiveAccount()?></td>
-                                <td><a href="indexAdmin.php?action=moderatUsers"><button>Consulter</button></a></td>
-                            </tr>
-                            <tr>
-                                <td>Logo</td>
-                                <td><?=$school->getLogo() === 'public/images/question-mark.png' ? 'Logo par défaut' : 'Logo personnalisé';?></td>
-                                <td><button class="btnEditLogo">Modifier</button></td>
-                            </tr>
-                        </table>
+                        <h2><a href="indexAdmin.php?action=schoolProfile&school=<?=$school->getName()?>"><?=$school->getName()?></a></h2>
                     </div>
                 </div>
-                <?php
-            }
+                <div>
+                    <span><?=$data['contractInfo']?></span>
+                    <span>
+                        <button><a href="indexAdmin.php?action=settings">Gérer le contrat</a></button>
+                    </span>
+                    <table>
+                        <tr>
+                            <td>Nom de l'établissement</td>
+                            <td><?=$school->getName()?></td>
+                            <td><button class="btnEditName">Modifier</button></td>
+                        </tr>
+                        <tr>
+                            <td>Administrateur</td>
+                            <td><?=$school->getNameAdmin()?></td>
+                            <td><button class="btnEditAdmin">Modifier</button></td>
+                        </tr>
+                        <tr>
+                            <td>Mail</td>
+                            <td><?=$school->getMail()?></td>
+                            <td><button class="btnEditMail">Modifier</button></td>
+                        </tr>
+                        <tr>
+                            <td>Code d'affiliation</td>
+                            <td><?=$school->getCode()?></td>
+                            <td><button class="btnEditCode">Modifier</button></td>
+                        </tr>
+                        <tr>
+                            <td>Nombre de comptes</td>
+                            <td>Total - <?=$school->getNbEleve()?> | Actif - <?=$school->getNbActiveAccount()?></td>
+                            <td><a href="indexAdmin.php?action=moderatUsers"><button>Consulter</button></a></td>
+                        </tr>
+                        <tr>
+                            <td>Logo</td>
+                            <td><?=$school->getLogo() === 'public/images/question-mark.png' ? 'Logo par défaut' : 'Logo personnalisé';?></td>
+                            <td><button class="btnEditLogo">Modifier</button></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <?php
         } else {
             //no school to display
             ?>
@@ -136,7 +73,7 @@
     <form class="container" method="POST" action="indexAdmin.php?action=editSchool" enctype="multipart/form-data">
         <div>
             <input type="hidden" name="elem" value="">
-            <input type="hidden" name="schoolName" value=<?=$_SESSION['school'] !== ALL_SCHOOL ? '"' . $school->getName() . '"' : "" ?>>
+            <input type="hidden" name="schoolName" value="<?=$school->getName()?>">
 
             <p id="blockName">
                 <label for="editName">Nouveau nom de l'établissement</label>

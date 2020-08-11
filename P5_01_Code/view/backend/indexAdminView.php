@@ -44,6 +44,7 @@
         }
         ?>
         </article>
+        
         <?php
         if ($_SESSION['school'] !== ALL_SCHOOL) {
             ?>

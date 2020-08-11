@@ -64,11 +64,7 @@ class Backend extends Controller
                 $message = "l'adresse mail renseignée ne correspond à aucun utilisateur";
             }
         }
-        if (!empty($_SESSION) && $_SESSION['school'] === ALL_SCHOOL) {
-            RenderView::render('template.php', 'backend/indexAdminView.php');
-        } else {
-            RenderView::render('template.php', 'backend/indexAdminView.php', ['option' => ['forgetPassword', 'signIn', 'home'], 'message' => $message]);
-        }
+        RenderView::render('template.php', 'backend/indexAdminView.php', ['option' => ['forgetPassword', 'signIn', 'home'], 'message' => $message]);
     }
 
     public function addSchool()
@@ -151,7 +147,8 @@ class Backend extends Controller
                     $contractInfo = 'Cet établissement n\'est pas actif';
                 }
             }
-            RenderView::render('template.php', 'backend/moderatSchoolView.php', 
+            $_SESSION['school'] === ALL_SCHOOL ? $view = 'moderatSchoolViewWebM.php' : $view = 'moderatSchoolView.php';
+            RenderView::render('template.php', 'backend/' . $view, 
                 ['schools' => $schools, 'contractInfo' => $contractInfo, 
                 'option' => ['buttonToggleSchool', 'moderatSchool']]);
         } else {
@@ -307,14 +304,13 @@ class Backend extends Controller
         if ($_SESSION['grade'] === ADMIN) {
             $UserManager = new UserManager();
             $SchoolManager = new SchoolManager();
-            $HistoryManager = new HistoryManager();
             $message = null;
             if (isset($_GET['option'], $_POST['schoolName']) && $_GET['option'] === 'addModerator') {
                 //add new moderator
                 if ($_SESSION['school'] === $_POST['schoolName'] || $_SESSION['school'] === ALL_SCHOOL) {
                     $arrCanAddModerator = $SchoolManager->canAddModerator($_POST, $UserManager);
                     if ($arrCanAddModerator['canAdd']) {
-                        $message = $SchoolManager->addModerator($_POST, $UserManager, $HistoryManager);
+                        $message = $SchoolManager->addModerator($_POST, $UserManager, new HistoryManager());
                     } else {
                         $message = $arrCanAddModerator['message'];
                     }
@@ -324,8 +320,9 @@ class Backend extends Controller
             }
             $schools = $SchoolManager->getSchoolByName($_SESSION['school']);
             $sorting = $UserManager->moderatAdminSorting($UserManager->getUsersBySchool($_SESSION['school'], 'admin'));
+            $_SESSION['school'] === ALL_SCHOOL ? $view = 'moderatAdminViewWebM.php' : $view = 'moderatAdminView.php';
             RenderView::render(
-                'template.php', 'backend/moderatAdminView.php', 
+                'template.php', 'backend/' . $view, 
                 ['users' => $sorting['users'], 'schools' => $schools, 'nbModerator' => $sorting['nbModerator'], 'message' => $message, 
                     'option' => ['moderatAdmin', 'buttonToggleSchool']]);
         } else {
@@ -335,50 +332,28 @@ class Backend extends Controller
 
     public function moderatUsers()
     {
-        if ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {
-            $UserManager = new UserManager();
-            $SchoolManager = new SchoolManager();
-            $users = $UserManager->getUsersBySchool($_SESSION['school'], 'user');
-            $schools = $SchoolManager->getSchoolByName($_SESSION['school']);
-            $sorting = $UserManager->moderatUsersSorting($users, $schools);//TODO incremental id onle for webM
-            RenderView::render(
-                'template.php', 'backend/moderatUsersView.php', 
-                ['incrementalId' => 0, 'users' => $sorting['users'], 'schools' => $schools, 'isActive' => $sorting['isActive'], 
-                    'option' => ['moderatUsers', 'buttonToggleSchool']]
-            );
-        } else {
-            $this->accessDenied();
-        }
+        $UserManager = new UserManager();
+        $SchoolManager = new SchoolManager();
+        $users = $UserManager->getUsersBySchool($_SESSION['school'], 'user');
+        $schools = $SchoolManager->getSchoolByName($_SESSION['school']);
+        $sorting = $UserManager->moderatUsersSorting($users, $schools);
+        $_SESSION['school'] === ALL_SCHOOL ? $view = 'moderatUsersViewWebM.php' : $view = 'moderatUsersView.php';
+        RenderView::render(
+            'template.php', 'backend/' . $view, 
+            ['incrementalId' => 0, 'users' => $sorting['users'], 'schools' => $schools, 'isActive' => $sorting['isActive'], 
+                'option' => ['moderatUsers', 'buttonToggleSchool']]
+        );
     }
 
     public function moderatReports()
     {
         if ($_SESSION['school'] === ALL_SCHOOL) {
             $arrAcceptedValue = array('post', 'comment');
+            $idElem = null;
             if (!empty($_GET['elem']) && in_array($_GET['elem'], $arrAcceptedValue) && !empty($_GET['idElem']) && intval($_GET['idElem']) > 0) {
-                //TODO $this->reportFromElem (private)
-                switch ($_GET['elem']) {
-                case 'post':
-                    $PostsManager = new PostsManager();
-                    if ($PostsManager->exists(intval($_GET['idElem']))) {
-                              $elem = $PostsManager->getOneById($_GET['idElem']);
-                    } else {
-                        $this->incorrectInformation();
-                    }
-                    break;
-                case 'comment':
-                    $CommentsManager = new CommentsManager();
-                    if ($CommentsManager->exists(intval($_GET['idElem']))) {
-                        $elem = $CommentsManager->getOneById($_GET['idElem']);
-                    } else {
-                        $this->incorrectInformation();
-                    }
-                    break;
-                }
-                RenderView::render('template.php', 'backend/moderatReportsView.php', ['reportsFromElem' => $elem, 'option' => ['moderatReports']]);
-            } else {
-                RenderView::render('template.php', 'backend/moderatReportsView.php', ['option' => ['moderatReports']]);
+                $idElem = $this->getConcernedPostIdFromReport ($_GET['elem'], intval($_GET['idElem']));
             }
+            RenderView::render('template.php', 'backend/moderatReportsView.php', ['idElem' => $idElem, 'option' => ['moderatReports']]);
         } else {
             $this->accessDenied();
         }
@@ -568,8 +543,7 @@ class Backend extends Controller
     public function schoolProfile()
     {
         if (!empty($_GET['school']) 
-        && ($_GET['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)
-        && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) {
+        && ($_GET['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
             $SchoolManager = new SchoolManager();
             $school = $SchoolManager->getSchoolByName($_GET['school']);
             $contractInfo = null;
@@ -583,7 +557,8 @@ class Backend extends Controller
             }
             $ProfileContentManager = new ProfileContentManager();
             $profileContent = $ProfileContentManager->getByProfileId($school->getId(), true);
-            RenderView::render('template.php', 'backend/schoolProfileView.php', 
+            $_SESSION['grade'] === ADMIN ? $view = 'backend' : $view = 'frontend';
+            RenderView::render('template.php', $view . '/schoolProfileView.php', 
                 ['school' => $school, 'profileContent' => $profileContent, 'contractInfo' => $contractInfo, 
                 'option' => ['schoolProfile', 'tinyMCE']]);
         } else {
@@ -694,12 +669,12 @@ class Backend extends Controller
 
     public function schoolHistory()
     {
-        $HistoryManager = new HistoryManager();
         $SchoolManager = new SchoolManager();
         if ($_SESSION['school'] === ALL_SCHOOL) {
             $schools = $SchoolManager->getSchoolByName($_SESSION['school']);
-            RenderView::render('template.php', 'backend/schoolHistoryView.php', ['schools' => $schools, 'option' => ['schoolHistory']]);
+            RenderView::render('template.php', 'backend/schoolHistoryViewWebM.php', ['schools' => $schools, 'option' => ['schoolHistory']]);
         } else {
+            $HistoryManager = new HistoryManager();
             $school = $SchoolManager->getSchoolByName($_SESSION['school']);
             $entries = $HistoryManager->getBySchool($school->getId());
             RenderView::render('template.php', 'backend/schoolHistoryView.php', ['school' => $school, 'entries' => $entries, 'option' => ['schoolHistory']]);
@@ -763,5 +738,25 @@ class Backend extends Controller
             }
         }
         header('Location: indexAdmin.php?action=schoolProfile&school=' . $_SESSION['school']);
+    }
+
+    private function getConcernedPostIdFromReport(string $elem, int $idElem)
+    {
+        switch ($elem) {
+            case 'post':
+                return $idElem;
+                break;
+            case 'comment':
+                $CommentsManager = new CommentsManager();
+                if ($CommentsManager->exists($idElem)) {
+                    $comment = $CommentsManager->getOneById($idElem);
+                    return $comment->getIdPost();
+                } else {
+                    $this->incorrectInformation();
+                }
+                break;
+            default :
+                $this->incorrectInformation();
+        }
     }
 }
