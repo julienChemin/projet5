@@ -1394,7 +1394,7 @@ a:hover > .previewTitle, div:hover > .previewTitle{
     width: 100%;
 }
 #btnAddFolder, #btnAddFile{
-    width: 20%;
+    width: 10%;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -1436,8 +1436,8 @@ a:hover > .previewTitle, div:hover > .previewTitle{
 }
 #fileTypeSelection label img{
     cursor: pointer;
-    max-width: 75%;
-    max-height: 65%;
+    width: 50%;
+    height: 100%;
 }
 #blockIsPrivate{
     display: flex;
@@ -1555,7 +1555,7 @@ a:hover > .previewTitle, div:hover > .previewTitle{
     max-height: 90%;
 }
 #uploadFile{
-    align-self: flex-start;
+    max-width: 90%;
 }
 #blockTinyMce{
     width: 100%;
@@ -1642,8 +1642,7 @@ a:hover > .previewTitle, div:hover > .previewTitle{
     display: none;
     margin-top: 20px;
     padding: 15px;
-    font-size: 2em;
-    width: 200px;
+    width: 150px;
 }
 /* ---------------------------------------------------------- */
 /* ------------------------- POST VIEW ---------------------- */

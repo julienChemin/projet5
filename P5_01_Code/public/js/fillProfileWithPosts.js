@@ -227,6 +227,8 @@ window.addEventListener('load', function(){
 			} else {
 				fillProfile(sortedPosts);
 			}
+		} else if (arr['action'] === 'post') {
+			document.querySelector('#viewFolder > article > section > div').innerHTML = '<p class="emptyFolder">Ce dossier est vide pour le moment</p>';
 		}
 	});
 });

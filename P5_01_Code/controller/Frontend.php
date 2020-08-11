@@ -493,17 +493,17 @@ class Frontend extends Controller
                 $PostsManager = new PostsManager();
                 if ($PostsManager->exists($_GET['folder'])) {
                     $folder = $PostsManager->getOneById($_GET['folder']);
+                    //TODO create frontend view for user who post on school folder
+                    if ($_SESSION['grade'] === STUDENT) {
+                        $isStudent = 'true';
+                        $urlForm = 'index.php?action=uploadPost';
+                        $uploadType = 'private';
+                    } else {
+                        $isStudent = 'false';
+                        $urlForm = 'indexAdmin.php?action=uploadSchoolPost';
+                        $uploadType = 'public';
+                    }
                     if ($folder->getFileType() === 'folder' && $folder->getPostType() === 'schoolPost') {
-                        //TODO create frontend view for user who post on school folder
-                        if ($_SESSION['grade'] === STUDENT) {
-                            $isStudent = 'true';
-                            $urlForm = 'index.php?action=uploadPost';
-                            $uploadType = 'private';
-                        } else {
-                            $isStudent = 'false';
-                            $urlForm = 'indexAdmin.php?action=uploadSchoolPost';
-                            $uploadType = 'public';
-                        }
                         RenderView::render(
                             'template.php', 'backend/addSchoolPostView.php', 
                             ['isStudent' => $isStudent, 'urlForm' => $urlForm, 'uploadType' => $uploadType, 

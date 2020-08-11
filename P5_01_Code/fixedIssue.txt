@@ -1,8 +1,7 @@
 new stuff
-    - 
+    - navbar split in fiew view depending of the user's grade ( webmaster / admin - modo / logged user / unlog user)
         
 fixed issues
-    - warn and ban entries are delete when an user is delete
-    - add titles on every administrator sections 
-    - externalize some var from view to controlleur
+    - empty folder display message 'ce dossier est vide'
+    - 
 

@@ -724,9 +724,18 @@ class Backend extends Controller
         if ($_SESSION['school'] !== ALL_SCHOOL) {
             $SchoolManager = new SchoolManager();
             $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+            if ($_SESSION['grade'] === STUDENT) {
+                $isStudent = 'true';
+                $urlForm = 'index.php?action=uploadPost';
+                $uploadType = 'private';
+            } else {
+                $isStudent = 'false';
+                $urlForm = 'indexAdmin.php?action=uploadSchoolPost';
+                $uploadType = 'public';
+            }
             RenderView::render(
                 'template.php', 'backend/addSchoolPostView.php', 
-                ['groups' => $school->getListSchoolGroups(), 'option' => ['addPost', 'tinyMCE']]);
+                ['isStudent' => $isStudent, 'urlForm' => $urlForm, 'uploadType' => $uploadType, 'groups' => $school->getListSchoolGroups(), 'option' => ['addPost', 'tinyMCE']]);
         } else {
             $this->incorrectInformation();
         }
