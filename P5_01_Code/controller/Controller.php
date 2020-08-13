@@ -114,9 +114,11 @@ abstract class Controller
         }
     }
 
-    public function redirection(string $url = null)
+    public function redirection(string $url = null, bool $urlFirst = false)
     {
-        if (isset($_SERVER['HTTP_REFERER'])) {
+        if ($urlFirst) {
+            header('Location: ' . $url);
+        } elseif (isset($_SERVER['HTTP_REFERER'])) {
             header('Location: ' . $_SERVER['HTTP_REFERER']);
         } elseif (!empty($url)) {
             header('Location: ' . $url);

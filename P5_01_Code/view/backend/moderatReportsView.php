@@ -33,6 +33,9 @@
                 <li id="btnReportComment">
                     Commentaires signalés
                 </li>
+                <li id="btnReportOther">
+                    Problèmes signalés
+                </li>
             </ul>
         </nav>
         <article id="content">

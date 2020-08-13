@@ -1,8 +1,5 @@
 <section id="signUp" class="container">
-    <div class="textCenter">
-        <p>- Pour le moment, la création de compte est réservé au élèves faisant parti d'un établissement scolaire associé au site Art-School.fr</p>
-        <p>- Peut etre plus tard.</p>    
-    </div>
+    <h1>Inscription</h1>
     <form id="formSignUp" method="POST" action="index.php?action=signUp">
         <div>
             <div>

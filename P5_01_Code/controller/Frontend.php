@@ -493,7 +493,6 @@ class Frontend extends Controller
                 $PostsManager = new PostsManager();
                 if ($PostsManager->exists($_GET['folder'])) {
                     $folder = $PostsManager->getOneById($_GET['folder']);
-                    //TODO create frontend view for user who post on school folder
                     if ($_SESSION['grade'] === STUDENT) {
                         $isStudent = 'true';
                         $urlForm = 'index.php?action=uploadPost';
@@ -813,24 +812,18 @@ class Frontend extends Controller
 
     public function report()
     {
-        if (!empty($_SESSION) && !empty($_GET['elem']) && !empty($_GET['id'])) {
-            $ReportManager = new ReportManager();
-            $reportExists = $ReportManager->reportExists($_GET['elem'], $_GET['id'], $_SESSION['id']);
+        if (!empty($_SESSION) && !empty($_GET['elem'])) {
             switch ($_GET['elem']) {
-            case 'post' :
-                $PostsManager = new PostsManager();
-                $elemExists = $PostsManager->exists($_GET['id']);
+                case 'post' :
+                    $this->reportPost($_GET['id']);
+                    break;
+                case 'comment' :
+                    $this->reportComment($_GET['id']);
+                    break;
+                case 'other' :
+                    $this->reportOther();
                 break;
-            case 'comment' :
-                $CommentsManager = new CommentsManager();
-                $elemExists = $CommentsManager->exists($_GET['id']);
-                break;
-            default : $this->incorrectInformation();
-            }
-            if ($elemExists) {
-                RenderView::render('template.php', 'frontend/reportView.php', ['reportExists' => $reportExists, 'option' => ['tinyMCE']]);
-            } else {
-				$this->incorrectInformation();
+                default : $this->incorrectInformation();
             }
         } else {
 			$this->incorrectInformation();
@@ -839,14 +832,16 @@ class Frontend extends Controller
 
     public function setReport()
     {
-        $arrAcceptedElem = array('post', 'comment');
-        if (!empty($_SESSION) && !empty($_POST['elem']) && in_array($_POST['elem'], $arrAcceptedElem) && !empty($_POST['idElem']) && intval($_POST['idElem']) > 0 && !empty($_POST['tinyMCEtextarea'])) {
+        $arrAcceptedElem = array('post', 'comment', 'other');
+        if (!empty($_SESSION) && !empty($_POST['elem']) && in_array($_POST['elem'], $arrAcceptedElem) 
+        && !empty($_POST['tinyMCEtextarea'])) {
             $ReportManager = new ReportManager();
-            $ReportManager->setReport($_POST['elem'], intval($_POST['idElem']), $_SESSION['id'], $_POST['tinyMCEtextarea']);
+            !empty($_POST['idElem']) ? $idElem = intval($_POST['idElem']) : $idElem = null;
+            $ReportManager->setReport($_POST['elem'], $_POST['tinyMCEtextarea'], $idElem, $_SESSION['id']);
             if (!empty($_POST['idPost']) && intval($_POST['idPost']) > 0) {
                 header('Location: index.php?action=post&id=' . $_POST['idPost']);
             } else {
-				$this->redirection();
+				$this->redirection('index.php', true);
             }
         } else {
 			$this->incorrectInformation();
@@ -856,5 +851,40 @@ class Frontend extends Controller
     public function faq()
     {
         RenderView::render('template.php', 'frontend/faqView.php');
+    }
+
+    private function reportPost(int $elemId)
+    {
+        $PostsManager = new PostsManager();
+        if ($elemId > 0 && $PostsManager->exists($_GET['id'])) {
+            $ReportManager = new ReportManager();
+            if (!$ReportManager->reportExists('post', $elemId, $_SESSION['id'])) {
+                RenderView::render('template.php', 'frontend/reportView.php', ['option' => ['tinyMCE']]);
+            } else {
+                $this->error('Vous avez déja signalé ce contenu');
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
+    private function reportComment(int $elemId)
+    {
+        $CommentsManager = new CommentsManager();
+        if ($elemId > 0 && $CommentsManager->exists($_GET['id'])) {
+            $ReportManager = new ReportManager();
+            if (!$ReportManager->reportExists('comment', $elemId, $_SESSION['id'])) {
+                RenderView::render('template.php', 'frontend/reportView.php', ['option' => ['tinyMCE']]);
+            } else {
+                $this->error('Vous avez déja signalé ce contenu');
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
+    private function reportOther()
+    {
+        RenderView::render('template.php', 'frontend/reportOtherView.php', ['option' => ['tinyMCE']]);
     }
 }

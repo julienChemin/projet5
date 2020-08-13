@@ -303,16 +303,8 @@
                                 </a>
                             </li>
                             <?php
-                        } elseif ($_SESSION['school'] === NO_SCHOOL) {
-                            ?>
-                            <li>
-                                <a href="index.php?action=manageContract&elem=user&user=<?=$data['user']->getName()?>" class="iconeEdit">Gérer mon compte</a>
-                            </li>
-                            <?php
                         }
-                        ?>
-                    </ul>
-                    <?php
+                    echo '</ul>';
                 }
                 ?>
             </nav>

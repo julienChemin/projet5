@@ -1,4 +1,5 @@
 <section id="signIn" class="container">
+    <h1>Connection</h1>
     <form id="formConnect" method="POST" action="index.php?action=signIn">
         <div>
             <p>

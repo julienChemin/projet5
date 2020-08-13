@@ -609,32 +609,32 @@ class PostsManager extends LikeManager
             }
             //check $_post
             switch ($arrPOST['fileTypeValue']) {
-            case 'image':
-                if (empty($_FILES['uploadFile']) || (empty($arrPOST['listTags']) && $arrPOST['uploadType'] === 'public' && $arrPOST['postType'] === 'userPost'
-                    && $arrPOST['isStudent'] === 'true')
-                ) {
+                case 'image':
+                    if (empty($_FILES['uploadFile']) || (empty($arrPOST['listTags']) && $arrPOST['uploadType'] === 'public' && $arrPOST['postType'] === 'userPost'
+                        && $arrPOST['isStudent'] === 'true')
+                    ) {
+                        return false;
+                    }
+                    break;
+                case 'video':
+                    if (empty($arrPOST['videoLink']) || (empty($arrPOST['listTags']) && $arrPOST['uploadType'] === 'public' && $arrPOST['postType'] === 'userPost'
+                        && $arrPOST['isStudent'] === 'true')
+                    ) {
+                        return false;
+                    }
+                    break;
+                case 'compressed':
+                    if ($arrPOST['uploadType'] === 'public' || empty($_FILES['uploadFile']) || empty($arrPOST['title'])) {
+                        return false;
+                    }
+                    break;
+                case 'folder':
+                    if (empty($arrPOST['title'])) {
+                        return false;
+                    }
+                    break;
+                default :
                     return false;
-                }
-                break;
-            case 'video':
-                if (empty($arrPOST['videoLink']) || (empty($arrPOST['listTags']) && $arrPOST['uploadType'] === 'public' && $arrPOST['postType'] === 'userPost'
-                    && $arrPOST['isStudent'] === 'true')
-                ) {
-                    return false;
-                }
-                break;
-            case 'compressed':
-                if ($arrPOST['uploadType'] === 'public' || empty($_FILES['uploadFile']) || empty($arrPOST['title'])) {
-                    return false;
-                }
-                break;
-            case 'folder':
-                if (empty($arrPOST['title'])) {
-                    return false;
-                }
-                break;
-            default :
-                return false;
             }
         } else {
             return false;

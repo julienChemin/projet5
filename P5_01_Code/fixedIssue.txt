@@ -1,11 +1,5 @@
 new stuff
-    - 
+    - the user can now report problem related to the site
         
 fixed issues
-    - backend schoolProfileView -> view depend if user is admin or moderator ( allow me to delete all the condition 'if grade=admin') that more readable
-    - spliting some view into admin / webmaster side (more readable)
-        -> moderatSchoolView
-        -> moderatAdminView
-        -> moderatUsersView
-        -> schoolHistory
-        -> schoolProfileView
+    - redirection issue

@@ -10,6 +10,8 @@ class ReportManager extends AbstractManager
     public static $REPORT_POST_TABLE_CHAMPS = 'idPost, idUser, userName, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
     public static $REPORT_COMMENT_TABLE_NAME = 'as_report_comment';
     public static $REPORT_COMMENT_TABLE_CHAMPS = 'idComment, idUser, userName, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
+    public static $REPORT_OTHER_TABLE_NAME = 'as_report_other';
+    public static $REPORT_OTHER_TABLE_CHAMPS = 'id, userName, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
     public static $LIMIT = 10;
 
     public function getReports(string $elem, bool $limit = false, int $offset = 0)
@@ -28,6 +30,13 @@ class ReportManager extends AbstractManager
                 $query = $this->sql(
                     'SELECT ' . static::$REPORT_COMMENT_TABLE_CHAMPS . ' 
                     FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
+                    ' . $clauseLimit
+                );
+                break;
+            case 'other' :
+                $query = $this->sql(
+                    'SELECT ' . static::$REPORT_OTHER_TABLE_CHAMPS . ' 
+                    FROM ' . static::$REPORT_OTHER_TABLE_NAME . ' 
                     ' . $clauseLimit
                 );
                 break;
@@ -65,47 +74,41 @@ class ReportManager extends AbstractManager
         }
     }
 
-    public function setReport(string $elem, int $idElem, int $idUser, string $content)
+    public function setReport(string $elem, string $content, int $idElem = null, int $idUser = null)
     {
-        if (!empty($elem) && !empty($content) && $this->checkForScriptInsertion([$content]) && $idElem > 0 && $idUser > 0) {
+        if (!empty($elem) && !empty($content) && $this->checkForScriptInsertion([$content])) {
             switch ($elem) {
-            case 'post' :
-                $this->sql(
-                    'INSERT INTO ' . static::$REPORT_POST_TABLE_NAME . ' (idPost, idUser, userName, content, dateReport) 
-                    VALUES (:idPost, :idUser, :userName, :content, NOW())', 
-                    [':idPost' => $idElem, ':idUser' => $idUser, ':userName' => $_SESSION['pseudo'], ':content' => $content]
-                );
-                break;
-            case 'comment' :
-                $this->sql(
-                    'INSERT INTO ' . static::$REPORT_COMMENT_TABLE_NAME . ' (idComment, idUser, userName, content, dateReport) 
-                    VALUES (:idComment, :idUser, :userName, :content, NOW())', 
-                    [':idComment' => $idElem, ':idUser' => $idUser, ':userName' => $_SESSION['pseudo'], ':content' => $content]
-                );
-                break;
+                case 'post' :
+                    if (!empty($idElem) && !empty($idUser) && $idElem > 0 && $idUser > 0) {
+                        $this->setPostReport($content, $idElem, $idUser);
+                    }
+                    break;
+                case 'comment' :
+                    if (!empty($idElem) && !empty($idUser) && $idElem > 0 && $idUser > 0) {
+                        $this->setCommentReport($content, $idElem, $idUser);
+                    }
+                    break;
+                case 'other' :
+                    $this->setOtherReport($content);
+                    break;
             }
         }
         return $this;
     }
 
-    public function deleteReport(string $elem, int $idElem, int $idUser)
+    public function deleteReport(string $elem, int $idElem, int $idUser = null)
     {
-        if (!empty($elem) && $idElem > 0 && $idUser > 0 && $this->reportExists($elem, $idElem, $idUser)) {
+        if (!empty($elem)) {
             switch ($elem) {
-            case 'post' :
-                $this->sql(
-                    'DELETE FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
-                    WHERE idUser = :idUser AND idPost = :idPost',
-                    [':idUser' => $idUser, ':idPost' => $idElem]
-                );
-                break;
-            case 'comment' :
-                $this->sql(
-                    'DELETE FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
-                    WHERE idUser = :idUser AND idComment = :idComment',
-                    [':idUser' => $idUser, ':idComment' => $idElem]
-                );
-                break;
+                case 'post' :
+                    $this->deletePostReport($idElem, $idUser);
+                    break;
+                case 'comment' :
+                    $this->deleteCommentReport($idElem, $idUser);
+                    break;
+                case 'other' :
+                    $this->deleteOtherReport($idElem);
+                    break;
             }
         }
         return $this;
@@ -134,34 +137,25 @@ class ReportManager extends AbstractManager
         return $this;
     }
 
-    public function reportExists(string $elem, int $idElem, int $idUser)
+    public function reportExists(string $elem, int $idElem, int $idUser = null)
     {
-        if (!empty($elem) && $idElem > 0 && $idUser > 0) {
+        if (!empty($elem)) {
             switch ($elem) {
-            case 'post' :
-                $req = $this->sql(
-                    'SELECT * 
-                    FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
-                    WHERE idUser = :idUser AND idPost = :idPost',
-                    [':idUser' => $idUser, ':idPost' => $idElem]
-                );
-                break;
-            case 'comment' :
-                $req = $this->sql(
-                    'SELECT * 
-                    FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
-                    WHERE idUser = :idUser AND idComment = :idComment',
-                    [':idUser' => $idUser, ':idComment' => $idElem]
-                );
-                break;
-            default : 
-                return false;
+                case 'post' :
+                    $result = $this->postReportExists($idElem, $idUser);
+                    break;
+                case 'comment' :
+                    $result = $this->commentReportExists($idElem, $idUser);
+                    break;
+                case 'other' :
+                    $result = $this->otherReportExists($idElem);
+                    break;
+                default : 
+                    return false;
             }
-            if ($result = $req->fetch()) {
-                $req->closeCursor();
+            if ($result) {
                 return true;
             } else {
-                $req->closeCursor();
                 return false;
             }
         } else {
@@ -172,46 +166,163 @@ class ReportManager extends AbstractManager
     public function getCount(string $elem, int $idElem = null)
     {
         if (!empty($elem) && ($idElem === null || $idElem > 0)) {
-            $idElem !== null ? $clauseWhere = 'WHERE id' . ucfirst($elem) . ' = ' . $idElem : $clauseWhere = "";
             switch ($elem) {
-            case 'post' :
-                if (!empty($idElem)) {
+                case 'post' :
+                    if (!empty($idElem)) {
+                            //count for one elem
+                            $query = $this->sql(
+                                'SELECT COUNT(*) 
+                                FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
+                                WHERE idPost = :idPost', 
+                                [':idPost' => $idElem]
+                            );
+                    } else {
+                        //count all post reports
+                        $query = $this->sql(
+                            'SELECT COUNT(*) 
+                            FROM ' . static::$REPORT_POST_TABLE_NAME
+                        );
+                    }
+                    break;
+                case 'comment' :
+                    if (!empty($idElem)) {
                         //count for one elem
                         $query = $this->sql(
                             'SELECT COUNT(*) 
-                            FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
-                            WHERE idPost = :idPost', 
-                            [':idPost' => $idElem]
+                            FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
+                            WHERE idComment = :idComment', 
+                            [':idComment' => $idElem]
                         );
-                } else {
-                      //count all post reports
+                    } else {
+                        //count all comment reports
+                        $query = $this->sql(
+                            'SELECT COUNT(*) 
+                            FROM ' . static::$REPORT_COMMENT_TABLE_NAME
+                        );
+                    }
+                    break;
+                case 'other' :
+                    //count all other reports
                     $query = $this->sql(
                         'SELECT COUNT(*) 
-                        FROM ' . static::$REPORT_POST_TABLE_NAME
+                        FROM ' . static::$REPORT_OTHER_TABLE_NAME
                     );
-                }
-                break;
-            case 'comment' :
-                if (!empty($idElem)) {
-                    //count for one elem
-                    $query = $this->sql(
-                        'SELECT COUNT(*) 
-                        FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
-                        WHERE idComment = :idComment', 
-                        [':idComment' => $idElem]
-                    );
-                } else {
-                    //count all comment reports
-                    $query = $this->sql(
-                        'SELECT COUNT(*) 
-                        FROM ' . static::$REPORT_COMMENT_TABLE_NAME
-                    );
-                }
-                break;
+                    break;
             }
             $response = $query->fetch();
             $query->closeCursor();
             return $response[0];
+        }
+    }
+
+    private function setPostReport(string $content, int $idElem, int $idUser)
+    {
+        $this->sql(
+            'INSERT INTO ' . static::$REPORT_POST_TABLE_NAME . ' (idPost, idUser, userName, content, dateReport) 
+            VALUES (:idPost, :idUser, :userName, :content, NOW())', 
+            [':idPost' => $idElem, ':idUser' => $idUser, ':userName' => $_SESSION['pseudo'], ':content' => $content]
+        );
+    }
+
+    private function setCommentReport(string $content, int $idElem, int $idUser)
+    {
+        $this->sql(
+            'INSERT INTO ' . static::$REPORT_COMMENT_TABLE_NAME . ' (idComment, idUser, userName, content, dateReport) 
+            VALUES (:idComment, :idUser, :userName, :content, NOW())', 
+            [':idComment' => $idElem, ':idUser' => $idUser, ':userName' => $_SESSION['pseudo'], ':content' => $content]
+        );
+    }
+
+    private function setOtherReport(string $content)
+    {
+        $this->sql(
+            'INSERT INTO ' . static::$REPORT_OTHER_TABLE_NAME . ' (userName, content, dateReport) 
+            VALUES (:userName, :content, NOW())', 
+            [':userName' => $_SESSION['pseudo'], ':content' => $content]
+        );
+    }
+
+    private function deletePostReport(int $idElem, int $idUser)
+    {
+        if ($idElem > 0 && $idUser > 0 && $this->reportExists('post', $idElem, $idUser)) {
+            $this->sql(
+                'DELETE FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
+                WHERE idUser = :idUser AND idPost = :idPost',
+                [':idUser' => $idUser, ':idPost' => $idElem]
+            );
+        }
+    }
+
+    private function deleteCommentReport(int $idElem, int $idUser)
+    {
+        if ($idElem > 0 && $idUser > 0 && $this->reportExists('comment', $idElem, $idUser)) {
+            $this->sql(
+                'DELETE FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
+                WHERE idUser = :idUser AND idComment = :idComment',
+                [':idUser' => $idUser, ':idComment' => $idElem]
+            );
+        }
+    }
+
+    private function deleteOtherReport(int $idElem)
+    {
+        if ($idElem > 0 && $this->reportExists('other', $idElem)) {
+            $this->sql(
+                'DELETE FROM ' . static::$REPORT_OTHER_TABLE_NAME . ' 
+                WHERE id = :id',
+                [':id' => $idElem]
+            );
+        }
+    }
+
+    private function postReportExists(int $idElem, int $idUser)
+    {
+        if ($idElem > 0 && $idUser > 0) {
+            $req = $this->sql(
+                'SELECT * 
+                FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
+                WHERE idUser = :idUser AND idPost = :idPost',
+                [':idUser' => $idUser, ':idPost' => $idElem]
+            );
+            $result = $req->fetch();
+            $req->closeCursor();
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
+    private function commentReportExists(int $idElem, int $idUser)
+    {
+        if ($idElem > 0 && $idUser > 0) {
+            $req = $this->sql(
+                'SELECT * 
+                FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
+                WHERE idUser = :idUser AND idComment = :idComment',
+                [':idUser' => $idUser, ':idComment' => $idElem]
+            );
+            $result = $req->fetch();
+            $req->closeCursor();
+            return $result;
+        } else {
+            return false;
+        }
+    }
+
+    private function otherReportExists(int $idElem)
+    {
+        if ($idElem > 0) {
+            $req = $this->sql(
+                'SELECT * 
+                FROM ' . static::$REPORT_OTHER_TABLE_NAME . ' 
+                WHERE id = :id',
+                [':id' => $idElem]
+            );
+            $result = $req->fetch();
+            $req->closeCursor();
+            return $result;
+        } else {
+            return false;
         }
     }
 }

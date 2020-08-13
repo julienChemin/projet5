@@ -36,9 +36,12 @@ $user = $data['user'];
                             echo '<li id="heart"><i class="far fa-heart" idpost="' . $post->getId() . '"></i></li>';
                         }
                         echo '<li id="nbLike"><span><span>' . $post->getNbLike() . '</span><i class="fas fa-heart"></i></span></li>';
-                        if (!empty($_SESSION['id']) && ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['school'] === ALL_SCHOOL || ($post->getPostType() === 'schoolPost' && $_SESSION['grade'] === ADMIN && $post->getSchool() === $_SESSION['school']))) {
+                        if (!empty($_SESSION['id']) && ($post->getIdAuthor() === intval($_SESSION['id']) 
+                        || $_SESSION['school'] === ALL_SCHOOL 
+                        || ($post->getPostType() === 'schoolPost' && $_SESSION['grade'] === ADMIN && $post->getSchool() === $_SESSION['school']))) {
                             echo '<li id="deletePost" title="Supprimer la publication"><i class="far fa-trash-alt"></i></li>';
-                            echo '<a href="index.php?action=deletePost&id=' . $post->getId() . '" id="confirmDeletePost" title="Supprimer la publication">Supprimer définitivement la publication ?</i></a>';
+                            echo '<a href="index.php?action=deletePost&id=' . $post->getId() . '" id="confirmDeletePost" 
+                                title="Supprimer la publication">Supprimer définitivement la publication ?</i></a>';
                         } elseif (!empty($_SESSION['id'])) {
                             echo '<li title="Signaler"><a href="index.php?action=report&elem=post&id=' . $post->getId() . '"><i class="far fa-flag"></i></a></li>';
                         }

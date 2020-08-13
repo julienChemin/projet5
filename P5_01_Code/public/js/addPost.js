@@ -142,7 +142,8 @@ if (document.getElementById('addSchoolPost') !== null) {
                     blockListGroup.style.display = 'none';
                     blockAuthorizedGroups.style.display = 'none';
                     formAddPost.elements.uploadType.value = 'public';
-                    if (document.getElementById('addSchoolPost') === null && (formAddPost.elements.fileTypeValue.value === 'video' || formAddPost.elements.fileTypeValue.value === 'image')) {
+                    if (document.getElementById('addSchoolPost') === null 
+                    && (formAddPost.elements.fileTypeValue.value === 'video' || formAddPost.elements.fileTypeValue.value === 'image')) {
                         blockTags.style.display = 'flex';
                     }
                 } else {
@@ -269,15 +270,13 @@ inputFile.addEventListener(
     'change', function (e) {
         if (e.target.files && e.target.files[0] && btnActif.btn !== blockTypeOther) {
             let reader = new FileReader();
-
             reader.addEventListener(
                 'load', function (e) {
                     document.querySelector('#preview img').src = e.target.result;
                     preview.style.display = 'flex';
                 }
             );
-
-               reader.readAsDataURL(e.target.files[0]);
+            reader.readAsDataURL(e.target.files[0]);
         }
     }
 );
@@ -404,7 +403,6 @@ btnAddTag.addEventListener(
                 blink(document.getElementById(tagId), true);
             }
         } else {
-            //make the text 'tag rules' blink
             blink(textTagRules);
         }
     }
@@ -436,64 +434,63 @@ inputTag.addEventListener(
 inputSubmit.addEventListener(
     'click', function (e) {
         switch (formAddPost.elements.fileTypeValue.value) {
-        case 'image' :
-            if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' 
-                && formAddPost.elements.isStudent.value === 'true' && inputListTags.value === ""
-            ) {
-                //tag is only for public student post
-                e.preventDefault();
-                setErrorMsg('Vous devez choisir au moins un tag');
+            case 'image' :
+                if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' 
+                && formAddPost.elements.isStudent.value === 'true' && inputListTags.value === "")
+                {
+                    //tag is only for public student post
+                    e.preventDefault();
+                    setErrorMsg('Vous devez choisir au moins un tag');
+                }
+                if (!inputFile.files.length > 0) {
+                    e.preventDefault();
+                    setErrorMsg('Vous devez sélectionner une image a télécharger');
+                }
+                if (formAddPost.elements.title.value !== "" && formAddPost.elements.title.value.length > 30) {
+                    e.preventDefault();
+                    setErrorMsg('Le titre ne peut pas comporter plus de 30 caractères');
+                }
+            break;
+            case 'video' :
+                if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' 
+                    && formAddPost.elements.isStudent.value === 'true' && inputListTags.value === ""
+                ) {
+                    //tag is only for public student post
+                    e.preventDefault();
+                    setErrorMsg('Vous devez choisir au moins un tag');
+                }
+                let regexUrl = /youtube\.com\/watch\?v\=([a-zA-Z0-9]+)$/;
+                if (formAddPost.elements.videoLink.value === "" || !regexUrl.test(formAddPost.elements.videoLink.value)) {
+                    e.preventDefault();
+                    setErrorMsg('Vous devez ajouter une adresse youtube pour la vidéo');
+                } else {
+                    //set url video
+                    formAddPost.elements.videoLink.value = regexUrl.exec(formAddPost.elements.videoLink.value)[1];
+                }
+                if (formAddPost.elements.title.value !== "" && formAddPost.elements.title.value.length > 30) {
+                    e.preventDefault();
+                    setErrorMsg('Le titre ne peut pas comporter plus de 30 caractères');
+                }
+            break;
+            case 'compressed' :
+                if (!inputFile.files.length > 0) {
+                    e.preventDefault();
+                    setErrorMsg('Vous devez sélectionner une fichier a télécharger');
+                }
+                if (formAddPost.elements.title.value === "" || formAddPost.elements.title.value.length > 30) {
+                    e.preventDefault();
+                    setErrorMsg('Vous devez ajouter un titre (30 caractères max.)');
+                }
+            break;
+            case 'folder' :
+                    if (formAddPost.elements.title.value === "" || formAddPost.elements.title.value.length > 30) {
+                        e.preventDefault();
+                        setErrorMsg('Vous devez ajouter un titre (30 caractères max.)');
+                    }
+            break;
             }
-            if (!inputFile.files.length > 0) {
-                e.preventDefault();
-                setErrorMsg('Vous devez sélectionner une image a télécharger');
-            }
-            if (formAddPost.elements.title.value !== "" && formAddPost.elements.title.value.length > 30) {
-                e.preventDefault();
-                setErrorMsg('Le titre ne peut pas comporter plus de 30 caractères');
-            }
-         break;
-        case 'video' :
-            if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' 
-                && formAddPost.elements.isStudent.value === 'true' && inputListTags.value === ""
-            ) {
-                //tag is only for public student post
-                e.preventDefault();
-                setErrorMsg('Vous devez choisir au moins un tag');
-            }
-            let regexUrl = /youtube\.com\/watch\?v\=([a-zA-Z0-9]+)$/;
-            if (formAddPost.elements.videoLink.value === "" || !regexUrl.test(formAddPost.elements.videoLink.value)) {
-                e.preventDefault();
-                setErrorMsg('Vous devez ajouter une adresse youtube pour la vidéo');
-            } else {
-                //set url video
-                formAddPost.elements.videoLink.value = regexUrl.exec(formAddPost.elements.videoLink.value)[1];
-            }
-            if (formAddPost.elements.title.value !== "" && formAddPost.elements.title.value.length > 30) {
-                e.preventDefault();
-                setErrorMsg('Le titre ne peut pas comporter plus de 30 caractères');
-            }
-         break;
-        case 'compressed' :
-            if (!inputFile.files.length > 0) {
-                e.preventDefault();
-                setErrorMsg('Vous devez sélectionner une fichier a télécharger');
-            }
-            if (formAddPost.elements.title.value === "" || formAddPost.elements.title.value.length > 30) {
-                e.preventDefault();
-                setErrorMsg('Vous devez ajouter un titre (30 caractères max.)');
-            }
-     break;
-        case 'folder' :
-            if (formAddPost.elements.title.value === "" || formAddPost.elements.title.value.length > 30) {
-                e.preventDefault();
-                setErrorMsg('Vous devez ajouter un titre (30 caractères max.)');
-            }
-     break;
-        }
         if (document.getElementById('addSchoolPost') !== null && formAddPost.elements.isPrivate.checked  
-            && formAddPost.elements.listGroup.value !== 'all' && formAddPost.elements.listAuthorizedGroups.value === ''
-        ) {
+            && formAddPost.elements.listGroup.value !== 'all' && formAddPost.elements.listAuthorizedGroups.value === '') {
             //no group selected for private school post
             e.preventDefault();
             setErrorMsg('Pour une publication privée, vous devez choisir au moins un groupe');

@@ -381,7 +381,7 @@ class Backend extends Controller
 
     public function getCountReports()
     {
-        $arrAcceptedValue = array('post', 'comment');
+        $arrAcceptedValue = array('post', 'comment', 'other');
         if (!empty($_GET['elem']) && in_array($_GET['elem'], $arrAcceptedValue)) {
             $ReportManager = new ReportManager();
             echo json_encode($ReportManager->getCount($_GET['elem']));
@@ -391,14 +391,11 @@ class Backend extends Controller
     public function deleteReport()
     {
         $ReportManager = new ReportManager();
-        $arrAcceptedValue = array('post', 'comment');
-        if (!empty($_GET['elem']) && in_array($_GET['elem'], $arrAcceptedValue) && !empty($_GET['idElem']) && intval($_GET['idElem']) > 0 && !empty($_GET['idUser']) && intval($_GET['idUser']) > 0) {
-            if ($ReportManager->reportExists($_GET['elem'], $_GET['idElem'], $_GET['idUser'])) {
-                $ReportManager->deleteReport($_GET['elem'], $_GET['idElem'], $_GET['idUser']);
-                echo true;
-            } else {
-                echo false;
-            }
+        $arrAcceptedValue = array('post', 'comment', 'other');
+        if (!empty($_GET['elem']) && in_array($_GET['elem'], $arrAcceptedValue) 
+        && !empty($_GET['idElem']) && intval($_GET['idElem']) > 0 && isset($_GET['idUser'])) {
+            $ReportManager->deleteReport($_GET['elem'], $_GET['idElem'], $_GET['idUser']);
+            echo true;
         } else {
             echo false;
         }

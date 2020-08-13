@@ -70,6 +70,7 @@
     } else {
         // try to connect
         ?>
+        <h1>Administration</h1>
         <form id="formConnect" method="POST" action="indexAdmin.php">
             <div>
                 <p>
@@ -89,11 +90,11 @@
                     <span id="buttonForgetPassword">Mot de passe oublié</span>
                 </p>
             </div>
-        <?php
-        if (isset($data['message'])) {
-            echo '<p class="msg orang">' . $data['message'] . '</p>';
-        }
-        ?>
+            <?php
+            if (isset($data['message'])) {
+                echo '<p class="msg orang">' . $data['message'] . '</p>';
+            }
+            ?>
         </form>
         <!--display form for forget password-->
         <form id="formForgetPassword" method="POST" action="indexAdmin.php">
