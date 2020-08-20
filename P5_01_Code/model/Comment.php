@@ -5,12 +5,12 @@ namespace Chemin\ArtSchool\Model;
 class Comment
 {
     private $id,
-    $idPost,
-    $idAuthor,
-    $nameAuthor,
-    $profilePictureAuthor,
-    $content,
-    $datePublication;
+        $idPost,
+        $idAuthor,
+        $nameAuthor,
+        $profilePictureAuthor,
+        $content,
+        $datePublication;
 
     public function __construct(array $data = null)
     {

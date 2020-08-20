@@ -6,6 +6,10 @@ class TagsManager extends Database
 {
     public static $TABLE_NAME = 'as_tag';
 
+    /*-------------------------------------------------------------------------------------
+    ----------------------------------- PUBLIC FUNCTION ------------------------------------
+    -------------------------------------------------------------------------------------*/
+
     public function get(int $limit = null, int $offset = 0, string $orderBy = 'tagCount DESC')
     {
         if (!empty($limit)) {
@@ -25,46 +29,6 @@ class TagsManager extends Database
             );
         }
         $result = $q->fetchAll();    
-        $q->closeCursor();
-        return $result;
-    }
-
-    public function getMany(array $tags)
-    {
-        if (count($tags) > 0) {
-            $clauseWhere = '';
-            $arrayValue = [];
-            for ($i = 0; $i < count($tags); $i++) {
-                $tagWithoutSpace = str_replace(' ', '', $tags[$i]) . $i;
-                if ($i === 0) {
-                    $clauseWhere = $clauseWhere . 'WHERE name = :' . $tagWithoutSpace;
-                } else {
-                    $clauseWhere = $clauseWhere . ' OR name = :' . $tagWithoutSpace;
-                }
-                $arrayValue[':' . $tagWithoutSpace] = $tags[$i];
-            }
-            $q = $this->sql(
-                'SELECT * 
-                FROM ' . static::$TABLE_NAME . ' 
-                ' . $clauseWhere . ' 
-                ORDER BY tagCount DESC', 
-                $arrayValue
-            );
-            $result = $q->fetchAll();
-            $q->closeCursor();
-            return $result;
-        }
-    }
-
-    public function getOneByName(string $name)
-    {
-        $q = $this->sql(
-            'SELECT * 
-            FROM ' . static::$TABLE_NAME . ' 
-            WHERE name = :name', 
-            [':name' => $name]
-        );
-        $result = $q->fetch();    
         $q->closeCursor();
         return $result;
     }
@@ -92,30 +56,6 @@ class TagsManager extends Database
             }
         }
         return $mostPopularTags;
-    }
-
-    public function set(string $name)
-    {
-        if (strlen($name) > 0) {
-            $this->sql(
-                'INSERT INTO ' . static::$TABLE_NAME . ' (name) 
-                VALUES(:name)', 
-                [':name' => $name]
-            );
-        }
-        return $this;
-    }
-
-    public function setRelationPostTag(string $tagName, int $idPost)
-    {
-        if (strlen($tagName) > 0 && $idPost > 0) {
-            $this->sql(
-                'INSERT INTO as_tag_post (idPost, tagName) 
-                VALUES(:idPost, :tagName)', 
-                [':idPost' => $idPost, ':tagName' => $tagName]
-            );
-        }
-        return $this;
     }
 
     public function exists(string $name)
@@ -197,5 +137,60 @@ class TagsManager extends Database
         } else {
             return [];
         }
+    }
+
+    /*-------------------------------------------------------------------------------------
+    ----------------------------------- PRIVATE FUNCTION ------------------------------------
+    -------------------------------------------------------------------------------------*/
+
+    private function getMany(array $tags)
+    {
+        if (count($tags) > 0) {
+            $clauseWhere = '';
+            $arrayValue = [];
+            for ($i = 0; $i < count($tags); $i++) {
+                $tagWithoutSpace = str_replace(' ', '', $tags[$i]) . $i;
+                if ($i === 0) {
+                    $clauseWhere = $clauseWhere . 'WHERE name = :' . $tagWithoutSpace;
+                } else {
+                    $clauseWhere = $clauseWhere . ' OR name = :' . $tagWithoutSpace;
+                }
+                $arrayValue[':' . $tagWithoutSpace] = $tags[$i];
+            }
+            $q = $this->sql(
+                'SELECT * 
+                FROM ' . static::$TABLE_NAME . ' 
+                ' . $clauseWhere . ' 
+                ORDER BY tagCount DESC', 
+                $arrayValue
+            );
+            $result = $q->fetchAll();
+            $q->closeCursor();
+            return $result;
+        }
+    }
+
+    private function set(string $name)
+    {
+        if (strlen($name) > 0) {
+            $this->sql(
+                'INSERT INTO ' . static::$TABLE_NAME . ' (name) 
+                VALUES(:name)', 
+                [':name' => $name]
+            );
+        }
+        return $this;
+    }
+
+    private function setRelationPostTag(string $tagName, int $idPost)
+    {
+        if (strlen($tagName) > 0 && $idPost > 0) {
+            $this->sql(
+                'INSERT INTO as_tag_post (idPost, tagName) 
+                VALUES(:idPost, :tagName)', 
+                [':idPost' => $idPost, ':tagName' => $tagName]
+            );
+        }
+        return $this;
     }
 }

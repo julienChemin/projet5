@@ -5,10 +5,10 @@ namespace Chemin\ArtSchool\Model;
 class HistoryEntry
 {
     private $id,
-    $idSchool,
-    $category,
-    $entry,
-    $dateEntry;
+        $idSchool,
+        $category,
+        $entry,
+        $dateEntry;
 
     public function __construct(array $data = null)
     {

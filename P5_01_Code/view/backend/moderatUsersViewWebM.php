@@ -51,7 +51,7 @@
                     </form>
                     <div>
                         <?php
-                        if ($data['isActive'][$school->getName()]['active']) {
+                        if (!empty($data['users'][$school->getName()]['active'])) {
                             //display active account
                             ?>
                             <table>
@@ -100,7 +100,7 @@
                             </div>
                             <?php
                         }
-                        if ($data['isActive'][$school->getName()]['inactive']) {
+                        if (!empty($data['users'][$school->getName()]['inactive'])) {
                             //display inactive account
                             ?>
                             <table>

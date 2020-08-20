@@ -2085,9 +2085,6 @@ i[class="fas fa-download"]{
     transition: 0.2s ease-out;
     -webkit-transition: 0.2s ease-out;
 }
-.moderatReportsFromElem > p:first-of-type{
-    text-decoration: underline;
-}
 /* -------------------------------------------------------------------------------------------------------------------------- */
 /* --------------------------------------------------------------- ADMIN ---------------------------------------------------- */
 /* -------------------------------------------------------------------------------------------------------------------------- */
@@ -2587,7 +2584,7 @@ form > div{
     color: red;
     cursor: pointer;
 }
-/* ------------------------ MODERAT USERS ------------------------ */
+/* ------------------------ MODERAT REPORTS ------------------------ */
 #moderatReports{
     padding: 100px 0px;
 }
@@ -2603,10 +2600,12 @@ form > div{
 #moderatReports > nav li{
     border: solid 1px #CF8B3F;
     border-radius: 10px;
-    padding: 10px;
-    margin: 15px;
+    padding: 100px;
+    margin: 50px 15px 15px 15px;
     font-size: 1.5em;
     cursor: pointer;
+    transition: padding 0.2s linear, margin 0.1s linear;
+    -webkit-transition: padding 0.2s linear, margin 0.1s linear;
 }
 /*table reports*/
 #moderatReports > #content[class='moderatReportsFromElem']{
@@ -2631,10 +2630,10 @@ form > div{
     width: 25%;
 }
 #moderatReports th:nth-of-type(2){
-    width: 70%;
+    width: 65%;
 }
 #moderatReports th:last-of-type{
-    width: 5%;
+    width: 10%;
 }
 #moderatReports tr > td:first-of-type, #moderatReports tr > td:last-of-type{
     text-align: center;
@@ -2646,6 +2645,10 @@ form > div{
     cursor: pointer;
     color: #CF8B3F;
     font-size: 1em;
+    margin: 0 15px;
+}
+.moderatReportsFromElem > p:first-of-type{
+    text-decoration: underline;
 }
 /*paging*/
 #paging{

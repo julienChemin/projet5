@@ -8,11 +8,18 @@ class ReportManager extends AbstractManager
 {
     public static $REPORT_POST_TABLE_NAME = 'as_report_post';
     public static $REPORT_POST_TABLE_CHAMPS = 'idPost, idUser, userName, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
+
     public static $REPORT_COMMENT_TABLE_NAME = 'as_report_comment';
     public static $REPORT_COMMENT_TABLE_CHAMPS = 'idComment, idUser, userName, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
+
     public static $REPORT_OTHER_TABLE_NAME = 'as_report_other';
     public static $REPORT_OTHER_TABLE_CHAMPS = 'id, userName, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
+
     public static $LIMIT = 10;
+
+    /*-------------------------------------------------------------------------------------
+    ----------------------------------- PUBLIC FUNCTION ------------------------------------
+    -------------------------------------------------------------------------------------*/
 
     public function getReports(string $elem, bool $limit = false, int $offset = 0)
     {
@@ -20,25 +27,13 @@ class ReportManager extends AbstractManager
             $limit ? $clauseLimit = 'LIMIT ' . static::$LIMIT . ' OFFSET ' . $offset : $clauseLimit = '';
             switch ($elem) {
             case 'post' :
-                $query = $this->sql(
-                    'SELECT ' . static::$REPORT_POST_TABLE_CHAMPS . ' 
-                    FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
-                    ' . $clauseLimit
-                );
+                $query = $this->getPostReports($clauseLimit);
                 break;
             case 'comment' :
-                $query = $this->sql(
-                    'SELECT ' . static::$REPORT_COMMENT_TABLE_CHAMPS . ' 
-                    FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
-                    ' . $clauseLimit
-                );
+                $query = $this->getCommentReports($clauseLimit);
                 break;
             case 'other' :
-                $query = $this->sql(
-                    'SELECT ' . static::$REPORT_OTHER_TABLE_CHAMPS . ' 
-                    FROM ' . static::$REPORT_OTHER_TABLE_NAME . ' 
-                    ' . $clauseLimit
-                );
+                $query = $this->getOtherReports($clauseLimit);
                 break;
             }
             $result = $query->fetchAll();
@@ -165,54 +160,54 @@ class ReportManager extends AbstractManager
 
     public function getCount(string $elem, int $idElem = null)
     {
-        if (!empty($elem) && ($idElem === null || $idElem > 0)) {
+        if (!empty($elem)) {
             switch ($elem) {
                 case 'post' :
-                    if (!empty($idElem)) {
-                            //count for one elem
-                            $query = $this->sql(
-                                'SELECT COUNT(*) 
-                                FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
-                                WHERE idPost = :idPost', 
-                                [':idPost' => $idElem]
-                            );
-                    } else {
-                        //count all post reports
-                        $query = $this->sql(
-                            'SELECT COUNT(*) 
-                            FROM ' . static::$REPORT_POST_TABLE_NAME
-                        );
-                    }
+                    $query = $this->getPostReportCount($idElem);
                     break;
                 case 'comment' :
-                    if (!empty($idElem)) {
-                        //count for one elem
-                        $query = $this->sql(
-                            'SELECT COUNT(*) 
-                            FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
-                            WHERE idComment = :idComment', 
-                            [':idComment' => $idElem]
-                        );
-                    } else {
-                        //count all comment reports
-                        $query = $this->sql(
-                            'SELECT COUNT(*) 
-                            FROM ' . static::$REPORT_COMMENT_TABLE_NAME
-                        );
-                    }
+                    $query = $this->getCommentReportCount($idElem);
                     break;
                 case 'other' :
                     //count all other reports
-                    $query = $this->sql(
-                        'SELECT COUNT(*) 
-                        FROM ' . static::$REPORT_OTHER_TABLE_NAME
-                    );
+                    $query = $this->getOtherReportCount();
                     break;
             }
             $response = $query->fetch();
             $query->closeCursor();
             return $response[0];
         }
+    }
+
+    /*-------------------------------------------------------------------------------------
+    ----------------------------------- PRIVATE FUNCTION ------------------------------------
+    -------------------------------------------------------------------------------------*/
+
+    private function getPostReports(string $clauseLimit)
+    {
+        return $this->sql(
+            'SELECT ' . static::$REPORT_POST_TABLE_CHAMPS . ' 
+            FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
+            ' . $clauseLimit
+        );
+    }
+
+    private function getCommentReports(string $clauseLimit)
+    {
+        return $this->sql(
+            'SELECT ' . static::$REPORT_COMMENT_TABLE_CHAMPS . ' 
+            FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
+            ' . $clauseLimit
+        );
+    }
+
+    private function getOtherReports(string $clauseLimit)
+    {
+        return $this->sql(
+            'SELECT ' . static::$REPORT_OTHER_TABLE_CHAMPS . ' 
+            FROM ' . static::$REPORT_OTHER_TABLE_NAME . ' 
+            ' . $clauseLimit
+        );
     }
 
     private function setPostReport(string $content, int $idElem, int $idUser)
@@ -324,5 +319,51 @@ class ReportManager extends AbstractManager
         } else {
             return false;
         }
+    }
+
+    private function getPostReportCount($idElem = null)
+    {
+        if (!empty($idElem)) {
+            //count for one post
+            return $this->sql(
+                'SELECT COUNT(*) 
+                FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
+                WHERE idPost = :idPost', 
+                [':idPost' => $idElem]
+            );
+        } else {
+            //count all post reports
+            return $this->sql(
+                'SELECT COUNT(*) 
+                FROM ' . static::$REPORT_POST_TABLE_NAME
+            );
+        }
+    }
+
+    private function getCommentReportCount($idElem = null)
+    {
+        if (!empty($idElem)) {
+            //count for one elem
+            return $this->sql(
+                'SELECT COUNT(*) 
+                FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
+                WHERE idComment = :idComment', 
+                [':idComment' => $idElem]
+            );
+        } else {
+            //count all comment reports
+            return $this->sql(
+                'SELECT COUNT(*) 
+                FROM ' . static::$REPORT_COMMENT_TABLE_NAME
+            );
+        }
+    }
+
+    private function getOtherReportCount()
+    {
+        return $this->sql(
+            'SELECT COUNT(*) 
+            FROM ' . static::$REPORT_OTHER_TABLE_NAME
+        );
     }
 }

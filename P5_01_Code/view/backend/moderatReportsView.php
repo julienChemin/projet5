@@ -43,7 +43,7 @@
                 <thead>
                     <th>Qui a signalé</th>
                     <th>Pourquoi</th>
-                    <th>voir</th>
+                    <th>action</th>
                 </thead>
                 <tbody></tbody>
             </table>

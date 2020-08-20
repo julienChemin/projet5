@@ -1,5 +1,11 @@
 new stuff
-    - the user can now report problem related to the site
+    - refactoring 
+        -> reportManager
+        -> historyManager
+        -> likeManager
+        -> postsManager
+        -> profileContent
+        -> school/userManager
         
 fixed issues
-    - redirection issue
+    - 

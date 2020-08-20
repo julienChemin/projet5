@@ -3,7 +3,27 @@ namespace Chemin\ArtSchool\Model;
 
 abstract class Controller
 {
-    public function useCookieToSignIn()
+    /*-------------------------------------------------------------------------------------
+    ----------------------------------- PUBLIC FUNCTION ------------------------------------
+    -------------------------------------------------------------------------------------*/
+    public function disconnect()
+    {
+        if (isset($_SESSION)) {
+            session_destroy();
+        }
+        $this->cookieDestroy();
+        header('Location: index.php');
+    }
+
+    public function error(string $error_msg)
+    {
+        RenderView::render('template.php', static::$SIDE . '/errorView.php', ['error_msg' => $error_msg]);
+    }
+
+    /*-------------------------------------------------------------------------------------
+    ----------------------------------- PROTECTED FUNCTION ------------------------------------
+    -------------------------------------------------------------------------------------*/
+    protected function useCookieToSignIn()
     {
         switch (static::$SIDE) {
         case 'frontend' :
@@ -21,8 +41,7 @@ abstract class Controller
             $UserManager = new UserManager();
             $userId = htmlspecialchars($cookie[0]);
             $userPassword = htmlspecialchars($cookie[1]);
-            if ($UserManager->exists($userId)) {
-                $user = $UserManager->getOneById($userId);
+            if ($user = $UserManager->getOneById($userId)) {
                 if ($user->getPassword() === $userPassword && !$user->getIsBan()) {
                     $SchoolManager = new SchoolManager();
                     if(!$SchoolManager->nameExists($user->getSchool()) && $user->getSchool() !== ALL_SCHOOL) {
@@ -47,7 +66,7 @@ abstract class Controller
         }
     }
 
-    public function connect(User $user)
+    protected function connect(User $user)
     {
         if ($user->getIsBan()) {
             $WarningManager = new WarningManager();
@@ -77,16 +96,7 @@ abstract class Controller
         }
     }
 
-    public function disconnect()
-    {
-        if (isset($_SESSION)) {
-            session_destroy();
-        }
-        $this->cookieDestroy();
-        header('Location: index.php');
-    }
-
-    public function forceDisconnect()
+    protected function forceDisconnect()
     {
         session_destroy();
         if (isset($_COOKIE['artSchoolId']) || isset($_COOKIE['artSchoolAdminId'])) {
@@ -96,7 +106,7 @@ abstract class Controller
         }
     }
 
-    public function setCookie(User $user)
+    protected function setCookie(User $user)
     {
         setcookie('artSchoolId', $user->getId() . '-' . $user->getPassword(), time()+(365*24*3600), null, null, false, true);
         if ($user->getIsAdmin() || $user->getIsModerator()) {
@@ -104,7 +114,7 @@ abstract class Controller
         }
     }
 
-    public function cookieDestroy()
+    protected function cookieDestroy()
     {
         if (isset($_COOKIE['artSchoolId'])) {
             setcookie('artSchoolId', '', time()-3600, null, null, false, true);
@@ -114,7 +124,7 @@ abstract class Controller
         }
     }
 
-    public function redirection(string $url = null, bool $urlFirst = false)
+    protected function redirection(string $url = null, bool $urlFirst = false)
     {
         if ($urlFirst) {
             header('Location: ' . $url);
@@ -127,23 +137,18 @@ abstract class Controller
         }
     }
 
-    public function accessDenied()
+    protected function accessDenied()
     {
         throw new \Exception("Vous n'avez pas accès à cette page");
     }
 
-    public function invalidLink()
+    protected function invalidLink()
     {
         throw new \Exception("Ce lien a expiré ou la page n'existe pas");
     }
 
-    public function incorrectInformation()
+    protected function incorrectInformation()
     {
         throw new \Exception("Les informations renseignées sont incorrectes");
-    }
-
-    public function error(string $error_msg)
-    {
-        RenderView::render('template.php', static::$SIDE . '/errorView.php', ['error_msg' => $error_msg]);
     }
 }

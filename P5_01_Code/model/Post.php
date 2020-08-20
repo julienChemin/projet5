@@ -3,23 +3,23 @@ namespace Chemin\ArtSchool\Model;
 class Post
 {
     private $id,
-    $idAuthor,
-    $school,
-    $title,
-    $filePath,
-    $urlVideo,
-    $description,
-    $datePublication,
-    $isPrivate,
-    $authorizedGroups,
-    $listAuthorizedGroups,
-    $postType,
-    $fileType,
-    $onFolder,
-    $tags,
-    $listTags,
-    $nbLike,
-    $comments;
+        $idAuthor,
+        $school,
+        $title,
+        $filePath,
+        $urlVideo,
+        $description,
+        $datePublication,
+        $isPrivate,
+        $authorizedGroups,
+        $listAuthorizedGroups,
+        $postType,
+        $fileType,
+        $onFolder,
+        $tags,
+        $listTags,
+        $nbLike,
+        $comments;
 
     public function __construct(array $data = null)
     {

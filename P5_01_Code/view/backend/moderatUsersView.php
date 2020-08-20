@@ -46,7 +46,7 @@
             </form>
             <div>
                 <?php
-                if ($data['isActive']['active']) {
+                if (!empty($data['users']['active'])) {
                     //display active account
                     ?>
                     <table>
@@ -59,34 +59,32 @@
                             <th>Supprimer le compte</th>
                         </tr>
                         <?php
-                        foreach ($data['users'] as $user) {
-                            if ($user->getIsActive()) {
-                                ?>
-                                <tr>
-                                    <td><a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a></td>
-                                    <td>
-                                        <span class="userGroup"><?=$user->getSchoolGroup() !== null? $user->getSchoolGroup() : 'Aucun groupe'?></span> - 
-                                        <span class="btnEditGroup">Modifier le groupe</span>
-                                        <div class="listEditGroup">
-                                            <select class="inputListGroup">
-                                                <option value="Aucun groupe">Aucun groupe</option>
-                                                <?php
-                                                if (!empty($school->getListSchoolGroups())) {
-                                                    foreach ($school->getListSchoolGroups() as $group) {
-                                                        $user->getSchoolGroup() === $group ? $selectedVal = "selected" : $selectedVal = "";
-                                                        echo '<option value="' . $group . '" ' . $selectedVal . '>' . $group . '</option>';
-                                                    }
+                        foreach ($data['users']['active'] as $user) {
+                            ?>
+                            <tr>
+                                <td><a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a></td>
+                                <td>
+                                    <span class="userGroup"><?=$user->getSchoolGroup() !== null? $user->getSchoolGroup() : 'Aucun groupe'?></span> - 
+                                    <span class="btnEditGroup">Modifier le groupe</span>
+                                    <div class="listEditGroup">
+                                        <select class="inputListGroup">
+                                            <option value="Aucun groupe">Aucun groupe</option>
+                                            <?php
+                                            if (!empty($school->getListSchoolGroups())) {
+                                                foreach ($school->getListSchoolGroups() as $group) {
+                                                    $user->getSchoolGroup() === $group ? $selectedVal = "selected" : $selectedVal = "";
+                                                    echo '<option value="' . $group . '" ' . $selectedVal . '>' . $group . '</option>';
                                                 }
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td><i class="fas fa-user-shield toModerator" schoolname="<?=$school->getName()?>" ></i></td>
-                                    <td><i class="fas fa-user-times toInactive" schoolname="<?=$school->getName()?>" ></i></td>
-                                    <td><i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i></td>
-                                </tr>
-                                <?php
-                            }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td><i class="fas fa-user-shield toModerator" schoolname="<?=$school->getName()?>" ></i></td>
+                                <td><i class="fas fa-user-times toInactive" schoolname="<?=$school->getName()?>" ></i></td>
+                                <td><i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i></td>
+                            </tr>
+                            <?php
                         }
                     echo '</table>';
                 } else {
@@ -97,7 +95,7 @@
                     </div>
                     <?php
                 }
-                if ($data['isActive']['inactive']) {
+                if (!empty($data['users']['inactive'])) {
                     //display inactive account
                     ?>
                     <table>
@@ -109,33 +107,31 @@
                             <th>Supprimer le compte</th>
                         </tr>
                         <?php
-                        foreach ($data['users'] as $user) {
-                            if (!$user->getIsActive()) {
-                                ?>
-                                <tr>
-                                    <td><a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a></td>
-                                    <td>
-                                        <span class="userGroup"><?=$user->getSchoolGroup() !== null? $user->getSchoolGroup() : 'Aucun groupe'?></span> - 
-                                        <span class="btnEditGroup">Modifier le groupe</span>
-                                        <div class="listEditGroup">
-                                            <select class="inputListGroup">
-                                                <option value="Aucun groupe">Aucun groupe</option>
-                                                <?php
-                                                if (!empty($school->getListSchoolGroups())) {
-                                                    foreach ($school->getListSchoolGroups() as $group) {
-                                                        $user->getSchoolGroup() === $group ? $selectedVal = "selected" : $selectedVal = "";
-                                                        echo '<option value="' . $group . '" ' . $selectedVal . '>' . $group . '</option>';
-                                                    }
+                        foreach ($data['users']['inactive'] as $user) {
+                            ?>
+                            <tr>
+                                <td><a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a></td>
+                                <td>
+                                    <span class="userGroup"><?=$user->getSchoolGroup() !== null? $user->getSchoolGroup() : 'Aucun groupe'?></span> - 
+                                    <span class="btnEditGroup">Modifier le groupe</span>
+                                    <div class="listEditGroup">
+                                        <select class="inputListGroup">
+                                            <option value="Aucun groupe">Aucun groupe</option>
+                                            <?php
+                                            if (!empty($school->getListSchoolGroups())) {
+                                                foreach ($school->getListSchoolGroups() as $group) {
+                                                    $user->getSchoolGroup() === $group ? $selectedVal = "selected" : $selectedVal = "";
+                                                    echo '<option value="' . $group . '" ' . $selectedVal . '>' . $group . '</option>';
                                                 }
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td><i class="fas fa-user-plus toActive" schoolname="<?=$school->getName()?>" ></i></td>
-                                    <td><i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i></td>
-                                </tr>
-                                <?php
-                            }
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td><i class="fas fa-user-plus toActive" schoolname="<?=$school->getName()?>" ></i></td>
+                                <td><i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i></td>
+                            </tr>
+                            <?php
                         }
                     echo '</table>';
                 } else {

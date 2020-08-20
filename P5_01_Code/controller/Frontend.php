@@ -39,11 +39,10 @@ class Frontend extends Controller
         $url = explode('/', $_SERVER['PHP_SELF']);
         $url = $url[count($url) - 1];
         if ($url !== static::$INDEX) {
-            //$url is school name or user name
+            //$url is school name or user name, try to redirect to school/user profile
             $UserManager = new UserManager();
             $SchoolManager = new SchoolManager();
-            if ($UserManager->nameExists($url)) {
-                $user = $UserManager->getUserByName($url);
+            if ($user = $UserManager->getUserByName($url)) {
                 header('Location: ../index.php?action=userProfile&userId=' . $user->getId());
             } elseif ($SchoolManager->nameExists($url)) {
                 header('Location: ../index.php?action=schoolProfile&school=' . $url);
@@ -51,6 +50,7 @@ class Frontend extends Controller
                 RenderView::render('template.php', 'frontend/indexView.php');
             }
         } else {
+            //home
             $SchoolManager = new SchoolManager();
             $TagsManager = new TagsManager();
             $posts = $PostsManager->getPostsForHome($SchoolManager, $TagsManager);
@@ -64,9 +64,12 @@ class Frontend extends Controller
             $message = null;
             if (!empty($_POST)) {
                 $UserManager = new UserManager();
-                $SchoolManager = new SchoolManager();
-                $HistoryManager = new HistoryManager();
-                $message = $UserManager->signUp($_POST, $SchoolManager, $HistoryManager);
+                $canSignUp = $this->canSignUp($_POST, $UserManager);
+                if ($canSignUp['value']) {
+                    $message = $UserManager->signUp($_POST, new SchoolManager(), new HistoryManager());
+                } else {
+                    $message = $canSignUp['msg'];
+                }
             }
             RenderView::render('template.php', 'frontend/signUpView.php', ['option' => ['signUp'], 'message' => $message]);
         } else {
@@ -94,8 +97,8 @@ class Frontend extends Controller
                 }
                 //if user try to get back his password
             } else if (isset($_POST['postMail'])) {
-                if ($UserManager->mailExists($_POST['postMail'])) {
-                    $UserManager->mailTemporaryPassword($UserManager->getUserByMail($_POST['postMail']));
+                if ($user = $UserManager->getUserByMail($_POST['postMail'])) {
+                    $UserManager->mailTemporaryPassword($user);
                     $message = "Un mail vient de vous être envoyé pour réinitialiser votre mot de passe";
                 } else {
 					$message = "l'adresse mail renseignée ne correspond à aucun utilisateur";
@@ -113,8 +116,7 @@ class Frontend extends Controller
         $message = null;
         //form to reset password
         if (!empty($_GET['key']) && !empty($_GET['id'])) {
-            if ($UserManager->exists($_GET['id'])) {
-                $user = $UserManager->getOneById($_GET['id']);
+            if ($user = $UserManager->getOneById($_GET['id'])) {
                 if ($user->getTemporaryPassword() === $_GET['key'] && $user->getBeingReset()) {
                     $message = $UserManager->checkWrongPasswordMessage($_GET['wrongPassword']);
                     RenderView::render('template.php', 'frontend/resetPasswordView.php', ['user' => $user, 'message' => $message]);
@@ -127,8 +129,7 @@ class Frontend extends Controller
             // check form data
         } else if (isset($_POST['newPassword']) && isset($_POST['confirmNewPassword'])) {
             if ($_POST['newPassword'] === $_POST['confirmNewPassword']) {
-                if ($UserManager->exists($_POST['id'])) {
-                    $user = $UserManager->getOneById($_POST['id']);
+                if ($user = $UserManager->getOneById($_POST['id'])) {
                     if ($user->getTemporaryPassword() === $_POST['key'] && $user->getBeingReset()) {
                         if (!password_verify($_POST['newPassword'], $user->getPassword())) {
                                //new password is correct
@@ -285,11 +286,14 @@ class Frontend extends Controller
     {
         if (!empty($_GET['userId']) && $_GET['userId'] !== '1') {
             $UserManager = new UserManager();
-            if ($UserManager->exists($_GET['userId'])) {
-                $ProfileContentManager = new ProfileContentManager();
-                $user = $UserManager->getOneById($_GET['userId']);
-                $profileContent = $ProfileContentManager->getByProfileId($user->getId());
-                RenderView::render('template.php', 'frontend/userProfileView.php', ['user' => $user, 'profileContent' => $profileContent, 'option' => ['userProfile', 'tinyMCE']]);
+            if ($user = $UserManager->getOneById($_GET['userId'])) {
+                if ($user->getSchool() !== ALL_SCHOOL) {
+                    $ProfileContentManager = new ProfileContentManager();
+                    $profileContent = $ProfileContentManager->getByProfileId($user->getId());
+                    RenderView::render('template.php', 'frontend/userProfileView.php', ['user' => $user, 'profileContent' => $profileContent, 'option' => ['userProfile', 'tinyMCE']]);
+                } else {
+                    $this->incorrectInformation();
+                }
             } else {
 				$this->invalidLink();
             }
@@ -302,9 +306,8 @@ class Frontend extends Controller
     {
         if (!empty($_GET['school']) && $_GET['school'] !== ALL_SCHOOL && $_GET['school'] !== NO_SCHOOL) {
             $SchoolManager = new SchoolManager();
-            if ($SchoolManager->nameExists($_GET['school'])) {
+            if ($school = $SchoolManager->getSchoolByName($_GET['school'])) {
                 $ProfileContentManager = new ProfileContentManager();
-                $school = $SchoolManager->getSchoolByName($_GET['school']);
                 $profileContent = $ProfileContentManager->getByProfileId($school->getId(), true);
                 $contractInfo = null;
                 if (!$school->getIsActive()) {
@@ -329,38 +332,37 @@ class Frontend extends Controller
     public function updateProfile()
     {
         $UserManager = new UserManager();
-        if (!empty($_GET['userId']) && !empty($_GET['elem']) && $UserManager->exists($_GET['userId']) && $_GET['userId'] === $_SESSION['id']) {
-            $user = $UserManager->getOneById($_SESSION['id']);
+        if (!empty($_GET['userId']) && !empty($_GET['elem']) && $_GET['userId'] === $_SESSION['id'] && $user = $UserManager->getOneById($_SESSION['id'])) {
             switch ($_GET['elem']) {
-            case 'profileBanner' :
-                if (isset($_GET['noBanner'], $_GET['value'])) {
-                    if (strpos($_GET['value'], $user->getProfileBanner()) === false && file_exists($user->getProfileBanner())) {
-                        unlink($user->getProfileBanner());
+                case 'profileBanner' :
+                    if (isset($_GET['noBanner'], $_GET['value'])) {
+                        if (strpos($_GET['value'], $user->getProfileBanner()) === false && file_exists($user->getProfileBanner())) {
+                            unlink($user->getProfileBanner());
+                        }
+                        $infos = $_GET['value'] . ' ' . $_GET['noBanner'];
+                        $UserManager->updateById($_GET['userId'], 'profileBannerInfo', $infos);
                     }
-                    $infos = $_GET['value'] . ' ' . $_GET['noBanner'];
-                    $UserManager->updateById($_GET['userId'], 'profileBannerInfo', $infos);
-                }
-                break;
-            case 'profilePicture' :
-                if (isset($_GET['orientation'], $_GET['size'], $_GET['value'])) {
-                    if (strpos($_GET['value'], $user->getProfilePicture()) === false && file_exists($user->getProfilePicture())) {
-                        unlink($user->getProfilePicture());
+                    break;
+                case 'profilePicture' :
+                    if (isset($_GET['orientation'], $_GET['size'], $_GET['value'])) {
+                        if (strpos($_GET['value'], $user->getProfilePicture()) === false && file_exists($user->getProfilePicture())) {
+                            unlink($user->getProfilePicture());
+                        }
+                        $infos = $_GET['value'] . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
+                        $UserManager->updateById($_GET['userId'], 'profilePictureInfo', $infos);
                     }
-                    $infos = $_GET['value'] . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
-                    $UserManager->updateById($_GET['userId'], 'profilePictureInfo', $infos);
-                }
-                break;
-            case 'profileText' :
-                if (isset($_GET['block'], $_GET['pseudo'], $_GET['school'])) {
-                    $infos = $_GET['block'] . ' ' . $_GET['pseudo'] . ' ' . $_GET['school'];
-                    $UserManager->updateById($_GET['userId'], 'profileTextInfo', $infos);
-                }
-                break;
-            case 'content' :
-                $ProfileContentManager = new ProfileContentManager();
-                $ProfileContentManager->updateProfileContent($_POST);
-                $this->redirection();
-                break;
+                    break;
+                case 'profileText' :
+                    if (isset($_GET['block'], $_GET['pseudo'], $_GET['school'])) {
+                        $infos = $_GET['block'] . ' ' . $_GET['pseudo'] . ' ' . $_GET['school'];
+                        $UserManager->updateById($_GET['userId'], 'profileTextInfo', $infos);
+                    }
+                    break;
+                case 'content' :
+                    $ProfileContentManager = new ProfileContentManager();
+                    $ProfileContentManager->updateProfileContent($_POST);
+                    $this->redirection();
+                    break;
             }
         } else {
 			$this->incorrectInformation();
@@ -395,10 +397,9 @@ class Frontend extends Controller
 
     public function uploadBanner(array $GET, string $finalPath)
     {
+        $UserManager = new UserManager();
         $validBannerValue = array('true', 'false');
-        if (!empty($GET['noBanner']) && in_array($GET['noBanner'], $validBannerValue)) {
-            $UserManager = new UserManager();
-            $user = $UserManager->getOneById($_SESSION['id']);
+        if (!empty($GET['noBanner']) && in_array($GET['noBanner'], $validBannerValue) && $user = $UserManager->getOneById($_SESSION['id'])) {
             if (file_exists($user->getProfileBanner())) {
                 unlink($user->getProfileBanner());
             }
@@ -411,13 +412,11 @@ class Frontend extends Controller
 
     public function uploadProfilePicture(array $GET, string $finalPath)
     {
+        $UserManager = new UserManager();
         $validOrientationValue = array('highPicture', 'widePicture');
         $validSizeValue = array('smallPicture', 'mediumPicture', 'bigPicture');
         if (!empty($GET['orientation']) && in_array($GET['orientation'], $validOrientationValue)
-            && !empty($GET['size']) && in_array($GET['size'], $validSizeValue)
-        ) {
-            $UserManager = new UserManager();
-            $user = $UserManager->getOneById($_SESSION['id']);
+        && !empty($GET['size']) && in_array($GET['size'], $validSizeValue) && $user = $UserManager->getOneById($_SESSION['id'])) {
             if ($user->getProfilePicture() !== 'public/images/question-mark.png' && file_exists($user->getProfilePicture())) {
                 unlink($user->getProfilePicture());
             }
@@ -432,8 +431,7 @@ class Frontend extends Controller
     {
         $UserManager = new UserManager();
         $PostsManager = new PostsManager();
-        if (!empty($_GET['id']) && $PostsManager->exists($_GET['id'])) {
-            $post = $PostsManager->getOneById($_GET['id']);
+        if (!empty($_GET['id']) && $post = $PostsManager->getOneById($_GET['id'])) {
             $asidePosts = $PostsManager->getAsidePosts($post, new TagsManager());
             if ($UserManager->exists($post->getIdAuthor())) {
                 $author = $UserManager->getOneById($post->getIdAuthor());
@@ -491,8 +489,7 @@ class Frontend extends Controller
             //if user try to post on folder and folder is a schoolPost -> display input to upload other type file (zip rar)
             if (!empty($_GET['folder'])) {
                 $PostsManager = new PostsManager();
-                if ($PostsManager->exists($_GET['folder'])) {
-                    $folder = $PostsManager->getOneById($_GET['folder']);
+                if ($folder = $PostsManager->getOneById($_GET['folder'])) {
                     if ($_SESSION['grade'] === STUDENT) {
                         $isStudent = 'true';
                         $urlForm = 'index.php?action=uploadPost';
@@ -559,8 +556,7 @@ class Frontend extends Controller
     {
         $PostsManager = new PostsManager();
         $TagsManager = new TagsManager();
-        if (isset($_GET['id'], $_SESSION['id']) && $PostsManager->exists($_GET['id'])) {
-            $post = $PostsManager->getOneById($_GET['id']);
+        if (isset($_GET['id'], $_SESSION['id']) && $post = $PostsManager->getOneById($_GET['id'])) {
             if ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['school'] === ALL_SCHOOL) {
                 if ($post->getFileType() === 'folder') {
                     $PostsManager->deleteFolder($post->getId());
@@ -776,8 +772,7 @@ class Frontend extends Controller
     public function deleteComment()
     {
         $CommentsManager = new CommentsManager();
-        if (isset($_GET['id'], $_SESSION['id']) && $CommentsManager->exists($_GET['id'])) {
-            $comment = $CommentsManager->getOneById($_GET['id']);
+        if (isset($_GET['id'], $_SESSION['id']) && $comment = $CommentsManager->getOneById($_GET['id'])) {
             if ($comment->getIdAuthor() === $_SESSION['id'] || $_SESSION['school'] === ALL_SCHOOL) {
                 $CommentsManager->delete($comment->getId());
                 echo true;
@@ -851,6 +846,28 @@ class Frontend extends Controller
     public function faq()
     {
         RenderView::render('template.php', 'frontend/faqView.php');
+    }
+
+    private function canSignUp(array $POST, UserManager $UserManager)
+    {
+
+        if ($UserManager->checkForScriptInsertion($_POST)) {
+            if ($POST['confirmPassword'] === $POST['password']) {
+                if (!$UserManager->nameExists($POST['pseudo'])) {
+                    if (!$UserManager->mailExists($POST['mail'])) {
+                        return ['value' => true];
+                    } else {
+                        return ['value' => false, 'msg' => "Cette adresse mail est déja lié a un compte"];
+                    }
+                } else {
+                    return ['value' => false, 'msg' => "Ce nom d'utilisateur est déja utilisé"];
+                }
+            } else {
+                return ['value' => false, 'msg' => "Vous devez entrer deux mot de passe identiques"];
+            }
+        } else {
+            return ['value' => false, 'msg' => "Les informations renseignées sont incorrectes"];
+        }
     }
 
     private function reportPost(int $elemId)

@@ -10,7 +10,7 @@ class WarningManager extends AbstractManager
     public static $TABLE_BAN_CHAMPS ='id, idUser, DATE_FORMAT(dateBanishment, "%d/%m/%Y") AS dateBanishment, DATE_FORMAT(dateUnbanishment, "%d/%m/%Y") AS dateUnbanishment, isActive';
 
     /*-------------------------------------------------------------------------------------
-    ----------------------------------- FUNCTION PUBLIC ------------------------------------
+    ----------------------------------- PUBLIC FUNCTION ------------------------------------
     -------------------------------------------------------------------------------------*/
 
     /*------------------------------ warning ------------------------------*/
@@ -172,7 +172,7 @@ class WarningManager extends AbstractManager
     }
 
     /*-------------------------------------------------------------------------------------
-    ----------------------------------- FUNCTION PRIVATE ------------------------------------
+    ----------------------------------- PRIVATE FUNCTION ------------------------------------
     -------------------------------------------------------------------------------------*/
     private function sendWarnMail(User $user, string $reason, int $nbWarn)
     {

@@ -5,13 +5,13 @@ namespace Chemin\ArtSchool\Model;
 class ProfileContent
 {
     private $id,
-    $userId,
-    $schoolId,
-    $tab,
-    $size,
-    $contentOrder,
-    $align,
-    $content;
+        $userId,
+        $schoolId,
+        $tab,
+        $size,
+        $contentOrder,
+        $align,
+        $content;
 
     public function __construct(array $data = null)
     {

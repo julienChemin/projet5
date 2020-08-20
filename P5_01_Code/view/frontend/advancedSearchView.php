@@ -63,7 +63,7 @@ if (empty($_POST)) {
     echo '<span>Filtres de recherche : </span>';
 
     if ($_POST['schoolFilter'] !== 'noSchoolFilter') {
-        echo '<span class="tag">' . $_POST['schoolFilter'] . '</span>';
+        echo '<span class="tag">' . htmlspecialchars($_POST['schoolFilter']) . '</span>';
     }
 
     if ($_POST['sortBy'] === 'lastPosted') {
@@ -75,7 +75,7 @@ if (empty($_POST)) {
     }
     
     if ($_POST['listTags'] !== '') {
-        $listTags = explode(',', $_POST['listTags']);
+        $listTags = explode(',', htmlspecialchars($_POST['listTags']));
         for ($i = 1; $i < count($listTags); $i++) {
             echo '<span class="tag">tag : ' . $listTags[$i] . '</span>';
         }

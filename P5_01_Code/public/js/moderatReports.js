@@ -1,6 +1,8 @@
 let btnReportPost = document.getElementById('btnReportPost');
 let btnReportComment = document.getElementById('btnReportComment');
 let btnReportOther = document.getElementById('btnReportOther');
+let focusedBtn = null;
+let animIsDone = false;
 let blockContent = document.querySelector('#content');
 let blockNoContent = document.getElementById('noContent');
 let content = document.querySelector('#content tbody');
@@ -26,6 +28,7 @@ function addEventPaging(elemLi, i) {
 	});
 }
 function addEventDeleteReport(elemI, idElem, idUser = 0) {
+	elemI.title = 'Supprimer';
 	elemI.addEventListener('click', function() {
 		url = 'indexAdmin.php?action=deleteReport&elem=' + elem + '&idElem=' + idElem + '&idUser=' + idUser;
 		ajaxGet(url, function(response) {
@@ -49,33 +52,46 @@ function fillContentReport() {
 			content.innerHTML = "";
 			let rows = JSON.parse(response);
 			rows.forEach(row => {
+				//create and fillup every field for each row
 				let elemTr = document.createElement('tr');
 				let tdName = document.createElement('td');
 				let elemLinkName = document.createElement('a');
 				elemLinkName.href = 'index.php?action=userProfile&userId=' + row['idUser'];
 				elemLinkName.textContent = row['userName'];
 				tdName.appendChild(elemLinkName);
+
 				let tdContent = document.createElement('td');
 				tdContent.innerHTML = row['content'];
+
 				let elemDate = document.createElement('p');
 				elemDate.textContent = row['dateReport'];
 				tdContent.appendChild(elemDate);
+
 				let tdAction = document.createElement('td');
 				let elemI = document.createElement('i');
+				let idElem = 0;
+				let idUser = 0;
 				if (elem === 'post' || elem === 'comment') {
+					//if post or comment, add a link to see the post concerned by the report
 					row['idPost'] !== undefined ? idElem = row['idPost'] : idElem = row['idComment'];
+					idUser = row['idUser'];
 					let elemLinkElem = document.createElement('a');
 					elemLinkElem.href = 'indexAdmin.php?action=moderatReports&elem=' + elem + '&idElem=' + idElem;
 					elemI.classList.add('far');
 					elemI.classList.add('fa-eye');
+					elemI.title = 'Voir';
 					elemLinkElem.appendChild(elemI);
 					tdAction.appendChild(elemLinkElem);
-				} else if (elem === 'other') {
-					addEventDeleteReport(elemI, row['id']);
-					elemI.classList.add('fas');
-					elemI.classList.add('fa-trash-alt');
-					tdAction.appendChild(elemI);
+				} else {
+					//if 'other report', idUser is null
+					idElem = row['id'];
 				}
+				let elemIDelete = document.createElement('i');
+				addEventDeleteReport(elemIDelete, idElem, idUser);
+				elemIDelete.classList.add('fas');
+				elemIDelete.classList.add('fa-trash-alt');
+				
+				tdAction.appendChild(elemIDelete);
 				elemTr.appendChild(tdName);
 				elemTr.appendChild(tdContent);
 				elemTr.appendChild(tdAction);
@@ -124,18 +140,35 @@ function fillContentReportFromElem(idElem) {
 		}
 	});
 }
+function animFirstClick()
+{
+	btnReportPost.style.margin = '15px';
+	btnReportPost.style.padding = '15px';
+	btnReportComment.style.margin = '15px';
+	btnReportComment.style.padding = '15px';
+	btnReportOther.style.margin = '15px';
+	btnReportOther.style.padding = '15px';
+}
+function toggleBtn(btnToFocus)
+{
+	if (!animIsDone) {
+		animFirstClick();
+	}
+	if (focusedBtn !== null) {
+		focusedBtn.style.color = 'white';
+		focusedBtn.style.backgroundColor = 'transparent';
+	}
+	btnToFocus.style.color = '#CF8B3F';
+	btnToFocus.style.backgroundColor = '#161617';
+	focusedBtn = btnToFocus;
+}
 
 if (document.querySelector('.moderatReportsFromElem') === null) {
 	//all reports
 	btnReportPost.addEventListener('click', function() {
 		if (elem !== 'post') {
 			//display block content, set focus btn
-			btnReportOther.style.color = 'white';
-			btnReportOther.style.backgroundColor = 'transparent';
-			btnReportComment.style.color = 'white';
-			btnReportComment.style.backgroundColor = 'transparent';
-			btnReportPost.style.color = '#CF8B3F';
-			btnReportPost.style.backgroundColor = '#161617';
+			toggleBtn(btnReportPost);
 			elem = 'post';
 			pageDisplay.i = 1;
 			//paging
@@ -165,12 +198,7 @@ if (document.querySelector('.moderatReportsFromElem') === null) {
 	btnReportComment.addEventListener('click', function() {
 		if (elem !== 'comment') {
 			//display block content, set focus btn
-			btnReportPost.style.color = 'white';
-			btnReportPost.style.backgroundColor = 'transparent';
-			btnReportOther.style.color = 'white';
-			btnReportOther.style.backgroundColor = 'transparent';
-			btnReportComment.style.color = '#CF8B3F';
-			btnReportComment.style.backgroundColor = '#161617';
+			toggleBtn(btnReportComment);
 			elem = 'comment';
 			pageDisplay.i = 1;
 			//paging
@@ -200,12 +228,7 @@ if (document.querySelector('.moderatReportsFromElem') === null) {
 	btnReportOther.addEventListener('click', function() {
 		if (elem !== 'other') {
 			//display block content, set focus btn
-			btnReportPost.style.color = 'white';
-			btnReportPost.style.backgroundColor = 'transparent';
-			btnReportComment.style.color = 'white';
-			btnReportComment.style.backgroundColor = 'transparent';
-			btnReportOther.style.color = '#CF8B3F';
-			btnReportOther.style.backgroundColor = '#161617';
+			toggleBtn(btnReportOther);
 			elem = 'other';
 			pageDisplay.i = 1;
 			//paging

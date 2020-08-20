@@ -50,19 +50,115 @@
         if (!empty($data['result'])) {
             if (!empty($data['result']['school'])) {
                 //school where name contains the key word searched
-                $data['PostsManager']->displayResultSearchByKeyWord($data['result']['school'], 'school');
+                $result = $data['result']['school'];
+                ?>
+                <div>
+                    <h2>Établissements</h2>
+                </div>
+                <div class="blockResult blockResultSchool fullWidth">
+                    <?php
+                    for($i=0; $i<count($result); $i++) {
+                        if ($result[$i]->getName() !== NO_SCHOOL) {
+                            ?>
+                            <div>
+                                <a href="index.php?action=schoolProfile&school=<?=$result[$i]->getName()?>">
+                                    <figure class="figureProfilePicture fullWidth">
+                                        <div>
+                                            <img src="<?=$result[$i]->getLogo()?>">
+                                        </div>
+                                        <figcaption>
+                                            <p><?=$result[$i]->getName()?></p>
+                                        </figcaption>
+                                    </figure>
+                                </a>
+                            </div>
+                            <?php
+                        }
+                    }
+                echo '</div>';
             }
             if (!empty($data['result']['user'])) {
                 //user where name contains the key word searched
-                $data['PostsManager']->displayResultSearchByKeyWord($data['result']['user'], 'user');
+                $result = $data['result']['user'];
+                ?>
+                <div>
+                    <h2>Utilisateurs</h2>
+                </div>
+                <div class="blockResult blockResultUser fullWidth">
+                    <?php
+                    for($i=0; $i<count($result); $i++) {
+                        if ($result[$i]->getSchool() !== ALL_SCHOOL) {
+                            ?>
+                            <div>
+                                <a href="index.php?action=userProfile&userId=<?=$result[$i]->getId()?>">
+                                    <figure class="figureProfilePicture fullWidth">
+                                        <div>
+                                            <img src="<?=$result[$i]->getProfilePicture()?>">
+                                        </div>
+                                        <figcaption>
+                                            <p><?=$result[$i]->getName()?></p>
+                                        </figcaption>
+                                    </figure>
+                                </a>
+                            </div>
+                            <?php
+                        }
+                    }
+                echo '</div>';
             }
             if (!empty($data['result']['post'])) {
                 //post where title contains the key word searched
-                $data['PostsManager']->displayResultSearchByKeyWord($data['result']['post'], 'post');
+                $result = $data['result']['post'];
+                ?>
+                <div>
+                    <h2>Publications</h2>
+                </div>
+                <div class="blockResult blockResultPost fullWidth">
+                    <?php
+                    for($i=0; $i<count($result); $i++) {
+                        echo '<div>';
+                            echo '<a href="index.php?action=post&id=' . $result[$i]->getId() . '">';
+                                if (empty($result[$i]->getFilePath())) {
+                                    switch ($result[$i]->getFileType()) {
+                                        case 'image' :
+                                            $result[$i]->setFilePath('public/images/fileImage.png');
+                                            break;
+                                        case 'video' :
+                                            $result[$i]->setFilePath('public/images/defaultVideoThumbnail.png');
+                                            break;
+                                    }
+                                } elseif ($result[$i]->getFileType() === 'video') {
+                                    echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                                }
+                                echo '<figure class="figureProfilePicture fullWidth">';
+                                    echo '<figcaption>';
+                                        echo '<p>' . $result[$i]->getTitle() . '</p>';
+                                    echo '</figcaption>';
+                                    echo '<div><img src="' . $result[$i]->getFilePath() . '"></div>';
+                                echo '</figure>';
+                            echo '</a>';
+                        echo '</div>';
+                    }
+                echo '</div>';
             }
             if (!empty($data['result']['tag'])) {
                 //tag who contains the key word searched
-                $data['PostsManager']->displayResultSearchByKeyWord($data['result']['tag'], 'tag');
+                $result = $data['result']['tag'];
+                ?>
+                <div>
+                    <h2>Tags</h2>
+                </div>
+                <div class="blockResult blockResultTag fullWidth">
+                    <?php
+                    for($i=0; $i<count($result); $i++) {
+                        ?>
+                        <div><a href="index.php?action=search&sortBy=tag&tag=<?=$result[$i]['name']?>">
+                        <span class="tag"><?=$result[$i]['name']?></span>
+                        <span>- (<?=$result[$i]['tagCount']?>)</span>
+                        </a></div>
+                        <?php
+                    }
+                echo '</div>';
             }
         } else {
             ?>

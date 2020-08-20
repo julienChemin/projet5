@@ -10,61 +10,38 @@ class HistoryManager extends Database
     public static $TABLE_CHAMPS ='id, idSchool, category, entry, DATE_FORMAT(dateEntry, "%d/%m/%Y à %H:%m") AS dateEntry';
     public static $LIMIT = 10;
 
+    /*-------------------------------------------------------------------------------------
+    ----------------------------------- PUBLIC FUNCTION ------------------------------------
+    -------------------------------------------------------------------------------------*/
+
     public function getBySchool($school, int $offset = 0, string $sortBy = null, $sortValue = null, $secondSortValue = null)
     {
         if (intval($school) > 0) {
             if (empty($sortBy)) {
                 //all school entries
-                $q = $this->sql(
-                    'SELECT category, entry, DATE_FORMAT(dateEntry, "%d/%m/%Y à %H:%m") AS dateEntry 
-                    FROM ' . static::$TABLE_NAME . ' 
-                    WHERE idSchool = :idSchool 
-                    ORDER BY id DESC 
-                    LIMIT ' . static::$LIMIT . ' OFFSET :offset', 
-                    [':idSchool' => $school, ':offset' => $offset]
-                );
+                $q = $this->getAll($school, $offset);
             } else {
                 switch ($sortBy) {
-                case "category" :
-                    //all school entries of particular category
-                    $q = $this->sql(
-                        'SELECT category, entry, DATE_FORMAT(dateEntry, "%d/%m/%Y à %H:%m") AS dateEntry 
-                        FROM ' . static::$TABLE_NAME . ' 
-                        WHERE idSchool = :idSchool AND category = :category 
-                        ORDER BY id DESC 
-                        LIMIT ' . static::$LIMIT . ' OFFSET :offset', 
-                        [':idSchool' => $school, ':category' => $sortValue, ':offset' => $offset]
-                    );
-                    break;
-                case "date" :
-                    //all school entries between two dates
-                    $q = $this->sql(
-                        'SELECT category, entry, DATE_FORMAT(dateEntry, "%d/%m/%Y à %H:%m") AS dateEntry 
-                        FROM ' . static::$TABLE_NAME . ' 
-                        WHERE idSchool = :idSchool AND (dateEntry >= :dateEntry AND dateEntry < :secondDateEntry) 
-                        ORDER BY id DESC 
-                        LIMIT ' . static::$LIMIT . ' OFFSET :offset', 
-                        [':idSchool' => $school, ':dateEntry' => $sortValue[0], ':secondDateEntry' => $sortValue[1], ':offset' => $offset]
-                    );
-                    break;
-                case "categoryAndDate" :
-                    //all school entries of particular category and between two dates
-                    $q = $this->sql(
-                        'SELECT category, entry, DATE_FORMAT(dateEntry, "%d/%m/%Y à %H:%m") AS dateEntry 
-                        FROM ' . static::$TABLE_NAME . ' 
-                        WHERE idSchool = :idSchool AND category = :category AND (dateEntry >= :dateEntry AND dateEntry < :secondDateEntry) 
-                        ORDER BY id DESC 
-                        LIMIT ' . static::$LIMIT . ' OFFSET :offset', 
-                        [':idSchool' => $school, ':category' => $sortValue, ':dateEntry' => $secondSortValue[0], 
-                        ':secondDateEntry' => $secondSortValue[1], ':offset' => $offset]
-                    );
-                    break;
+                    case "category" :
+                        //all school entries of particular category
+                        $q = $this->getByCategory($school, $offset, $sortValue);
+                        break;
+                    case "date" :
+                        //all school entries between two dates
+                        $q = $this->getByDate($school, $offset, $sortValue[0], $sortValue[1]);
+                        break;
+                    case "categoryAndDate" :
+                        //all school entries of particular category and between two dates
+                        $q = $this->getByCategoryAndDate($school, $offset, $sortValue, $secondSortValue[0], $secondSortValue[1]);
+                        break;
                 }
             }
+            $result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
+            $q->closeCursor();
+            return $result;
+        } else {
+            return [];
         }
-        $result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
-        $q->closeCursor();
-        return $result;
     }
 
     public function addEntry(HistoryEntry $entry)
@@ -117,5 +94,58 @@ class HistoryManager extends Database
             $arrEntries[$i][] = $entries[$i]->getEntry();
         }
         return $arrEntries;
+    }
+
+    /*-------------------------------------------------------------------------------------
+    ----------------------------------- PRIVATE FUNCTION ------------------------------------
+    -------------------------------------------------------------------------------------*/
+
+    private function getAll($school, $offset)
+    {
+        return $this->sql(
+            'SELECT category, entry, DATE_FORMAT(dateEntry, "%d/%m/%Y à %H:%m") AS dateEntry 
+            FROM ' . static::$TABLE_NAME . ' 
+            WHERE idSchool = :idSchool 
+            ORDER BY id DESC 
+            LIMIT ' . static::$LIMIT . ' OFFSET :offset', 
+            [':idSchool' => $school, ':offset' => $offset]
+        );
+    }
+
+    private function getByCategory($school, $offset, $sortValue)
+    {
+        return $this->sql(
+            'SELECT category, entry, DATE_FORMAT(dateEntry, "%d/%m/%Y à %H:%m") AS dateEntry 
+            FROM ' . static::$TABLE_NAME . ' 
+            WHERE idSchool = :idSchool AND category = :category 
+            ORDER BY id DESC 
+            LIMIT ' . static::$LIMIT . ' OFFSET :offset', 
+            [':idSchool' => $school, ':category' => $sortValue, ':offset' => $offset]
+        );
+    }
+
+    private function getByDate($school, $offset, $sortValue, $secondSortValue)
+    {
+        return $this->sql(
+            'SELECT category, entry, DATE_FORMAT(dateEntry, "%d/%m/%Y à %H:%m") AS dateEntry 
+            FROM ' . static::$TABLE_NAME . ' 
+            WHERE idSchool = :idSchool AND (dateEntry >= :dateEntry AND dateEntry < :secondDateEntry) 
+            ORDER BY id DESC 
+            LIMIT ' . static::$LIMIT . ' OFFSET :offset', 
+            [':idSchool' => $school, ':dateEntry' => $sortValue, ':secondDateEntry' => $secondSortValue, ':offset' => $offset]
+        );
+    }
+
+    private function getByCategoryAndDate($school, $offset, $sortValue, $secondSortValue, $thirdSortValue)
+    {
+        return $this->sql(
+            'SELECT category, entry, DATE_FORMAT(dateEntry, "%d/%m/%Y à %H:%m") AS dateEntry 
+            FROM ' . static::$TABLE_NAME . ' 
+            WHERE idSchool = :idSchool AND category = :category AND (dateEntry >= :dateEntry AND dateEntry < :secondDateEntry) 
+            ORDER BY id DESC 
+            LIMIT ' . static::$LIMIT . ' OFFSET :offset', 
+            [':idSchool' => $school, ':category' => $sortValue, ':dateEntry' => $secondSortValue, 
+            ':secondDateEntry' => $thirdSortValue, ':offset' => $offset]
+        );
     }
 }

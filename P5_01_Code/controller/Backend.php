@@ -57,8 +57,8 @@ class Backend extends Controller
             }
             //if user try to get back his password
         } else if (isset($_POST['postMail'])) {
-            if ($UserManager->mailExists($_POST['postMail'])) {
-                $UserManager->mailTemporaryPassword($UserManager->getUserByMail($_POST['postMail']));
+            if ($user = $UserManager->getUserByMail($_POST['postMail'])) {
+                $UserManager->mailTemporaryPassword($user);
                 $message = "Un mail vient de vous être envoyé pour réinitialiser votre mot de passe.";
             } else {
                 $message = "l'adresse mail renseignée ne correspond à aucun utilisateur";
@@ -72,14 +72,13 @@ class Backend extends Controller
         $message = null;
         if ($_SESSION['school'] === ALL_SCHOOL) {
             if (!empty($_POST['adminPassword']) && !empty($_GET['option']) && $_GET['option'] === 'add') {
-                //if form to add school is filled
+                // form to add school is filled
                 $SchoolManager = new SchoolManager();
-                $HistoryManager = new HistoryManager();
                 $UserManager = new UserManager();
-                $arrCanAddSchool = $SchoolManager->canAddSchool($_POST, $UserManager);
-                if ($arrCanAddSchool['canAdd']) {
+                $canAddSchool = $SchoolManager->canAddSchool($_POST, $UserManager);
+                if ($canAddSchool['succes']) {
                     //add school and school administrator
-                    $message = $SchoolManager->addSchool($_POST, $UserManager, $HistoryManager);
+                    $message = $SchoolManager->addSchool($_POST, $UserManager, new HistoryManager());
                     $ContractManager = new ContractManager('school', $SchoolManager);
                     $school = $SchoolManager->getSchoolByName($_POST['schoolName']);
                     $ContractManager->extendContract($school, $_POST['schoolDuration']);
@@ -87,7 +86,7 @@ class Backend extends Controller
                         $SchoolManager->schoolToInactive($school->getId(), $UserManager);
                     }
                 } else {
-                    $message = $arrCanAddSchool['message'];
+                    $message = $canAddSchool['message'];
                 }
             }
             RenderView::render('template.php', 'backend/addSchoolView.php', ['option' => ['addSchool'], 'message' => $message]);
@@ -265,8 +264,7 @@ class Backend extends Controller
     {
         if (!empty($_SESSION) && $_SESSION['school'] === ALL_SCHOOL) {
             $UserManager = new UserManager();
-            if (isset($_GET['idUser']) && $UserManager->exists(intval($_GET['idUser']))) {
-                $user = $UserManager->getOneById(intval($_GET['idUser']));
+            if (isset($_GET['idUser']) && $user = $UserManager->getOneById(intval($_GET['idUser']))) {
                 $WarningManager = new WarningManager();
                 $nbActiveWarn = $WarningManager->getNbActiveWarn($user);
                 if ($WarningManager->isBan($user)) {
@@ -289,7 +287,7 @@ class Backend extends Controller
     public function addWarning()
     {
         $UserManager = new UserManager();
-        if (!empty($_SESSION) && $_SESSION['school'] === ALL_SCHOOL && isset($_POST['idUser']) && $UserManager->exists(intval($_POST['idUser']))) {
+        if (!empty($_SESSION) && $_SESSION['school'] === ALL_SCHOOL && isset($_POST['idUser'])) {
             $WarningManager = new WarningManager();
             $user = $UserManager->getOneById(intval($_POST['idUser']));
             $WarningManager->warn($user, $_POST['reasonWarn'], $UserManager);
@@ -319,11 +317,13 @@ class Backend extends Controller
                 }
             }
             $schools = $SchoolManager->getSchoolByName($_SESSION['school']);
-            $sorting = $UserManager->moderatAdminSorting($UserManager->getUsersBySchool($_SESSION['school'], 'admin'));
+            $users = $UserManager->getUsersBySchool($_SESSION['school'], 'admin');
+            $nbModerator = $UserManager->countModerator($users);
+            $users = $UserManager->orderUsersBySchool($users);
             $_SESSION['school'] === ALL_SCHOOL ? $view = 'moderatAdminViewWebM.php' : $view = 'moderatAdminView.php';
             RenderView::render(
                 'template.php', 'backend/' . $view, 
-                ['users' => $sorting['users'], 'schools' => $schools, 'nbModerator' => $sorting['nbModerator'], 'message' => $message, 
+                ['users' => $users, 'schools' => $schools, 'nbModerator' => $nbModerator, 'message' => $message, 
                     'option' => ['moderatAdmin', 'buttonToggleSchool']]);
         } else {
             $this->accessDenied();
@@ -336,11 +336,11 @@ class Backend extends Controller
         $SchoolManager = new SchoolManager();
         $users = $UserManager->getUsersBySchool($_SESSION['school'], 'user');
         $schools = $SchoolManager->getSchoolByName($_SESSION['school']);
-        $sorting = $UserManager->moderatUsersSorting($users, $schools);
+        $users = $UserManager->orderUsersBySchool($users, true);
         $_SESSION['school'] === ALL_SCHOOL ? $view = 'moderatUsersViewWebM.php' : $view = 'moderatUsersView.php';
         RenderView::render(
             'template.php', 'backend/' . $view, 
-            ['incrementalId' => 0, 'users' => $sorting['users'], 'schools' => $schools, 'isActive' => $sorting['isActive'], 
+            ['incrementalId' => 0, 'users' => $users, 'schools' => $schools, 
                 'option' => ['moderatUsers', 'buttonToggleSchool']]
         );
     }
@@ -427,23 +427,22 @@ class Backend extends Controller
     {
         if (!empty($_GET['schoolName']) && ($_GET['schoolName'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
             $SchoolManager = new SchoolManager();
-            $school = $SchoolManager->getSchoolByName($_GET['schoolName']);
-            echo json_encode($school->getListSchoolGroups());
+            if ($school = $SchoolManager->getSchoolByName($_GET['schoolName'])) {
+                echo json_encode($school->getListSchoolGroups());
+            } else {
+                echo 'false';
+            }
         }
     }
 
     public function setGroup()
     {
         if (!empty($_GET['userName']) && !empty($_GET['group'])) {
+            $SchoolManager = new SchoolManager();
             $UserManager = new UserManager();
-            if ($UserManager->nameExists($_GET['userName'])) {
-                $SchoolManager = new SchoolManager();
-                $user = $UserManager->getUserByName($_GET['userName']);
-                if ($user->getSchool() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL) {
-                    echo $SchoolManager->setGroup($_GET, $user, $UserManager);
-                } else {
-                    echo false;
-                }
+            $user = $UserManager->getUserByName($_GET['userName']);
+            if ($user && $user->getSchool() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL) {
+                echo $SchoolManager->setGroup($_GET, $user, $UserManager);
             } else {
                 echo false;
             }
@@ -472,10 +471,9 @@ class Backend extends Controller
         if (isset($_GET['userName'], $_GET['schoolName'], $_GET['toAdmin'], $_GET['toModerator'])) {
             if (!($_GET['toAdmin'] === 'true' && $_GET['toModerator'] === 'true')) {
                 $SchoolManager = new SchoolManager();
-                $HistoryManager = new HistoryManager();
                 $UserManager = new UserManager();
                 if ($SchoolManager->nameExists($_GET['schoolName']) && $UserManager->nameExists($_GET['userName'])) {
-                    $SchoolManager->editGrade($_GET, $UserManager, $HistoryManager);
+                    $SchoolManager->editGrade($_GET, $UserManager, new HistoryManager());
                 } else {
                     $this->incorrectInformation();
                 }
@@ -518,31 +516,29 @@ class Backend extends Controller
             $SchoolManager = new SchoolManager();
             $UserManager = new UserManager();
             switch ($_GET['elem']) {
-            case 'user' :
-                if (!empty($_GET['userName']) && !empty($_GET['schoolName']) && $UserManager->nameExists($_GET['userName']) 
-                    && ($_SESSION['school'] === ALL_SCHOOL || $_SESSION['school'] === $_GET['schoolName'])
-                ) {
-                    if ($UserManager->deleteUser($_GET, $SchoolManager)) {
-                        $this->redirection();
+                case 'user' :
+                    if (!empty($_GET['userName']) && !empty($_GET['schoolName']) && $UserManager->nameExists($_GET['userName']) 
+                    && ($_SESSION['school'] === ALL_SCHOOL || $_SESSION['school'] === $_GET['schoolName'])) {
+                        if ($UserManager->deleteUser($_GET, $SchoolManager)) {
+                            $this->redirection();
+                        } else {
+                            throw new \Exception("Vous ne pouvez pas supprimer ce compte");
+                        }
                     } else {
-                        throw new \Exception("Vous ne pouvez pas supprimer un compte administrateur");
+                        $this->incorrectInformation();
                     }
-                } else {
+                    break;
+                default :
                     $this->incorrectInformation();
-                }
-                break;
-            default :
-                $this->incorrectInformation();
             }
         }
     }
 
     public function schoolProfile()
     {
-        if (!empty($_GET['school']) 
-        && ($_GET['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
+        if (!empty($_GET['school']) && $_GET['school'] === $_SESSION['school']) {
             $SchoolManager = new SchoolManager();
-            $school = $SchoolManager->getSchoolByName($_GET['school']);
+            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
             $contractInfo = null;
             if (!$school->getIsActive()) {
                 $ContractManager = new ContractManager('school', $SchoolManager);
@@ -569,35 +565,35 @@ class Backend extends Controller
         if (!empty($_GET['school']) && !empty($_GET['elem']) && $_GET['school'] === $_SESSION['school']) {
             $school = $SchoolManager->getSchoolByName($_SESSION['school']);
             switch ($_GET['elem']) {
-            case 'profileBanner' :
-                if (isset($_GET['noBanner'], $_GET['value'])) {
-                    if (strpos($_GET['value'], $school->getProfileBanner()) === false && file_exists($school->getProfileBanner())) {
-                        unlink($school->getProfileBanner());
+                case 'profileBanner' :
+                    if (isset($_GET['noBanner'], $_GET['value'])) {
+                        if (strpos($_GET['value'], $school->getProfileBanner()) === false && file_exists($school->getProfileBanner())) {
+                            unlink($school->getProfileBanner());
+                        }
+                        $infos = $_GET['value'] . ' ' . $_GET['noBanner'];
+                        $SchoolManager->updateByName($_GET['school'], 'profileBannerInfo', $infos);
                     }
-                    $infos = $_GET['value'] . ' ' . $_GET['noBanner'];
-                    $SchoolManager->updateByName($_GET['school'], 'profileBannerInfo', $infos);
-                }
-                break;
-            case 'profilePicture' :
-                if (isset($_GET['orientation'], $_GET['size'], $_GET['value'])) {
-                    if (strpos($_GET['value'], $school->getProfilePicture()) === false && file_exists($school->getProfilePicture())) {
-                        unlink($school->getProfilePicture());
+                    break;
+                case 'profilePicture' :
+                    if (isset($_GET['orientation'], $_GET['size'], $_GET['value'])) {
+                        if (strpos($_GET['value'], $school->getProfilePicture()) === false && file_exists($school->getProfilePicture())) {
+                            unlink($school->getProfilePicture());
+                        }
+                        $infos = $_GET['value'] . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
+                        $SchoolManager->updateByName($_GET['school'], 'profilePictureInfo', $infos);
                     }
-                    $infos = $_GET['value'] . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
-                    $SchoolManager->updateByName($_GET['school'], 'profilePictureInfo', $infos);
-                }
-                break;
-            case 'profileText' :
-                if (isset($_GET['block'], $_GET['school'], $_GET['schoolPos'])) {
-                    $infos = $_GET['block'] . ' ' . $_GET['schoolPos'];
-                    $SchoolManager->updateByName($_GET['school'], 'profileTextInfo', $infos);
-                }
-                break;
-            case 'content' :
-                $ProfileContentManager = new ProfileContentManager();
-                $SchoolManager->updateProfileContent($_GET, $_POST, $ProfileContentManager);
-                $this->redirection();
-                break;
+                    break;
+                case 'profileText' :
+                    if (isset($_GET['block'], $_GET['school'], $_GET['schoolPos'])) {
+                        $infos = $_GET['block'] . ' ' . $_GET['schoolPos'];
+                        $SchoolManager->updateByName($_GET['school'], 'profileTextInfo', $infos);
+                    }
+                    break;
+                case 'content' :
+                    $ProfileContentManager = new ProfileContentManager();
+                    $ProfileContentManager->updateProfileContent($_POST, true, intval($school->getId()));
+                    $this->redirection();
+                    break;
             } 
         } else {
             $this->incorrectInformation();
@@ -745,8 +741,7 @@ class Backend extends Controller
                 break;
             case 'comment':
                 $CommentsManager = new CommentsManager();
-                if ($CommentsManager->exists($idElem)) {
-                    $comment = $CommentsManager->getOneById($idElem);
+                if ($comment = $CommentsManager->getOneById($idElem)) {
                     return $comment->getIdPost();
                 } else {
                     $this->incorrectInformation();

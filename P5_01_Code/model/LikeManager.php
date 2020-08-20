@@ -4,6 +4,10 @@ use Chemin\ArtSchool\Model\AbstractManager;
 
 abstract class LikeManager extends AbstractManager
 {
+    /*-------------------------------------------------------------------------------------
+    ----------------------------------- PUBLIC FUNCTION ------------------------------------
+    -------------------------------------------------------------------------------------*/
+
     public function userAlreadyLikePost(int $idUser, int $idPost)
     {
         if (!empty($idUser) && !empty($idPost)) {
@@ -48,7 +52,11 @@ abstract class LikeManager extends AbstractManager
         }
     }
 
-    public function getNbLike(int $idPost)
+    /*-------------------------------------------------------------------------------------
+    ----------------------------------- PROTECTED FUNCTION ------------------------------------
+    -------------------------------------------------------------------------------------*/
+
+    protected function getNbLike(int $idPost)
     {
         if ($idPost > 0) {
             $q = $this->sql(
@@ -62,17 +70,17 @@ abstract class LikeManager extends AbstractManager
         }
     }
 
-    public function editNbLike(string $action, int $idPost)
+    protected function editNbLike(string $action, int $idPost)
     {
         if ($idPost > 0) {
             $nbLike = $this->getNbLike($idPost);
             switch ($action) {
-            case 'increment' :
-                $nbLike += 1;
-                break;
-            case 'decrement' :
-                $nbLike -= 1;
-                break;
+                case 'increment' :
+                    $nbLike += 1;
+                    break;
+                case 'decrement' :
+                    $nbLike -= 1;
+                    break;
             }
             $this->sql(
                 'UPDATE ' . static::$TABLE_NAME . ' 

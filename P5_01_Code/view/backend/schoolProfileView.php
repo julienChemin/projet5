@@ -30,8 +30,9 @@
             </form>
         </div>
         <div id="contentMenuEditProfilePicture" class="contentMenuEdit menuEditHeader">
-            <form method="POST" action="indexAdmin.php?action=upload&elem=picture&orientation=<?=$data['school']->getProfilePictureOrientation()?>
-            &size=<?=$data['school']->getProfilePictureSize()?>" enctype="multipart/form-data">
+            <form method="POST" 
+            action="indexAdmin.php?action=upload&elem=picture&orientation=<?=$data['school']->getProfilePictureOrientation()?>&size=<?=$data['school']->getProfilePictureSize()?>"
+            enctype="multipart/form-data">
                 <p>
                     <label for="picturePath">Adresse de l'image</label>
                     <input type="text" name="picturePath" id="picturePath">
