@@ -123,12 +123,14 @@ if (document.getElementById('moderatUsers') !== null) {
 			//maj block list groups
 			url = 'indexAdmin.php?action=getGroup&schoolName=' + formAddGroup[i].elements.schoolName.value;
 			ajaxGet(url, function(response){
-				let listSchoolGroups = JSON.parse(response);
-				listsGroup[i].innerHTML = "";
-				if (listSchoolGroups !== null) {
-					listSchoolGroups.forEach(group =>{
-						addGroupToList(group, listsGroup[i], formAddGroup[i].elements.schoolName.value, i);
-					});
+				if (response.length > 0 && response !== 'false') {
+					let listSchoolGroups = JSON.parse(response);
+					listsGroup[i].innerHTML = "";
+					if (listSchoolGroups !== null) {
+						listSchoolGroups.forEach(group =>{
+							addGroupToList(group, listsGroup[i], formAddGroup[i].elements.schoolName.value, i);
+						});
+					}
 				}
 			});
 		});
@@ -146,8 +148,8 @@ if (document.getElementById('moderatUsers') !== null) {
 				let url = 'indexAdmin.php?action=createGroup&schoolName=' + formAddGroup[i].elements.schoolName.value;
 				url += '&group=' + formAddGroup[i].elements.addGroup.value;
 				ajaxGet(url, function(response){
-					response = JSON.parse(response);
-					if (response) {
+					if (response.length > 0 && response !== 'false') {
+						response = JSON.parse(response);
 						//maj list group (to edit user group)
 						let listToEdit = document.querySelectorAll('#school' + i + ' .inputListGroup');
 						for (let j=0;j<listToEdit.length;j++) {
@@ -160,12 +162,14 @@ if (document.getElementById('moderatUsers') !== null) {
 						formAddGroup[i].elements.addGroup.value = "";
 						url = 'indexAdmin.php?action=getGroup&schoolName=' + formAddGroup[i].elements.schoolName.value;
 						ajaxGet(url, function(response){
-							let listSchoolGroups = JSON.parse(response);
-							listsGroup[i].innerHTML = "";
-							if (listSchoolGroups !== null) {
-								listSchoolGroups.forEach(group =>{
-									addGroupToList(group, listsGroup[i], formAddGroup[i].elements.schoolName.value, i);
-								});
+							if (response.length > 0 && response !== 'false') {
+								let listSchoolGroups = JSON.parse(response);
+								listsGroup[i].innerHTML = "";
+								if (listSchoolGroups !== null) {
+									listSchoolGroups.forEach(group =>{
+										addGroupToList(group, listsGroup[i], formAddGroup[i].elements.schoolName.value, i);
+									});
+								}
 							}
 						});
 					}
@@ -197,8 +201,7 @@ if (document.getElementById('moderatUsers') !== null) {
 			url = 'indexAdmin.php?action=setGroup&userName=' + listEditGroup[i].parentNode.previousElementSibling.textContent;
 			url += '&group=' + inputListGroup[i].value;
 			ajaxGet(url, function(response){
-				response = JSON.parse(response);
-				if (response) {
+				if (response.length > 0 && response !== 'false') {
 					userGroup[i].textContent = inputListGroup[i].value;
 				}
 			});

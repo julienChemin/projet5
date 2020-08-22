@@ -84,9 +84,6 @@ try {
             case 'getTags' :
                 $Frontend->getTags();
                 break;
-            /*case 'addSchool' :
-                $Frontend->addSchool();
-                break;*/
             case 'getSchools' :
                 $Frontend->getSchools();
                 break;

@@ -32,7 +32,7 @@ function addEventDeleteReport(elemI, idElem, idUser = 0) {
 	elemI.addEventListener('click', function() {
 		url = 'indexAdmin.php?action=deleteReport&elem=' + elem + '&idElem=' + idElem + '&idUser=' + idUser;
 		ajaxGet(url, function(response) {
-			if (response === '1') {
+			if (response === 'true') {
 				let tableBody = document.querySelector('tbody');
 				tableBody.removeChild(elemI.parentNode.parentNode);
 				if (tableBody.childNodes.length <= 0) {
@@ -175,7 +175,7 @@ if (document.querySelector('.moderatReportsFromElem') === null) {
 			paging.innerHTML = "";
 			url = 'indexAdmin.php?action=getCountReports&elem=' + elem;
 			ajaxGet(url, function(response) {
-				if (response.length > 0) {
+				if (response.length > 0 && response !== 'false') {
 					elemCount = parseInt(JSON.parse(response));
 					let nbPage = Math.ceil(elemCount / limit);
 					for (let i=1; i < nbPage + 1; i++) {
@@ -205,7 +205,7 @@ if (document.querySelector('.moderatReportsFromElem') === null) {
 			paging.innerHTML = "";
 			url = 'indexAdmin.php?action=getCountReports&elem=' + elem;
 			ajaxGet(url, function(response) {
-				if (response.length > 0) {
+				if (response.length > 0 && response !== 'false') {
 					elemCount = parseInt(JSON.parse(response));
 					let nbPage = Math.ceil(elemCount / limit);
 					for (let i=1; i < nbPage + 1; i++) {
@@ -235,7 +235,7 @@ if (document.querySelector('.moderatReportsFromElem') === null) {
 			paging.innerHTML = "";
 			url = 'indexAdmin.php?action=getCountReports&elem=' + elem;
 			ajaxGet(url, function(response) {
-				if (response.length > 0) {
+				if (response.length > 0 && response !== 'false') {
 					elemCount = parseInt(JSON.parse(response));
 					let nbPage = Math.ceil(elemCount / limit);
 					for (let i=1; i < nbPage + 1; i++) {
@@ -284,7 +284,7 @@ if (document.querySelector('.moderatReportsFromElem') === null) {
 	btnConfirmDeleteAll.addEventListener('click', function() {
 		url = 'indexAdmin.php?action=deleteReportsFromElem&elem=' + elem + '&idElem=' + arrUrlVar['idElem'];
 		ajaxGet(url, function(response) {
-			if (response === '1') {
+			if (response === 'true') {
 				document.querySelector('tbody').innerHTML = '';
 				blockContent.style.display = 'none';
 				blockNoContent.style.display = 'flex';

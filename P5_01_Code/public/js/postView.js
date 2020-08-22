@@ -97,7 +97,7 @@ for (let i=0;i<arrBtnDeleteComment.length;i++) {
     arrBtnConfirmDelete[i].addEventListener(
         'click', function () {
             ajaxGet(url, function (response) {
-                if (response) {
+                if (response !== 'false') {
                     let nodeToRemove = arrBtnConfirmDelete[i].parentNode.parentNode.parentNode;
                     blockComments.removeChild(nodeToRemove);
                 }

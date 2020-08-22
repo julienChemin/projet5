@@ -63,10 +63,12 @@ function getHistory(school, content, offset, sortBy = null, sortValue = null, se
 		}
 	}
 	ajaxGet(url, function(response){
-		if (offset === 0) {
-			content.innerHTML = '';
+		if (response !== 'false') {
+			if (offset === 0) {
+				content.innerHTML = '';
+			}
+			fillContent(JSON.parse(response), content);
 		}
-		fillContent(JSON.parse(response), content);
 	});
 }
 function toggleClass(elem, classToToggle) {

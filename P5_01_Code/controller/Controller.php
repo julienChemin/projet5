@@ -26,16 +26,16 @@ abstract class Controller
     protected function useCookieToSignIn()
     {
         switch (static::$SIDE) {
-        case 'frontend' :
-            if (!empty($_COOKIE['artSchoolAdminId'])) {
-                 $cookie = explode("-", $_COOKIE['artSchoolAdminId']);
-            } else {
-                $cookie = explode("-", $_COOKIE['artSchoolId']);
-            }
-            break;
-        case 'backend' :
-            $cookie = explode("-", $_COOKIE['artSchoolAdminId']);
-            break;
+            case 'frontend' :
+                if (!empty($_COOKIE['artSchoolAdminId'])) {
+                    $cookie = explode("-", $_COOKIE['artSchoolAdminId']);
+                } else {
+                    $cookie = explode("-", $_COOKIE['artSchoolId']);
+                }
+                break;
+            case 'backend' :
+                $cookie = explode("-", $_COOKIE['artSchoolAdminId']);
+                break;
         }
         if (count($cookie) === 2) {
             $UserManager = new UserManager();
@@ -63,6 +63,33 @@ abstract class Controller
             }
         } else {
             $this->disconnect();
+        }
+    }
+
+    protected function tryToConnect(string $pseudo, string $password, UserManager $UserManager, bool $adminSide, bool $stayConnect = null)
+    {
+        if ($UserManager->canConnect($pseudo, $password)) {
+            $user = $UserManager->getUserByName($pseudo);
+            if (!$adminSide || ($adminSide && ($user->getIsAdmin() || $user->getIsModerator()))) {
+                if (isset($stayConnect)) {
+                    $this->setCookie($user);
+                }
+                $this->connect($user);
+                $adminSide ? $urlLocation = 'indexAdmin.php' : $urlLocation = 'index.php';
+                header('Location: ' . $urlLocation);
+            }
+        } else {
+            return 'L\'identifiant ou le mot de passe est incorrecte';
+        }
+    }
+
+    protected function tryRecoverPassword(string $mail, UserManager $UserManager)
+    {
+        if ($user = $UserManager->getUserByMail($mail)) {
+            $UserManager->mailTemporaryPassword($user);
+            return "Un mail vient de vous être envoyé pour réinitialiser votre mot de passe";
+        } else {
+            return "l'adresse mail renseignée ne correspond à aucun utilisateur";
         }
     }
 
@@ -150,5 +177,72 @@ abstract class Controller
     protected function incorrectInformation()
     {
         throw new \Exception("Les informations renseignées sont incorrectes");
+    }
+
+    /*------------------------------ contract info ------------------------------*/
+    protected function getUserContractInfo(User $user, ContractManager $ContractManager)
+    {
+        if ($dateContractEnd = $ContractManager->getDateContractEnd($user->getId())) {
+            if ($user->getIsActive()) {
+                return 'Votre compte est actif jusqu\'au ' . $dateContractEnd;
+            } else {
+                return 'Votre compte est inactif depuis le ' . $dateContractEnd;
+            }
+        } else {
+            return 'Votre compte est inactif';
+        }
+    }
+
+    protected function getSchoolContractInfo($school, ContractManager $ContractManager, bool $forProfile = false)
+    {
+        if ($forProfile) {
+            return $this->schoolContractInfoForProfile($school, $ContractManager);
+        } else {
+            return $this->schoolContractInfo($school, $ContractManager);
+        }
+    }
+
+    protected function schoolContractInfoForProfile($school, ContractManager $ContractManager)
+    {
+        $contractInfo = null;
+        if (is_object($school) && !$school->getIsActive()) {
+            if ($dateContractEnd = $ContractManager->getDateContractEnd($school->getId())) {
+                $contractInfo = 'Cet établissement n\'est plus actif sur le site depuis le ' . $dateContractEnd;
+            } else {
+                $contractInfo = 'Cet établissement n\'est pas actif sur le site';
+            }
+        }
+        return $contractInfo;
+    }
+
+    protected function schoolContractInfo($school, ContractManager $ContractManager)
+    {
+        // $school must be object School or array which contain object School
+        $contractInfo = null;
+        if (is_array($school) && count($school) > 1) {
+            $contractInfo = [];
+            foreach ($school as $school) {
+                if ($dateContractEnd = $ContractManager->getDateContractEnd($school->getId())) {
+                    if ($school->getIsActive()) {
+                        $contractInfo[] = 'Cet établissement est actif jusqu\'au ' . $dateContractEnd;
+                    } else {
+                        $contractInfo[] = 'Cet établissement n\'est plus actif depuis le ' . $dateContractEnd;
+                    }
+                } else {
+                    $contractInfo[] = 'Cet établissement n\'est pas actif';
+                }
+            }
+        } elseif (is_object($school)) {
+            if ($dateContractEnd = $ContractManager->getDateContractEnd($school->getId())) {
+                if ($school->getIsActive()) {
+                    $contractInfo = 'Cet établissement est actif jusqu\'au ' . $dateContractEnd;
+                } else {
+                    $contractInfo = 'Cet établissement n\'est plus actif depuis le ' . $dateContractEnd;
+                }
+            } else {
+                $contractInfo = 'Cet établissement n\'est pas actif';
+            }
+        }
+        return $contractInfo;
     }
 }

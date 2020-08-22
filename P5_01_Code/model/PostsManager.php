@@ -419,16 +419,14 @@ class PostsManager extends LikeManager
             //check $_post
             switch ($arrPOST['fileTypeValue']) {
                 case 'image':
-                    if (empty($_FILES['uploadFile']) || (empty($arrPOST['listTags']) && $arrPOST['uploadType'] === 'public' && $arrPOST['postType'] === 'userPost'
-                        && $arrPOST['isStudent'] === 'true')
-                    ) {
+                    if (empty($_FILES['uploadFile']) || (empty($arrPOST['listTags']) && $arrPOST['uploadType'] === 'public' 
+                    && $arrPOST['postType'] === 'userPost' && $arrPOST['isStudent'] === 'true')) {
                         return false;
                     }
                     break;
                 case 'video':
-                    if (empty($arrPOST['videoLink']) || (empty($arrPOST['listTags']) && $arrPOST['uploadType'] === 'public' && $arrPOST['postType'] === 'userPost'
-                        && $arrPOST['isStudent'] === 'true')
-                    ) {
+                    if (empty($arrPOST['videoLink']) || (empty($arrPOST['listTags']) && $arrPOST['uploadType'] === 'public' 
+                    && $arrPOST['postType'] === 'userPost' && $arrPOST['isStudent'] === 'true')) {
                         return false;
                     }
                     break;

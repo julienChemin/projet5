@@ -1,11 +1,6 @@
 new stuff
     - refactoring 
-        -> reportManager
-        -> historyManager
-        -> likeManager
-        -> postsManager
-        -> profileContent
-        -> school/userManager
+        -> controlleurs
         
 fixed issues
     - 
