@@ -23,7 +23,7 @@
                             </figure>
                         </div>
                         <div>
-                            <h2><a href="index.php?action=schoolProfile&school=<?=$school->getName()?>"><?=$school->getName()?></a></h2>
+                            <h2><a href="indexAdmin.php?action=schoolProfile&school=<?=$school->getName()?>"><?=$school->getName()?></a></h2>
                         </div>
                         <div>
                             <i class="far fa-caret-square-down"></i>
@@ -43,7 +43,7 @@
                                     <tr>
                                         <td><a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a></td>
                                         <?php
-                                        if ($user->getId() !== $school->getIdAdmin() && $user->getId() !== $_SESSION['id']) {
+                                        if ($user->getId() !== $school->getIdAdmin() && $user->getId() !== intval($_SESSION['id'])) {
                                             echo '<td><i class="far fa-minus-square toModerator" schoolname="' . $school->getName() . '"></i></td>';
                                         } else {
                                             echo '<td><i class="far fa-minus-square inactifLink" schoolname="' . $school->getName() . '"></i></td>';

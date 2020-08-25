@@ -69,7 +69,7 @@ class ReportManager extends AbstractManager
         }
     }
 
-    public function setReport(string $elem, string $content, int $idElem = null, int $idUser = null)
+    public function setReport(string $elem, string $content, int $idElem = null, int $idUser = null, string $userName = null)
     {
         if (!empty($elem) && !empty($content) && $this->checkForScriptInsertion([$content])) {
             switch ($elem) {
@@ -84,7 +84,7 @@ class ReportManager extends AbstractManager
                     }
                     break;
                 case 'other' :
-                    $this->setOtherReport($content);
+                    $this->setOtherReport($content, $userName);
                     break;
             }
         }
@@ -228,8 +228,9 @@ class ReportManager extends AbstractManager
         );
     }
 
-    private function setOtherReport(string $content)
+    private function setOtherReport(string $content, string $userName = null)
     {
+        !empty($userName) ? $userName = $userName : $userName = $_SESSION['pseudo'];
         $this->sql(
             'INSERT INTO ' . static::$REPORT_OTHER_TABLE_NAME . ' (userName, content, dateReport) 
             VALUES (:userName, :content, NOW())', 

@@ -53,7 +53,7 @@ class User
         $this->setProfileBannerInfo($this->getProfileBannerInfo());
         $this->setProfilePictureInfo($this->getProfilePictureInfo());
         $this->setProfileTextInfo($this->getProfileTextInfo());
-        if ($this->getIsActive() === '1') {
+        if ($this->getIsActive() || $this->getIsActive() === '1') {
             $this->setIsActive(true);
         } else {
             $this->setIsActive(false);
@@ -63,7 +63,7 @@ class User
     //GETTERS
     public function getId()
     {
-        return $this->id;
+        return intval($this->id);
     }
 
     public function getName()
@@ -103,7 +103,7 @@ class User
 
     public function getNbWarning()
     {
-        return $this->nbWarning;
+        return intval($this->nbWarning);
     }
 
     public function getIsBan()

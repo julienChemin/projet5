@@ -81,7 +81,7 @@ class ProfileContentManager extends AbstractManager
         $unusedImg = $this->getUnusedImg();
         if (count($unusedImg) > 0) {
             foreach ($unusedImg as $img) {
-                unlink($img['filePath']);
+                $this->deleteFile($img['filePath']);
             }
             $this->sql(
                 'DELETE FROM as_profile_content_img 
@@ -479,7 +479,7 @@ class ProfileContentManager extends AbstractManager
             $filePath = $filePathInBdd;
         }
         if ($idProfileContent > 0 && file_exists($filePath)) {
-            unlink($filePath);
+            $this->deleteFile($filePath);
             $this->sql(
                 'DELETE FROM as_profile_content_img 
                 WHERE idProfileContent = :idProfileContent AND filePath = :filePath', 

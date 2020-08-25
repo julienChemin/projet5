@@ -204,6 +204,9 @@ tr:nth-child(2n + 1){
 #navbar{
     background-color: #010605;
 }
+.adminNavbar{
+    background: linear-gradient(#010605 75%, #CF8B3F 150%);
+}
 #navbar > .container{
     display: flex;
     flex-direction: column;
@@ -1227,8 +1230,8 @@ a[class="iconeEdit"]{
 }
 .post, .folder{
     width: 33.3%;
-    transition: 0.5s ease;
-    -webkit-transition: 0.5s ease;
+    transition: background 0.5s ease;
+    -webkit-transition: background 0.5s ease;
 }
 .folder{
     display: flex;
@@ -1290,8 +1293,11 @@ figure:hover .iconeVideo{
     position: absolute;
     bottom: 10%;
     border-radius: 20px;
-    max-width: 80%;
+    max-width: 60%;
     max-height: 60%;
+}
+.folderOpen > .fullWidth .thumbnailFolder{
+    max-width: 20%;
 }
 .postOnAside .thumbnailFolder{
     border-radius: 5px;
@@ -1348,7 +1354,7 @@ a:hover > .previewTitle, div:hover > .previewTitle{
     height: 100%;
     display: flex;
     flex-direction: column;
-    padding: 10px 20px;
+    padding: 5px 10px;
     border-radius: 20px;
     cursor: pointer;
 }
@@ -1946,7 +1952,7 @@ i[class="fas fa-download"]{
     justify-content: center;
 }
 #viewFolder #authorProfile > div{
-    width: 40%;
+    width: 80%;
     height: 80%;
     display: flex;
     flex-direction: column;
@@ -2252,10 +2258,12 @@ form > div{
     height: 130px;
     overflow: hidden;
 }
+/* TODO to delete ?
 .blockSchool figure img{
-    min-height: 100%;
+    max-height: 90%;
     max-width: none;
 }
+*/
 .blockSchool i{
     color: #CF8B3F;
     transform: scale(2.5);

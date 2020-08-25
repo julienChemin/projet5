@@ -15,7 +15,7 @@
                             </figure>
                         </div>
                         <div>
-                            <h2><a href="index.php?action=schoolProfile&school=<?=$school->getName()?>"><?=$school->getName()?></a></h2>
+                            <h2><a href="indexAdmin.php?action=schoolProfile&school=<?=$school->getName()?>"><?=$school->getName()?></a></h2>
                         </div>
                         <div>
                             <i class="far fa-caret-square-down"></i>

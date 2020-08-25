@@ -53,7 +53,7 @@ class School
         $this->setProfileBannerInfo($this->getProfileBannerInfo());
         $this->setProfilePictureInfo($this->getProfilePictureInfo());
         $this->setProfileTextInfo($this->getProfileTextInfo());
-        if ($this->getIsActive() === '1') {
+        if ($this->getIsActive() || $this->getIsActive() === '1') {
             $this->setIsActive(true);
         } else {
             $this->setIsActive(false);

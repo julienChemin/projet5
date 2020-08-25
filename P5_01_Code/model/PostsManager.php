@@ -107,7 +107,7 @@ class PostsManager extends LikeManager
             $q = $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE school = :school AND (postType = "schoolPost" OR (postType = "userPost" AND onFolder != "null" AND tags IS NULL)) 
+                WHERE school = :school AND postType = "schoolPost" 
                 ORDER BY id DESC', 
                 [':school' => $school]
             );
@@ -307,7 +307,7 @@ class PostsManager extends LikeManager
     {
         $post = $this->getOneById($postId);
         if (!empty($post->getFilePath())) {
-            unlink($post->getFilePath());
+            $this->deleteFile($post->getFilePath());
         }
         $this->delete($post->getId());
         return $this;
@@ -781,7 +781,7 @@ class PostsManager extends LikeManager
     //////////////////
     // upload Post //
     ////////////////
-    private function uploadImagePost(array $POST, bool $isPrivate, string $authorizedGroups)
+    private function uploadImagePost(array $POST, bool $isPrivate, $authorizedGroups)
     {
         $arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
         require 'view/upload.php';
@@ -807,7 +807,7 @@ class PostsManager extends LikeManager
         }
     }
 
-    private function uploadVideoPost(array $POST, bool $isPrivate, string $authorizedGroups)
+    private function uploadVideoPost(array $POST, bool $isPrivate, $authorizedGroups)
     {
         $filePath = null;
         if ($_FILES['uploadFile']['error'] === 0) {
@@ -838,7 +838,7 @@ class PostsManager extends LikeManager
         return true;
     }
 
-    private function uploadOtherPost(array $POST, string $schoolPost, bool $isPrivate, string $authorizedGroups)
+    private function uploadOtherPost(array $POST, string $schoolPost, bool $isPrivate, $authorizedGroups)
     {
         if ($schoolPost) {
             $arrAcceptedExtention = array("zip", "rar");
@@ -867,7 +867,7 @@ class PostsManager extends LikeManager
         }
     }
 
-    private function uploadFolder(array $POST, bool $isPrivate, string $authorizedGroups)
+    private function uploadFolder(array $POST, bool $isPrivate, $authorizedGroups)
     {
         $filePath = null;
         if ($_FILES['uploadFile']['error'] === 0) {
@@ -905,7 +905,7 @@ class PostsManager extends LikeManager
             } elseif ($post->getSchool() === $_SESSION['school'] && ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN)) {
                 //admin and moderator can post on school folder
                 return true;
-            } elseif ($post->getSchool() === $_SESSION['school'] && $post->getIsPrivate() && ($post->getListAuthorizedGroups() === null || in_array($_SESSION['group'], $post->getListAuthorizedGroups()))) {
+            } elseif ($post->getSchool() === $_SESSION['school'] && $post->getIsPrivate() && (empty($post->getListAuthorizedGroups()) || in_array($_SESSION['group'], $post->getListAuthorizedGroups()))) {
                 //user on this group can post in this folder
                 return true;
             } else {
@@ -921,7 +921,7 @@ class PostsManager extends LikeManager
         // private post can be consulted by webmaster / admin / moderator / author / user on listAuthorizedGroups
         if (!empty($_SESSION) && ($schoolOfPost === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
             if ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || intval($_SESSION['id']) === intval($idAuthor) 
-            || $listAuthorizedGroups === null || in_array($_SESSION['group'], $listAuthorizedGroups)) {
+            || empty($listAuthorizedGroups) || in_array($_SESSION['group'], $listAuthorizedGroups)) {
                 return true;
             }
         }

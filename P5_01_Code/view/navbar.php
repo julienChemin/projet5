@@ -1,5 +1,5 @@
 <?php
-if (defined('BACKEND') && !empty($_SESSION) && ($_SESSION['grade'] === ADMIN  || $_SESSION['grade'] === MODERATOR)) {
+if (defined('BACKEND') &&  BACKEND === true && !empty($_SESSION) && ($_SESSION['grade'] === ADMIN  || $_SESSION['grade'] === MODERATOR)) {
     if (!empty($_SESSION) && $_SESSION['school'] === ALL_SCHOOL) {
         require 'backend/navbarWebM.php';
     } else {

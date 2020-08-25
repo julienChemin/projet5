@@ -1,6 +1,6 @@
 new stuff
-    - refactoring 
-        -> controlleurs
+    - prepare website for presentation
         
 fixed issues
-    - 
+    - admin / moderator right
+    - some issue around school / moderator creation

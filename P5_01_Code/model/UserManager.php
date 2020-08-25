@@ -280,7 +280,7 @@ class UserManager extends AbstractManager
         }
     }
 
-    public function orderUsersBySchool(array $users, bool $sortByActiveInactive = false)
+    public function orderUsersBySchool(array $users, bool $sortByActiveInactive = false, bool $webmasterSide = false)
     {
         // One school -> $result [$user1, $user2, ...] / more than one school -> $result [$schoolName => [$user1, $user2, ...]]
         $result = [];
@@ -292,7 +292,7 @@ class UserManager extends AbstractManager
             }
             //store countResult in var because $result will change value if his count is === 1, and still need this value after reassignment
             $countResult = count($result);
-            if ($countResult === 1) {
+            if ($countResult === 1 && !$webmasterSide) {
                 //all users are in the same school, don't need an array of array
                 $result = $result[$users[0]->getSchool()];
                 if ($sortByActiveInactive) {
@@ -362,7 +362,7 @@ class UserManager extends AbstractManager
         $PostsManager = new PostsManager();
         $user = $this->getUserByName($GET['userName']);
         $school = $SchoolManager->getSchoolByName($GET['schoolName']);
-        $posts = $PostsManager->getPostsByAuthor($user->getName());
+        $posts = $PostsManager->getPostsByAuthor($user->getId());
         if ($school && $user && !$user->getIsAdmin()) {
             //if account is active and not moderator, nb active account -1
             if ($user->getIsActive() && !$user->getIsModerator()) {
@@ -373,6 +373,7 @@ class UserManager extends AbstractManager
                 $PostsManager->deletePost($post->getId());
             }
             //delete account
+            $this->deleteFile($user->getProfileBanner())->deleteFile($user->getProfilePicture());
             $this->delete($user->getId());
             //add history entry
             $HistoryManager->addEntry(new HistoryEntry(
@@ -509,6 +510,7 @@ class UserManager extends AbstractManager
                     'mail' => $POST['mail'], 
                     'password' => password_hash($POST['password'], PASSWORD_DEFAULT), 
                     'school' => $schoolName, 
+                    'isActive' => true, 
                     'isAdmin' => false, 
                     'isModerator' => false])
                 );

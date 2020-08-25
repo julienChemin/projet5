@@ -121,4 +121,13 @@ abstract class AbstractManager extends Database
         }
         RenderView::render('template.php', $side . '/errorView.php', ['error_msg' => $error_msg]);
     }
+
+    /*------------------------------ file stuff ------------------------------*/
+    protected function deleteFile(string $filePath)
+    {
+        if (strlen($filePath) > 0 && file_exists($filePath) && strpos($filePath, 'question-mark') === false) {                              
+            unlink($filePath);
+        }
+        return $this;
+    }
 }

@@ -453,13 +453,12 @@ inputSubmit.addEventListener(
             break;
             case 'video' :
                 if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' 
-                    && formAddPost.elements.isStudent.value === 'true' && inputListTags.value === ""
-                ) {
+                && formAddPost.elements.isStudent.value === 'true' && inputListTags.value === "") {
                     //tag is only for public student post
                     e.preventDefault();
                     setErrorMsg('Vous devez choisir au moins un tag');
                 }
-                let regexUrl = /youtube\.com\/watch\?v\=([a-zA-Z0-9]+)$/;
+                let regexUrl = /youtube\.com\/watch\?v\=([_a-zA-Z0-9-]+)/;
                 if (formAddPost.elements.videoLink.value === "" || !regexUrl.test(formAddPost.elements.videoLink.value)) {
                     e.preventDefault();
                     setErrorMsg('Vous devez ajouter une adresse youtube pour la vidéo');

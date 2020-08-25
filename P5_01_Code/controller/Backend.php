@@ -43,7 +43,8 @@ class Backend extends Controller
         $message = null;
         if (isset($_POST['ConnectPseudoAdmin']) && isset($_POST['ConnectPasswordAdmin'])) {
             // user try to connect
-            $message = $this->tryToConnect($_POST['ConnectPseudoAdmin'], $_POST['ConnectPasswordAdmin'], new UserManager(), true, $_POST['stayConnect']);
+            !empty($_POST['stayConnect']) ? $stayConnect = $_POST['stayConnect'] : $stayConnect = null;
+            $message = $this->tryToConnect($_POST['ConnectPseudoAdmin'], $_POST['ConnectPasswordAdmin'], new UserManager(), true, $stayConnect);
         } else if (isset($_POST['postMail'])) {
             // user try to get back his password
             $message = $this->tryRecoverPassword($_POST['postMail'], new UserManager());
@@ -65,7 +66,9 @@ class Backend extends Controller
                     $message = $SchoolManager->addSchool($_POST, $UserManager, new HistoryManager());
                     $ContractManager = new ContractManager('school', $SchoolManager);
                     $school = $SchoolManager->getSchoolByName($_POST['schoolName']);
-                    $ContractManager->extendContract($school, $_POST['schoolDuration']);
+                    if (intval($_POST['schoolDuration']) > '0') {
+                        $ContractManager->extendContract($school, $_POST['schoolDuration']);
+                    }
                     if ($_POST['schoolDuration'] === '0') {
                         $SchoolManager->schoolToInactive($school->getId(), $UserManager);
                     }
@@ -160,15 +163,17 @@ class Backend extends Controller
         if ($_SESSION['grade'] === ADMIN) {
             $UserManager = new UserManager();
             $SchoolManager = new SchoolManager();
+            $schools = $SchoolManager->getSchoolByName($_SESSION['school']);
+            $users = $UserManager->getUsersBySchool($_SESSION['school'], 'admin');
             $message = null;
-            if (isset($_GET['option'], $_POST['schoolName']) && $_GET['option'] === 'addModerator') {
+            if (isset($_GET['option'], $_POST['schoolName']) && $_GET['option'] === 'addModerator' 
+            && ($_SESSION['school'] === ALL_SCHOOL || $schools->getIsActive())) {
                 //add new moderator
                 $message = $this->adminCreateNewModerator($UserManager, $SchoolManager);
             }
-            $schools = $SchoolManager->getSchoolByName($_SESSION['school']);
-            $users = $UserManager->getUsersBySchool($_SESSION['school'], 'admin');
             $nbModerator = $UserManager->countModerator($users);
-            $users = $UserManager->orderUsersBySchool($users);
+            $_SESSION['school'] === ALL_SCHOOL ? $webmasterSide = true : $webmasterSide = false;
+            $users = $UserManager->orderUsersBySchool($users, false, $webmasterSide);
             $_SESSION['school'] === ALL_SCHOOL ? $view = 'moderatAdminViewWebM.php' : $view = 'moderatAdminView.php';
             RenderView::render(
                 'template.php', 'backend/' . $view, 
@@ -288,13 +293,17 @@ class Backend extends Controller
 
     public function schoolProfile()
     {
-        if (!empty($_GET['school']) && $_GET['school'] === $_SESSION['school']) {
+        if (!empty($_GET['school']) && ($_GET['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
             $SchoolManager = new SchoolManager();
-            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+            $school = $SchoolManager->getSchoolByName($_GET['school']);
             $contractInfo = $this->getSchoolContractInfo($school, new ContractManager('school', $SchoolManager), true);
             $ProfileContentManager = new ProfileContentManager();
             $profileContent = $ProfileContentManager->getByProfileId($school->getId(), true);
-            $_SESSION['grade'] === ADMIN ? $view = 'backend' : $view = 'frontend';
+            if ($_SESSION['school'] === ALL_SCHOOL || $_SESSION['grade'] !== ADMIN) {
+                $view = 'frontend';
+            } else {
+                $view = 'backend';
+            }
             RenderView::render('template.php', $view . '/schoolProfileView.php', 
                 ['school' => $school, 'profileContent' => $profileContent, 'contractInfo' => $contractInfo, 
                 'option' => ['schoolProfile', 'tinyMCE']]);
@@ -307,7 +316,7 @@ class Backend extends Controller
     {
         $SchoolManager = new SchoolManager();
         if (!empty($_GET['school']) && !empty($_GET['elem']) && $_GET['school'] === $_SESSION['school']) {
-            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+            $school = $SchoolManager->getSchoolByName($_GET['school']);
             switch ($_GET['elem']) {
                 case 'profileBanner' :
                     $this->updateProfileBanner($school, $SchoolManager);
@@ -636,9 +645,7 @@ class Backend extends Controller
         if (!empty($GET['noBanner']) && in_array($GET['noBanner'], $validBannerValue)) {
             $SchoolManager = new SchoolManager();
             $school = $SchoolManager->getSchoolByName($_SESSION['school']);
-            if (file_exists($school->getProfileBanner())) {
-                unlink($school->getProfileBanner());
-            }    
+            $this->deleteFile($school->getProfileBanner());
             $infos = $finalPath . ' ' . $GET['noBanner'];
             $SchoolManager->updateByName($_SESSION['school'], 'profileBannerInfo', $infos);
         } else {
@@ -655,9 +662,7 @@ class Backend extends Controller
         ) {
             $SchoolManager = new SchoolManager();
             $school = $SchoolManager->getSchoolByName($_SESSION['school']);
-            if (file_exists($school->getProfilePicture())) {
-                unlink($school->getProfilePicture());
-            }
+            $this->deleteFile($school->getProfilePicture());
             $infos = $finalPath . ' ' . $GET['orientation'] . ' ' . $GET['size'];
             $SchoolManager->updateByName($_SESSION['school'], 'profilePictureInfo', $infos);
         } else {
@@ -669,8 +674,8 @@ class Backend extends Controller
     private function updateProfileBanner(School $school, SchoolManager $SchoolManager)
     {
         if (isset($_GET['noBanner'], $_GET['value'])) {
-            if (strpos($_GET['value'], $school->getProfileBanner()) === false && file_exists($school->getProfileBanner())) {
-                unlink($school->getProfileBanner());
+            if (strpos($_GET['value'], $school->getProfileBanner()) === false) {
+                $this->deleteFile($school->getProfileBanner());
             }
             $infos = $_GET['value'] . ' ' . $_GET['noBanner'];
             $SchoolManager->updateByName($_GET['school'], 'profileBannerInfo', $infos);
@@ -682,8 +687,8 @@ class Backend extends Controller
     private function updateProfilePicture(School $school, SchoolManager $SchoolManager)
     {
         if (isset($_GET['orientation'], $_GET['size'], $_GET['value'])) {
-            if (strpos($_GET['value'], $school->getProfilePicture()) === false && file_exists($school->getProfilePicture())) {
-                unlink($school->getProfilePicture());
+            if (strpos($_GET['value'], $school->getProfilePicture()) === false) {
+                $this->deleteFile($school->getProfilePicture());
             }
             $infos = $_GET['value'] . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
             $SchoolManager->updateByName($_GET['school'], 'profilePictureInfo', $infos);

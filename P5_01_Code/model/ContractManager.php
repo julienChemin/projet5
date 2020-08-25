@@ -30,24 +30,29 @@ class ContractManager extends AbstractManager
 
     public function extendContract(object $owner, int $extensionDuration, int $nbEleve = 0)
     {
-        //$owner expect type 'User' or 'School' / $Manager expect 'UserManager' or 'SchoolManager' (depend of the owner type)
+        // $owner expect type 'User' or 'School' / $Manager expect 'UserManager' or 'SchoolManager' (depend of the owner type)
         if ($owner->getIsActive()) {
-            //disable last remind and set the new one
-            $lastRemind = $this->getLastRemind($owner->getId());
-            $this->disableRemind($lastRemind['id']);
-            $dateContractEnd = $this->adjustDate($lastRemind['dateContractEnd'], '+', $extensionDuration, 'month');
+            // disable last remind and set the new one
+            if ($lastRemind = $this->getLastRemind($owner->getId())) {
+                $this->disableRemind($lastRemind['id']);
+                $dateContractEnd = $this->adjustDate($lastRemind['dateContractEnd'], '+', $extensionDuration, 'month');
+            } else {
+                // this case happend only with school, when she was just created by webmaster with more than 0 month of duration
+                // (new school is create as active before there is any remind set)
+                $dateContractEnd = $this->adjustDate($this->getToday(true), '+', $extensionDuration, 'month');
+            }
             $this->setRemind($owner->getId(), $owner->getMail(), $dateContractEnd);
             if (static::$TYPE === 'school') {
-                //add history entry
+                // add history entry
                 $HistoryManager = new HistoryManager();
                 $HistoryManager->addEntry(new HistoryEntry(
                     ['idSchool' => $owner->getId(), 
                     'category' => 'activityPeriod', 
-                    'entry' => 'La date de fin d\'abonnement a été repoussé jusqu\'au ' . $dateContractEnd->format('Y/m/d')])
+                    'entry' => 'La date de fin d\'abonnement a été repoussé jusqu\'au ' . $dateContractEnd->format('d/m/Y')])
                 );
             }
         } else {
-            //set remind and set owner account as active
+            // set remind and set owner account as active
             $dateContractEnd = $this->adjustDate($this->getToday(true), '+', $extensionDuration, 'month');
             $this->setRemind($owner->getId(), $owner->getMail(), $dateContractEnd);
             if (static::$TYPE === 'user') {
@@ -59,7 +64,7 @@ class ContractManager extends AbstractManager
                 $HistoryManager->addEntry(new HistoryEntry(
                     ['idSchool' => $owner->getId(), 
                     'category' => 'activityPeriod', 
-                    'entry' => 'La date de fin d\'abonnement a été repoussé jusqu\'au ' . $dateContractEnd->format('Y/m/d')])
+                    'entry' => 'La date de fin d\'abonnement a été repoussé jusqu\'au ' . $dateContractEnd->format('d/m/Y')])
                 );
             }
         }

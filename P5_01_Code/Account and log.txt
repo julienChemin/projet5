@@ -1,0 +1,28 @@
+SCHOOL : Old 5ide
+    ADMIN
+        -> pseudo : admin old5ide principal | password : aop
+        -> pseudo : admin old5ide 1 | password : ao1
+    MODERATOR
+        -> pseudo : moderator old5ide 1 | password : mo1
+    STUDENT
+        -> pseudo : oldo - the old donovan | password : otod
+
+____________________________________________________________
+SCHOOL : Linart
+    ADMIN
+        -> pseudo : admin linart principal | password : alp
+    MODERATOR
+        ->
+    STUDENT
+        -> pseudo : lilou | password : lilou
+        -> pseudo : linoa | password : linoa
+
+____________________________________________________________
+SCHOOL : Current4ngle
+    ADMIN
+        -> pseudo : admin current4ngle principal | password : acp
+        -> pseudo : admin current4ngle 1 | password : ac1
+    MODERATOR
+        -> pseudo : moderator current4ngle 1 | password : mc1
+    STUDENT
+        -> pseudo : curtiss | password : curtiss

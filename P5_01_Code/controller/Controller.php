@@ -47,6 +47,9 @@ abstract class Controller
                     if(!$SchoolManager->nameExists($user->getSchool()) && $user->getSchool() !== ALL_SCHOOL) {
                         //if school name don't exist and isn't "allSchool"
                         $this->cookieDestroy();
+                        $errorMsg = "L'utilisateur - " . $user->getName() . " - ne peut plus se connecter car";
+                        $errorMsg .= " l'établissement - " . $user->getSchool() . " - n'existe pas / plus.";
+                        $this->setErrorReport($errorMsg, $user->getName());
                         throw new \Exception(
                             "Le nom de l'établissement scolaire auquel vous êtes affilié n'existe pas / plus.
 							Un message d'erreur a été envoyé à un administrateur du site et sera traité dans les plus brefs délais.
@@ -64,6 +67,12 @@ abstract class Controller
         } else {
             $this->disconnect();
         }
+    }
+
+    protected function setErrorReport(string $errorMsg = 'no error message', string $userName = null)
+    {
+        $ReportManager = new ReportManager();
+        $ReportManager->setReport('other', $errorMsg, null, null, $userName);
     }
 
     protected function tryToConnect(string $pseudo, string $password, UserManager $UserManager, bool $adminSide, bool $stayConnect = null)
@@ -244,5 +253,14 @@ abstract class Controller
             }
         }
         return $contractInfo;
+    }
+
+    /*------------------------------ file stuff ------------------------------*/
+    protected function deleteFile(string $filePath)
+    {
+        if (strlen($filePath) > 0 && file_exists($filePath) && strpos($filePath, 'question-mark') === false) {                              
+            unlink($filePath);
+        }
+        return $this;
     }
 }

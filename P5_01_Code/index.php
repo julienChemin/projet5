@@ -20,6 +20,8 @@ spl_autoload_register(
     }
 );
 
+const BACKEND = false;
+const FRONTEND = true;
 const ALL_SCHOOL = 'allSchool';
 const NO_SCHOOL = 'noSchool';
 const ADMIN = 'admin';

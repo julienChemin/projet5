@@ -39,7 +39,7 @@
                             <tr>
                                 <td><a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a></td>
                                 <?php
-                                if (($user->getId() !== $school->getIdAdmin() && $user->getId() !== $_SESSION['id'])) {
+                                if ($user->getId() !== $school->getIdAdmin() && $user->getId() !== intval($_SESSION['id'])) {
                                     echo '<td><i class="far fa-minus-square toModerator" schoolname="' . $school->getName() . '"></i></td>';
                                 } else {
                                     echo '<td><i class="far fa-minus-square inactifLink" schoolname="' . $school->getName() . '"></i></td>';
@@ -92,40 +92,44 @@
                     </div>
                     <?php
                 }
+                if ($school->getIsActive()) {
+                    ?>
+                    <form class="formAddModerator" method="POST" action="indexAdmin.php?action=moderatAdmin&amp;option=addModerator">
+                        <p class="orang">Ajouter un modérateur >></p>
+                        <div>
+                            <hr>
+                            <h3>Information sur le nouveau modérateur</h3>
+                            <div>
+                                <p>
+                                    <label for="moderatorName">Identifiant</label>
+                                    <input type="text" name="moderatorName" required="">
+                                </p>
+                                <p>
+                                    <label for="moderatorPassword">Mot de passe</label>
+                                    <input type="password" name="moderatorPassword" required="">
+                                </p>
+                                <p>
+                                    <label for="moderatorConfirmPassword">Confirmez le mot de passe</label>
+                                    <input type="password" name="moderatorConfirmPassword" required="">
+                                </p>
+                                <p>
+                                    <label for="moderatorMail">Adresse email</label>
+                                    <input type="email" name="moderatorMail" required="">
+                                </p>
+                            </div>
+                            <div>
+                                <p>
+                                    <input type="hidden" name="schoolName" value="<?=$school->getName()?>">
+                                    <input type="submit" name="submit" value="Valider">
+                                    <input type="button" name="cancel" value="Annuler">
+                                </p>
+                            </div>
+                            <hr>
+                        </div>
+                    </form>
+                    <?php
+                }
                 ?>
-                <form class="formAddModerator" method="POST" action="indexAdmin.php?action=moderatAdmin&amp;option=addModerator">
-                    <p class="orang">Ajouter un modérateur >></p>
-                    <div>
-                        <hr>
-                        <h3>Information sur le nouveau modérateur</h3>
-                        <div>
-                            <p>
-                                <label for="moderatorName">Identifiant</label>
-                                <input type="text" name="moderatorName" required="">
-                            </p>
-                            <p>
-                                <label for="moderatorPassword">Mot de passe</label>
-                                <input type="password" name="moderatorPassword" required="">
-                            </p>
-                            <p>
-                                <label for="moderatorConfirmPassword">Confirmez le mot de passe</label>
-                                <input type="password" name="moderatorConfirmPassword" required="">
-                            </p>
-                            <p>
-                                <label for="moderatorMail">Adresse email</label>
-                                <input type="email" name="moderatorMail" required="">
-                            </p>
-                        </div>
-                        <div>
-                            <p>
-                                <input type="hidden" name="schoolName" value="<?=$school->getName()?>">
-                                <input type="submit" name="submit" value="Valider">
-                                <input type="button" name="cancel" value="Annuler">
-                            </p>
-                        </div>
-                        <hr>
-                    </div>
-                </form>
             </div>
         </div>
         <div id="modal">

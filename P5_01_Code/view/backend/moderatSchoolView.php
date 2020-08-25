@@ -32,7 +32,13 @@
                         <tr>
                             <td>Administrateur</td>
                             <td><?=$school->getNameAdmin()?></td>
-                            <td><button class="btnEditAdmin">Modifier</button></td>
+                            <td>
+                                <?php
+                                if ($school->getIdAdmin() === intval($_SESSION['id'])) {
+                                    echo '<button class="btnEditAdmin">Modifier</button>';
+                                }
+                                ?>
+                            </td>
                         </tr>
                         <tr>
                             <td>Mail</td>
@@ -79,10 +85,16 @@
                 <label for="editName">Nouveau nom de l'établissement</label>
                 <input type="text" name="editName">
             </p>
-            <p id="blockAdmin">
-                <label for="editAdmin">Nom du nouvel Administrateur</label>
-                <input type="text" name="editAdmin">
-            </p>
+            <?php
+            if ($school->getIdAdmin() === intval($_SESSION['id'])) {
+                ?>
+                <p id="blockAdmin">
+                    <label for="editAdmin">Nom du nouvel Administrateur</label>
+                    <input type="text" name="editAdmin">
+                </p>
+                <?php
+            }
+            ?>
             <p id="blockCode">
                 <label for="editCode">Nouveau code</label>
                 <input type="text" name="editCode">

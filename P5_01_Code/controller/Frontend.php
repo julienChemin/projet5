@@ -76,7 +76,8 @@ class Frontend extends Controller
             $message = null;
             if (!empty($_POST['ConnectPseudo']) && !empty($_POST['ConnectPassword'])) {
                 // user try to connect
-                $message = $this->tryToConnect($_POST['ConnectPseudo'], $_POST['ConnectPassword'], new UserManager(), false, $_POST['stayConnect']);
+                !empty($_POST['stayConnect']) ? $stayConnect = $_POST['stayConnect'] : $stayConnect = null;
+                $message = $this->tryToConnect($_POST['ConnectPseudo'], $_POST['ConnectPassword'], new UserManager(), false, $stayConnect);
             } else if (isset($_POST['postMail'])) {
                 // user try to get back his password
                 $message = $this->tryRecoverPassword($_POST['postMail'], new UserManager());
@@ -219,7 +220,8 @@ class Frontend extends Controller
     public function updateProfile()
     {
         $UserManager = new UserManager();
-        if (!empty($_GET['userId']) && !empty($_GET['elem']) && $_GET['userId'] === $_SESSION['id'] && $user = $UserManager->getOneById($_SESSION['id'])) {
+        if (!empty($_GET['userId']) && !empty($_GET['elem']) && $_GET['userId'] === $_SESSION['id'] 
+        && $user = $UserManager->getOneById($_GET['userId'])) {
             switch ($_GET['elem']) {
                 case 'profileBanner' :
                     $this->updateProfileBanner($user, $UserManager);
@@ -272,7 +274,7 @@ class Frontend extends Controller
         $UserManager = new UserManager();
         $PostsManager = new PostsManager();
         if (!empty($_GET['id']) && $post = $PostsManager->getOneById($_GET['id'])) {
-            $asidePosts = $PostsManager->getAsidePosts($post, new TagsManager());
+            $asidePosts = $PostsManager->getAsidePosts($post, new TagsManager());//var_dump($asidePosts['public']);
             $UserManager->exists($post->getIdAuthor()) ? $author = $UserManager->getOneById($post->getIdAuthor()) : $author = null;
             !empty($_SESSION) ? $user = $UserManager->getOneById($_SESSION['id']) : $user = null;
             if ($post->getIsPrivate()) {
@@ -610,9 +612,7 @@ class Frontend extends Controller
         $UserManager = new UserManager();
         $validBannerValue = array('true', 'false');
         if (!empty($GET['noBanner']) && in_array($GET['noBanner'], $validBannerValue) && $user = $UserManager->getOneById($_SESSION['id'])) {
-            if (file_exists($user->getProfileBanner())) {
-                unlink($user->getProfileBanner());
-            }
+            $this->deleteFile($user->getProfileBanner());
             $infos = $finalPath . ' ' . $GET['noBanner'];
             $UserManager->updateById($_SESSION['id'], 'profileBannerInfo', $infos);
         } else {
@@ -627,8 +627,8 @@ class Frontend extends Controller
         $validSizeValue = array('smallPicture', 'mediumPicture', 'bigPicture');
         if (!empty($GET['orientation']) && in_array($GET['orientation'], $validOrientationValue)
         && !empty($GET['size']) && in_array($GET['size'], $validSizeValue) && $user = $UserManager->getOneById($_SESSION['id'])) {
-            if ($user->getProfilePicture() !== 'public/images/question-mark.png' && file_exists($user->getProfilePicture())) {
-                unlink($user->getProfilePicture());
+            if ($user->getProfilePicture() !== 'public/images/question-mark.png') {
+                $this->deleteFile($user->getProfilePicture());
             }
             $infos = $finalPath . ' ' . $GET['orientation'] . ' ' . $GET['size'];
             $UserManager->updateById($_SESSION['id'], 'profilePictureInfo', $infos);
@@ -641,8 +641,8 @@ class Frontend extends Controller
     private function updateProfileBanner(User $user, UserManager $UserManager)
     {
         if (isset($_GET['noBanner'], $_GET['value'])) {
-            if (strpos($_GET['value'], $user->getProfileBanner()) === false && file_exists($user->getProfileBanner())) {
-                unlink($user->getProfileBanner());
+            if (strpos($_GET['value'], $user->getProfileBanner()) === false) {
+                $this->deleteFile($user->getProfileBanner());
             }
             $infos = $_GET['value'] . ' ' . $_GET['noBanner'];
             $UserManager->updateById($_GET['userId'], 'profileBannerInfo', $infos);
@@ -654,8 +654,8 @@ class Frontend extends Controller
     private function updateProfilePicture(User $user, UserManager $UserManager)
     {
         if (isset($_GET['orientation'], $_GET['size'], $_GET['value'])) {
-            if (strpos($_GET['value'], $user->getProfilePicture()) === false && file_exists($user->getProfilePicture())) {
-                unlink($user->getProfilePicture());
+            if (strpos($_GET['value'], $user->getProfilePicture()) === false) {
+                $this->deleteFile($user->getProfilePicture());
             }
             $infos = $_GET['value'] . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
             $UserManager->updateById($_GET['userId'], 'profilePictureInfo', $infos);
@@ -825,7 +825,9 @@ class Frontend extends Controller
     /*------------------------------ post view ------------------------------*/
     private function privatePost(Post $post, array $asidePosts, User $user, User $author)
     {
-        if (!empty($_SESSION) && ($post->getSchool() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL) && ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || $post->getListAuthorizedGroups() === null || in_array($_SESSION['group'], $post->getListAuthorizedGroups()))) {
+        if (!empty($_SESSION) && ($post->getSchool() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL) 
+        && ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN 
+        || empty($post->getListAuthorizedGroups()) || in_array($_SESSION['group'], $post->getListAuthorizedGroups()))) {
             if ($post->getFileType() === 'folder') {
                 // consulting private folder
                 $userInfo = $this->getFolderViewInfo($user, $post);
@@ -843,7 +845,7 @@ class Frontend extends Controller
         }
     }
 
-    private function publicPost(Post $post, array $asidePosts, User $user, User $author)
+    private function publicPost(Post $post, array $asidePosts, $user, User $author)
     {
         if ($post->getFileType() === 'folder') {
             // consulting public folder

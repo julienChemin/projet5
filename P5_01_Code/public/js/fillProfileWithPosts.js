@@ -153,9 +153,10 @@ function fillFolder(postId, elemFolder, onFolderView = false) {
 		elemFolder.innerHTML = '<p class="emptyFolder">Ce dossier est vide pour le moment</p>';
 	}
 }
-function toggleFolder(folder, action = null) {
+function toggleFolder(folder) {
 	let childs = folder.childNodes;
 	if (folderIsOpen(folder)) {
+		folder.classList.remove('folderOpen');
 		folder.style.width = "33.3%";
 		folder.style.border = "none";
 		folder.style.margin = '0px';
@@ -166,6 +167,7 @@ function toggleFolder(folder, action = null) {
 			childs[i].style.width = "0%";
 		}
 	} else {
+		folder.classList.add('folderOpen');
 		folder.style.width = "98%";
 		folder.style.border = "solid 2px #CF8B3F";
 		folder.style.margin = 'auto';

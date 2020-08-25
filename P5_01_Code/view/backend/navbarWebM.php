@@ -1,4 +1,4 @@
-<header id="navbar" class="fullWidth">
+<header id="navbar" class="fullWidth adminNavbar">
     <div class="container">
         <div>
             <span>
