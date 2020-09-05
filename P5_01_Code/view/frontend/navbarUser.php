@@ -13,26 +13,26 @@
                     </li>
                     <hr class="hrNavbar">
 
-                    <li title="Publication">
+                    <li title="Publication" class="hideUnder600Width">
                         <a href="index.php?action=addPost"><i class="fas fa-file-import"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
-                    <li title="Profil">
+                    <li title="Profil" class="hideUnder600Width">
                         <a href="index.php?action=userProfile&userId=<?=$_SESSION['id']?>"><i class="far fa-address-card"></i></a>
                     </li>
                     
                     <?php
                     if ($_SESSION['school'] !== NO_SCHOOL) {
                         ?>
-                        <hr class="hrNavbar">
-                        <li title="Profil de mon établissement">
+                        <hr class="hrNavbar hideUnder600Width">
+                        <li title="Profil de mon établissement" class="hideUnder600Width">
                             <a href="index.php?action=schoolProfile&school=<?=$_SESSION['school']?>"><i class="fas fa-school"></i></a>
                         </li>
                         <?php
                     }
                     ?>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
                     <li id="pseudo">
                         <?=$_SESSION['pseudo']?>

@@ -1,0 +1,173 @@
+/* ------------------------------------------------------ */
+/* ------------------------ HOME ------------------------ */
+/* ------------------------------------------------------ */
+
+/*SLIDERS POSTS*/
+#home{
+    background-color: #161617;
+    min-height: 80vh;
+}
+#home .blockStyleOne{
+    padding: 20px;
+    background-color: #222224;
+}
+#home .slide{
+    flex-wrap: nowrap;
+}
+#home .items{
+    height: 200px;
+}
+.sliderPosts{
+    padding: 25px 0;
+}
+.sliderPosts > a{
+    display: inline-block;
+    width: 100%;
+    text-align: right;
+}
+.sliderPosts > h1{
+    margin-top: 0;
+    padding-top: 25px;
+}
+.sliderPosts hr{
+    margin-bottom: 0px;
+}
+.sliderPosts .posts{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: nowrap;
+    overflow-x: hidden;
+    position: relative;
+}
+.slider{
+    display: flex;
+    width: 100%;
+    position: relative;
+    left:0;
+    transition: left 0.3s ease-out;
+    -webkit-transition: left 0.3s ease-out;
+}
+.slide{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    min-width: 90%;
+    min-height: 200px;
+    margin: 20px 0;
+    padding: 0 5%;
+}
+.items{
+    width: 16.6%;
+    margin: 10px 0 0 0;
+    border-radius: 15px;
+    position: relative;
+    transition: 0.2s linear;
+    -webkit-transition: 0.2s linear;
+}
+.items:hover{
+    background-color: #222224;
+}
+.arrow{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 5%;
+    z-index: 1000;
+    cursor: pointer;
+    transition: 0.2s linear;
+    -webkit-transition: 0.2s linear;
+}
+.arrow:hover{
+    border-left: solid 1px #CF8B3F;
+}
+.arrow > i{
+    font-size: 1.5em;
+    transition: 0.1s linear;
+    -webkit-transition: 0.1s linear;
+}
+.arrow:hover > i{
+    font-size: 2.5em;
+    color: #CF8B3F;
+}
+.arrowLeft{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+.arrowRight{
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    transform: rotate(180deg);
+}
+
+/*====================================================================================================================================
+                                                            medium desktops laptops
+====================================================================================================================================*/
+
+@media all and (min-width:992px) and (max-width:1200px){
+    #home .slide{
+        min-height: auto;
+        height: 150px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px){
+    #home .slide{
+        flex-wrap: wrap;
+        justify-content: space-around;
+        height: 350px;
+    }
+    #home .items{
+        width: 30%;
+        height: 150px;
+    }
+    .arrow{
+        width: 10%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px){
+    #home .slide{
+        flex-wrap: wrap;
+        justify-content: space-around;
+        height: 350px;
+    }
+    #home .items{
+        width: 30%;
+        height: 150px;
+    }
+    .arrow{
+        width: 10%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px){
+    #home .slide{
+        flex-wrap: wrap;
+        justify-content: space-around;
+        height: 400px;
+    }
+    #home .items{
+        width: 40%;
+        height: 130px;
+    }
+    .arrow{
+        width: 12%;
+    }
+}

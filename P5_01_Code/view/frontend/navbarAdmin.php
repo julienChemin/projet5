@@ -13,20 +13,20 @@
                     </li>
                     <hr class="hrNavbar">
 
-                    <li title="Publication">
+                    <li title="Publication" class="hideUnder600Width">
                         <a href="index.php?action=addPost"><i class="fas fa-file-import"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
-                    <li title="Profil">
+                    <li title="Profil" class="hideUnder600Width">
                         <a href="index.php?action=userProfile&userId=<?=$_SESSION['id']?>"><i class="far fa-address-card"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
-                    <li title="Profil de mon établissement">
+                    <li title="Profil de mon établissement" class="hideUnder600Width">
                         <a href="index.php?action=schoolProfile&school=<?=$_SESSION['school']?>"><i class="fas fa-school"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
                     <li id="pseudo">
                         <?=$_SESSION['pseudo']?>
@@ -34,10 +34,10 @@
                     </li>
                     <hr class="hrNavbar">
 
-                    <li title="vers l'interface d'administration">
+                    <li title="vers l'interface d'administration" class="hideUnder600Width">
                         <a href="indexAdmin.php"><i class="fas fa-cogs"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
                     <li title="Se Déconnecter">
                         <a href="index.php?action=disconnect"><i class="fas fa-sign-out-alt"></i></a>

@@ -1,0 +1,8 @@
+#blockModeratWebsite article{
+    margin: 50px 0;
+}
+#blockWarnBan, #blockContract, #blockUnusedImgTag{
+    display: flex;
+    justify-content: space-around;
+    padding: 20px 0;
+}

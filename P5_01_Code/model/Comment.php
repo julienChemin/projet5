@@ -33,17 +33,17 @@ class Comment
     //GETTERS
     public function getId()
     {
-        return $this->id;
+        return intval($this->id);
     }
 
     public function getIdPost()
     {
-        return $this->idPost;
+        return intval($this->idPost);
     }
 
     public function getIdAuthor()
     {
-        return $this->idAuthor;
+        return intval($this->idAuthor);
     }
 
     public function getNameAuthor()

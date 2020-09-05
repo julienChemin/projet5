@@ -479,7 +479,7 @@ class PostsManager extends LikeManager
                 $idFolder = $post['onFolder'];
                 if ($post['isPrivate'] === '1') {
                     // private post on folder
-                    if ($this->userCanSeePrivatePost($post['school'], $post['idAuthor'], $post['listAuthorizedGroups'])) {
+                    if ($this->userCanSeePrivatePost($post['school'], $post['idAuthor'], $post['authorizedGroups'], $post['listAuthorizedGroups'])) {
                         if (!isset($arrSortedPosts['folder'][$idFolder])) {
                             $arrSortedPosts['folder'][$idFolder] = [];
                         }
@@ -494,7 +494,7 @@ class PostsManager extends LikeManager
                 }
             } elseif ($post['isPrivate'] === '1') {
                 // private post
-                if ($this->userCanSeePrivatePost($post['school'], $post['idAuthor'], $post['listAuthorizedGroups'])) {
+                if ($this->userCanSeePrivatePost($post['school'], $post['idAuthor'], $post['authorizedGroups'], $post['listAuthorizedGroups'])) {
                     $arrSortedPosts['private'][] = $post;
                 }
             } else {
@@ -527,34 +527,47 @@ class PostsManager extends LikeManager
         return $asidePosts;
     }
 
-    public function getPostsForHome(SchoolManager $SchoolManager, TagsManager $TagsManager)
+    public function getPostsForHome(SchoolManager $SchoolManager, TagsManager $TagsManager, int $qtt = 6)
     {
         //return posts for home
         $homePosts = [];
-        $homePosts['lastPosted'] = $this->getLastPosted(5);
-        $homePosts['mostLiked'] = $this->getMostLikedPosts(5);
-        //pick 4 most popular tag then pick 5 posts of them
-        $mostPopularTags = $this->getElemOnArray($TagsManager->getMostPopularTags(5), -1, true, 4);
+        $homePosts['lastPosted'] = $this->getLastPosted($qtt);
+        $homePosts['mostLiked'] = $this->getMostLikedPosts($qtt);
+        //pick 4 most popular tag then pick '$qtt' posts of them
+        $mostPopularTags = $this->getElemOnArray($TagsManager->getMostPopularTags($qtt), -1, true, 4);
         $arrPostsByTags = [];
         foreach ($mostPopularTags as $tag) {
             $posts = $this->getPostsByTag($tag['name'], 100);
-            $arrPostsByTags[$tag['name']] = $this->getElemOnArray($posts, -1, true, 5);
+            $arrPostsByTags[$tag['name']] = $this->getElemOnArray($posts, -1, true, $qtt);
         }
         $homePosts['withTag'] = $arrPostsByTags;
-        //pick 2 school random then pick 5 posts of them
+        //pick 2 school random then pick '$qtt' posts of them
         $noSchool = $SchoolManager->getSchoolByName(NO_SCHOOL);
         $allSchool = $SchoolManager->getSchoolByName(ALL_SCHOOL);
         $randomSchool = $this->getElemOnArray($allSchool, $noSchool->getId(), true, 2);
         $arrPostsBySchool = [];
         foreach ($randomSchool as $school) {
             $posts = $this->getPostsBySchool($school->getName(), false, 0, 100);
-            $arrPostsBySchool[$school->getName()] = $this->getElemOnArray($posts, -1, true, 5);
+            $arrPostsBySchool[$school->getName()] = $this->getElemOnArray($posts, -1, true, $qtt);
         }
         $homePosts['bySchool'] = $arrPostsBySchool;
         return $homePosts;
     }
 
-    
+    public function userCanSeePost($user, Post $post)
+    {
+        if (!empty($post)) {
+            if (!$post->getIsPrivate()) {
+                //public post
+                return true;
+            } elseif (!empty($user)) {
+                //private post
+                return $this->userCanSeePrivatePost($post->getSchool(), $post->getIdAuthor(), $post->getAuthorizedGroups(), $post->getListAuthorizedGroups(), $user);
+            }
+        } else {
+            return false;
+        }
+    }
 
     /*-------------------------------------------------------------------------------------
     ----------------------------------- PRIVATE FUNCTION ------------------------------------
@@ -583,6 +596,7 @@ class PostsManager extends LikeManager
         'description' => $post->getDescription(), 
         'datePublication' => $post->getDatePublication(), 
         'isPrivate' => $post->getIsPrivate(), 
+        'authorizedGroups' => $post->getAuthorizedGroups(), 
         'listAuthorizedGroups' => $post->getListAuthorizedGroups(), 
         'postType' => $post->getPostType(), 
         'fileType' => $post->getFileType(), 
@@ -905,7 +919,8 @@ class PostsManager extends LikeManager
             } elseif ($post->getSchool() === $_SESSION['school'] && ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN)) {
                 //admin and moderator can post on school folder
                 return true;
-            } elseif ($post->getSchool() === $_SESSION['school'] && $post->getIsPrivate() && (empty($post->getListAuthorizedGroups()) || in_array($_SESSION['group'], $post->getListAuthorizedGroups()))) {
+            } elseif ($post->getSchool() === $_SESSION['school'] && $post->getIsPrivate() 
+            && ($post->getAuthorizedGroups() !== 'none' && (empty($post->getListAuthorizedGroups()) || in_array($_SESSION['group'], $post->getListAuthorizedGroups())))) {
                 //user on this group can post in this folder
                 return true;
             } else {
@@ -916,13 +931,33 @@ class PostsManager extends LikeManager
         }
     }
 
-    private function userCanSeePrivatePost(string $schoolOfPost, int $idAuthor, $listAuthorizedGroups)
+    private function userCanSeePrivatePost(string $schoolOfPost, int $idAuthor, $authorizedGroups, $listAuthorizedGroups, User $user = null)
     {
-        // private post can be consulted by webmaster / admin / moderator / author / user on listAuthorizedGroups
-        if (!empty($_SESSION) && ($schoolOfPost === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
-            if ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || intval($_SESSION['id']) === intval($idAuthor) 
-            || empty($listAuthorizedGroups) || in_array($_SESSION['group'], $listAuthorizedGroups)) {
-                return true;
+        // private post can be consulted by webmaster / admin / moderator / author / user on listAuthorizedGroups 
+        // (or all user in same school if listAuthorizedGroups is empty)
+        if ($user === null) {
+            //user who visiting the website
+            if (!empty($_SESSION) && ($schoolOfPost === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
+                //user is in the school where the post get publish or user is webmaster
+                if ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN || intval($_SESSION['id']) === intval($idAuthor)) {
+                    //user is admin ,moderator, or author of this post
+                    return true;
+                } elseif ($authorizedGroups !== 'none' && (empty($listAuthorizedGroups) || in_array($_SESSION['group'], $listAuthorizedGroups))) {
+                    //all school group are allowed or user is in a group which is allowed
+                    return true;
+                }
+            }
+        } else {
+            //user $user
+            if ($schoolOfPost === $user->getSchool() || $user->getSchool() === ALL_SCHOOL) {
+                //user is in the school where the post get publish or user is webmaster
+                if ($user->getIsModerator() || $user->getIsAdmin() || $user->getId() === intval($idAuthor)) {
+                    //user is admin ,moderator, or author of this post
+                    return true;
+                } elseif ($authorizedGroups !== 'none' && (empty($listAuthorizedGroups) || in_array($user->getSchoolGroup(), $listAuthorizedGroups))) {
+                    //all school group are allowed or user is in a group which is allowed
+                    return true;
+                }
             }
         }
         return false;

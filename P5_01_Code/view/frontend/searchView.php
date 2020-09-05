@@ -9,7 +9,7 @@
                 <h2>Recherche par mots-clés</h2>
                 <form id="formSearchByKeyWord" method="POST" action="index.php?action=search">
                     <input type="text" name="keyWord">
-                    <input type="submit" name="Rechercher">
+                    <input type="submit" name="Rechercher" value="Rechercher">
                 </form>
             </div>
             <div id="frequentlySearched">

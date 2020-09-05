@@ -2,6 +2,7 @@
     <?php
     if (isset($data['user'])) {
         ?>
+        <h1>Réinitialisation du mot de passe</h1>
         <form id="formResetPassword" method="POST" action="index.php?action=resetPassword">
             <div>
                 <p>

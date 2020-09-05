@@ -159,7 +159,7 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                         }
                         if ($post['fileType'] === 'folder' && $post['filePath'] !== 'public/images/folder.png') {
                             echo '<figure title="' . $post['title'] . '" class="postOnAside">';
-                            echo '<a title="' . $post['title'] . '" class="postOnAside" href="index.php?action=post&id=' . $post['id'] . '">';
+                            echo '<a title="' . $post['title'] . '" href="index.php?action=post&id=' . $post['id'] . '">';
                             echo '<img class="thumbnailFolder" src="' . $post['filePath'] . '">';
                             echo '<img src="public/images/folder.png">';
                             echo '</a></figure>';

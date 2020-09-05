@@ -55,7 +55,7 @@ if (document.getElementById('homeAdmin') !== null) {
 	//admin side
 	let blockSlider = document.querySelector('.slider');
 	let addSlide = (slide) => {
-		myUrl = slide.url += '&offset=' + (slide.positionSlider * slide.nbItemBySlide);
+		myUrl = slide.url + '&offset=' + (slide.positionSlider * slide.nbItemBySlide);
 		myUrl += '&limit=' + slide.nbItemBySlide + '&school=' + document.getElementById('schoolName').value;
 		ajaxGet(myUrl, function(response){
 			if (response !== 'false' && response.length > 0) {
@@ -69,23 +69,27 @@ if (document.getElementById('homeAdmin') !== null) {
 	const slide = new Slide(blockSlider, 
 							document.querySelector('.arrowLeft'), 
 							document.querySelector('.arrowRight'), 
-							5, 
+							6, 
 							'index.php?action=getPostsBySchool', 
 							addSlide);
-	window.addEventListener("load", function(){
-		slide.init();
-		let url = 'index.php?action=getPostsBySchool&school=' + document.getElementById('schoolName').value + '&limit=5';
-		ajaxGet(url, function(response){
-			if (response !== 'false' && response.length > 0) {
-				createSlide(JSON.parse(response), blockSlider);
-			} else {
-				let divSlide = document.createElement('div');
-				divSlide.classList.add('slide');
-				divSlide.textContent = "Il n'y a aucune publication pour l'instant";
-				blockSlider.appendChild(divSlide);
-			}
+	if (blockSlider !== null) {
+		window.addEventListener("load", function(){
+			slide.init();
+			let url = 'index.php?action=getPostsBySchool&school=' + document.getElementById('schoolName').value + '&limit=6';
+			ajaxGet(url, function(response){
+				if (response !== 'false' && response.length > 0) {
+					createSlide(JSON.parse(response), blockSlider);
+				} else {
+					let divSlide = document.createElement('div');
+					divSlide.classList.add('slide');
+					let elemP = document.createElement('p');
+					elemP.textContent = "Il n'y a aucune publication pour l'instant";
+					divSlide.appendChild(elemP);
+					blockSlider.appendChild(divSlide);
+				}
+			});
 		});
-	});
+	}
 } else if (document.getElementById('home') !== null) {
 	//user side
 	let arrBlockSlider = document.querySelectorAll('.slider');
@@ -125,7 +129,7 @@ if (document.getElementById('homeAdmin') !== null) {
 		arrSlides[i] = new Slide(arrBlockSlider[i], 
 								arrArrowLeft[i], 
 								arrArrowRight[i], 
-								5, 
+								6, 
 								url, 
 								addSlide);
 	}

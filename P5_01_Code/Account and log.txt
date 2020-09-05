@@ -26,3 +26,10 @@ SCHOOL : Current4ngle
         -> pseudo : moderator current4ngle 1 | password : mc1
     STUDENT
         -> pseudo : curtiss | password : curtiss
+
+____________________________________________________________
+NO SCHOOL
+    ADMIN
+        -> pseudo : no school admin 1 | password : nsa1
+    USER
+        -> pseudo : user without school | password : uws

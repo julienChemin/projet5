@@ -81,7 +81,7 @@ if (document.getElementById('moderatAdmin')) {
         linksAdd[i].addEventListener(
             'click', function () {
                 formContent[i].style.height = "300px";
-                forms[i].style.padding = "50px 100px";
+                forms[i].style.padding = "5px";
             }
         );
 

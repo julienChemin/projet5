@@ -1,0 +1,101 @@
+/* ------------------------------------------------------------------------ */
+/* ------------------------ SIGN IN / SIGN UP FORM ------------------------ */
+/* ------------------------------------------------------------------------ */
+
+#signIn, #signUp{
+    padding: 100px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/*sign up*/
+#formSignUp{
+    height: 400px;
+    border-radius: 5px;
+}
+#formSignUp label{
+    margin-left: 10px;
+}
+#formSignUp > div{
+    width: 100%;
+}
+#formSignUp > div > div{
+    display: flex;
+    justify-content: center;
+}
+#formSignUp > div > div:last-of-type{
+    flex-direction: column;
+}
+#formSignUp #postIsAffiliated{
+    display: inline;
+}
+#postAffiliationCode{
+    overflow: hidden;
+    height: 0px;
+    margin: 0px;
+    transition: height 0.2s linear, margin 0.2s linear;
+    -webkit-transition: height 0.2s linear, margin 0.2s linear;
+}
+#formSignUp p{
+    display: flex;
+    flex-direction: column;
+}
+#postAffiliationCode, #formSignUp input[type='submit']{
+    width: 170px;
+    align-self: center;
+}
+
+/*sign In*/
+#formConnect > div > p:first-child > *, #formConnect > div > p:nth-child(2) > *{
+    width: 50%;
+    display: inline-block;
+}
+#signIn #modal > div{
+    width: 300px;
+    height: 300px;
+}
+#signIn #modal > div > p:first-child{
+    font-size: 1.2em;
+    color: #CF8B3F;
+}
+
+/*form forget password*/
+#formForgetPassword{
+    display: none;
+}
+#buttonForgetPassword, #buttonCancel{
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 10px;
+}
+
+/*reset password*/
+#resetPassword{
+    padding: 100px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#resetPassword > div{
+    text-align: center;
+    border: solid 2px #161617;
+    border-radius: 5px;
+    padding: 50px 100px;
+    background-color: #161617;
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px){
+    #formSignUp{
+        height: auto;
+    }
+    #formSignUp > div > div{
+        flex-direction: column;
+    }
+}

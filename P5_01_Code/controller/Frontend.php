@@ -97,7 +97,9 @@ class Frontend extends Controller
             if ($user = $UserManager->getOneById($_GET['id'])) {
                 if ($user->getTemporaryPassword() === $_GET['key'] && $user->getBeingReset()) {
                     // account being reset and key is Ok
-                    $message = $UserManager->checkWrongPasswordMessage($_GET['wrongPassword']);
+                    if (!empty($_GET['wrongPassword'])) {
+                        $message = $UserManager->checkWrongPasswordMessage($_GET['wrongPassword']);
+                    }
                     RenderView::render('template.php', 'frontend/resetPasswordView.php', ['user' => $user, 'message' => $message]);
                 } else {
 					$this->invalidLink();
@@ -115,7 +117,7 @@ class Frontend extends Controller
 
     public function settings()
     {
-        if (!empty($_SESSION) && $_SESSION['school'] === NO_SCHOOL) {
+        if (!empty($_SESSION)) {
             $UserManager = new UserManager();
             $user = $UserManager->getUserByName($_SESSION['pseudo']);
             $contractInfo = $this->getUserContractInfo($user, new ContractManager('user', $UserManager));
@@ -220,8 +222,8 @@ class Frontend extends Controller
     public function updateProfile()
     {
         $UserManager = new UserManager();
-        if (!empty($_GET['userId']) && !empty($_GET['elem']) && $_GET['userId'] === $_SESSION['id'] 
-        && $user = $UserManager->getOneById($_GET['userId'])) {
+        if (!empty($_GET['userId']) && !empty($_GET['elem']) && intval($_GET['userId']) === $_SESSION['id'] 
+        && $user = $UserManager->getOneById(intval($_GET['userId']))) {
             switch ($_GET['elem']) {
                 case 'profileBanner' :
                     $this->updateProfileBanner($user, $UserManager);
@@ -273,15 +275,19 @@ class Frontend extends Controller
     {
         $UserManager = new UserManager();
         $PostsManager = new PostsManager();
+        !empty($_SESSION) ? $user = $UserManager->getOneById($_SESSION['id']) : $user = null;
         if (!empty($_GET['id']) && $post = $PostsManager->getOneById($_GET['id'])) {
-            $asidePosts = $PostsManager->getAsidePosts($post, new TagsManager());//var_dump($asidePosts['public']);
-            $UserManager->exists($post->getIdAuthor()) ? $author = $UserManager->getOneById($post->getIdAuthor()) : $author = null;
-            !empty($_SESSION) ? $user = $UserManager->getOneById($_SESSION['id']) : $user = null;
-            if ($post->getIsPrivate()) {
-                $this->privatePost($post, $asidePosts, $user, $author);
+            if ($PostsManager->userCanSeePost($user, $post)) {
+                $asidePosts = $PostsManager->getAsidePosts($post, new TagsManager());
+                $UserManager->exists($post->getIdAuthor()) ? $author = $UserManager->getOneById($post->getIdAuthor()) : $author = null;
+                if ($post->getIsPrivate()) {
+                    $this->privatePost($post, $asidePosts, $user, $author);
+                } else {
+                    $this->publicPost($post, $asidePosts, $user, $author);
+                }
             } else {
-                $this->publicPost($post, $asidePosts, $user, $author);
-            }
+                $this->accessDenied();
+            }  
         } else {
 			$this->invalidLink();
         }
@@ -499,7 +505,7 @@ class Frontend extends Controller
             if (count($posts) > 0) {
                 echo json_encode($PostsManager->sortForProfile($posts));
             } else {
-				echo 'false';
+				echo json_encode($PostsManager->sortForProfile([]));
             }
         } else {
 			echo 'false';
@@ -695,7 +701,8 @@ class Frontend extends Controller
                 if ($user->getTemporaryPassword() === $_POST['key'] && $user->getBeingReset()) {
                     if (!password_verify($_POST['newPassword'], $user->getPassword())) {
                            //new password is correct
-                           $UserManager->updateById($user->getId(), 'password', password_hash($_POST['newPassword'], PASSWORD_DEFAULT));
+                           $UserManager->updateById($user->getId(), 'password', password_hash($_POST['newPassword'], PASSWORD_DEFAULT))
+                                ->updateById($user->getId(), 'beingReset', false, true);
                            $message = "Le mot de passe a bien été modifié.";
                            RenderView::render('template.php', 'frontend/resetPasswordView.php', ['message' => $message]);
                     } else {
@@ -825,23 +832,17 @@ class Frontend extends Controller
     /*------------------------------ post view ------------------------------*/
     private function privatePost(Post $post, array $asidePosts, User $user, User $author)
     {
-        if (!empty($_SESSION) && ($post->getSchool() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL) 
-        && ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN 
-        || empty($post->getListAuthorizedGroups()) || in_array($_SESSION['group'], $post->getListAuthorizedGroups()))) {
-            if ($post->getFileType() === 'folder') {
-                // consulting private folder
-                $userInfo = $this->getFolderViewInfo($user, $post);
-                RenderView::render(
-                    'template.php', 'frontend/folderView.php', 
-                    ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 
-                        'userInfo' => $userInfo, 'option' => ['folderView']]
-                );
-            } else {
-                // consulting private post
-                RenderView::render('template.php', 'frontend/postView.php', ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
-            }
+        if ($post->getFileType() === 'folder') {
+            // consulting private folder
+            $userInfo = $this->getFolderViewInfo($user, $post);
+            RenderView::render(
+                'template.php', 'frontend/folderView.php', 
+                ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 
+                    'userInfo' => $userInfo, 'option' => ['folderView']]
+            );
         } else {
-            $this->accessDenied();
+            // consulting private post
+            RenderView::render('template.php', 'frontend/postView.php', ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
         }
     }
 

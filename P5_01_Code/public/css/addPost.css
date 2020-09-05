@@ -1,0 +1,331 @@
+#addSchoolPost, #addPost{
+    padding: 70px 0px;
+}
+#addSchoolPost hr, #addPost hr{
+    margin: 50px 0;
+}
+#addSchoolPost figcaption, #addPost figcaption{
+    margin-bottom: 20px;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+#blockUploadType{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+
+    width: 100%;
+}
+#btnAddFolder, #btnAddFile{
+    width: 10%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 15px 30px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+#btnAddFolder img, #btnAddFile img{
+    max-width: 100%;
+}
+#blockAddFile{
+    display: none;
+    width: 100%;
+}
+#fileTypeSelection{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+#fileTypeSelection input{
+    display: none;
+}
+#fileTypeSelection figure{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 20px;
+    height: 100%;
+    width: 20%;
+}
+#fileTypeSelection label{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-height: 100%;
+}
+#fileTypeSelection label img{
+    cursor: pointer;
+    width: 50%;
+    height: 100%;
+}
+#blockIsPrivate{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#blockIsPrivate > div{
+    margin-bottom: 10px;
+}
+#blockIsPrivate > div:first-of-type{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 48%;
+}
+#authorizedGroups{
+    display: none;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 48%;
+    min-height: 80px;
+}
+.authorizedGroup{
+    color: #CF8B3F;
+    border: solid 2px #CF8B3F;
+    border-radius: 10px;
+    padding: 4px 6px;
+    margin: 5px;
+}
+.authorizedGroup i{
+    margin-left: 5px;
+}
+#blockIsPrivate > div > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#blockIsPrivate > div > div:nth-of-type(2){
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+#blockIsPrivate label{
+    color: #CF8B3F;
+    font-size: 1.5em;
+    margin-right: 35px;
+}
+#blockTitle, #blockVideoLink{
+    width: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+#blockTitle input, #blockVideoLink input{
+    width: 80%;
+}
+#blockUploadFile{
+    display: none;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+#blockUploadFile > div{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+#blockUploadFile > div > div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: solid 1px #CF8B3F;
+    border-radius: 20px;
+    width: 40%;
+    min-height: 100px;
+    overflow: hidden;
+}
+#blockUploadFile div > figure{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    width: 40%;
+    min-height: 100px;
+}
+#blockUploadFile #preview{
+    display: none;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+}
+#blockUploadFile #preview img{
+    max-width: 90%;
+    max-height: 90%;
+}
+#uploadFile{
+    max-width: 90%;
+}
+#blockTinyMce{
+    width: 100%;
+    display: none;
+}
+#blockTinyMce .tox-tinymce{
+    height: 500px!important;
+}
+#blockTags{
+    width: 100%;
+
+    display: none;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+#blockTags p{
+    font-size: 1.3em;
+    text-align: left;
+}
+#tags{
+    /*input text for tags*/
+    transition: 0.15s linear;
+    -webkit-transition: 0.15s linear;
+}
+.tagRules{
+    transition: 0.15s linear;
+    -webkit-transition: 0.15s linear;
+}
+#blockAddTags{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+#blockAddTags > div:first-of-type{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+}
+#selectedTags > div, #recommendedTags > div{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 5px;
+}
+#blockSubmit{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+#addSchoolPost input[type='submit'], #addPost input[type='submit']{
+    display: none;
+    margin-top: 20px;
+    padding: 15px;
+    width: 150px;
+}
+/*====================================================================================================================================
+                                                            medium desktops laptops
+====================================================================================================================================*/
+
+@media all and (min-width:992px) and (max-width:1200px){
+    #blockUploadFile > div{
+        flex-direction: column;
+        padding: 15px;
+    }
+    #blockUploadFile > div > div, #blockUploadFile div > figure{
+        width: 100%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px){
+    #addSchoolPost, #addPost{
+        padding: 50px 0px;
+    }
+    #btnAddFolder, #btnAddFile{
+        width: 15%;
+    }
+    #blockUploadFile > div{
+        flex-direction: column;
+        padding: 15px;
+    }
+    #blockUploadFile > div > div, #blockUploadFile div > figure{
+        width: 100%;
+    }
+    #blockTags > p{
+        font-size: 1em;
+    }
+    #blockAddTags{
+        flex-direction: column;
+    }
+    #blockAddTags > div:first-of-type, #selectedTags{
+        width: 100%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px){
+    #addSchoolPost, #addPost{
+        padding: 30px 0px;
+    }
+    #btnAddFolder, #btnAddFile{
+        width: 15%;
+    }
+    #blockUploadFile > div{
+        flex-direction: column;
+        padding: 15px;
+    }
+    #blockUploadFile > div > div, #blockUploadFile div > figure{
+        width: 100%;
+    }
+    #blockTags > p{
+        font-size: 1em;
+    }
+    #blockAddTags{
+        flex-direction: column;
+    }
+    #blockAddTags > div:first-of-type, #selectedTags{
+        width: 100%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px){
+    #addSchoolPost, #addPost{
+        padding: 10px 0px;
+    }
+    #btnAddFolder, #btnAddFile{
+        width: 20%;
+        padding: 10px 20px;
+    }
+    #fileTypeSelection figure{
+        width: 25%;
+    }
+    #blockUploadFile > div{
+        flex-direction: column;
+        padding: 15px;
+    }
+    #blockUploadFile > div > div, #blockUploadFile div > figure{
+        width: 100%;
+    }
+    #blockTags > p{
+        font-size: 1em;
+    }
+    #blockAddTags{
+        flex-direction: column;
+    }
+    #blockAddTags > div:first-of-type, #selectedTags{
+        width: 100%;
+    }
+}

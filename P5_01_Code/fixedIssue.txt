@@ -1,6 +1,5 @@
 new stuff
-    - prepare website for presentation
-        
+    - splitting css for each view
+    - compatibility and responsive
 fixed issues
-    - admin / moderator right
-    - some issue around school / moderator creation
+    -

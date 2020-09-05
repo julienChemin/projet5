@@ -142,12 +142,12 @@ function fillContentReportFromElem(idElem) {
 }
 function animFirstClick()
 {
-	btnReportPost.style.margin = '15px';
-	btnReportPost.style.padding = '15px';
-	btnReportComment.style.margin = '15px';
-	btnReportComment.style.padding = '15px';
-	btnReportOther.style.margin = '15px';
-	btnReportOther.style.padding = '15px';
+	btnReportPost.style.margin = '5px';
+	btnReportPost.style.padding = '10px';
+	btnReportComment.style.margin = '5px';
+	btnReportComment.style.padding = '10px';
+	btnReportOther.style.margin = '5px';
+	btnReportOther.style.padding = '10px';
 }
 function toggleBtn(btnToFocus)
 {

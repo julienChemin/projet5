@@ -118,7 +118,7 @@ if (document.getElementById('moderatUsers') !== null) {
 		btnOpenForm[i].addEventListener('click', function(){
 			formContent[i].style.height = "300px";
 			blockListGroup[i].style.display = "flex";
-			formAddGroup[i].style.padding = "50px 100px";
+			formAddGroup[i].style.padding = "5px";
 
 			//maj block list groups
 			url = 'indexAdmin.php?action=getGroup&schoolName=' + formAddGroup[i].elements.schoolName.value;

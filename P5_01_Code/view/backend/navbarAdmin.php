@@ -6,20 +6,20 @@
             </span>
             <nav>
                 <ul>
-                    <li title="Publier pour l'établissement">
+                    <li title="Publier pour l'établissement" class="hideUnder600Width">
                         <a href="indexAdmin.php?action=addSchoolPost"><i class="fas fa-file-import"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
-                    <li title="Profil">
+                    <li title="Profil" class="hideUnder600Width">
                         <a href="index.php?action=userProfile&userId=<?=$_SESSION['id']?>"><i class="far fa-address-card"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
-                    <li title="Profil de l'établissement">
+                    <li title="Profil de l'établissement" class="hideUnder600Width">
                         <a href="indexAdmin.php?action=schoolProfile&school=<?=$_SESSION['school']?>"><i class="fas fa-school"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
                     <li id="pseudo">
                         <?=$_SESSION['pseudo']?>
@@ -27,10 +27,10 @@
                     </li>
                     <hr class="hrNavbar">
 
-                    <li title="Vers ArtSchool">
+                    <li title="Vers ArtSchool" class="hideUnder600Width">
                         <a href="index.php"><i class="fas fa-home"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
                     <li title="Se Déconnecter">
                         <a href="indexAdmin.php?action=disconnect"><i class="fas fa-sign-out-alt"></i></a>

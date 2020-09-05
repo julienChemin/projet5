@@ -34,32 +34,32 @@
                             <tr>
                                 <td>Nom de l'établissement</td>
                                 <td><?=$schools[$i]->getName()?></td>
-                                <td><button class="btnEditName">Modifier</button></td>
+                                <td><button class="btnEditName"><i class="fas fa-pen"></i></button></td>
                             </tr>
                             <tr>
                                 <td>Administrateur</td>
                                 <td><?=$schools[$i]->getNameAdmin()?></td>
-                                <td><button class="btnEditAdmin">Modifier</button></td>
+                                <td><button class="btnEditAdmin"><i class="fas fa-pen"></i></button></td>
                             </tr>
                             <tr>
                                 <td>Mail</td>
                                 <td><?=$schools[$i]->getMail()?></td>
-                                <td><button class="btnEditMail">Modifier</button></td>
+                                <td><button class="btnEditMail"><i class="fas fa-pen"></i></button></td>
                             </tr>
                             <tr>
                                 <td>Code d'affiliation</td>
                                 <td><?=$schools[$i]->getCode()?></td>
-                                <td><button class="btnEditCode">Modifier</button></td>
+                                <td><button class="btnEditCode"><i class="fas fa-pen"></i></button></td>
                             </tr>
                             <tr>
                                 <td>Nombre de comptes</td>
                                 <td>Total - <?=$schools[$i]->getNbEleve()?> | Actif - <?=$schools[$i]->getNbActiveAccount()?></td>
-                                <td><button class="btnEditNbEleve">Modifier</button></td>
+                                <td><button class="btnEditNbEleve"><i class="fas fa-pen"></i></button></td>
                             </tr>
                             <tr>
                                 <td>Logo</td>
                                 <td><?=$schools[$i]->getLogo() === 'public/images/question-mark.png' ? 'Logo par défaut' : 'Logo personnalisé';?></td>
-                                <td><button class="btnEditLogo">Modifier</button></td>
+                                <td><button class="btnEditLogo"><i class="fas fa-pen"></i></button></td>
                             </tr>
                         </table>
                     </div>

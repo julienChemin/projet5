@@ -25,5 +25,3 @@
         ?>
     </div>
 </section>
-<!--TODO ** waiting for payment system-->
-<!--if user->isActive : display option (school wish/inst url)-->

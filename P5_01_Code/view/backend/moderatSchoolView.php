@@ -27,7 +27,7 @@
                         <tr>
                             <td>Nom de l'établissement</td>
                             <td><?=$school->getName()?></td>
-                            <td><button class="btnEditName">Modifier</button></td>
+                            <td><button class="btnEditName"><i class="fas fa-pen"></i></button></td>
                         </tr>
                         <tr>
                             <td>Administrateur</td>
@@ -35,7 +35,7 @@
                             <td>
                                 <?php
                                 if ($school->getIdAdmin() === intval($_SESSION['id'])) {
-                                    echo '<button class="btnEditAdmin">Modifier</button>';
+                                    echo '<button class="btnEditAdmin"><i class="fas fa-pen"></i></button>';
                                 }
                                 ?>
                             </td>
@@ -43,22 +43,22 @@
                         <tr>
                             <td>Mail</td>
                             <td><?=$school->getMail()?></td>
-                            <td><button class="btnEditMail">Modifier</button></td>
+                            <td><button class="btnEditMail"><i class="fas fa-pen"></i></button></td>
                         </tr>
                         <tr>
                             <td>Code d'affiliation</td>
                             <td><?=$school->getCode()?></td>
-                            <td><button class="btnEditCode">Modifier</button></td>
+                            <td><button class="btnEditCode"><i class="fas fa-pen"></i></button></td>
                         </tr>
                         <tr>
                             <td>Nombre de comptes</td>
                             <td>Total - <?=$school->getNbEleve()?> | Actif - <?=$school->getNbActiveAccount()?></td>
-                            <td><a href="indexAdmin.php?action=moderatUsers"><button>Consulter</button></a></td>
+                            <td><a href="indexAdmin.php?action=moderatUsers"><button><i class="fas fa-eye"></i></button></a></td>
                         </tr>
                         <tr>
                             <td>Logo</td>
                             <td><?=$school->getLogo() === 'public/images/question-mark.png' ? 'Logo par défaut' : 'Logo personnalisé';?></td>
-                            <td><button class="btnEditLogo">Modifier</button></td>
+                            <td><button class="btnEditLogo"><i class="fas fa-pen"></i></button></td>
                         </tr>
                     </table>
                 </div>

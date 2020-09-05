@@ -226,7 +226,7 @@ class UserManager extends AbstractManager
                     return "Il y a eu une erreur au niveau de mot de passe";
             }
         } else {
-            return false;
+            return null;
         }
     }
 
@@ -234,7 +234,8 @@ class UserManager extends AbstractManager
     {
         // set temporary password
         $temporaryPassword = password_hash($user->getName() . time(), PASSWORD_DEFAULT);
-        $this->updateById($user->getId(), 'temporaryPassword', $temporaryPassword);
+        $this->updateById($user->getId(), 'temporaryPassword', $temporaryPassword)
+            ->updateById($user->getId(), 'beingReset', true, true);
         // send recoveryMail
         $subject = 'Recuperation de mot de passe';
         $content = "Bonjour " . $user->getName() . ", vous avez demande a reinitialiser votre mot de passe.<br><br>

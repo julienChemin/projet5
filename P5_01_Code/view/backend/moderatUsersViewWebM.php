@@ -50,6 +50,14 @@
                         </div>
                     </form>
                     <div>
+                        <div id="listAction" class="blockStyleOne fullWidth">
+                            <ul>
+                                <li><i class="fas fa-user-shield"></i>Donner les droits de modérateur</li>
+                                <li><i class="fas fa-user-plus"></i>Activer le compte</li>
+                                <li><i class="fas fa-user-times"></i>Désactiver le compte</li>
+                                <li><i class="fas fa-times"></i>Supprimer le compte</li>
+                            </ul>
+                        </div>
                         <?php
                         if (!empty($data['users'][$school->getName()]['active'])) {
                             //display active account
@@ -59,9 +67,7 @@
                                 <tr>
                                     <th>Identifiant</th>
                                     <th>Groupe</th>
-                                    <th>Passer en modérateur</th>
-                                    <th>Désactiver le compte</th>
-                                    <th>Supprimer le compte</th>
+                                    <th>Action</th>
                                 </tr>
                                 <?php
                                 foreach ($data['users'][$school->getName()]['active'] as $user) {
@@ -85,9 +91,11 @@
                                                 </select>
                                             </div>
                                         </td>
-                                        <td><i class="fas fa-user-shield toModerator" schoolname="<?=$school->getName()?>" ></i></td>
-                                        <td><i class="fas fa-user-times toInactive" schoolname="<?=$school->getName()?>" ></i></td>
-                                        <td><i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i></td>
+                                        <td>
+                                            <i class="fas fa-user-shield toModerator" schoolname="<?=$school->getName()?>" ></i> - 
+                                            <i class="fas fa-user-times toInactive" schoolname="<?=$school->getName()?>" ></i> - 
+                                            <i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
+                                        </td>
                                     </tr>
                                     <?php
                                 }
@@ -108,8 +116,7 @@
                                 <tr>
                                     <th>Identifiant</th>
                                     <th>Groupe</th>
-                                    <th>Activer le compte</th>
-                                    <th>Supprimer le compte</th>
+                                    <th>Action</th>
                                 </tr>
                                 <?php
                                 foreach ($data['users'][$school->getName()]['inactive'] as $user) {
@@ -133,8 +140,10 @@
                                                 </select>
                                             </div>
                                         </td>
-                                        <td><i class="fas fa-user-plus toActive" schoolname="<?=$school->getName()?>" ></i></td>
-                                        <td><i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i></td>
+                                        <td>
+                                            <i class="fas fa-user-plus toActive" schoolname="<?=$school->getName()?>" ></i> - 
+                                            <i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
+                                        </td>
                                     </tr>
                                     <?php
                                 }

@@ -4,9 +4,6 @@
         <h2>À savoir</h2>
         <ul>
             <li>
-                - Soyez clair et concis
-            </li>
-            <li>
                 - Vous pouvez joindre une capture d'écran pour appuyer votre signalement (notamment dans le cas d'un vol de contenu)
             </li>
             <li>

@@ -6,20 +6,20 @@
             </span>
             <nav>
                 <ul>
-                    <li title="Gérer les signalements">
+                    <li title="Gérer les signalements" class="hideUnder600Width">
                         <a href="indexAdmin.php?action=moderatReports"><i class="far fa-flag"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
-                    <li title="Historique">
+                    <li title="Historique" class="hideUnder600Width">
                         <a href="indexAdmin.php?action=schoolHistory"><i class="fas fa-history"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
-                    <li title="Modération du site">
+                    <li title="Modération du site" class="hideUnder600Width">
                         <a href="indexAdmin.php?action=moderatWebsite"><i class="fas fa-hourglass-half"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
                     <li id="pseudo">
                         <?=$_SESSION['pseudo']?>
@@ -27,10 +27,10 @@
                     </li>
                     <hr class="hrNavbar">
 
-                    <li title="Vers ArtSchool">
+                    <li title="Vers ArtSchool" class="hideUnder600Width">
                         <a href="index.php"><i class="fas fa-home"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
 
                     <li title="Se Déconnecter">
                         <a href="indexAdmin.php?action=disconnect"><i class="fas fa-sign-out-alt"></i></a>

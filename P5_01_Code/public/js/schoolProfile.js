@@ -6,12 +6,13 @@ function toggleClass(elem, classToToggle) {
 	}
 }
 
-function slideTo(nbPosition, slides, slideTab) {
+function slideTo(nbPosition, slides) {
 	for (let i=0; i<slides.length; i++) {
 		slides[i].style.left = nbPosition + '%';
 	}
 }
 
+let modal = document.getElementById('modal');
 let slideTab = document.getElementById('slideTab');
 let slides = document.querySelectorAll('#slideTab > div');
 let allButtonsTab = document.querySelectorAll('#blockTabs > li');
@@ -21,7 +22,7 @@ for (let i=0; i<allButtonsTab.length; i++) {
 	allButtonsTab[i].addEventListener('click', function(){
 		if (!allButtonsTab[i].classList.contains('buttonIsFocus')) {
 			toggleClass(focusButton.elem, 'buttonIsFocus');
-			slideTo(-(i*100), slides, slideTab);
+			slideTo(-(i*100), slides);
 			toggleClass(allButtonsTab[i], 'buttonIsFocus');
 			focusButton.elem = allButtonsTab[i];
 		}
@@ -30,33 +31,24 @@ for (let i=0; i<allButtonsTab.length; i++) {
 
 //profile editing
 if (document.getElementById('blockTabsEditProfile') !== null) {
-	function toggleMenuTop(content, blockMenuTop, modal = null){
-		if (content === blockMenuTop.contentDisplay) {
-			content.style.top = "-80px";
-			blockMenuTop.contentDisplay = "";
-			setTimeout(function(){
-				blockMenuTop.elem.style.height = "0px";
-			}, 100);
+	function toggleModal(blockMenu, modal, formDisplay = null){
+		if (formDisplay === null) {
+			modal.style.display = "none";
+			contentMenuEditBlock.style.display = "none";
+			blockMenu.contentDisplay.style.display = "none";
 		} else {
-			if (blockMenuTop.contentDisplay !== "") {
-				blockMenuTop.contentDisplay.style.top = "-80px";
-			}
-			blockMenuTop.elem.style.height = "80px";
-			blockMenuTop.contentDisplay = content;
-			setTimeout(function(){
-				content.style.top = "0px";
-			}, 100);
-		}
-
-		if (modal !== null) {
 			modal.style.display = "flex";
+			formDisplay.style.display = "flex";
+			if (formDisplay === formModal) {
+				contentMenuEditBlock.style.display = "flex";
+			}
+			blockMenu.contentDisplay = formDisplay;
 		}
 	}
 
 	let buttonMenuEdit = document.querySelector('#blockTabsEditProfile > li > i');
 	let editableItems = document.querySelectorAll('.editable');
-	let elemMenuEditingTop = document.getElementById('blockMenuEditingTop');
-	let blockMenuEditingTop = {elem:elemMenuEditingTop, isOpen:false, contentDisplay:""};
+	let blockMenuEditing = {elem:modal, isOpen:false, contentDisplay:""};
 	let allButtonsEditHeader = document.querySelectorAll('.editable > .iconeEditHeader');
 	let allContentMenuEditHeader = document.querySelectorAll('.menuEditHeader');
 
@@ -69,12 +61,9 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 				toggleClass(editableItems[i], 'editing');
 			}
 
-			if (blockMenuEditingTop.contentDisplay !== "") {
-				blockMenuEditingTop.contentDisplay.style.top = "-80px";
-				blockMenuEditingTop.contentDisplay = "";
-				setTimeout(function(){
-					blockMenuEditingTop.elem.style.height = "0px";
-				}, 100);
+			if (blockMenuEditing.contentDisplay !== "") {
+				blockMenuEditing.contentDisplay.style.display = "none";
+				blockMenuEditing.contentDisplay = "";
 			}
 		} else {
 			toggleClass(buttonMenuEdit, 'menuIsOpen');
@@ -88,15 +77,14 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	//MENUS EDIT HEADER ( BANNER / PROFILE PICTURE / TEXT)
 	for (let i=0; i<allButtonsEditHeader.length; i++) {
 		allButtonsEditHeader[i].addEventListener('click', function(){
-			toggleMenuTop(allContentMenuEditHeader[i], blockMenuEditingTop);
+			toggleModal(blockMenuEditing, modal, allContentMenuEditHeader[i]);
 		});
 	}
 
 	//MENU EDIT BANNER
-	let formBanner = document.querySelector('#contentMenuEditBanner > form');
+	let formBanner = document.querySelector('#contentMenuEditBanner');
 	let bannerImg = document.querySelector('#banner img');
 	let bannerSrcInBdd = bannerImg.src;
-	let noBannerIsChecked = formBanner.elements.noBanner.checked;
 	let school = formBanner.elements.school.value;
 
 	//input banner picture path
@@ -110,7 +98,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 	//input no banner
 	formBanner.elements.noBanner.addEventListener('change', function(e){
-		let url = 'indexAdmin.php?action=upload&elem=banner&noBanner='+formBanner.elements.noBanner.checked;
+		let url = 'indexAdmin.php?action=upload&elem=banner&noBanner='+ formBanner.elements.noBanner.checked;
 		formBanner.action = url;
 			
 		if (e.target.checked) {
@@ -131,14 +119,9 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 			noBanner = formBanner.elements.noBanner.checked;
 			
-			ajaxGet(url, function(response){
+			ajaxGet(url, function(){
 				bannerSrcInBdd = formBanner.elements.bannerPath.value;
 				toggleClass(buttonMenuEdit, 'menuIsOpen');
-				blockMenuEditingTop.contentDisplay.style.top = "-80px";
-				blockMenuEditingTop.contentDisplay = "";
-				setTimeout(function(){
-					blockMenuEditingTop.elem.style.height = "0px";
-				}, 100);
 			});
 		} else if (formBanner.elements.dlBanner.value === "") {
 			if (noBanner !== formBanner.elements.noBanner.checked) {
@@ -151,20 +134,16 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 				ajaxGet(url, function(){
 					toggleClass(buttonMenuEdit, 'menuIsOpen');
-					blockMenuEditingTop.contentDisplay.style.top = "-80px";
-					blockMenuEditingTop.contentDisplay = "";
-					setTimeout(function(){
-						blockMenuEditingTop.elem.style.height = "0px";
-					}, 100);
 				});
 			} else {
 				e.preventDefault();
 			}
-		} 
+		}
+		toggleModal(blockMenuEditing, modal);
 	});
 
 	//MENU EDIT PICTURE PROFILE
-	let formProfilePicture = document.querySelector('#contentMenuEditProfilePicture > form');
+	let formProfilePicture = document.querySelector('#contentMenuEditProfilePicture');
 	let blockProfilePicture = document.querySelector('#profile > header > div:first-of-type');
 	let profileImg = document.querySelector('#profile img:first-of-type');
 	let profileSrcInBdd = profileImg.src;
@@ -253,14 +232,9 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			pictureOrientation = formProfilePicture.elements.pictureOrientation.value;
 			pictureSize = formProfilePicture.elements.pictureSize.value;
 			
-			ajaxGet(url, function(response){
+			ajaxGet(url, function(){
 				profileSrcInBdd = formProfilePicture.elements.picturePath.value;
 				toggleClass(buttonMenuEdit, 'menuIsOpen');
-				blockMenuEditingTop.contentDisplay.style.top = "-80px";
-				blockMenuEditingTop.contentDisplay = "";
-				setTimeout(function(){
-					blockMenuEditingTop.elem.style.height = "0px";
-				}, 100);
 			});
 		} else if (formProfilePicture.elements.dlPicture.value === "") {
 			if (pictureOrientation !== formProfilePicture.elements.pictureOrientation.value || pictureSize !== formProfilePicture.elements.pictureSize.value) {
@@ -275,20 +249,16 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 				ajaxGet(url, function(){
 					toggleClass(buttonMenuEdit, 'menuIsOpen');
-					blockMenuEditingTop.contentDisplay.style.top = "-80px";
-					blockMenuEditingTop.contentDisplay = "";
-					setTimeout(function(){
-						blockMenuEditingTop.elem.style.height = "0px";
-					}, 100);
 				});
 			} else {
 				e.preventDefault();
 			}
 		}
+		toggleModal(blockMenuEditing, modal);
 	});
 
 	//MENU EDIT TEXT (block text, pseudo, school name)
-	let formProfileText = document.querySelector('#contentMenuEditText > form');
+	let formProfileText = document.querySelector('#contentMenuEditText');
 	let profileTextBlock = document.querySelector('#profile > header > div:nth-of-type(2)');
 	let profileSchool = document.querySelector('#profile > header > div:nth-of-type(2) > span:nth-of-type(1)');
 
@@ -358,18 +328,13 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			
 			ajaxGet(url, function(response){
 				toggleClass(buttonMenuEdit, 'menuIsOpen');
-				blockMenuEditingTop.contentDisplay.style.top = "-80px";
-				blockMenuEditingTop.contentDisplay = "";
-				setTimeout(function(){
-					blockMenuEditingTop.elem.style.height = "0px";
-				}, 100);
 			});
 		}
+		toggleModal(blockMenuEditing, modal);
 	});
 
 	//MENU EDIT PROFILE CONTENT
-	let modal = document.getElementById('modal');
-	let formModal = document.querySelector('#modal form');
+	let formModal = document.querySelector('#modal form:last-of-type');
 	let allButtonsEditProfile = document.querySelectorAll('.editable > .iconeEditProfile');
 	let allBlockContentProfile = document.querySelectorAll('.blockContentProfile');
 	let allIdBlockContentProfile = document.querySelectorAll('.blockContentProfile + .hide');
@@ -377,7 +342,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	let blockProfileListOrder = document.getElementById('blockProfileListOrder');
 	let listContentOrderProfile = document.getElementById('profileContentOrder');
 	let checkboxAlign = document.getElementById('align');
-	let blockAlign = document.querySelector('#contentMenuEditBlock > form > div:nth-of-type(2)');
+	let blockAlign = document.querySelector('#contentMenuEditBlock > div:nth-of-type(2)');
 	let blockToDelete = document.getElementById('blockToDelete');
 	//pencil icone (for editing) on tab 'profile'
 	for (let i=0; i<allButtonsEditProfile.length; i++) {
@@ -387,7 +352,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			let idCheckboxSize = 'block' + sizeValue.substr(0, 1).toUpperCase() + sizeValue.substr(1);
 			let alignValue = allButtonsEditProfile[i].getAttribute('atralign');
 
-			toggleMenuTop(contentMenuEditBlock, blockMenuEditingTop, modal);
+			toggleModal(blockMenuEditing, modal, formModal);
 			blockProfileListOrder.style.display = "flex";
 			//set form modal inputs value
 			formModal.elements.idProfileContent.value = allIdBlockContentProfile[i].textContent;
@@ -436,7 +401,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 	//plus icone (for adding content) on tab 'profile'
 	document.querySelector('#tabProfile .fa-plus-square').addEventListener('click', function(){
-		toggleMenuTop(contentMenuEditBlock, blockMenuEditingTop, modal);
+		toggleModal(blockMenuEditing, modal, formModal);
 		blockToDelete.style.display = "none";
 
 		if (blockProfileListOrder.style.display !== "flex") {
@@ -548,7 +513,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			let idCheckboxSize = 'block' + sizeValue.substr(0, 1).toUpperCase() + sizeValue.substr(1);
 			let alignValue = allButtonsEditNews[i].getAttribute('atralign');
 
-			toggleMenuTop(contentMenuEditBlock, blockMenuEditingTop, modal);
+			toggleModal(blockMenuEditing, modal, formModal);
 			blockNewsListOrder.style.display = "flex";
 			//set form modal inputs value
 			formModal.elements.idProfileContent.value = allIdBlockContentNews[i].textContent;
@@ -597,7 +562,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 	//plus icone (for adding content) on tab 'news'
 	document.querySelector('#tabNews .fa-plus-square').addEventListener('click', function(){
-		toggleMenuTop(contentMenuEditBlock, blockMenuEditingTop, modal);
+		toggleModal(blockMenuEditing, modal, formModal);
 		blockToDelete.style.display = "none";
 
 		if (blockNewsListOrder.style.display !== "flex") {
@@ -649,7 +614,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			let idCheckboxSize = 'block' + sizeValue.substr(0, 1).toUpperCase() + sizeValue.substr(1);
 			let alignValue = allButtonsEditAbout[i].getAttribute('atralign');
 
-			toggleMenuTop(contentMenuEditBlock, blockMenuEditingTop, modal);
+			toggleModal(blockMenuEditing, modal, formModal);
 			blockAboutListOrder.style.display = "flex";
 			//set form modal inputs value
 			formModal.elements.idProfileContent.value = allIdBlockContentAbout[i].textContent;
@@ -698,7 +663,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 	//plus icone (for adding content) on tab 'about'
 	document.querySelector('#tabAbout .fa-plus-square').addEventListener('click', function(){
-		toggleMenuTop(contentMenuEditBlock, blockMenuEditingTop, modal);
+		toggleModal(contentMenuEditBlock, blockMenuEditingTop, modal);
 		blockToDelete.style.display = "none";
 
 		if (blockAboutListOrder.style.display !== "flex") {
@@ -746,6 +711,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	});
 
 	//MODAL
+
 	//button cancel
 	formModal.elements.cancel.addEventListener('click', function(e){
 		e.preventDefault();
@@ -754,8 +720,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			document.querySelector('#tinyMCEtextarea + .tox-tinymce').style.display = "flex";
 			warningBeforeDelete.style.display = "none";
 		} else {
-			modal.style.display = "none";
-			toggleMenuTop(contentMenuEditBlock, blockMenuEditingTop);
+			toggleModal(blockMenuEditing, modal);
 
 			blockAlign.style.display = "none";
 			checkboxAlign.checked = false;

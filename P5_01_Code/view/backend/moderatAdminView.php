@@ -26,6 +26,13 @@
                 </div>
             </div>
             <div class="tableAdminModerator">
+                <div id="listAction" class="blockStyleOne fullWidth">
+                    <ul>
+                        <li><i class="fas fa-plus-square"></i>Passer en administrateur</li>
+                        <li><i class="fas fa-minus-square"></i>Rétrograder le compte</li>
+                        <li><i class="fas fa-times"></i>Supprimer le compte</li>
+                    </ul>
+                </div>
                 <table> 
                     <tr>
                         <th>Administrateur(s)</th>
@@ -58,9 +65,7 @@
                     <table> 
                         <tr>
                             <th>Modérateur(s)</th>
-                            <th>Passer en administrateur</th>
-                            <th>Enlever les droits de modérateur</th>
-                            <th>Supprimer</th>
+                            <th>Action</th>
                         </tr>
                         <?php
                         foreach ($data['users'] as $user) {
@@ -71,12 +76,8 @@
                                         <a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a>
                                     </td>
                                     <td>
-                                        <i class="far fa-plus-square toAdmin" schoolname="<?=$school->getName()?>"></i>
-                                    </td>
-                                    <td>
-                                        <i class="far fa-minus-square toNormalUser" schoolname="<?=$school->getName()?>"></i>
-                                    </td>
-                                    <td>
+                                        <i class="far fa-plus-square toAdmin" schoolname="<?=$school->getName()?>"></i> - 
+                                        <i class="far fa-minus-square toNormalUser" schoolname="<?=$school->getName()?>"></i> - 
                                         <i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
                                     </td>
                                 </tr>

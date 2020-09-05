@@ -41,9 +41,7 @@
                 </form>
             </div>
             <?php
-            /*display option like :'etre averti par mail lorsqu'un de mes eleve recoit un avertissement' / 'inst url' */
         }
     ?>
 </section>
 <?php
-/*TODO ** waiting for payment system */

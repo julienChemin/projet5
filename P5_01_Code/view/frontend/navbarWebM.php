@@ -19,10 +19,10 @@
                     </li>
                     <hr class="hrNavbar">
 
-                    <li title="vers l'interface d'administration">
+                    <li title="vers l'interface d'administration" class="hideUnder600Width">
                         <a href="indexAdmin.php"><i class="fas fa-cogs"></i></a>
                     </li>
-                    <hr class="hrNavbar">
+                    <hr class="hrNavbar hideUnder600Width">
                     <li title="Se Déconnecter">
                         <a href="index.php?action=disconnect"><i class="fas fa-sign-out-alt"></i></a>
                     </li>
