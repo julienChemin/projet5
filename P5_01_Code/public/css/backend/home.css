@@ -1,0 +1,214 @@
+/* ------------------------ LOGIN FORM ------------------------ */
+#homeAdmin{
+    flex-direction: column;
+}
+#homeAdmin, #resetPassword{
+    padding: 100px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#formConnect > div > p:first-child, #formConnect > div > p:nth-child(2){
+    display: flex;
+    justify-content: space-between;
+}
+/*reset password*/
+#resetPassword > div{
+    text-align: center;
+    border: solid 2px #161617;
+    border-radius: 5px;
+    padding: 50px 100px;
+    background-color: #161617;
+}
+/*forget password*/
+#formForgetPassword{
+    display: none;
+}
+#buttonForgetPassword, #buttonCancel{
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 10px;
+}
+/*modal for cookies rules*/
+#homeAdmin #modal > div{
+    width: 300px;
+    height: 300px;
+}
+#homeAdmin #modal > div > p:first-child{
+    font-size: 1.2em;
+    color: #CF8B3F;
+}
+
+/* ------------------------ MENU HOME ------------------------ */
+#menuHome{
+    width: 100%;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+#menuHome > a{
+    width: 24%;
+}
+#homeAdmin .slide > p{
+    margin: auto;
+}
+.itemHomeAdmin{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    height: 300px;
+    width: 100%;
+    background: linear-gradient(to bottom, #161617 10px, transparent, #161617 290px);
+}
+.itemHomeAdmin i{
+    color: #CF8B3F;
+    font-size: 2.5em;
+}
+.itemHomeAdmin > span{
+    font-size: 1.5em;
+    text-align:  center;
+    margin: 0px 10px;
+}
+#slowSlide{
+    height: 250px;
+    width: 100%;
+}
+#slowSlide figure{
+    height: 150px;
+}
+#slowSlide .items{
+    max-width: 20%;
+}
+#slowSlide > div:first-of-type{
+    display: flex;
+    flex-direction: column;
+}
+#slowSlide > div:first-of-type a{
+    text-align: right;
+}
+
+/*====================================================================================================================================
+                                                            medium desktops laptops
+====================================================================================================================================*/
+
+@media all and (min-width:992px) and (max-width:1200px){
+    #homeAdmin{
+        padding: 50px 0;
+    }
+    #homeAdmin .slide{
+        min-height: auto;
+        height: 150px;
+    }
+    .itemHomeAdmin{
+        height: 250px;
+    }
+    .itemHomeAdmin i{
+        font-size: 2em;
+    }
+    .itemHomeAdmin > span{
+        font-size: 1.3em;
+        margin: 0px 5px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px){
+    #homeAdmin{
+        padding: 50px 0;
+    }
+    #homeAdmin .slide{
+        min-height: auto;
+        height: 150px;
+        margin: 10px 0;
+    }
+    .itemHomeAdmin{
+        height: 170px;
+    }
+    .itemHomeAdmin i{
+        font-size: 1.5em;
+    }
+    .itemHomeAdmin > span{
+        font-size: 1.1em;
+        margin: 0px 5px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px){
+    #homeAdmin{
+        padding: 25px 0;
+    }
+    #homeAdmin h2{
+        font-size: 1.1em;
+    }
+    #menuHome > a{
+        width: 28%;
+    }
+    #homeAdmin .slide{
+        min-height: auto;
+        height: auto;
+        margin: 5px 0;
+    }
+    #homeAdmin .items{
+        height: 100px;
+        width: 32%;
+        max-width: none;
+        margin: 10px 0;
+    }
+    .itemHomeAdmin{
+        height: 170px;
+    }
+    .itemHomeAdmin i{
+        font-size: 1.5em;
+    }
+    .itemHomeAdmin > span{
+        font-size: 1.1em;
+        margin: 0px 5px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px){
+    #homeAdmin{
+        padding: 15px 0;
+    }
+    #homeAdmin h2{
+        font-size: 1em;
+    }
+    #menuHome > a{
+        width: 30%;
+    }
+    #homeAdmin .slide{
+        min-height: auto;
+        height: auto;
+        margin: 5px 0;
+    }
+    #homeAdmin .items{
+        height: 100px;
+        width: 32%;
+        max-width: none;
+        margin: 10px 0;
+    }
+    .itemHomeAdmin{
+        height: 90px;
+    }
+    .itemHomeAdmin i{
+        font-size: 1.2em;
+    }
+    .itemHomeAdmin > span{
+        font-size: 0.8em;
+        margin: 0px 5px;
+    }
+}

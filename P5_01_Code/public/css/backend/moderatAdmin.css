@@ -1,0 +1,171 @@
+#blockModeratAdmin{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 100px 0px;
+}
+#moderatAdmin{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+#listAction{
+    padding: 5px;
+}
+#listAction ul{
+    list-style-type: none;
+}
+#listAction li{
+    margin: 15px 0;
+}
+#listAction i{
+    margin-right: 15px;
+}
+#moderatAdmin .blockSchool{
+    width: 80%;
+}
+.tableAdminModerator{
+    flex-wrap: wrap;
+}
+#moderatAdmin table{
+    margin-top: 20px;
+}
+#moderatAdmin th{
+    color: #CF8B3F;
+}
+
+/*table admin*/
+.tableAdminModerator table a{
+    color: white;
+}
+.tableAdminModerator > table:first-of-type td:first-child{
+    width: 80%;
+    color: white;
+    font-weight: normal;
+}
+.tableAdminModerator > table:first-of-type td:nth-child(2){
+    width: 20%;
+}
+/*table moderator*/
+.tableAdminModerator > table:nth-of-type(2) td:first-child{
+    width: 75%;
+    color: white;
+    font-weight: normal;
+}
+.tableAdminModerator > table:nth-of-type(2) td:nth-child(2){
+    width: 25%;
+}
+/*form add moderator*/
+.formAddModerator{
+    width: 100%;
+    margin-top: 20px;
+    padding: 0px;
+    transition: padding 0.2s linear;
+    -webkit-transition: padding 0.2s linear;
+}
+.formAddModerator > p{
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+.formAddModerator > div:first-of-type{
+    width: auto;
+    height: 0px;
+    overflow: hidden;
+    transition: height 0.2s linear;
+    -webkit-transition: height 0.2s linear;
+}
+.formAddModerator > div:first-of-type > div:first-of-type{
+    display: flex;
+}
+.formAddModerator > div:first-of-type > div:first-of-type > p{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+.blockMsg{
+    font-size: 1.2em;
+    position: relative;
+}
+.blockMsg .fa-times{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 0.7em;
+    cursor: pointer;
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px){
+    #blockModeratAdmin{
+        padding: 40px;
+    }
+    #moderatAdmin .blockSchool td > i{
+        font-size: 0.9em;
+        margin: 0 3px;
+    }
+    #moderatAdmin .blockSchool td{
+        padding: 10px;
+    }
+    .formAddModerator > div > div:first-of-type{
+        flex-wrap: wrap;
+    }
+    #moderatAdmin #modal > div{
+        width: 50%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px){
+    #blockModeratAdmin{
+        padding: 20px;
+    }
+    #moderatAdmin .blockSchool td > i{
+        font-size: 1.2em;
+        margin: 5px 0;
+    }
+    #moderatAdmin .blockSchool td{
+        padding: 5px;
+    }
+    .formAddModerator > div > div:first-of-type{
+        flex-wrap: wrap;
+    }
+    #moderatAdmin #modal > div{
+        width: 50%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px){
+    #blockModeratAdmin{
+        padding: 10px;
+    }
+    #moderatAdmin .blockSchool th{
+        font-size: 0.8em;
+    }
+    #moderatAdmin .blockSchool td{
+        padding: 0;
+    }
+    #moderatAdmin .blockSchool td > i{
+        font-size: 1.2em;
+        margin: 15px 0;
+    }
+    .formAddModerator > div > div:first-of-type{
+        flex-wrap: wrap;
+    }
+    .tableAdminModerator > table:nth-of-type(2) td:nth-child(2) > i{
+        width: 100%;
+    }
+}

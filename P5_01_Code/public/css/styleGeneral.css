@@ -1,0 +1,791 @@
+/*
+color :
+    dark + : #010605
+    dark : #161617
+    dark - : #222224
+    yellow : #FFC652
+    yellow - : #CF8B3F
+
+font :
+    font-family: 'Slabo 27px', serif;
+    font-family: 'Asap', sans-serif;
+*/
+body{
+    margin: 0px;
+    color: white;
+    background-color: #222224;
+    font-family: 'Slabo 27px', serif;
+}
+main{
+    min-height: 80vh;
+}
+h1{
+    font-size: 1.4em;
+    color: #CF8B3F;
+}
+h2{
+    font-size: 1.2em;
+    color: #CF8B3F;
+}
+h1, h2, h3, h4, h5, h6, caption{
+    font-family: 'Asap', sans-serif;
+}
+hr{
+    background : linear-gradient(to right, #161617, #FFC652, #161617);
+    border:none;
+    height: 1px;
+    width: 90%;
+}
+section > h1{
+    text-align: left;
+}
+a{
+    text-decoration: none;
+    color: #CF8B3F;
+    font-family: 'Asap', sans-serif;
+}
+i{
+    font-size: 1.4em;
+}
+strong{
+    font-weight: normal;
+}
+ul{
+    padding: 0;
+}
+figure{
+    height: 300px;
+    margin: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+figure a{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+figure img{
+    max-width: 90%;
+    max-height: 90%;
+}
+.blockStyleOne{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: solid 2px #161617;
+    border-radius: 5px;
+    padding: 50px 100px;
+    margin-top: 20px;
+    background-color: #161617;
+}
+.container{
+    max-width: 90%;
+    margin: auto;
+}
+.fullWidth{
+    width: 100%;
+}
+.orang{
+    color: #CF8B3F;
+}
+.inactifLink{
+    color: #FF3C38!important;
+    cursor: default!important;
+}
+.hide{
+    display: none;
+}
+#tinyMCEtextarea + div{
+    min-height: 65vh;
+}
+
+/*---------- modal ----------*/
+#modal{
+    display: none;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+}
+#modal > div{
+    width: 200px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: solid 1px #CF8B3F;
+    border-radius: 5px;
+    padding: 50px 100px;
+    background-color: #161617;
+}
+#errorMsg{
+    opacity: 0;
+    color: red;
+    font-size: 1.2em;
+
+    transition: 0.15s linear;
+    -webkit-transition: 0.15s linear;
+}
+
+/*---------- tag ----------*/
+.tag{
+    border: solid 1px #CF8B3F;
+    border-radius: 5px;
+    background-color: #222224;
+    margin: 10px;
+    padding: 5px;
+    cursor: pointer;
+    transition: 0.15s linear;
+    -webkit-transition: 0.15s linear;
+}
+.tag i{
+    padding: 4px 6px;
+    color: red;
+    border: solid 2px #CF8B3F;
+    border-radius: 10px;
+}
+#selectedTags{
+    display: none;
+    width: 50%;
+}
+#recommendedTags{
+    display: none;
+    width: 100%;
+}
+
+/*---------- block to display school ----------*/
+#blockSchools{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+#blockSchools .blockSchool{
+    width: 23%;
+    cursor: pointer;
+}
+#blockSchools .blockSchool > div:first-of-type{
+    flex-direction: column;
+}
+#blockSchools .blockSchool > div:first-of-type > div:first-of-type{ /*logo*/
+    width: auto;
+    max-width: 98%;
+}
+#blockSchools .blockSchool > div:first-of-type > div:nth-of-type(2){
+    height: auto;
+    width: 100%;
+}
+#blockSchools + div form{
+    display: none;
+}
+#blockSchools + div #search{
+    display: none;
+}
+#blockSchools + div #showMore{
+    display: none;
+}
+.blockSchool{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin: 40px 0;
+}
+.blockSchool > div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.blockSchool > div:first-child{/*block with icon and school name*/
+    background: linear-gradient(to bottom, #161617 10px, transparent, #161617 290px);
+    border: solid 2px #161617;
+    border-radius: 5px;
+}
+.blockSchool > div:first-child > div{
+    width: 33%;
+    height: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.blockSchool figure{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+    height: 130px;
+    overflow: hidden;
+}
+.blockSchool img{
+    max-width: 100%;
+    max-height: 100%;
+}
+.blockSchool i{
+    color: #CF8B3F;
+    cursor: pointer;
+}
+.blockSchool .fa-caret-square-down{
+    font-size: 2em;
+}
+.blockSchool .fa-caret-square-up{
+    font-size: 2em;
+    display: none;
+}
+.blockSchool td{
+    text-align: center;
+}
+.blockSchool td > i{
+    margin: 0 5px;
+}
+.blockSchool td form{
+    padding: 10px;
+    border : none;
+    background-color: transparent;
+}
+.blockSchool td form input[type='submit']{
+    margin: 0;
+    border : solid 1px;
+    font-weight: normal;
+}
+.blockSchool table tr > td:first-child{
+    color: #CF8B3F;
+    font-weight:bold;
+}
+.blockSchool table tr > td:first-child, .blockSchool table tr > td:nth-child(2){
+    width: 42%;
+}
+.blockSchool table tr > td:last-child{
+    width: 16%;
+}
+.inactiveSchool{
+    background-color : #932C25!important;
+}
+
+/*---------- posts and folders ----------*/
+.iconeVideo{
+    z-index: 500;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    opacity: 0.7;
+    width: 45px;
+    transition: 0.3s ease;
+    -webkit-transition: 0.3s ease;
+}
+figure:hover .iconeVideo{
+    opacity: 1;
+    width: 30%;
+}
+
+/* ------------------------------------------------------- */
+/* ------------------------ FORM ------------------------ */
+/* ----------------------------------------------------- */
+form{
+    text-align: center;
+    border: solid 1px #CF8B3F;
+    border-radius: 5px;
+    padding: 50px 100px;
+    background-color: #161617;
+}
+form > div{
+    width: 300px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+input{
+    padding: 5px;
+    margin-left: 10px;
+    border-radius: 5px;
+    border: solid 2px #161617;
+}
+input:focus{
+    outline: none;
+    border: solid 2px #CF8B3F;
+}
+textarea{
+    width: 70%;
+    height: 100px;
+    padding: 5px;
+    border: solid 2px #161617;
+    border-radius: 10px;
+    resize: none;
+}
+textarea:focus{
+    outline: none;
+    border: solid 2px #CF8B3F;
+}
+input[type="submit"], input[type="button"]{
+    padding: 5px;
+    margin-left: 10px;
+    background-color: #222224;
+    color: #CF8B3F;
+    font-weight: bolder;
+    font-size: 1em;
+    border: solid 2px #CF8B3F;
+    border-radius: 10px;
+    cursor: pointer;
+}
+input[type="checkbox"]{
+    transform: scale(1.5);
+    margin: 10px;
+}
+button{
+    padding: 5px;
+    margin-left: 10px;
+    background-color: #222224;
+    color: #CF8B3F;
+    font-weight: bolder;
+    font-size: 1em;
+    border: solid 2px #CF8B3F;
+    border-radius: 10px;
+    cursor: pointer;
+}
+button:focus{
+    outline: none;
+}
+
+/* -------------------------------------------------------- */
+/* ------------------------ TABLE ------------------------ */
+/* ------------------------------------------------------ */
+table{
+    border-collapse: collapse;
+    width: 100%;
+}
+td{
+    border: solid 1.5px #CF8B3F;
+    padding: 15px;
+}
+tr:nth-child(2n + 1){
+    background-color: #161617;
+}
+
+/* -------------------------------------------------------- */
+/* ------------------------ ERROR ------------------------ */
+/* ------------------------------------------------------ */
+#msg{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+#msg p{
+    font-size: 1.5em;
+}
+#msg a, .msg a{
+    text-decoration: underline;
+}
+.textCenter{
+    text-align: center;
+}
+
+/* --------------------------------------------------------- */
+/* ------------------------ NAVBAR ------------------------ */
+/* ------------------------------------------------------- */
+#navbar{
+    background-color: #010605;
+}
+.adminNavbar{
+    background: linear-gradient(#010605 75%, #CF8B3F 150%);
+}
+#navbar > .container{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+#navbar > .container > div:first-child{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+}
+#navbar > .container > div:first-child > span:nth-child(1){ /*logo*/
+    height: 100%;
+    font-size: 1.5em;
+    margin-left: 10px;
+}
+#navbar ul{
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+#navbar li{
+    margin: 0 15px;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+#navbar i{
+    font-size: 1.2em;
+}
+#navbar img{
+    height: 100%;
+}
+.hrNavbar{
+    width: 20px;
+    height: 1px;
+    border:none;
+    background: linear-gradient(to right, #010605, #E0E7E6, #010605);
+    transform: rotate(90deg);
+}
+#navbar #pseudo{
+    cursor: pointer;
+}
+#navbar #pseudo i{
+    color: #CF8B3F;
+    margin-left: 15px;
+}
+/*menu*/
+#menuNavbar{
+    position: absolute;
+    top: 50px;
+    right: 0px;
+    z-index: 1000;
+    overflow: hidden;
+    height: 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#menuNavbar > div{
+    border: solid 1px #CF8B3F;
+    border-top: none;
+    border-radius: 10px;
+    width: 100%;
+    position: relative;
+    top: -400px;
+    transition: top 0.2s linear;
+    -webkit-transition: top 0.2s linear;
+    background: linear-gradient(180deg, #010605, #161617, #222224);
+}
+#menuNavbar ul{
+    flex-direction: column;
+    align-items: flex-end;
+    width: 100%;
+    font-size: 0.8em;
+}
+#menuNavbar li{
+    padding: 2px 0;
+    width: 100%;
+    text-align: right;
+}
+#menuNavbar a{
+    display: inline-block;
+    width: 100%;
+    color: white;
+}
+#menuNavbar i{
+    color: #CF8B3F;
+    margin-left: 15px;
+    font-size: 0.8em;
+}
+
+/* --------------------------------------------------------- */
+/* ------------------------ FOOTER ------------------------ */
+/* ------------------------------------------------------- */
+footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 20vh;
+    background-color: #161617;
+    padding: 20px 0px;
+}
+footer section{
+    width: 85%
+}
+footer section > div{
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+}
+footer article{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 30%;
+}
+footer ul{
+    list-style: none;
+}
+#contact ul{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+#linksList > div{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+}
+#linksList > div ul{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+#linksList > div li{
+    width: 50%;
+    margin-top: 10px;
+}
+#contact h3{
+    margin-bottom: 50px;
+}
+#contact ul li{
+    margin: 20px;
+}
+#contact i{
+    font-size: 2.5em;
+}
+.hrFooter{
+    align-self: center;
+    width: 10%;
+    height: 1px;
+    border: none;
+    background: linear-gradient(to right, #161617, #E0E7E6, #161617);
+    transform: rotate(90deg);
+}
+
+/*====================================================================================================================================
+                                                            medium desktops laptops
+====================================================================================================================================*/
+
+@media all and (min-width:992px) and (max-width:1200px){
+    .container{
+        max-width: 992px;
+    }
+    figure{
+        height: 250px;
+    }
+    button{
+        font-size: 0.8em;
+    }
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px){
+    body{
+        font-size: 1em;
+    }
+    figure{
+        height: 200px;
+    }
+    i{
+        font-size: 1.1em;
+    }
+    .container{
+        max-width: 768px;
+    }
+    .blockSchool > div:first-child > div{
+        height: 130px;
+    }
+
+    /*---------- modal ----------*/
+    #modal > div{
+        width: 150px;
+        height: 100px;
+        padding: 40px 70px;
+    }
+
+    /* ------------------------ NAVBAR ------------------------ */
+    #navbar > .container > div:first-child > span:nth-child(1){ /*logo*/
+        height: 75%;
+        margin: 0;
+    }
+    #navbar i {
+        font-size: 1em;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px){
+    body{
+        font-size: 0.9em;
+    }
+    figure{
+        height: 150px;
+    }
+    .container{
+        max-width: 600px;
+    }
+    .blockStyleOne{
+        padding : 30px 35px;
+    }
+    #blockSchools .blockSchool{
+        width: 30%;
+    }
+    .blockSchool > div:first-child > div{
+        height: 150px;
+    }
+
+    /*---------- modal ----------*/
+    #modal > div{
+        width: 150px;
+        height: 100px;
+        padding: 30px 60px;
+    }
+
+    /* ------------------------ NAVBAR ------------------------ */
+    #navbar > .container > div:first-child > span:nth-child(1){ /*logo*/
+        height: 60%;
+        margin: 0;
+    }
+    #navbar li {
+        margin: 0 10px;
+    }
+    #navbar i {
+        font-size: 0.9em;
+    }
+    #navbar #pseudo{
+        font-size: 1.1em;
+    }
+    #menuNavbar ul{
+        font-size: 1em;
+    }
+
+    /* ------------------------ FOOTER ------------------------ */
+    #linksList > div li{
+        text-align: center;
+        width: 100%;
+        font-size: 1.2em;
+    }
+    #contact i {
+        font-size: 2em;
+    }
+
+    /* ------------------------ FORM ------------------------ */
+    form{
+        padding: 30px 35px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px){
+    body{
+        font-size: 0.8em;
+    }
+    h1{
+        font-size: 1.6em;
+    }
+    figure{
+        height: 110px;
+    }
+    .container{
+        max-width: 90%;
+    }
+    .hideUnder600Width{
+        display: none!important;
+    }
+    .blockStyleOne{
+        padding : 20px 25px;
+    }
+    #blockSchools .blockSchool{
+        width: 30%;
+    }
+    .blockSchool > div:first-child > div{
+        height: 110px;
+    }
+
+    /*---------- modal ----------*/
+    #modal > div{
+        width: 90%;
+        height: auto;
+        padding: 20px;
+    }
+
+    /* ------------------------ TABLE ------------------------ */
+    th, td{
+        padding: 5px;
+    }
+    th *, td *{
+        word-wrap: break-word;
+        word-break: break-word;
+    }
+
+    /* ------------------------ NAVBAR ------------------------ */
+    #navbar > .container > div:first-child > span:nth-child(1){ /*logo*/
+        height: 50%;
+        margin: 0;
+    }
+    #navbar li {
+        margin: 5px 10px;
+    }
+    #navbar i {
+        font-size: 1em;
+    }
+    #navbar #pseudo{
+        font-size: 1em;
+    }
+    #menuNavbar{
+        right: 0!important;
+        left: 0;
+        width: 100%;
+    }
+    #menuNavbar ul{
+        font-size: 1em;
+    }
+    #menuNavbar li{
+        text-align: center;
+        margin: 10px 0;
+    }
+
+    /* ------------------------ FOOTER ------------------------ */
+    footer section > div{
+        flex-direction: column;
+    }
+    footer article{
+        width: 100%;
+    }
+    footer h3{
+        font-size: 1.3em;
+    }
+    .hrFooter{
+        transform: none;
+        width: 100%;
+        background: linear-gradient(to right, #161617, #FFC652, #161617);
+    }
+    #linksList > div li{
+        text-align: center;
+        width: 100%;
+        font-size: 1.2em;
+        margin-top: 5px;
+    }
+    footer article:nth-of-type(2) > p{
+        font-size: 1.3em;
+    }
+    #contact h3 {
+        margin: 1em 0;
+    }
+    #contact i {
+        font-size: 2.2em;
+    }
+
+    /* ------------------------ FORM ------------------------ */
+    form{
+        padding: 3%;
+    }
+}

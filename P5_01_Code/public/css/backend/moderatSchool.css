@@ -1,0 +1,129 @@
+#blockModeratSchool, #blockEditSchool{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 100px 0px;
+}
+#blockModeratSchool > article{
+    width: 100%;
+}
+#blockModeratSchool .blockSchool > div:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+}
+#blockModeratSchool .blockSchool > div:nth-child(2) > span{
+    text-align: left;
+    width: 100%;
+    padding: 20px 0;
+}
+/*--home moderat school--*/
+#homeModeratSchool{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+#homeModeratSchool > a{
+    border: solid 2px #161617;
+    border-radius: 5px;
+    width: 30%;
+}
+
+/*--add school--*/
+#formAddSchool{
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    height: 100%;
+    transition: transform 0.2s ease;
+    -webkit-transition: transform 0.2s ease;
+}
+#formAddSchool > div{
+    justify-content: center;
+    align-items: center;
+    min-width: 100%;
+}
+#formAddSchool > div:nth-of-type(2), #formAddSchool > div:nth-of-type(3){
+    display: none;
+}
+#formAddSchool > div > div > p{ /*block input text*/
+    display: flex;
+    justify-content: space-between;
+}
+#formAddSchool > div:first-of-type > div > p:last-of-type{
+    justify-content: center;
+}
+
+/*--moderat - edit school--*/
+#moderatSchool, #editSchool{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+/*modal*/
+#blockModeratSchool + #modal > form > div > p, #blockModeratSchool + #modal > form > div > div{
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+#blockModeratSchool + #modal > form > div > p:last-of-type{
+    display: block;
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px){
+    #blockModeratSchool{
+        padding: 40px;
+    }
+    #homeModeratSchool{
+        flex-direction: column;
+    }
+    #homeModeratSchool > a{
+        width: 100%;
+        margin-top: 20px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px){
+    #blockModeratSchool{
+        padding: 20px;
+    }
+    #homeModeratSchool{
+        flex-direction: column;
+    }
+    #homeModeratSchool > a{
+        width: 100%;
+        margin-top: 20px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px){
+    #blockModeratSchool{
+        padding: 10px;
+    }
+    #homeModeratSchool{
+        flex-direction: column;
+        font-size: 1.7em;
+    }
+    #homeModeratSchool > a{
+        width: 100%;
+        margin-top: 20px;
+    }
+    #homeModeratSchool > a > div{
+        padding: 20px 0;
+    }
+}

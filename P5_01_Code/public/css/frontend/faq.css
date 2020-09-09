@@ -1,0 +1,46 @@
+#blockFaq{
+    padding: 50px 0;
+}
+#blockFaq hr{
+    margin: 40px;
+}
+#blockFaq > article > div{
+    background-color: #161617;
+    padding: 10px;
+    transition: 0.3s linear;
+    -webkit-transition: 0.3s linear;
+}
+#summary h2{
+    background-color: #161617;
+    color: white;
+    margin: 10px 0;
+    padding: 15px 10px;
+    cursor: pointer;
+}
+#summary h2 > i{
+    margin-left: 20px;
+}
+#summary ul{
+    list-style-type: none;
+    display: none;
+    margin: 0 0 0 25px;
+    overflow: hidden;
+}
+#summary li{
+    margin: 15px 0;
+    padding: 10px;
+    border: solid 1px #CF8B3F;
+}
+#summary li > a{
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+}
+#summary + p{
+    margin-top: 50px;
+}
+#summary ~ p{
+    padding: 5px;
+    text-align: center;
+    font-size: 1.2em;
+}

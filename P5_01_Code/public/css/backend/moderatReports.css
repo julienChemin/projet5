@@ -1,0 +1,165 @@
+#moderatReports{
+    padding: 20px 0;
+}
+#moderatReports ul{
+    list-style-type: none;
+    display: flex;
+}
+#moderatReports > nav, #moderatReports > nav > ul{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#moderatReports > nav li{
+    border: solid 1px #CF8B3F;
+    border-radius: 10px;
+    padding: 60px;
+    margin: 50px 15px 15px 15px;
+    text-align: center;
+    font-size: 1.5em;
+    cursor: pointer;
+    transition: padding 0.2s linear, margin 0.1s linear;
+    -webkit-transition: padding 0.2s linear, margin 0.1s linear;
+}
+/*table reports*/
+#moderatReports > #content[class='moderatReportsFromElem']{
+    display: flex;
+}
+#moderatReports > #content{
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: 0.5s linear;
+    -webkit-transition: 0.5s linear;
+}
+#moderatReports tr, #moderatReports th, #moderatReports td{
+    padding: 5px;
+}
+#moderatReports th{
+    color: #CF8B3F;
+    background-color: #222224;
+}
+#moderatReports th:first-of-type{
+    width: 25%;
+}
+#moderatReports th:nth-of-type(2){
+    width: 65%;
+}
+#moderatReports th:last-of-type{
+    width: 10%;
+}
+#moderatReports tr > td:first-of-type, #moderatReports tr > td:last-of-type{
+    text-align: center;
+}
+#moderatReports tr > td:nth-of-type(2) > p:last-of-type{
+    text-align: right;
+}
+#moderatReports tr i{
+    cursor: pointer;
+    color: #CF8B3F;
+    font-size: 1em;
+    margin: 0 15px;
+}
+.moderatReportsFromElem > p:first-of-type{
+    text-decoration: underline;
+}
+#btnDeleteReportsFromElem{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+#btnDeleteReportsFromElem > p{
+    font-size: 1.4em;
+    color: #CF8B3F;
+    background-color: #161617;
+    border: solid 1px #CF8B3F;
+    border-radius: 15px;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 500;
+}
+#btnDeleteReportsFromElem i{
+    color: green;
+    background-color: #161617;
+    border: solid 1px #CF8B3F;
+    border-radius: 15px;
+    padding: 10px;
+    position: absolute;
+    right: 5px;
+    cursor: pointer;
+    transition: 0.2s ease-out;
+    -webkit-transition: 0.2s ease-out;
+}
+/*paging*/
+#paging{
+    transition: 0.5s linear;
+    -webkit-transition: 0.5s linear;
+}
+#paging li{
+    font-size: 1.2em;
+    margin-right: 10px;
+    padding: 5px;
+    cursor: pointer;
+}
+/*block display none if no content to display*/
+#noContent{
+    display: none;
+}
+
+/*====================================================================================================================================
+                                                            medium desktops laptops
+====================================================================================================================================*/
+
+@media all and (min-width:992px) and (max-width:1200px){
+    #moderatReports > nav li{
+        font-size: 1.3em;
+    }
+    #moderatReports tr > td:last-of-type > *{
+        margin-top: 15px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px){
+    #moderatReports > nav li{
+        padding: 40px;
+        font-size: 1.2em;
+    }
+    #moderatReports tr > td:last-of-type > *{
+        margin-top: 15px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px){
+    #moderatReports > nav li{
+        padding: 20px;
+        font-size: 1.1em;
+    }
+    #moderatReports tr > td:last-of-type > *{
+        margin-top: 15px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px){
+    #moderatReports > nav li{
+        margin: 50px 5px 5px 5px;
+        padding: 10px;
+        font-size: 1em;
+    }
+    #moderatReports tr > td:last-of-type > *{
+        margin-top: 15px;
+    }
+}

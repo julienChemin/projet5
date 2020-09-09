@@ -1,0 +1,665 @@
+#banner{
+    width: 100%;
+    min-height: 200px;
+    position: relative;
+}
+#banner img{
+    width: 100%;
+}
+#colorFade{
+    position: relative;
+    top: -100px;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(to bottom, transparent, #222224 70px);
+}
+#profile{
+    position: relative;
+    top: -150px;
+}
+#profile .inactiveSchool{
+    padding: 5px 0;
+    text-align: center;
+    border-radius: 5px;
+}
+#profile > header{
+    display: flex;
+    max-height: 500px;
+}
+#profile > header > div:first-child{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+#profile > header > div:nth-of-type(2){
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    padding: 30px;
+    width: 100%;
+}
+#profile > header span, #profile > header a{
+    font-size: 1.5em;
+    margin-top: 20px;
+    color: white;
+}
+#profile > header span{
+    font-size: 2em;
+}
+.widePicture{
+    width: 100%;
+    max-height: 100%;
+}
+.highPicture{
+    max-width: 100%;
+    height: 100%;
+}
+.smallPicture{
+    min-width: 170px;
+    width: 170px;
+    max-height: 170px;
+}
+.mediumPicture{
+    min-width: 300px;
+    width: 300px;
+    max-height: 300px;
+}
+.bigPicture{
+    min-width: 500px;
+    width: 500px;
+    max-height: 500px;
+}
+.elemStart{
+    align-self: flex-start;
+}
+.elemCenter{
+    align-self: center;
+}
+.elemEnd{
+    align-self: flex-end;
+}
+
+/*slide tab*/
+#blockTabs{
+    display: flex;
+}
+#profile nav{
+    display: flex;
+    justify-content: space-between;
+}
+#blockTabs li{
+    cursor: pointer;
+    list-style: none;
+    font-size: 1.3em;
+    padding: 6px 12px;
+    margin-left: 10px;
+    color: white;
+    transition: 0.2s linear;
+    -webkit-transition: 0.2s linear;
+}
+#blockTabs li:hover{
+    color: #CF8B3F;
+}
+#blockTabsEditProfile{
+    display: flex;
+    flex-direction: row-reverse;
+    margin: 0;
+}
+#blockTabsEditProfile li{
+    list-style: none;
+}
+.tabsStyleOne{
+    margin: 25px 0 0 25px;
+}
+.tabsStyleOne li{
+    border-radius: 10px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+#slideTab{
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    transition: 0.2s linear;
+    -webkit-transition: 0.2s linear;
+}
+#slideTab > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 100%;
+    height: min-content;
+    border-radius: 15px;
+    background-color: #161617;
+    padding: 50px 0;
+    position: relative;
+    left: 0%;
+}
+#slideTab > div > div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 95%;
+}
+.alreadyBan{
+    color: red!important;
+    border: solid 1px red!important;
+    cursor: default!important;
+}
+#tabProfile i, #tabNews i, #tabPublication i, #tabPrivatePublication i, #tabAbout i{
+    position: absolute;
+    left: 5px;
+    top: 5px;
+}
+.blockContentProfile, .blockContentNews, .blockContentAbout{
+    position: relative;
+    min-width: 30%;
+    border-radius: 15px;
+    margin: 15px 0;
+    padding: 0 10px;
+    word-wrap: break-word;
+    transition: 0.1s linear;
+    -webkit-transition: 0.1s linear;
+}
+.blockContentProfile:hover, .blockContentNews:hover, .blockContentAbout:hover{
+    background-color: #222224;
+}
+.blockContentProfile img, .blockContentNews img, .blockContentAbout img{
+    max-width: 100%!important;
+    height: 100%;
+}
+/*editing*/
+#blockProfile form{
+    display: none;
+    flex-wrap: wrap;
+    width: 100%;
+}
+#blockProfile form > div, #blockProfile form > p{
+    width: auto;
+    max-width: 49%;
+}
+#blockProfile form p{
+    height: 50%;
+}
+.iconeEdit{
+    z-index: 500;
+    cursor: pointer;
+    margin: 10px;
+    padding: 10px 10px;
+    border: solid 1px #161617;
+    border-radius: 20px;
+    color: #CF8B3F;
+    background-color: #161617;
+    transition: 0.2s linear;
+    -webkit-transition: 0.2s linear;
+}
+.iconeEdit:hover{
+    border: solid 1px #CF8B3F;
+}
+a[class="iconeEdit"]{
+    display: inline-block;
+}
+#tabPublication .iconeEdit, #tabPrivatePublication .iconeEdit{
+    display: inline-block!important;
+}
+#banner i{
+    position: absolute;
+    bottom: 100px;
+    left: 20px;
+}
+#profile > header > div:first-child i, #profile > header > div:nth-of-type(2) i{
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+.editable > .iconeEdit{
+    display: none;
+}
+.editing{
+    transition: 0.2s linear;
+    -webkit-transition: 0.2s linear;
+    background-color: #222224;
+}
+.editing:hover{
+    transform: scale(0.98);
+}
+.editing > .iconeEdit{
+    background-color: transparent;
+    border: none;
+}
+.editing:hover .iconeEdit{
+    background-color: #161617;
+    border: solid 1px #CF8B3F;
+}
+/*_________________________________*/
+/*------------ EDITING ------------*/
+/*_________________________________*/
+.contentMenuEdit{
+    display: none;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border : none;
+    padding: 0;
+}
+.contentMenuEdit p{
+    margin: 20px 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+/*------------ menu edit picture profile ------------*/
+#contentMenuEditProfilePicture hr:nth-of-type(1) + p{
+    text-align: left;
+}
+
+/*------------ menu edit text ------------*/
+#contentMenuEditText{
+    width: 50%;
+}
+#contentMenuEditText > div{
+    width: 90%;
+    margin: 0 5px;
+    flex-direction: row;
+    align-items: center;
+}
+#contentMenuEditText input[type="radio"]{
+    margin: 0;
+}
+#contentMenuEditText label{
+    height: 90%;
+    width: 30%;
+}
+#contentMenuEditText label img{
+    width: 100%;
+    max-height: 100%;
+}
+/*------------ edit profile content ------------*/
+#blockProfile + #modal form:last-of-type > div:nth-child(2){
+    width: 90%;
+}
+#blockProfile + #modal form:last-of-type, #blockProfile + #modal form:nth-child(-2){
+    display: none;
+}
+#contentMenuEditBlock{
+    flex-direction: row;
+}
+#contentMenuEditBlock > div{
+    margin: 5px;
+    padding: 5px;
+    border: solid 1px  #CF8B3F;
+    border-radius: 5px;
+}
+#contentMenuEditBlock > div:last-of-type{
+    border: none;
+}
+#contentMenuEditBlock > div:nth-of-type(2){
+    display: none;
+}
+#blockProfileListOrder, #blockNewsListOrder, #blockAboutListOrder{
+    display: none;
+}
+.blockTuto > p > i{
+    position: initial!important;
+    margin: 0 5px;
+}
+#blockToDelete{
+    flex-direction: row;
+    width: 100px;    
+}
+#blockToDelete i{
+    color: #CF8B3F;
+    border: solid 2px #CF8B3F;
+    padding: 2px 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#blockToDelete i:hover{
+    color: red;
+}
+.contentAloneInRow{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+#align{
+    align-self: center;
+    margin: 0;
+}
+.small{
+    width: 30%;
+}
+.medium{
+    width: 60%;
+}
+.big{
+    width: 99%;
+}
+/*modal*/
+#blockProfile + #modal{
+    z-index: 750;
+    flex-direction: column;
+}
+#blockProfile + #modal form{
+    padding: 5px;
+    min-width: 50%;
+    max-width: 90%;
+    border: solid 1px  #CF8B3F;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+#blockProfile + #modal form > div{
+    width: auto;
+}
+#warningBeforeDelete{
+    display: none;
+}
+.modalButtons{
+    margin-top: 10px;
+    flex-direction: row;
+    justify-content: center;
+}
+
+/*------- publication -------*/
+#tabPublication > div:first-of-type, #tabPrivatePublication > div:first-of-type{
+    justify-content: flex-start;
+}
+.post, .folder{
+    width: 33.3%;
+    transition: background 0.5s ease;
+    -webkit-transition: background 0.5s ease;
+}
+.folder{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    border-radius: 10px;
+}
+.folder > .post, .folder > .folder{
+    width: 0%;
+}
+.folder figure{
+    cursor: pointer;
+}
+.folder > div:first-of-type > figure > div{
+    width: 100%;
+    height:100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.post figure, .folder figure{
+    transition: 0.2s linear;
+    -webkit-transition: 0.2s linear;
+}
+.post:hover figure, .folder:hover figure{
+    background-color: #222224;
+    border-radius: 15px;
+}
+#tabPublication .post > figure > a, #tabPrivatePublication .post > figure > a{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+#tabPublication .folder > figure > div, #tabPrivatePublication .folder > figure > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.thumbnailFolder{
+    z-index: 500;
+    position: absolute;
+    bottom: 15%;
+    border-radius: 5px;
+    max-width: 230px;
+    max-height: 55%;
+}
+.folderOpen > .fullWidth .thumbnailFolder{
+    max-width: 300px;
+}
+.folderOpen .thumbnailFolder + img{
+    width: auto;
+}
+.thumbnailFolder + img{
+    height: 90%;
+    width: 90%;
+}
+.previewTitle{
+    z-index: 500;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    font-size: 1.2em;
+    color: #CF8B3F;
+    background-color: #161617;
+    opacity: 0.85;
+    text-align: center;
+    transition: 0.5s ease;
+    -webkit-transition: 0.5s ease;
+}
+a:hover > .previewTitle, div:hover > .previewTitle{
+    padding :5px 0;
+    background-color: transparent;
+    color: white;
+}
+.post img[src='public/images/fileOther.png']{
+    max-height: 75%;
+}
+
+
+/*====================================================================================================================================
+                                                            medium desktops laptops
+====================================================================================================================================*/
+
+@media all and (min-width:992px) and (max-width:1200px){
+    .smallPicture{
+        min-width: 170px;
+        width: 170px;
+        max-height: 170px;
+    }
+    .mediumPicture{
+        min-width: 300px;
+        width: 300px;
+        max-height: 300px;
+    }
+    .bigPicture{
+        min-width: 400px;
+        width: 400px;
+        max-height: 400px;
+    }
+    .thumbnailFolder{
+        max-width: 80%;
+    }
+    .folderOpen > .fullWidth .thumbnailFolder {
+        max-width: 250px;
+    }
+    #contentMenuEditBlock{
+        width: 100%;
+    }
+    #contentMenuEditBlock p{
+        margin: 0 0 2px 0;
+    }
+    #blockProfile + #modal form{
+        padding: 2px 5px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px){
+    .smallPicture{
+        min-width: 150px;
+        width: 150px;
+        max-height: 150px;
+    }
+    .mediumPicture{
+        min-width: 200px;
+        width: 200px;
+        max-height: 200px;
+    }
+    .bigPicture{
+        min-width: 300px;
+        width: 300px;
+        max-height: 300px;
+    }
+    .blockContentProfile, .blockContentNews, .blockContentAbout{
+        border-radius: 10px;
+        margin: 10px 0;
+        padding: 0 5px;
+    }
+    .thumbnailFolder{
+        max-width: 80%;
+    }
+    .folderOpen > .fullWidth .thumbnailFolder {
+        max-width: 210px;
+    }
+    
+    /*------------ menu edit ------------*/
+    #contentMenuEditText{
+        width: 70%;
+    }
+    #contentMenuEditBlock{
+        width: 100%;
+    }
+    #contentMenuEditBlock p{
+        margin: 0 0 2px 0;
+    }
+    #blockProfile + #modal form{
+        padding: 2px 5px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px){
+    .smallPicture{
+        min-width: 120px;
+        width: 120px;
+        max-height: 120px;
+    }
+    .mediumPicture{
+        min-width: 150px;
+        width: 150px;
+        max-height: 150px;
+    }
+    .bigPicture{
+        min-width: 200px;
+        width: 200px;
+        max-height: 200px;
+    }
+    .blockContentProfile, .blockContentNews, .blockContentAbout{
+        border-radius: 10px;
+        margin: 10px 0;
+        padding: 0 5px;
+    }
+    .thumbnailFolder{
+        max-width: 80%;
+    }
+    .folderOpen > .fullWidth .thumbnailFolder {
+        max-width: 160px;
+    }
+
+    /*------------ menu edit ------------*/
+    #contentMenuEditText{
+        width: 70%;
+    }
+    #contentMenuEditBlock{
+        width: 100%;
+    }
+    #contentMenuEditBlock p{
+        margin: 0 0 2px 0;
+    }
+    #blockProfile + #modal form{
+        padding: 2px 5px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px){
+    .smallPicture{
+        min-width: 100px;
+        width: 100px;
+        max-height: 100px;
+    }
+    .mediumPicture{
+        min-width: 120px;
+        width: 120px;
+        max-height: 120px;
+    }
+    .bigPicture{
+        min-width: 150px;
+        width: 150px;
+        max-height: 150px;
+    }
+    .blockContentProfile, .blockContentNews, .blockContentAbout{
+        border-radius: 10px;
+        margin: 10px 0;
+        padding: 0;
+    }
+    #blockProfile + #modal form{
+        padding: 2px 5px;
+    }
+    .thumbnailFolder{
+        max-width: 80%;
+    }
+    .folderOpen > .fullWidth .thumbnailFolder {
+        max-width: 110px;
+    }
+
+    /*------------ menu edit ------------*/
+    #contentMenuEditText{
+        width: 90%;
+    }
+    .contentMenuEdit p, #contentMenuEditText p{
+        margin: 0;
+    }
+    #profile > header > div:nth-of-type(2){
+        font-size: 0.7em;
+    }
+    #contentMenuEditBlock{
+        width: 100%;
+    }
+    #contentMenuEditBlock p{
+        margin: 0 0 2px 0;
+    }
+
+    /*tabs*/
+    .tabsStyleOne{
+        margin: 5px 0;
+    }
+    #blockTabs li{
+        margin-left: 0;
+        padding: 6px 3px;
+        font-size: 1em;
+    }
+
+    /*post / folder*/
+    .post:hover figure, .folder:hover figure {
+        border-radius: 5px;
+    }
+
+    /* modal form tiny mce*/
+    #blockProfile + #modal form:last-of-type{
+        width: 90%!important;
+    }
+}

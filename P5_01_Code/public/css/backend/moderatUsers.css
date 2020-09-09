@@ -1,0 +1,220 @@
+#blockModeratUsers{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 0px;
+}
+#moderatUsers{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+}
+#listAction{
+    padding: 5px;
+}
+#listAction ul{
+    list-style-type: none;
+}
+#listAction li{
+    margin: 15px 0;
+}
+#listAction i{
+    margin-right: 15px;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2){
+    flex-wrap: wrap;
+}
+#moderatUsers table{
+    margin-top: 20px;
+}
+#moderatUsers th{
+    color: #CF8B3F;
+}
+#moderatUsers caption{
+    border: solid 2px #161617;
+    border-radius: 5px;
+    padding: 20px 0px;
+    font-size: 1.5em;
+    color: #CF8B3F;
+}
+/*table active - inactive users*/
+#moderatUsers .blockSchool > div:nth-of-type(2) > table th:first-child{
+    border-right: solid 1px #CF8B3F;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2) > table th:nth-child(2){
+    border-right: solid 1px #CF8B3F;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2) > table th:nth-child(3){
+    border-right: solid 1px #CF8B3F;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2) > table th:nth-child(4){
+    border-right: solid 1px #CF8B3F;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2) > table td:first-child{
+    width: 40%;
+    color: white;
+    font-weight: normal;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2) > table td:nth-child(2){
+    width: 40%;
+}
+#moderatUsers .blockSchool > div:nth-of-type(2) > table td:nth-child(3){
+    width: 20%;
+}
+.btnEditGroup{
+    cursor: pointer;
+    color: #CF8B3F;
+}
+.listEditGroup{
+    display: none;
+}
+/*form add group*/
+.formAddGroup{
+    padding: 0;
+    transition: 0.2s linear;
+    -webkit-transition: 0.2s linear;
+}
+.formAddGroup > p{
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+.formAddGroup > div:first-of-type{
+    height: 0px;
+    width: 100%;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s linear;
+    -webkit-transition: 0.2s linear;
+}
+.formAddGroup > div:last-of-type{
+    display: none;
+    width: 100%;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: 0.2s linear;
+    -webkit-transition: 0.2s linear;
+}
+.formAddGroup i[class~='fa-times']{
+    margin: 5px;
+}
+/*list group*/
+.listGroup{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.listGroup li{
+    width: 49%;
+    text-align: center;
+    list-style-type: none;
+    font-size: 1.2em;
+    color: #CF8B3F;
+}
+.listGroup li i{
+    border: solid 1px #CF8B3F;
+    border-radius: 10px;
+    transform: scale(1);
+    padding: 4px 6px;
+}
+.confirmDeleteGroup{
+    display: none;
+    margin-left: 5px;
+    border: solid 2px #161617;
+    border-radius: 5px;
+    color: red;
+    cursor: pointer;
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px){
+    #blockModeratUsers{
+        padding: 40px;
+    }
+    #moderatUsers .blockSchool td > i{
+        font-size: 0.9em;
+        margin: 0 3px;
+    }
+    #moderatUsers .blockSchool td{
+        padding: 10px;
+    }
+    #moderatUsers #modal > div{
+        width: 50%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px){
+    #blockModeratUsers{
+        padding: 20px;
+    }
+    #moderatUsers .blockSchool td > i{
+        font-size: 1.2em;
+        margin: 5px 0;
+    }
+    #moderatUsers .blockSchool td{
+        padding: 5px;
+    }
+    #moderatUsers .blockSchool > div:nth-of-type(2) > table td:first-child{
+        width: 45%;
+    }
+    #moderatUsers .blockSchool > div:nth-of-type(2) > table td:nth-child(2){
+        width: 45%;
+    }
+    #moderatUsers .blockSchool > div:nth-of-type(2) > table td:nth-child(3){
+        width: 10%;
+    }
+    #moderatUsers .blockSchool > div:nth-of-type(2) > table td:nth-child(3) > i{
+        width: 100%;
+    }
+    #moderatUsers #modal > div{
+        width: 50%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px){
+    #blockModeratUsers{
+        padding: 10px;
+    }
+    #moderatUsers .blockSchool th{
+        font-size: 0.8em;
+    }
+    #moderatUsers .blockSchool td{
+        padding: 0;
+    }
+    #moderatUsers .blockSchool td > i{
+        font-size: 1.2em;
+        margin: 15px 0;
+    }
+    #moderatUsers .blockSchool > div:nth-of-type(2) > table td:first-child{
+        width: 45%;
+    }
+    #moderatUsers .blockSchool > div:nth-of-type(2) > table td:nth-child(2){
+        width: 45%;
+    }
+    #moderatUsers .blockSchool > div:nth-of-type(2) > table td:nth-child(3){
+        width: 10%;
+    }
+    #moderatUsers .blockSchool > div:nth-of-type(2) > table td:nth-child(3) > i{
+        width: 100%;
+    }
+}

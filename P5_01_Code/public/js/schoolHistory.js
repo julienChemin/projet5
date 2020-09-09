@@ -63,10 +63,12 @@ function getHistory(school, content, offset, sortBy = null, sortValue = null, se
 		}
 	}
 	ajaxGet(url, function(response){
-		if (offset === 0) {
-			content.innerHTML = '';
+		if (response !== 'false') {
+			if (offset === 0) {
+				content.innerHTML = '';
+			}
+			fillContent(JSON.parse(response), content);
 		}
-		fillContent(JSON.parse(response), content);
 	});
 }
 function toggleClass(elem, classToToggle) {
@@ -409,7 +411,6 @@ buttonShowMore.addEventListener('click', function(){
 				getHistory(activeSchool, content, offset, sortBy.value, '2020-01-01', secondDate);
 			} else if (firstDate) {
 				let date = getFormatedDate();
-				console.log(category);
 				getHistory(activeSchool, content, offset, sortBy.value, firstDate, date);
 			} else {
 				getHistory(activeSchool, content, offset);

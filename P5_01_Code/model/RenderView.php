@@ -4,14 +4,14 @@ namespace Chemin\ArtSchool\Model;
 
 class RenderView
 {
-	public static function render(string $template, string $view, array $data = null)
-	{
-		ob_start();
+    public static function render(string $template, string $view, array $data = null)
+    {
+        ob_start();
 
-		require('view/' . $view);
+        require 'view/' . $view;
 
-		$content = ob_get_clean();
+        $content = ob_get_clean();
 
-		require('view/' . $template);
-	}	
+        require 'view/' . $template;
+    }    
 }

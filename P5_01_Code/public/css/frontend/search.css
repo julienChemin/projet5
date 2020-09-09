@@ -1,0 +1,461 @@
+/* ------------------------------------------------------ */
+/* ------------------------ SEARCH ---------------------- */
+/* ------------------------------------------------------ */
+#searchView{
+    padding: 20px 0;
+}
+#homeSearch, #alsoSee{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 40px 0;
+}
+#searchView > h2{
+    margin-top: 50px;
+}
+#homeSearch > div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+    height: 200px;
+    border-radius: 5px;
+    background-color: #161617;
+}
+#alsoSee > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45%;
+    border-radius: 5px;
+    background-color: #161617;
+}
+#searchView h3{
+    color: #CF8B3F;
+}
+#searchView h2{
+    font-size: 1.2em;
+}
+#searchByKeyWord h2 + form{
+    margin-top: 30px;
+}
+#formSearchByKeyWord{
+    padding: 10px;
+}
+#frequentlySearched > div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+}
+#frequentlySearched > div > a{
+    margin: 7px 0;
+    padding: 3px 0;
+    border: solid 1px #CF8B3F;
+    border-radius: 5px;
+    text-align: center;
+}
+#advancedSearch > p:last-of-type{
+    border: solid 1px #CF8B3F;
+    border-radius: 5px;
+    padding: 4px;
+    font-weight: bold;
+    background-color: #222224;
+}
+/*result of search by key word*/
+.blockResult{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.blockResult a{
+    width: 100%;
+    position: relative;
+}
+.figureProfilePicture{
+    height: 100%;
+    margin : 0;
+    background-color: #161617;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+.figureProfilePicture > div{
+    width: 90%;
+    height: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.figureProfilePicture img{
+    height: auto;
+    max-height: 100%;
+    width: auto;
+    max-width: 100%;
+}
+.figureProfilePicture figcaption{
+    font-size: 1.4em;
+    word-break: break-word;
+    padding: 5px;
+}
+.blockResultUser > div, .blockResultSchool > div, .blockResultPost > div{
+    width: 19.5%;
+    height: 300px;
+    margin: 20px 2.5%;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.blockResultSchool > div{
+    width: 44.8%;
+}
+.blockResultSchool .figureProfilePicture{
+    flex-direction: row;
+}
+.blockResultSchool .figureProfilePicture > div{
+    width: 40%;
+}
+.blockResultTag > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 50px;
+    height: 80px;
+}
+#searchView .tag{
+    background-color: #161617;
+}
+/*result for quick search*/
+#resultQuickSearch{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+#resultQuickSearch figure{
+    width: 20%;
+    margin: 0 2.5%;
+    position: relative;
+}
+#pagingQuickSearch ol{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#pagingQuickSearch li{
+    margin: 20px 5px;
+    list-style-type: none;
+}
+.actualPage{
+    font-weight: bolder;
+    font-size: 1.5em;
+}
+
+/* ----------------------------------------------------------------- */
+/* ------------------------ ADVANCED SEARCH ------------------------ */
+/* ----------------------------------------------------------------- */
+#advancedSearchView{
+    padding: 100px 0;
+}
+#advancedSearchView h1, #advancedSearchView h2{
+    padding-bottom: 20px;
+}
+#advancedSearchView input[type="radio"]{
+    display: none;
+}
+#advancedSearchView input[type="radio"] + label{
+    border-radius: 5px;
+    background-color: #222224;
+    padding: 10px;
+    margin: 15px;
+    font-size: 1.5em;
+    overflow: hidden;
+    word-break: break-word;
+    cursor: pointer;
+}
+#advancedSearchView input[type="radio"] + label:hover{
+    color: #CF8B3F!important;
+}
+#formAdvancedSearch{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+#formAdvancedSearch #blockFilterBySchool i[class~="fa-times"]{
+    font-size: 2em;
+}
+#formAdvancedSearch > div{
+    padding: 50px 0;
+    margin-bottom: 20px;
+}
+#formAdvancedSearch > div > div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+#blockFilterBySchool input[type="radio"] + label{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 15%;
+    height: 200px;
+    padding: 5px;
+}
+#blockFilterBySchool input[type="radio"] + label > div{
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#blockFilterBySchool input[type="radio"] + label img{
+    max-height: 80%;
+    max-width: 80%;
+}
+#formAdvancedSearch #blockFilterBySchool > div{
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+#blockSortBy > div{
+    justify-content: space-around;
+}
+#blockSortWithTag > div{
+    display: flex;
+    flex-direction: row;
+}
+#blockSortWithTag > div > div:nth-of-type(1), #blockSortWithTag > #selectedTag{
+    width: 49%;
+}
+#blockFilterAdvancedSearch{
+    margin-bottom: 20px;
+}
+#blockFilterAdvancedSearch .tag{
+    cursor: default;
+}
+#pagingQuickSearch li{
+    cursor: pointer;
+    color: #CF8B3F;
+}
+
+/* -------------------------------------------------------------- */
+/* ------------------------ LIST SCHOOLS ------------------------ */
+/* -------------------------------------------------------------- */
+#listSchoolsView h1, #listSchoolsView h2{
+    transition: 0.1s linear;
+    -webkit-transition: 0.1s linear;
+}
+#schoolInformation{
+    display: none;
+}
+#linkSchoolProfile{
+    font-size: 1.3em;
+    text-align: right;
+}
+#adminSection, #moderatorSection, #studentSection{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 100px;
+}
+
+/* ----------------------------------------------------------- */
+/* ------------------------ LIST TAGS ------------------------ */
+/* ----------------------------------------------------------- */
+#listTagsView{
+    padding: 100px 0;
+}
+#listTagsView .blockResultTag{
+    background-color: #161617;
+    padding: 20px 0;
+    border-radius: 5px;
+}
+#listTagsView .blockResultTag a{
+    width: auto;
+}
+.tagsCategory{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.tagsCategory h2{
+    padding: 40px 0;
+}
+
+/*====================================================================================================================================
+                                                            medium desktops laptops
+====================================================================================================================================*/
+
+@media all and (min-width:992px) and (max-width:1200px){
+    #homeSearch > div h2{
+        margin-bottom: 0;
+    }
+    #formSearchByKeyWord{
+        width: 80%;
+        align-self: center;
+    }
+    #formSearchByKeyWord input{
+        margin: 10px 0;
+    }
+
+    /*------------ searchByKeyWord result ------------*/
+    #searchByKeyWord{
+        display: flex;
+        flex-direction: column;
+    }
+
+    .blockResultUser > div, .blockResultSchool > div, .blockResultPost > div{
+        height: 250px;
+        font-size: 0.9em;
+    }
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px){
+    #homeSearch > div h2{
+        margin-bottom: 0;
+    }
+    #formSearchByKeyWord{
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        align-self: center;
+    }
+    #formSearchByKeyWord input{
+        margin: 10px 0;
+        width: 50%;
+    }
+    #advancedSearch p{
+        max-width: 90%;
+    }
+
+    /*------------ searchByKeyWord result ------------*/
+    #searchByKeyWord{
+        display: flex;
+        flex-direction: column;
+    }
+    .blockResultSchool > div{
+        height: 200px;
+        font-size: 0.8em;
+    }
+    .blockResultUser > div, .blockResultPost > div{
+        width: 28%;
+        height: 200px;
+        font-size: 0.8em;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px){
+    #homeSearch{
+        flex-direction: column;
+    }
+    #homeSearch > div{
+        width: 100%;
+        margin-top: 20px;
+        font-size: 1.2em;
+    }
+    #homeSearch > div h2{
+        margin-bottom: 0;
+    }
+    #formSearchByKeyWord input{
+        margin: 10px 0;
+    }
+
+    /*------------ searchByKeyWord result ------------*/
+    #searchByKeyWord{
+        display: flex;
+        flex-direction: column;
+    }
+    .blockResultSchool .figureProfilePicture {
+        flex-direction: column;
+    }
+    .blockResultSchool .figureProfilePicture > div{
+        width: auto;
+        max-width: 90%;
+    }
+    .blockResultSchool > div{
+        height: 250px;
+        font-size: 0.8em;
+    }
+    .blockResultUser > div, .blockResultPost > div{
+        width: 28%;
+        height: 200px;
+        font-size: 0.8em;
+    }
+    .blockResultTag > div {
+        margin-right: 40px;
+    }
+    #searchView .tag {
+        font-size: 1.2em;
+    }
+
+    /*------------ search sort by ------------*/
+    #resultQuickSearch figure{
+        width: 28%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px){
+    #homeSearch{
+        flex-direction: column;
+    }
+    #homeSearch > div{
+        width: 100%;
+        margin-top: 20px;
+        font-size: 1.3em;
+    }
+    #homeSearch > div h2{
+        margin-bottom: 0;
+    }
+    #formSearchByKeyWord input{
+        margin: 10px 0;
+    }
+    #alsoSee p{
+        max-width: 90%;
+        font-size: 1.2em;
+    }
+
+    /*------------ searchByKeyWord result ------------*/
+    .blockResultSchool .figureProfilePicture {
+        flex-direction: column;
+    }
+    .blockResultSchool .figureProfilePicture > div{
+        width: auto;
+        max-width: 90%;
+    }
+    .blockResultSchool > div{
+        height: 220px;
+    }
+    .blockResultUser > div, .blockResultPost > div{
+        width: 45%;
+        height: 250px;
+    }
+    .blockResultTag > div {
+        margin-right: 30px;
+    }
+    #searchView .tag {
+        font-size: 1.2em;
+    }
+
+    /*------------ search sort by ------------*/
+    #resultQuickSearch figure{
+        width: 28%;
+    }
+}

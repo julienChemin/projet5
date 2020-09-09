@@ -1,0 +1,5 @@
+new stuff
+    - splitting css for each view
+    - compatibility and responsive
+fixed issues
+    -
