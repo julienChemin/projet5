@@ -1,12 +1,12 @@
 <?php
 
-namespace Chemin\ArtSchool\Model;
+namespace Chemin\ArtSchools\Model;
 
-use Chemin\ArtSchool\Model\Database;
+use Chemin\ArtSchools\Model\Database;
 
 class ProfileContentManager extends AbstractManager
 {
-    public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\ProfileContent';
+    public static $OBJECT_TYPE = 'Chemin\ArtSchools\Model\ProfileContent';
     public static $TABLE_NAME = 'as_profile_content';
     public static $TABLE_PK = 'id';
     public static $TABLE_CHAMPS ='id, userId, schoolId, tab, size, contentOrder, align, content';

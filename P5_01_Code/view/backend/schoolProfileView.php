@@ -6,7 +6,7 @@
     <div id="banner" class="editable">
         <?php
         $data['school']->getNoBanner() ? $classForBanner = 'hide' : $classForBanner = "";
-        echo '<img class="' . $classForBanner . '" src="' . $data['school']->getProfileBanner() . '" alt="banner picture">';
+        echo '<img class="' . $classForBanner . '" src="' . $data['school']->getProfileBanner() . '" alt="Bannière">';
         echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la bannière"></i>';
         ?>
     </div>
@@ -14,7 +14,7 @@
     <article id="profile" class="container">
         <header>
             <div class="<?=$data['school']->getProfilePictureSize()?> editable">
-                <img src="<?=$data['school']->getProfilePicture()?>" alt="profile picture" class="<?=$data['school']->getProfilePictureOrientation()?>">
+                <img src="<?=$data['school']->getProfilePicture()?>" alt="Photo de profil" class="<?=$data['school']->getProfilePictureOrientation()?>">
                 <i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la photo de profil"></i>
             </div>
             <div class="<?=$data['school']->getProfileTextBlock()?> editable">
@@ -168,8 +168,8 @@
         </p>
         <p>- ou -</p>
         <p>
-            <label for="dlBanner">Télécharger une image (max : 2Mo) : </label>
-            <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+            <label for="dlBanner">Télécharger une image (max : 5Mo) : </label>
+            <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
             <input type="file" name="dlBanner" id="dlBanner">
         </p>
         <p>- ou -</p>
@@ -195,8 +195,8 @@
         </p>
         <p>- ou -</p>
         <p>
-            <label for="dlPicture">Télécharger une image (max : 2Mo): </label>
-            <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+            <label for="dlPicture">Télécharger une image (max : 5Mo): </label>
+            <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
             <input type="file" name="dlPicture" id="dlPicture">
         </p>
         <hr>
@@ -241,38 +241,39 @@
             <input type="radio" name="blockTextPosition" id="blockTextTop"
             value="elemStart" <?=$data['school']->getProfileTextBlock() === 'elemStart' ? 'checked' : 'unchecked'?>>
             <label for="blockTextTop">
-                <img src="public/images/blockTextTop.jpg">
+                <img src="public/images/blockTextTop.jpg" title="Texte aligné en haut" alt="Texte aligné en haut">
             </label>
 
             <input type="radio" name="blockTextPosition" id="blockTextCenter"
             value="elemCenter" <?=$data['school']->getProfileTextBlock() === 'elemCenter' ? 'checked' : 'unchecked'?>>
             <label for="blockTextCenter">
-                <img src="public/images/blockTextCenter.jpg">
+                <img src="public/images/blockTextCenter.jpg" title="Texte centré verticalement" alt="Texte centré verticalement">
             </label>
         
             <input type="radio" name="blockTextPosition" id="blockTextBottom"
             value="elemEnd" <?=$data['school']->getProfileTextBlock() === 'elemEnd' ? 'checked' : 'unchecked'?>>
             <label for="blockTextBottom">
-                <img src="public/images/blockTextBottom.jpg">
+                <img src="public/images/blockTextBottom.jpg" title="Texte aligné en bas" alt="Texte aligné en bas">
             </label>
         </div>
+        <hr>
         <div>
             <input type="radio" name="schoolPosition" id="schoolLeft"
             value="elemStart" <?=$data['school']->getProfileTextSchool() === 'elemStart' ? 'checked' : 'unchecked'?>>
             <label for="schoolLeft">
-                <img src="public/images/schoolLeft.jpg">
+                <img src="public/images/schoolLeft.jpg" title="École aligné à gauche" alt="École aligné à gauche">
             </label>
 
             <input type="radio" name="schoolPosition" id="schoolCenter"
             value="elemCenter" <?=$data['school']->getProfileTextSchool() === 'elemCenter' ? 'checked' : 'unchecked'?>>
             <label for="schoolCenter">
-                <img src="public/images/schoolCenter.jpg">
+                <img src="public/images/schoolCenter.jpg" title="École centré" alt="École centré">
             </label>
         
             <input type="radio" name="schoolPosition" id="schoolRight"
             value="elemEnd" <?=$data['school']->getProfileTextSchool() === 'elemEnd' ? 'checked' : 'unchecked'?>>
             <label for="schoolRight">
-                <img src="public/images/schoolRight.jpg">
+                <img src="public/images/schoolRight.jpg" title="École aligné à droite" alt="École aligné à droite">
             </label>
         </div>
         <hr>

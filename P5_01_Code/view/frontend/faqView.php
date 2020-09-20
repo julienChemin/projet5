@@ -33,9 +33,15 @@
         vous pouvez rejoindre le <a href="https://discord.gg/uDfwPHH">discord</a> 
         Art-School pour poser votre question directement à la communauté ou à l'équipe d'Art-School
     </p>
-    <p>
-        Si vous rencontrez un problème avec le site, vous pouvez le signaler <a href="index.php?action=report&amp;elem=other">en cliquant ici</a>
-    </p>
+    <?php
+    if (!empty($_SESSION) && isset($_SESSION['pseudo'])) {
+        ?>
+        <p>
+            Si vous rencontrez un problème avec le site, vous pouvez le signaler <a href="index.php?action=report&amp;elem=other">en cliquant ici</a>
+        </p>
+        <?php
+    }
+    ?>
     <hr>
     <?php
     if ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {

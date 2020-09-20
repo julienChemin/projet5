@@ -12,11 +12,11 @@
         <div id="blockUploadType">
             <figure id="btnAddFolder">
                 <figcaption>Dossier</figcaption>
-                <img src="public/images/folder.png">
+                <img src="public/images/folder.png" title="Publier un dossier" alt="Publier un dossier">
             </figure>
             <figure id="btnAddFile">
                 <figcaption>Fichier</figcaption>
-                <img src="public/images/file.png">
+                <img src="public/images/file.png" title="Publier un fichier" alt="Publier un fichier">
             </figure>
         </div>
         <div id="blockAddFile">
@@ -26,14 +26,14 @@
                     <input type="radio" name="fileType" id="typeImage" value="image">
                     <label for="typeImage">
                         <figcaption>Images</figcaption>
-                        <img src="public/images/fileImage.png">
+                        <img src="public/images/fileImage.png" title="Publier une image" alt="Publier une image">
                     </label>
                 </figure>
                 <figure>
                     <input type="radio" name="fileType" id="typeVideo" value="video">
                     <label for="typeVideo">
                         <figcaption>Vidéos</figcaption>
-                        <img src="public/images/fileVideo.png">
+                        <img src="public/images/fileVideo.png" title="Publier une vidéo" alt="Publier une vidéo">
                     </label>
                 </figure>
             </div>
@@ -48,11 +48,11 @@
             <div>
                 <div>
                     <label for="uploadFile">(max : 5Mo)</label>
-                    <input type="hidden" name="MAX_FILE_SIZE" value="5000000">
+                    <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
                     <input type="file" name="uploadFile" id="uploadFile">
                 </div>
                 <figure id="preview">
-                    <img src="" title="preview">
+                    <img src="" title="preview" alt ="Aperçu">
                 </figure>
             </div>
         </div>

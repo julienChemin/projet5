@@ -14,7 +14,7 @@ if (empty($_POST)) {
                     if ($school->getName() !== NO_SCHOOL) {
                         echo '<input type="radio" name="schoolFilter" id="schoolFilter' . $i .  '" value="' . $school->getName() .  '">';
                         echo '<label for="schoolFilter' . $i .  '">';
-                        echo '<div><img src="' . $school->getLogo() . '"></div>' . $school->getName();
+                        echo '<div><img src="' . $school->getLogo() . '" alt="Logo de l\'établissement"></div>' . $school->getName();
                         echo '</label>';
                     }
                 }
@@ -96,11 +96,11 @@ if (empty($_POST)) {
                         break;
                 }
             } elseif ($post->getFileType() === 'video') {
-                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
             }
             ?>
             <a href="index.php?action=post&id=<?=$post->getId()?>">
-                <img src="<?=$post->getFilePath()?>">
+                <img src="<?=$post->getFilePath()?>" alt="Aperçu de la publication">
             </a>
             <?php
             echo '</figure>';

@@ -3,7 +3,7 @@
         <div>
             <span>
                 <a href="index.php">
-                    <img src="public/images/banner.png">
+                    <img src="public/images/banner.png" alt="Bannière Art-Schools">
                 </a>
             </span>
             <nav>

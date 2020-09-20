@@ -58,6 +58,7 @@ function insertUser(user, block)
     let elemDivOnFigure = document.createElement('div');
     let elemImg = document.createElement('img');
     elemImg.src = user['profilePicture'];
+    elemImg.alt = 'Photo de profil';
     elemDivOnFigure.appendChild(elemImg);
     elemFigure.appendChild(elemDivOnFigure);
     let elemFigCaption = document.createElement('figcaption');

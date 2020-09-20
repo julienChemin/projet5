@@ -64,7 +64,7 @@
                                 <a href="index.php?action=schoolProfile&school=<?=$result[$i]->getName()?>">
                                     <figure class="figureProfilePicture fullWidth">
                                         <div>
-                                            <img src="<?=$result[$i]->getLogo()?>">
+                                            <img src="<?=$result[$i]->getLogo()?>" alt="Logo de l'établissement">
                                         </div>
                                         <figcaption>
                                             <p><?=$result[$i]->getName()?></p>
@@ -93,7 +93,7 @@
                                 <a href="index.php?action=userProfile&userId=<?=$result[$i]->getId()?>">
                                     <figure class="figureProfilePicture fullWidth">
                                         <div>
-                                            <img src="<?=$result[$i]->getProfilePicture()?>">
+                                            <img src="<?=$result[$i]->getProfilePicture()?>" alt="Photo de profil">
                                         </div>
                                         <figcaption>
                                             <p><?=$result[$i]->getName()?></p>
@@ -128,13 +128,13 @@
                                             break;
                                     }
                                 } elseif ($result[$i]->getFileType() === 'video') {
-                                    echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                                    echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                                 }
                                 echo '<figure class="figureProfilePicture fullWidth">';
                                     echo '<figcaption>';
                                         echo '<p>' . $result[$i]->getTitle() . '</p>';
                                     echo '</figcaption>';
-                                    echo '<div><img src="' . $result[$i]->getFilePath() . '"></div>';
+                                    echo '<div><img src="' . $result[$i]->getFilePath() . '" alt="Aperçu de la publication"></div>';
                                 echo '</figure>';
                             echo '</a>';
                         echo '</div>';
@@ -184,11 +184,11 @@
                                     break;
                             }
                         } elseif ($post->getFileType() === 'video') {
-                            echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                            echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                         }
                         ?>
                         <a href="index.php?action=post&id=<?=$post->getId()?>">
-                            <img src="<?=$post->getFilePath()?>">
+                            <img src="<?=$post->getFilePath()?>" alt="Aperçu de la publication">
                         </a>
                         <?php
                         echo '</figure>';
@@ -210,11 +210,11 @@
                                     break;
                             }
                         } elseif ($post->getFileType() === 'video') {
-                            echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                            echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                         }
                         ?>
                         <a href="index.php?action=post&id=<?=$post->getId()?>">
-                            <img src="<?=$post->getFilePath()?>">
+                            <img src="<?=$post->getFilePath()?>" alt="Aperçu de la publication">
                         </a>
                         <?php
                         echo '</figure>';
@@ -235,7 +235,7 @@
                                     <div class="<?=$classIsActive?>" title="<?=$title?>">
                                         <div>
                                             <figure>
-                                                <img src="<?=$school->getLogo()?>">
+                                                <img src="<?=$school->getLogo()?>" alt="Logo de l'établissement">
                                             </figure>
                                         </div>
                                         <div>
@@ -263,11 +263,11 @@
                                         break;
                                 }
                             } elseif ($post->getFileType() === 'video') {
-                                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                             }
                             ?>
                             <a href="index.php?action=post&id=<?=$post->getId()?>">
-                                <img src="<?=$post->getFilePath()?>">
+                                <img src="<?=$post->getFilePath()?>" alt="Aperçu de la publication">
                             </a>
                             <?php
                             echo '</figure>';
@@ -290,11 +290,11 @@
                                     break;
                             }
                         } elseif ($post->getFileType() === 'video') {
-                            echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                            echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                         }
                         ?>
                         <a href="index.php?action=post&id=<?=$post->getId()?>">
-                            <img src="<?=$post->getFilePath()?>">
+                            <img src="<?=$post->getFilePath()?>" alt="Aperçu de la publication">
                         </a>
                         <?php
                         echo '</figure>';

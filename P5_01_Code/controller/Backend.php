@@ -1,6 +1,6 @@
 <?php
-namespace Chemin\ArtSchool\Model;
-use Chemin\ArtSchool\Model\Controller;
+namespace Chemin\ArtSchools\Model;
+use Chemin\ArtSchools\Model\Controller;
 
 class Backend extends Controller
 {
@@ -29,7 +29,7 @@ class Backend extends Controller
         } elseif (isset($_SESSION['grade']) && $_SESSION['grade'] !== ADMIN  && $_SESSION['grade'] !== MODERATOR) {
             //user is connect but not as admin or moderator
             header('Location: index.php');
-        } elseif (isset($_COOKIE['artSchoolAdminId'])) {
+        } elseif (isset($_COOKIE['artSchoolsAdminId'])) {
             //user is not connect but there is a cookie to sign in
             $this->useCookieToSignIn();
         } elseif (isset($_GET['action']) && $_GET['action'] !== 'resetPassword') {

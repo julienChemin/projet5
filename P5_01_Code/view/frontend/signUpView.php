@@ -27,7 +27,7 @@
                 <hr>
                 <p id="postIsAffiliated">
                     <input type="checkbox" name="isAffiliated" id="isAffiliated">
-                    <label for="isAffiliated">Lié le compte a un établissement scolaire</label>
+                    <label for="isAffiliated">Lier le compte à un établissement scolaire</label>
                 </p>
                 <p id="postAffiliationCode">
                     <label for="affiliationCode">Code d'affiliation</label>

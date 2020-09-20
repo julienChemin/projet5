@@ -1,10 +1,10 @@
 <?php
-namespace Chemin\ArtSchool\Model;
-use Chemin\ArtSchool\Model\LikeManager;
+namespace Chemin\ArtSchools\Model;
+use Chemin\ArtSchools\Model\LikeManager;
 
 class PostsManager extends LikeManager
 {
-    public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\Post';
+    public static $OBJECT_TYPE = 'Chemin\ArtSchools\Model\Post';
     public static $TABLE_PK = 'id';
 
     public static $TABLE_NAME = 'as_post';

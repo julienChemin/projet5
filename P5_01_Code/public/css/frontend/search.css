@@ -159,8 +159,11 @@
 #advancedSearchView{
     padding: 100px 0;
 }
-#advancedSearchView h1, #advancedSearchView h2{
+#advancedSearchView h1{
     padding-bottom: 20px;
+}
+#advancedSearchView h2{
+    padding-top: 20px;
 }
 #advancedSearchView input[type="radio"]{
     display: none;
@@ -202,9 +205,10 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    width: 15%;
-    height: 200px;
+    width: 20%;
+    height: 180px;
     padding: 5px;
+    margin: 10px 0;
 }
 #blockFilterBySchool input[type="radio"] + label > div{
     height: 80%;
@@ -260,7 +264,6 @@
     justify-content: flex-start;
     align-items: center;
     flex-wrap: wrap;
-    margin-bottom: 100px;
 }
 
 /* ----------------------------------------------------------- */
@@ -312,6 +315,12 @@
         height: 250px;
         font-size: 0.9em;
     }
+
+    /*------------ advanced search ------------*/
+    #advancedSearchView #blockFilterBySchool > div > label{
+        height: 140px;
+        font-size: 1.4em;
+    }
 }
 
 /*====================================================================================================================================
@@ -351,6 +360,12 @@
         width: 28%;
         height: 200px;
         font-size: 0.8em;
+    }
+
+    /*------------ advanced search ------------*/
+    #advancedSearchView #blockFilterBySchool > div > label{
+        height: 110px;
+        font-size: 1.2em;
     }
 }
 
@@ -406,6 +421,13 @@
     #resultQuickSearch figure{
         width: 28%;
     }
+
+    /*------------ advanced search ------------*/
+    #advancedSearchView #blockFilterBySchool > div > label{
+        width: 28%;
+        height: 140px;
+        font-size: 1.4em;
+    }
 }
 
 /*====================================================================================================================================
@@ -457,5 +479,16 @@
     /*------------ search sort by ------------*/
     #resultQuickSearch figure{
         width: 28%;
+    }
+
+    /*------------ advanced search ------------*/
+    #advancedSearchView #blockFilterBySchool > div > label{
+        width: 40%;
+        height: 130px;
+        font-size: 1.4em;
+    }
+    #advancedSearchView #tagName{
+        max-width: 100%;
+        margin-left: 0;
     }
 }

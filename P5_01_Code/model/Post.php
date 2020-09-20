@@ -1,5 +1,5 @@
 <?php
-namespace Chemin\ArtSchool\Model;
+namespace Chemin\ArtSchools\Model;
 class Post
 {
     private $id,

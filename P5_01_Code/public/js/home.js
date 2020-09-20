@@ -6,7 +6,10 @@ function createItemImage(post, divSlide){
 	let elemImg = document.createElement('img');
 	elemImg.src = post['filePath'];
 	if (post['title'] !== null) {
+		elemImg.alt = post['title'];
 		elemImg.setAttribute('title', post['title']);
+	} else {
+		elemImg.alt = 'Aperçu de la publication';
 	}
 	elemA.appendChild(elemImg);
 	elemFigure.appendChild(elemA);
@@ -29,7 +32,10 @@ function createItemVideo(post, divSlide){
 		elemImg.src = 'public/images/defaultVideoThumbnail.png';
 	}
 	if (post['title'] !== null) {
+		elemImg.alt = post['title'];
 		elemImg.setAttribute('title', post['title']);
+	} else {
+		elemImg.alt = 'Aperçu de la publication';
 	}
 	elemA.appendChild(elemImg);
 	elemFigure.appendChild(elemA);

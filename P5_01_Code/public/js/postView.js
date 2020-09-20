@@ -29,6 +29,7 @@ function addComment(content)
     linkPictureProfile.href = 'index.php?action=userProfile&userId=' + formAddComment.elements.userId.value;
     let imgPictureProfile = document.createElement('img');
     imgPictureProfile.src = formAddComment.elements.userPicture.value;
+    imgPictureProfile.alt ='Photo de profil';
     linkPictureProfile.appendChild(imgPictureProfile);
     divComment.appendChild(linkPictureProfile);
     let divContent = document.createElement('div');

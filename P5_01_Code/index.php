@@ -5,11 +5,11 @@ if (!empty($_GET['action']) && ($_GET['action'] === 'search' || $_GET['action'] 
 }
 session_start();
 
-use \Chemin\ArtSchool\Model\Frontend;
+use \Chemin\ArtSchools\Model\Frontend;
 
 spl_autoload_register(
     function ($class) {
-        $arr = str_split($class, 23);
+        $arr = str_split($class, 24);
         $nameClass = $arr[1];
     
         if ($nameClass === 'Frontend' || $nameClass === 'Backend' || $nameClass === 'Controller') {

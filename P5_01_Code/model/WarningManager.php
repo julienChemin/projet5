@@ -1,6 +1,6 @@
 <?php
 
-namespace Chemin\ArtSchool\Model;
+namespace Chemin\ArtSchools\Model;
 
 class WarningManager extends AbstractManager
 {
@@ -182,11 +182,11 @@ class WarningManager extends AbstractManager
             Il s'agit de l'avertissement no° " . $nbWarn . ".<br><br>
             Au bout de 3 avertissements, votre compte est suspendu pendant un mois. 
             La durée de suspension du compte augmente d'un mois à chaque fois que vous atteignez les 3 avertissements.<br><br>
-            L'equipe d'ArtSchool vous remercie.";
+            L'equipe d'ArtSchools vous remercie.";
         $content = wordwrap($content, 70, "\r\n");
-        $headers = array('From' => '"Art-School"<julchemin@orange.fr>', 
+        $headers = array('From' => '"Art-School"<artschoolsfr@gmail.com>', 
             'Content-Type' => 'text/html; charset=utf-8');
-        ini_set("sendmail_from", "julchemin@orange.fr");
+        ini_set("sendmail_from", "artschoolsfr@gmail.com");
         mail($user->getMail(), $subject, $content, $headers);
     }
 
@@ -197,11 +197,11 @@ class WarningManager extends AbstractManager
             Nous vous informons que votre compte a été suspendu, suite à 3 avertissements.<br>
             Votre compte sera de nouveau disponible a partir du " . $dateUnban . ".<br><br>
             La durée de suspension du compte augmente de un mois a chaque fois que vous atteignez les 3 avertissements.<br><br>
-            L'equipe d'ArtSchool vous remercie.";
+            L'equipe d'ArtSchools vous remercie.";
         $content = wordwrap($content, 70, "\r\n");
-        $headers = array('From' => '"Art-School"<julchemin@orange.fr>', 
+        $headers = array('From' => '"Art-School"<artschoolsfr@gmail.com>', 
             'Content-Type' => 'text/html; charset=utf-8');
-        ini_set("sendmail_from", "julchemin@orange.fr");
+        ini_set("sendmail_from", "artschoolsfr@gmail.com");
         mail($user->getMail(), $subject, $content, $headers);
     }
 
@@ -210,11 +210,11 @@ class WarningManager extends AbstractManager
         $subject = "Votre compte est de nouveau disponible";
         $content = "Bonjour " . $user->getName() . ".<br><br>
             Nous avons le plaisir de vous informer que votre compte est de nouveau disponible.<br><br>
-            L'equipe d'ArtSchool vous remercie.";
+            L'equipe d'ArtSchools vous remercie.";
         $content = wordwrap($content, 70, "\r\n");
-        $headers = array('From' => '"Art-School"<julchemin@orange.fr>', 
+        $headers = array('From' => '"Art-School"<artschoolsfr@gmail.com>', 
             'Content-Type' => 'text/html; charset=utf-8');
-        ini_set("sendmail_from", "julchemin@orange.fr");
+        ini_set("sendmail_from", "artschoolsfr@gmail.com");
         mail($user->getMail(), $subject, $content, $headers);
     }
 

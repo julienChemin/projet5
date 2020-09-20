@@ -1,6 +1,6 @@
 <?php
-namespace Chemin\ArtSchool\Model;
-use Chemin\ArtSchool\Model\Database;
+namespace Chemin\ArtSchools\Model;
+use Chemin\ArtSchools\Model\Database;
 
 abstract class AbstractManager extends Database
 {

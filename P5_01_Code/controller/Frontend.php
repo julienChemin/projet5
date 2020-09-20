@@ -1,6 +1,6 @@
 <?php
-namespace Chemin\ArtSchool\Model;
-use Chemin\ArtSchool\Model\Controller;
+namespace Chemin\ArtSchools\Model;
+use Chemin\ArtSchools\Model\Controller;
 
 class Frontend extends Controller
 {
@@ -29,7 +29,7 @@ class Frontend extends Controller
                     $this->forceDisconnect();
                 }
             }
-        } elseif (isset($_COOKIE['artSchoolId']) || isset($_COOKIE['artSchoolAdminId'])) {
+        } elseif (isset($_COOKIE['artSchoolsId']) || isset($_COOKIE['artSchoolsAdminId'])) {
             //user is not connect but there is a cookie to sign in
             $this->useCookieToSignIn();
         }

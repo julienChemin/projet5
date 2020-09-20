@@ -19,6 +19,7 @@ $posts = $data['posts'];
                         <?php
                         foreach ($posts['lastPosted'] as $post) {
                             !empty($post->getTitle()) ? $title = $post->getTitle() : $title = '';
+                            !empty($post->getTitle()) ? $alt = $post->getTitle() : $alt = 'Aperçu de la publication';
                             echo '<figure class="items" title="' . $title . '">';
                             if (empty($post->getFilePath())) {
                                 switch ($post->getFileType()) {
@@ -30,9 +31,9 @@ $posts = $data['posts'];
                                         break;
                                 }
                             } elseif ($post->getFileType() === 'video') {
-                                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                             }
-                            echo '<a href="index.php?action=post&id=' . $post->getId() . '"><img src="' . $post->getFilePath() . '"></a></figure>';
+                            echo '<a href="index.php?action=post&id=' . $post->getId() . '"><img src="' . $post->getFilePath() . '" alt="' . $alt . '"></a></figure>';
                         }
                         ?>
                     </div>
@@ -57,6 +58,7 @@ $posts = $data['posts'];
                         <?php
                         foreach ($posts['mostLiked'] as $post) {
                             !empty($post->getTitle()) ? $title = $post->getTitle() : $title = '';
+                            !empty($post->getTitle()) ? $alt = $post->getTitle() : $alt = 'Aperçu de la publication';
                             echo '<figure class="items" title="' . $title . '">';
                             if (empty($post->getFilePath())) {
                                 switch ($post->getFileType()) {
@@ -68,9 +70,9 @@ $posts = $data['posts'];
                                         break;
                                 }
                             } elseif ($post->getFileType() === 'video') {
-                                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                             }
-                            echo '<a href="index.php?action=post&id=' . $post->getId() . '"><img src="' . $post->getFilePath() . '"></a></figure>';
+                            echo '<a href="index.php?action=post&id=' . $post->getId() . '"><img src="' . $post->getFilePath() . '" alt="' . $alt . '"></a></figure>';
                         }
                         ?>
                     </div>
@@ -98,6 +100,7 @@ $posts = $data['posts'];
                                 <?php
                                 foreach ($arrSchoolPosts as $post) {
                                     !empty($post->getTitle()) ? $title = $post->getTitle() : $title = '';
+                                    !empty($post->getTitle()) ? $alt = $post->getTitle() : $alt = 'Aperçu de la publication';
                                     echo '<figure class="items" title="' . $title . '">';
                                     if (empty($post->getFilePath())) {
                                         switch ($post->getFileType()) {
@@ -109,9 +112,9 @@ $posts = $data['posts'];
                                                 break;
                                         }
                                     } elseif ($post->getFileType() === 'video') {
-                                        echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                                        echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                                     }
-                                    echo '<a href="index.php?action=post&id=' . $post->getId() . '"><img src="' . $post->getFilePath() . '"></a></figure>';
+                                    echo '<a href="index.php?action=post&id=' . $post->getId() . '"><img src="' . $post->getFilePath() . '" alt="' . $alt . '"></a></figure>';
                                 }
                                 ?>
                             </div>
@@ -141,6 +144,7 @@ $posts = $data['posts'];
                                 <?php
                                 foreach ($arrTagPosts as $post) {
                                     !empty($post->getTitle()) ? $title = $post->getTitle() : $title = '';
+                                    !empty($post->getTitle()) ? $alt = $post->getTitle() : $alt = 'Aperçu de la publication';
                                     echo '<figure class="items" title="' . $title . '">';
                                     if (empty($post->getFilePath())) {
                                         switch ($post->getFileType()) {
@@ -152,9 +156,9 @@ $posts = $data['posts'];
                                                 break;
                                         }
                                     } elseif ($post->getFileType() === 'video') {
-                                        echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                                        echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                                     }
-                                    echo '<a href="index.php?action=post&id=' . $post->getId() . '"><img src="' . $post->getFilePath() . '"></a></figure>';
+                                    echo '<a href="index.php?action=post&id=' . $post->getId() . '"><img src="' . $post->getFilePath() . '" alt="' . $alt . '"></a></figure>';
                                 }
                                 ?>
                             </div>

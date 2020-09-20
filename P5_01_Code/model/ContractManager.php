@@ -1,6 +1,6 @@
 <?php
 
-namespace Chemin\ArtSchool\Model;
+namespace Chemin\ArtSchools\Model;
 
 class ContractManager extends AbstractManager
 {
@@ -108,11 +108,11 @@ class ContractManager extends AbstractManager
     -------------------------------------------------------------------------------------*/
     private function sendRemindMail(string $mail, string $remindType)
     {
-        $subject = "Rappel pour votre abonnement ArtSchool";
+        $subject = "Rappel pour votre abonnement ArtSchools";
         $content = $this->getMailContent($remindType);
-        $headers = array('From' => '"Art-School"<julchemin@orange.fr>', 
+        $headers = array('From' => '"Art-Schools"<artschoolsfr@gmail.com>', 
             'Content-Type' => 'text/html; charset=utf-8');
-        ini_set("sendmail_from", "julchemin@orange.fr");
+        ini_set("sendmail_from", "artschoolsfr@gmail.com");
         mail($mail, $subject, $content, $headers);
     }
 
@@ -133,10 +133,10 @@ class ContractManager extends AbstractManager
             nous vous envoyons un mail de rappel, car votre abonnement prend fin " . $timeLaps . "<br><br>
             Lorsque l'abonnement prend fin, Vous perdez access à certains privilège.<br>
             Vous pouvez vous référer à la <a href='index.php?action=faq'>F.A.Q</a> pour en savoir plus. 
-            (ou sur le site ArtSchool et en cliquant sur 'F.A.Q' en bas de page)<br><br>
-            Vous pouvez renouveler votre abonnement en passant par <a href='artSchool.fr?action=settings'>ce lien</a>, 
-            ou sur le site ArtSchool dans les paramètres de votre compte .<br><br>
-            L'equipe d'ArtSchool vous remercie.";
+            (ou sur le site ArtSchools et en cliquant sur 'F.A.Q' en bas de page)<br><br>
+            Vous pouvez renouveler votre abonnement en passant par <a href='julienchemin.fr/projet5/index.php?action=settings'>ce lien</a>, 
+            ou sur le site ArtSchools dans les paramètres de votre compte .<br><br>
+            L'equipe d'ArtSchools vous remercie.";
         return wordwrap($content, 70, "\r\n");
     }
 

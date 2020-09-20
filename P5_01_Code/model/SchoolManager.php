@@ -1,10 +1,10 @@
 <?php
 
-namespace Chemin\ArtSchool\Model;
+namespace Chemin\ArtSchools\Model;
 
 class SchoolManager extends AbstractManager
 {
-    public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\School';
+    public static $OBJECT_TYPE = 'Chemin\ArtSchools\Model\School';
     public static $TABLE_NAME = 'as_school';
     public static $TABLE_PK = 'id';
     public static $TABLE_CHAMPS ='id, idAdmin, name, nameAdmin, mail, schoolGroups, code, nbEleve, 
@@ -205,9 +205,9 @@ class SchoolManager extends AbstractManager
             );
             // first history entry
             if ($POST['schoolDuration'] === '0') {
-                $entry = 'Bienvenue sur ArtSchool !';
+                $entry = 'Bienvenue sur ArtSchools !';
             } else {
-                $entry = 'Bienvenue sur ArtSchool ! Vous vous êtes inscrit pour une période de ' . $POST['schoolDuration'] . 
+                $entry = 'Bienvenue sur ArtSchools ! Vous vous êtes inscrit pour une période de ' . $POST['schoolDuration'] . 
                     ' mois, avec ' . $nbEleve . ' compte(s) affiliés a votre établissement';
             }
             $HistoryManager->addEntry(new HistoryEntry(

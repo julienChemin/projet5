@@ -2,11 +2,11 @@
 
 session_start();
 
-use \Chemin\ArtSchool\Model\Backend;
+use \Chemin\ArtSchools\Model\Backend;
 
 spl_autoload_register(
     function ($class) {
-        $arr = str_split($class, 23);
+        $arr = str_split($class, 24);
         $nameClass = $arr[1];
     
         if ($nameClass === 'Frontend' || $nameClass === 'Backend' || $nameClass === 'Controller') {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Chemin\ArtSchool\Model;
+namespace Chemin\ArtSchools\Model;
 
 class User
 {
