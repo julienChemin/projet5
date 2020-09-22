@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  mar. 25 août 2020 à 11:27
+-- Généré le :  jeu. 10 sep. 2020 à 07:27
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -441,10 +441,10 @@ CREATE TABLE IF NOT EXISTS `as_school_contract_reminder` (
 --
 
 INSERT INTO `as_school_contract_reminder` (`id`, `idOwner`, `mailToRemind`, `remindType`, `dateRemind`, `dateContractEnd`, `done`) VALUES
-(41, 18, 'julchemin@orange.fr', 'week', '2020-09-16 00:00:00', '2020-09-23 00:00:00', 0),
-(42, 20, 'julchemin@orange.fr', 'month', '2020-10-23 00:00:00', '2020-08-24 00:00:00', 1),
-(45, 21, 'julchemin@orange.fr', 'month', '2020-12-24 00:00:00', '2020-08-24 00:00:00', 1),
-(46, 21, 'julchemin@orange.fr', 'month', '2020-12-24 00:00:00', '2021-01-24 00:00:00', 0);
+(41, 18, 'artschoolsfr@gmail.com', 'week', '2020-09-16 00:00:00', '2020-09-23 00:00:00', 0),
+(42, 20, 'artschoolsfr@gmail.com', 'month', '2020-10-23 00:00:00', '2020-08-24 00:00:00', 1),
+(45, 21, 'artschoolsfr@gmail.com', 'month', '2020-12-24 00:00:00', '2020-08-24 00:00:00', 1),
+(46, 21, 'artschoolsfr@gmail.com', 'month', '2020-12-24 00:00:00', '2021-01-24 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -515,21 +515,6 @@ INSERT INTO `as_tag_post` (`idPost`, `tagName`) VALUES
 (166, 'post public'),
 (166, 'curtiss'),
 (174, 'science');
-
---
--- Déclencheurs `as_tag_post`
---
-DROP TRIGGER IF EXISTS `tag_post_delete`;
-DELIMITER $$
-CREATE TRIGGER `tag_post_delete` AFTER DELETE ON `as_tag_post` FOR EACH ROW UPDATE as_tag SET tagCount = tagCount - 1 WHERE as_tag.name = OLD.tagName
-$$
-DELIMITER ;
-DROP TRIGGER IF EXISTS `tag_post_new`;
-DELIMITER $$
-CREATE TRIGGER `tag_post_new` AFTER INSERT ON `as_tag_post` FOR EACH ROW UPDATE as_tag SET tagCount = tagCount + 1 
-WHERE NEW.tagName = name
-$$
-DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -619,30 +604,11 @@ CREATE TABLE IF NOT EXISTS `as_warning` (
 --
 
 --
--- Contraintes pour la table `as_banishment`
---
-ALTER TABLE `as_banishment`
-  ADD CONSTRAINT `as_banishment_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Contraintes pour la table `as_comment`
 --
 ALTER TABLE `as_comment`
   ADD CONSTRAINT `as_comment_ibfk_1` FOREIGN KEY (`idPost`) REFERENCES `as_post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `as_comment_ibfk_2` FOREIGN KEY (`idAuthor`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `as_history`
---
-ALTER TABLE `as_history`
-  ADD CONSTRAINT `as_history_ibfk_1` FOREIGN KEY (`idSchool`) REFERENCES `as_school` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `as_like_post`
---
-ALTER TABLE `as_like_post`
-  ADD CONSTRAINT `as_like_post_ibfk_1` FOREIGN KEY (`idPost`) REFERENCES `as_post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `as_like_post_ibfk_2` FOREIGN KEY (`idUser`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `as_profile_content`
@@ -652,36 +618,10 @@ ALTER TABLE `as_profile_content`
   ADD CONSTRAINT `as_profile_content_ibfk_2` FOREIGN KEY (`schoolId`) REFERENCES `as_school` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `as_profile_content_img`
---
-ALTER TABLE `as_profile_content_img`
-  ADD CONSTRAINT `as_profile_content_img_ibfk_1` FOREIGN KEY (`idProfileContent`) REFERENCES `as_profile_content` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `as_report_comment`
---
-ALTER TABLE `as_report_comment`
-  ADD CONSTRAINT `as_report_comment_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `as_report_comment_ibfk_2` FOREIGN KEY (`idComment`) REFERENCES `as_comment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `as_report_post`
---
-ALTER TABLE `as_report_post`
-  ADD CONSTRAINT `as_report_post_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `as_report_post_ibfk_2` FOREIGN KEY (`idPost`) REFERENCES `as_post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Contraintes pour la table `as_school`
 --
 ALTER TABLE `as_school`
   ADD CONSTRAINT `as_school_ibfk_1` FOREIGN KEY (`idAdmin`) REFERENCES `as_user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
-
---
--- Contraintes pour la table `as_school_contract_reminder`
---
-ALTER TABLE `as_school_contract_reminder`
-  ADD CONSTRAINT `as_school_contract_reminder_ibfk_1` FOREIGN KEY (`idOwner`) REFERENCES `as_school` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Contraintes pour la table `as_user_contract_reminder`
