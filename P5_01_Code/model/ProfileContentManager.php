@@ -1,12 +1,12 @@
 <?php
 
-namespace Chemin\ArtSchool\Model;
+namespace Chemin\ArtSchools\Model;
 
-use Chemin\ArtSchool\Model\Database;
+use Chemin\ArtSchools\Model\Database;
 
 class ProfileContentManager extends AbstractManager
 {
-    public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\ProfileContent';
+    public static $OBJECT_TYPE = 'Chemin\ArtSchools\Model\ProfileContent';
     public static $TABLE_NAME = 'as_profile_content';
     public static $TABLE_PK = 'id';
     public static $TABLE_CHAMPS ='id, userId, schoolId, tab, size, contentOrder, align, content';
@@ -473,8 +473,8 @@ class ProfileContentManager extends AbstractManager
 
     private function deleteImgEntry(int $idProfileContent, string $filePathInBdd)
     {
-        if (strpos($filePathInBdd, 'http://') === 0) {
-            $filePath = str_replace('http://localhost/P5_Chemin_Julien/P5_01_Code/', '', $filePathInBdd);
+        if (strpos($filePathInBdd, 'https://') === 0) {
+            $filePath = str_replace('https://julienchemin.fr/projet5/index.php/', '', $filePathInBdd);
         } else {
             $filePath = $filePathInBdd;
         }

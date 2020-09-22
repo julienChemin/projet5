@@ -4,34 +4,34 @@
         <div>
             <div>
                 <p>
-                    <label for="pseudo">Identifiant</label>
-                    <input type="text" name="pseudo" required="">
+                    <label for="signUpPseudo">Identifiant</label>
+                    <input type="text" name="signUpPseudo" id="signUpPseudo" required="">
                 </p>
                 <p>
-                    <label for="mail">Adresse e-mail</label>
-                    <input type="email" name="mail" required="">
+                    <label for="signUpMail">Adresse e-mail</label>
+                    <input type="email" name="signUpMail" id="signUpMail" required="">
                 </p>
             </div>
             <hr>
             <div>
                 <p>
                     <label for="password">Mot de passe</label>
-                    <input type="password" name="password" required="">
+                    <input type="password" name="password" id="password" required="">
                 </p>
                 <p>
                     <label for="confirmPassword">Confirmez le mot de passe</label>
-                    <input type="password" name="confirmPassword" required="">
+                    <input type="password" name="confirmPassword" id="confirmPassword" required="">
                 </p>
             </div>
             <div>
                 <hr>
                 <p id="postIsAffiliated">
                     <input type="checkbox" name="isAffiliated" id="isAffiliated">
-                    <label for="isAffiliated">Lié le compte a un établissement scolaire</label>
+                    <label for="isAffiliated">Lier le compte à un établissement scolaire</label>
                 </p>
                 <p id="postAffiliationCode">
                     <label for="affiliationCode">Code d'affiliation</label>
-                    <input type="text" name="affiliationCode">
+                    <input type="text" name="affiliationCode" id="affiliationCode">
                 </p>
                 <hr>
             </div>

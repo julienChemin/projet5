@@ -1,10 +1,10 @@
 <?php
-namespace Chemin\ArtSchool\Model;
-use Chemin\ArtSchool\Model\Database;
+namespace Chemin\ArtSchools\Model;
+use Chemin\ArtSchools\Model\Database;
 
 class UserManager extends AbstractManager
 {
-    public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\User';
+    public static $OBJECT_TYPE = 'Chemin\ArtSchools\Model\User';
     public static $TABLE_NAME = 'as_user';
     public static $TABLE_PK = 'id';
     public static $TABLE_CHAMPS ='id, name, password, mail, school, schoolGroup, temporaryPassword, beingReset, 
@@ -242,11 +242,11 @@ class UserManager extends AbstractManager
 			En suivant <a style='text-decoration: underline;' href='http://julienchemin.fr/projet5/index.php?action=resetPassword&key=" . $temporaryPassword . "&id=" . 
         $user->getId() . "'>ce lien</a> vous serez redirige vers une page pour modifier votre mot de passe.<br><br>
 			Si le lien ne fonctionne pas, rendez vous a l'adresse suivante : <br>http://julienchemin.fr/projet5/index.php?action=resetPassword&key=" . $temporaryPassword . 
-        "&id=" . $user->getId() . "<br><br>L'equipe d'ArtSchool vous remercie.";
+        "&id=" . $user->getId() . "<br><br>L'equipe d'ArtSchools vous remercie.";
         $content = wordwrap($content, 70, "\r\n");
-        $headers = array('From' => '"Art-School"<julchemin@orange.fr>', 
+        $headers = array('From' => '"Art-School"<artschoolsfr@gmail.com>', 
             'Content-Type' => 'text/html; charset=utf-8');
-        ini_set("sendmail_from", "julchemin@orange.fr");
+        ini_set("sendmail_from", "artschoolsfr@gmail.com");
         mail($user->getMail(), $subject, $content, $headers);
         return $this;
     }
@@ -507,8 +507,8 @@ class UserManager extends AbstractManager
             if ($school->getNbActiveAccount() < $school->getNbEleve()) {
                 $SchoolManager->updateByName($schoolName, 'nbActiveAccount', $school->getNbActiveAccount() + 1);
                 $this->add(new User(
-                    ['name' => $POST['pseudo'], 
-                    'mail' => $POST['mail'], 
+                    ['name' => $POST['signUpPseudo'], 
+                    'mail' => $POST['signUpMail'], 
                     'password' => password_hash($POST['password'], PASSWORD_DEFAULT), 
                     'school' => $schoolName, 
                     'isActive' => true, 
@@ -519,7 +519,7 @@ class UserManager extends AbstractManager
                 $HistoryManager->addEntry(new HistoryEntry(
                     ['idSchool' => $school->getId(), 
                     'category' => 'account', 
-                    'entry' => $POST['pseudo'] . ' a créé un compte affilié à votre établissement'])
+                    'entry' => $POST['signUpPseudo'] . ' a créé un compte affilié à votre établissement'])
                 );
                 return "Le compte à bien été créé, vous pouvez maintenant <a href='index.php?action=signIn'>vous connecter</a>";
             } else {
@@ -533,8 +533,8 @@ class UserManager extends AbstractManager
     private function signUpWithoutAffiliation(array $POST)
     {
         $this->add(new User(
-            ['name' => $POST['pseudo'], 
-            'mail' => $POST['mail'], 
+            ['name' => $POST['signUpPseudo'], 
+            'mail' => $POST['signUpMail'], 
             'password' => password_hash($POST['password'], PASSWORD_DEFAULT), 
             'school' => NO_SCHOOL, 
             'isAdmin' => false, 

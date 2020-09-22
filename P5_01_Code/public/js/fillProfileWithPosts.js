@@ -33,7 +33,10 @@ function setImagePost(post, blockContent) {
 	let elemImg = document.createElement('img');
 	elemImg.src = post['filePath'];
 	if (post['title'] !== null) {
+		elemImg.alt = post['title'];
 		elemImg.setAttribute('title', post['title']);
+	} else {
+		elemImg.alt = 'Aperçu de la publication';
 	}
 	elemA.appendChild(elemImg);
 	elemFigure.appendChild(elemA);
@@ -57,7 +60,10 @@ function setVideoPost(post, blockContent) {
 		elemImg.src = 'public/images/defaultVideoThumbnail.png';
 	}
 	if (post['title'] !== null) {
+		elemImg.alt = post['title'];
 		elemImg.setAttribute('title', post['title']);
+	} else {
+		elemImg.alt = 'Aperçu de la publication';
 	}
 	elemA.appendChild(elemImg);
 	elemFigure.appendChild(elemA);
@@ -74,10 +80,17 @@ function setFolderPost(post, blockContent, onFolderView = false) {
 	let elemDiv = document.createElement('div');
 	let elemImg = document.createElement('img');
 	elemImg.src = 'public/images/folder.png';
+	elemImg.alt = 'Publication de type dossier';
 	if (post['filePath'] !== null) {
 		let elemThumbnail = document.createElement('img');
 		elemThumbnail.classList.add('thumbnailFolder');
 		elemThumbnail.src = post['filePath'];
+		if (post['title'] !== null) {
+			elemThumbnail.alt = post['title'];
+			elemThumbnail.setAttribute('title', post['title']);
+		} else {
+			elemThumbnail.alt = 'Aperçu de la publication';
+		}
 		elemDiv.appendChild(elemThumbnail);
 	}
 	let elemSpan = document.createElement('span');
@@ -116,6 +129,7 @@ function setFolderPost(post, blockContent, onFolderView = false) {
 	link.href = 'index.php?action=post&id=' + post['id'];
 	let img = document.createElement('img');
 	img.src = 'public/images/folder.png';
+	img.alt = 'Lien pour consulter le dossier';
 	let span = document.createElement('span');
 	span.classList.add('previewTitle');
 	span.textContent = 'Consulter le dossier';
@@ -189,6 +203,7 @@ function setCompressedPost(post, blockContent) {
 	elemA.href = 'index.php?action=post&id=' + post['id'];
 	let elemImg = document.createElement('img');
 	elemImg.src = 'public/images/fileOther.png';
+	elemImg.alt = 'Publication de type fichier zip / rar';
 	let elemSpan = document.createElement('span');
 	elemSpan.classList.add('previewTitle');
 	elemSpan.textContent = post['title'];

@@ -97,6 +97,10 @@ figure img{
     color: #FF3C38!important;
     cursor: default!important;
 }
+.buttonIsFocus{
+    border-top: solid 1px #CF8B3F;
+    color: #CF8B3F!important;
+}
 .hide{
     display: none;
 }
@@ -151,12 +155,15 @@ figure img{
 .tag i{
     padding: 4px 6px;
     color: red;
-    border: solid 2px #CF8B3F;
-    border-radius: 10px;
+    font-size: 0.8em;
 }
 #selectedTags{
     display: none;
     width: 50%;
+}
+#selectedTags > div{
+    display: flex;
+    flex-wrap: wrap;
 }
 #recommendedTags{
     display: none;
@@ -715,6 +722,11 @@ footer ul{
         width: 90%;
         height: auto;
         padding: 20px;
+    }
+
+    /*-------- tag --------*/
+    #selectedTags{
+        width: 100%;
     }
 
     /* ------------------------ TABLE ------------------------ */

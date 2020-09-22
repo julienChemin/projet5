@@ -1,5 +1,4 @@
 new stuff
-    - splitting css for each view
-    - compatibility and responsive
+    - 
 fixed issues
-    -
+    - some fix so the W3C validator is happy now

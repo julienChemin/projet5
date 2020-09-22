@@ -137,6 +137,13 @@
         font-size: 1.1em;
         margin: 0px 5px;
     }
+    #menuHome{
+        flex-direction: column;
+    }
+    #menuHome > a{
+        width: 100%;
+        margin-bottom: 15px;
+    }
 }
 
 /*====================================================================================================================================
@@ -174,6 +181,13 @@
         font-size: 1.1em;
         margin: 0px 5px;
     }
+    #menuHome{
+        flex-direction: column;
+    }
+    #menuHome > a{
+        width: 100%;
+        margin-bottom: 15px;
+    }
 }
 
 /*====================================================================================================================================
@@ -210,5 +224,12 @@
     .itemHomeAdmin > span{
         font-size: 0.8em;
         margin: 0px 5px;
+    }
+    #menuHome{
+        flex-direction: column;
+    }
+    #menuHome > a{
+        width: 100%;
+        margin-bottom: 15px;
     }
 }

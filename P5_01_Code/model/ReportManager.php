@@ -1,8 +1,8 @@
 <?php
 
-namespace Chemin\ArtSchool\Model;
+namespace Chemin\ArtSchools\Model;
 
-use Chemin\ArtSchool\Model\AbstractManager;
+use Chemin\ArtSchools\Model\AbstractManager;
 
 class ReportManager extends AbstractManager
 {

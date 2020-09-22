@@ -1,6 +1,6 @@
 <?php
-namespace Chemin\ArtSchool\Model;
-use Chemin\ArtSchool\Model\Controller;
+namespace Chemin\ArtSchools\Model;
+use Chemin\ArtSchools\Model\Controller;
 
 class Frontend extends Controller
 {
@@ -29,7 +29,7 @@ class Frontend extends Controller
                     $this->forceDisconnect();
                 }
             }
-        } elseif (isset($_COOKIE['artSchoolId']) || isset($_COOKIE['artSchoolAdminId'])) {
+        } elseif (isset($_COOKIE['artSchoolsId']) || isset($_COOKIE['artSchoolsAdminId'])) {
             //user is not connect but there is a cookie to sign in
             $this->useCookieToSignIn();
         }
@@ -396,7 +396,7 @@ class Frontend extends Controller
 
     public function faq()
     {
-        RenderView::render('template.php', 'frontend/faqView.php');
+        RenderView::render('template.php', 'frontend/faqView.php', ['option' => ['faq']]);
     }
 
     /*-------------------------------------------------------------------------------------
@@ -726,8 +726,8 @@ class Frontend extends Controller
 
         if ($UserManager->checkForScriptInsertion($_POST)) {
             if ($POST['confirmPassword'] === $POST['password']) {
-                if (!$UserManager->nameExists($POST['pseudo'])) {
-                    if (!$UserManager->mailExists($POST['mail'])) {
+                if (!$UserManager->nameExists($POST['signUpPseudo'])) {
+                    if (!$UserManager->mailExists($POST['signUpMail'])) {
                         return ['value' => true];
                     } else {
                         return ['value' => false, 'msg' => "Cette adresse mail est déja lié a un compte"];

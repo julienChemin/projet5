@@ -4,11 +4,11 @@
         <div>
             <p>
                 <label for="ConnectPseudo">Identifiant</label>
-                <input type="text" name="ConnectPseudo" required="">
+                <input type="text" name="ConnectPseudo" id="ConnectPseudo" required="">
             </p>
             <p>
                 <label for="ConnectPassword">Mot de passe</label>
-                <input type="password" name="ConnectPassword" required="">
+                <input type="password" name="ConnectPassword" id="ConnectPassword" required="">
             </p>
             <p>
                 <label for="stayConnect">Rester connecté</label>
@@ -36,7 +36,7 @@
         <div>
             <p>
                 <label for="postMail">Adresse email</label>
-                <input type="email" name="postMail" required="">
+                <input type="email" name="postMail" id="postMail" required="">
             </p>
             <p>
                 <input type="submit" name="submit" value="Envoyer">
@@ -49,7 +49,7 @@
         <div>
             <p>En cochant "rester connecté", vous acceptez l'utilisation des cookies</p>
             <p>Les cookies sont de petites quantités d’informations stockées dans des fichiers au sein même du navigateur de votre ordinateur.</p>
-            <p>Sur ArtSchool, les cookies servent uniquement à garder votre identifiant ainsi qu'une version encodé de votre mot de passe. Cela vous permet de rester connecté</p>
+            <p>Sur ArtSchools, les cookies servent uniquement à garder votre identifiant ainsi qu'une version encodé de votre mot de passe. Cela vous permet de rester connecté</p>
             <div>
                 <button id="btnAcceptCookie">Accepter</button>
                 <button id="btnCancelCookie">Refuser</button>

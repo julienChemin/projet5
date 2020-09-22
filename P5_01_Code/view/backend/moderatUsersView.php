@@ -10,7 +10,7 @@
             <div class="<?=$school->getIsActive() ? "" : "inactiveSchool"?>">
                 <div>
                     <figure>
-                        <img src='<?=$school->getLogo()?>'>
+                        <img src="<?=$school->getLogo()?>" alt="Logo de l'établissement">
                     </figure>
                 </div>
                 <div>

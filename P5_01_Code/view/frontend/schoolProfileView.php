@@ -2,7 +2,7 @@
     <div id="banner">
         <?php
         $data['school']->getNoBanner() ? $classForBanner = 'hide' : $classForBanner = "";
-        echo '<img class="' . $classForBanner . '" src="' . $data['school']->getProfileBanner() . '" alt="banner picture">';
+        echo '<img class="' . $classForBanner . '" src="' . $data['school']->getProfileBanner() . '" alt="bannière">';
         ?>
     </div>
     <div id="colorFade"></div>
@@ -11,7 +11,7 @@
             <div class="<?=$data['school']->getProfilePictureSize()?>">
                 <?php
                 $data['school']->getProfilePicture() === 'public/images/question-mark.png' ? $PictureSrc = $data["school"]->getLogo() : $PictureSrc = $data["school"]->getProfilePicture();
-                echo '<img src="' . $PictureSrc . '" alt="profile picture" class="' . $data["school"]->getProfilePictureOrientation() . '">';
+                echo '<img src="' . $PictureSrc . '" alt="Photo de profil" class="' . $data["school"]->getProfilePictureOrientation() . '">';
                 ?>
             </div>
             <div class="<?=$data['school']->getProfileTextBlock()?>">

@@ -56,7 +56,7 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                         ?>
                         <div class="comment fullWidth">
                             <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>">
-                                <img src="<?=$comment->getProfilePictureAuthor()?>">
+                                <img src="<?=$comment->getProfilePictureAuthor()?>" alt="Photo de profil">
                             </a>
                             <div>
                                 <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>">
@@ -117,7 +117,7 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                 if ($author !== null) {
                     ?>
                     <a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
-                        <img src="<?=$author->getProfilePicture()?>">
+                        <img src="<?=$author->getProfilePicture()?>" alt="Photo de profil">
                     </a>
                     <div>
                         <a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
@@ -160,16 +160,16 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                         if ($post['fileType'] === 'folder' && $post['filePath'] !== 'public/images/folder.png') {
                             echo '<figure title="' . $post['title'] . '" class="postOnAside">';
                             echo '<a title="' . $post['title'] . '" href="index.php?action=post&id=' . $post['id'] . '">';
-                            echo '<img class="thumbnailFolder" src="' . $post['filePath'] . '">';
-                            echo '<img src="public/images/folder.png">';
+                            echo '<img class="thumbnailFolder" src="' . $post['filePath'] . '" alt="Aperçu de la publication">';
+                            echo '<img src="public/images/folder.png" alt="Publication de type dossier">';
                             echo '</a></figure>';
                         } else {
                             echo '<figure title="' . $post['title'] . '" class="postOnAside">';
                             echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
                             if ($post['fileType'] === 'video' && $post['filePath'] !== 'public/images/defaultVideoThumbnail.png') {
-                                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                             }
-                            echo '<img src="' . $post['filePath'] . '">';
+                            echo '<img src="' . $post['filePath'] . '" alt="Aperçu de la publication">';
                             echo '</a></figure>';
                         }
                     }
@@ -200,16 +200,16 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                         if ($post['fileType'] === 'folder' && $post['filePath'] !== 'public/images/folder.png') {
                             echo '<figure title="' . $post['title'] . '" class="postOnAside">';
                             echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
-                            echo '<img class="thumbnailFolder" src="' . $post['filePath'] . '">';
-                            echo '<img src="public/images/folder.png">';
+                            echo '<img class="thumbnailFolder" src="' . $post['filePath'] . '" alt="Aperçu de la publication">';
+                            echo '<img src="public/images/folder.png" alt="Publication de type dossier">';
                             echo '</a></figure>';
                         } else {
                             echo '<figure title="' . $post['title'] . '" class="postOnAside">';
                             echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
                             if ($post['fileType'] === 'video' && $post['filePath'] !== 'public/images/defaultVideoThumbnail.png') {
-                                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                             }
-                            echo '<img src="' . $post['filePath'] . '">';
+                            echo '<img src="' . $post['filePath'] . '" alt="Aperçu de la publication">';
                             echo '</a></figure>';
                         }
                     }
@@ -239,16 +239,16 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                         if ($post->getFileType() === 'folder' && $post->getFilePath() !== 'public/images/folder.png') {
                             echo '<figure title="' . $post->getTitle() . '" class="postOnAside">';
                             echo '<a href="index.php?action=post&id=' . $post->getId() . '">';
-                            echo '<img class="thumbnailFolder" src="' . $post->getFilePath() . '">';
-                            echo '<img src="public/images/folder.png">';
+                            echo '<img class="thumbnailFolder" src="' . $post->getFilePath() . '" alt="Aperçu de la publication">';
+                            echo '<img src="public/images/folder.png" alt="Publication de type dossier">';
                             echo '</a></figure>';
                         } else {
                             echo '<figure title="' . $post->getTitle() . '" class="postOnAside">';
                             echo '<a href="index.php?action=post&id=' . $post->getId() . '">';
                             if ($post->getFileType() === 'video' && $post->getFilePath() !== 'public/images/defaultVideoThumbnail.png') {
-                                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                             }
-                            echo '<img src="' . $post->getFilePath() . '">';
+                            echo '<img src="' . $post->getFilePath() . '" alt="Aperçu de la publication">';
                             echo '</a></figure>';
                         }
                     }

@@ -11,7 +11,7 @@
                 <div class="<?=$school->getIsActive() ? "" : "inactiveSchool"?>">
                     <div>
                         <figure>
-                            <img src='<?=$school->getLogo()?>'>
+                            <img src="<?=$school->getLogo()?>" alt="Logo de l'établissement">
                         </figure>
                     </div>
                     <div>
@@ -110,8 +110,8 @@
                 </p>
                 <p>ou</p>
                 <p>
-                    <label for="uploadLogo">Télécharger un nouveau logo (max : 2Mo)</label>
-                    <input type="hidden" name="MAX_FILE_SIZE" value="2000000">
+                    <label for="uploadLogo">Télécharger un nouveau logo (max : 5Mo)</label>
+                    <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
                     <input type="file" name="uploadLogo">
                 </p>
             </div>

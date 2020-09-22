@@ -1,10 +1,10 @@
 <?php
-namespace Chemin\ArtSchool\Model;
-use Chemin\ArtSchool\Model\Database;
+namespace Chemin\ArtSchools\Model;
+use Chemin\ArtSchools\Model\Database;
 
 class HistoryManager extends Database
 {
-    public static $OBJECT_TYPE = 'Chemin\ArtSchool\Model\HistoryEntry';
+    public static $OBJECT_TYPE = 'Chemin\ArtSchools\Model\HistoryEntry';
     public static $TABLE_NAME = 'as_history';
     public static $TABLE_PK = 'id';
     public static $TABLE_CHAMPS ='id, idSchool, category, entry, DATE_FORMAT(dateEntry, "%d/%m/%Y à %H:%m") AS dateEntry';

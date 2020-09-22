@@ -13,7 +13,7 @@
                     <div class="<?=$classIsActive?>">
                         <div>
                             <figure>
-                                <img src="<?=$school->getLogo()?>">
+                                <img src="<?=$school->getLogo()?>" alt="Logo de l'établissement">
                             </figure>
                         </div>
                         <div>

@@ -2,7 +2,7 @@
     <div class="container">
         <div>
             <span>
-                <a href="indexAdmin.php"><img src="public/images/banner.png"></a>
+                <a href="indexAdmin.php"><img src="public/images/banner.png" alt="Bannière Art-Schools"></a>
             </span>
             <nav>
                 <ul>
@@ -27,7 +27,7 @@
                     </li>
                     <hr class="hrNavbar">
 
-                    <li title="Vers ArtSchool" class="hideUnder600Width">
+                    <li title="Vers ArtSchools" class="hideUnder600Width">
                         <a href="index.php"><i class="fas fa-home"></i></a>
                     </li>
                     <hr class="hrNavbar hideUnder600Width">
@@ -99,7 +99,7 @@
 
                     <li>
                         <a href="index.php">
-                            Vers le site ArtSchool<i class="fas fa-home"></i>
+                            Vers le site ArtSchools<i class="fas fa-home"></i>
                         </a>
                     </li>
                     <hr>

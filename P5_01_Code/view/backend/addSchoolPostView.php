@@ -12,11 +12,11 @@
         <div id="blockUploadType">
             <figure id="btnAddFolder">
                 <figcaption>Dossier</figcaption>
-                <img src="public/images/folder.png">
+                <img src="public/images/folder.png" title="Publier un dossier" alt="Publier un dossier">
             </figure>
             <figure id="btnAddFile">
                 <figcaption>Fichier</figcaption>
-                <img src="public/images/schoolFile.png">
+                <img src="public/images/schoolFile.png" title="Publier un fichier" alt="Publier un fichier">
             </figure>
             <?php
             if ($data['isStudent'] === 'false') {
@@ -55,21 +55,21 @@
                     <input type="radio" name="fileType" id="typeImage" value="image">
                     <label for="typeImage">
                         <figcaption>Images</figcaption>
-                        <img src="public/images/fileImage.png">
+                        <img src="public/images/fileImage.png" title="Publier une image" alt="Publier une image">
                     </label>
                 </figure>
                 <figure>
                     <input type="radio" name="fileType" id="typeVideo" value="video">
                     <label for="typeVideo">
                         <figcaption>Vidéos</figcaption>
-                        <img src="public/images/fileVideo.png">
+                        <img src="public/images/fileVideo.png" title="Publier une vidéo" alt="Publier une vidéo">
                     </label>
                 </figure>
                 <figure>
                     <input type="radio" name="fileType" id="typeOther" value="other">
                     <label for="typeOther">
                         <figcaption>Autres</figcaption>
-                        <img src="public/images/fileOther.png">
+                        <img src="public/images/fileOther.png" title="Publier un fichier zip / rar" alt="Publier un fichier zip / rar">
                     </label>
                 </figure>
             </div>
@@ -84,11 +84,11 @@
             <div>
                 <div>
                     <label for="uploadFile">(max : 5Mo)</label>
-                    <input type="hidden" name="MAX_FILE_SIZE" value="5000000">
+                    <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
                     <input type="file" name="uploadFile" id="uploadFile">
                 </div>
                 <figure id="preview">
-                    <img src="" title="preview">
+                    <img src="" title="preview" alt ="Aperçu">
                 </figure>
             </div>
         </div>

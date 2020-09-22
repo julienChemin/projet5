@@ -1,5 +1,5 @@
 <?php
-namespace Chemin\ArtSchool\Model;
+namespace Chemin\ArtSchools\Model;
 
 abstract class Controller
 {
@@ -27,14 +27,14 @@ abstract class Controller
     {
         switch (static::$SIDE) {
             case 'frontend' :
-                if (!empty($_COOKIE['artSchoolAdminId'])) {
-                    $cookie = explode("-", $_COOKIE['artSchoolAdminId']);
+                if (!empty($_COOKIE['artSchoolsAdminId'])) {
+                    $cookie = explode("-", $_COOKIE['artSchoolsAdminId']);
                 } else {
-                    $cookie = explode("-", $_COOKIE['artSchoolId']);
+                    $cookie = explode("-", $_COOKIE['artSchoolsId']);
                 }
                 break;
             case 'backend' :
-                $cookie = explode("-", $_COOKIE['artSchoolAdminId']);
+                $cookie = explode("-", $_COOKIE['artSchoolsAdminId']);
                 break;
         }
         if (count($cookie) === 2) {
@@ -135,7 +135,7 @@ abstract class Controller
     protected function forceDisconnect()
     {
         session_destroy();
-        if (isset($_COOKIE['artSchoolId']) || isset($_COOKIE['artSchoolAdminId'])) {
+        if (isset($_COOKIE['artSchoolsId']) || isset($_COOKIE['artSchoolsAdminId'])) {
             $this->useCookieToSignIn();
         } else {
             throw new \Exception("Certaines informations lié a votre compte ne sont plus valide, veuillez vous reconnecter pour mettre à jour ces informations.Cocher la case 'rester connecté' lors de la connection peu vous éviter ce genre de désagrément");
@@ -144,19 +144,19 @@ abstract class Controller
 
     protected function setCookie(User $user)
     {
-        setcookie('artSchoolId', $user->getId() . '-' . $user->getPassword(), time()+(365*24*3600), null, null, false, true);
+        setcookie('artSchoolsId', $user->getId() . '-' . $user->getPassword(), time()+(365*24*3600), null, null, false, true);
         if ($user->getIsAdmin() || $user->getIsModerator()) {
-            setcookie('artSchoolAdminId', $user->getId() . '-' . $user->getPassword(), time()+(365*24*3600), null, null, false, true);
+            setcookie('artSchoolsAdminId', $user->getId() . '-' . $user->getPassword(), time()+(365*24*3600), null, null, false, true);
         }
     }
 
     protected function cookieDestroy()
     {
-        if (isset($_COOKIE['artSchoolId'])) {
-            setcookie('artSchoolId', '', time()-3600, null, null, false, true);
+        if (isset($_COOKIE['artSchoolsId'])) {
+            setcookie('artSchoolsId', '', time()-3600, null, null, false, true);
         }
-        if (isset($_COOKIE['artSchoolAdminId'])) {
-            setcookie('artSchoolAdminId', '', time()-3600, null, null, false, true);
+        if (isset($_COOKIE['artSchoolsAdminId'])) {
+            setcookie('artSchoolsAdminId', '', time()-3600, null, null, false, true);
         }
     }
 

@@ -12,7 +12,7 @@ $user = $data['user'];
                 if ($author !== null) {
                     ?>
                     <a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
-                        <img src="<?=$author->getProfilePicture()?>">
+                        <img src="<?=$author->getProfilePicture()?>" alt="Photo de profil">
                     </a>
                     <div>
                         <a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
@@ -52,15 +52,16 @@ $user = $data['user'];
         </section>
         <section>
             <?php
+            !empty($post->getTitle()) ? $alt = $post->getTitle() : $alt = 'Publication';
             switch ($post->getFileType()) {
                 case 'image' :
-                    echo '<a href="' . $post->getFilePath() . '"><img class="fileImage" src="' . $post->getFilePath() . '"></a>';
+                    echo '<a href="' . $post->getFilePath() . '"><img class="fileImage" src="' . $post->getFilePath() . '" alt="' . $alt . '"></a>';
                     break;
                 case 'video' :
                     echo '<iframe width="90%" height="90%" src="https://www.youtube.com/embed/' . $post->getUrlVideo() . '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
                     break;
                 case 'compressed' :
-                    echo '<a title="Cliquez pour télécharger" href="' . $post->getFilePath() . '"><i class="fas fa-download"><img class="fileCompressed" src="public/images/fileOther.png"></i></a>';
+                    echo '<a title="Cliquez pour télécharger" href="' . $post->getFilePath() . '"><i class="fas fa-download"><img class="fileCompressed" src="public/images/fileOther.png" alt="' . $alt . '"></i></a>';
                     break;
             }
             ?>
@@ -77,7 +78,7 @@ $user = $data['user'];
     <div id="blockDescription" class="fullWidth">
         <?php
         if (!empty($post->getTitle())) {
-            echo '<h1>' . $post->getTitle() . '</h1>';
+            echo '<h1><strong>' . $post->getTitle() . '</strong></h1>';
         }
         if (!empty($post->getDescription())) {
             echo '<div>' . $post->getDescription() . '</div>';
@@ -94,7 +95,7 @@ $user = $data['user'];
         echo '<h2>Tags</h2>';
         echo '<aside>';
         foreach ($post->getlistTags() as $tag) {
-            echo '<a class="tag" href="index.php?action=search&sortBy=tag&tag=' . $tag . '">' . $tag . '</a>';
+            echo '<a class="tag" href="index.php?action=search&sortBy=tag&tag=' . $tag . '"><strong>' . $tag . '</strong></a>';
         }
         echo '</aside></section>';
     }
@@ -126,7 +127,7 @@ $user = $data['user'];
                         ?>
                         <div class="comment fullWidth">
                             <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>">
-                                <img src="<?=$comment->getProfilePictureAuthor()?>">
+                                <img src="<?=$comment->getProfilePictureAuthor()?>" alt="Photo de profil">
                             </a>
                             <div>
                                 <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>">
@@ -184,16 +185,16 @@ $user = $data['user'];
                     if ($post['fileType'] === 'folder' && $post['filePath'] !== 'public/images/folder.png') {
                         echo '<figure title="' . $post['title'] . '" class="postOnAside">';
                         echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
-                        echo '<img class="thumbnailFolder" src="' . $post['filePath'] . '">';
-                        echo '<img src="public/images/folder.png">';
+                        echo '<img class="thumbnailFolder" src="' . $post['filePath'] . '" alt="Aperçu de la publication">';
+                        echo '<img src="public/images/folder.png" alt="Publication de type dossier">';
                         echo '</a></figure>';
                     } else {
                         echo '<figure title="' . $post['title'] . '" class="postOnAside">';
                         echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
                         if ($post['fileType'] === 'video' && $post['filePath'] !== 'public/images/defaultVideoThumbnail.png') {
-                            echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                            echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                         }
-                        echo '<img src="' . $post['filePath'] . '">';
+                        echo '<img src="' . $post['filePath'] . '" alt="Publication">';
                         echo '</a></figure>';
                     }
                 }
@@ -224,16 +225,17 @@ $user = $data['user'];
                     if ($post['fileType'] === 'folder' && $post['filePath'] !== 'public/images/folder.png') {
                         echo '<figure title="' . $post['title'] . '" class="postOnAside">';
                         echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
-                        echo '<img class="thumbnailFolder" src="' . $post['filePath'] . '">';
-                        echo '<img src="public/images/folder.png">';
+                        echo '<img class="thumbnailFolder" src="' . $post['filePath'] . '" alt="Aperçu de la publication">';
+                        echo '<img src="public/images/folder.png" alt="Publication de type dossier">';
                         echo '</a></figure>';
                     } else {
                         echo '<figure title="' . $post['title'] . '" class="postOnAside">';
                         echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
                         if ($post['fileType'] === 'video' && $post['filePath'] !== 'public/images/defaultVideoThumbnail.png') {
-                            echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                            echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                         }
-                        echo '<img src="' . $post['filePath'] . '">';
+                        !empty($post['title']) ? $alt = $post['title'] : $alt = 'Publication';
+                        echo '<img src="' . $post['filePath'] . '" alt="' . $alt . '">';
                         echo '</a></figure>';
                     }
                 }
@@ -263,16 +265,17 @@ $user = $data['user'];
                     if ($post->getFileType() === 'folder' && $post->getFilePath() !== 'public/images/folder.png') {
                         echo '<figure title="' . $post->getTitle() . '" class="postOnAside">';
                         echo '<a href="index.php?action=post&id=' . $post->getId() . '">';
-                        echo '<img class="thumbnailFolder" src="' . $post->getFilePath() . '">';
-                        echo '<img src="public/images/folder.png">';
+                        echo '<img class="thumbnailFolder" src="' . $post->getFilePath() . '" alt="Aperçu de la publication">';
+                        echo '<img src="public/images/folder.png" alt="Publication de type dossier">';
                         echo '</a></figure>';
                     } else {
                         echo '<figure title="' . $post->getTitle() . '" class="postOnAside">';
                         echo '<a href="index.php?action=post&id=' . $post->getId() . '">';
                         if ($post->getFileType() === 'video' && $post->getFilePath() !== 'public/images/defaultVideoThumbnail.png') {
-                            echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                            echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                         }
-                        echo '<img src="' . $post->getFilePath() . '">';
+                        !empty($post->getTitle()) ? $alt = $post->getTitle() : $alt = 'Publication';
+                        echo '<img src="' . $post->getFilePath() . '" alt="' . $alt . '">';
                         echo '</a></figure>';
                     }
                 }
@@ -304,16 +307,17 @@ $user = $data['user'];
                             if ($post->getFileType() === 'folder' && $post->getFilePath() !== 'public/images/folder.png') {
                                 echo '<figure title="' . $post->getTitle() . '" class="postOnAside">';
                                 echo '<a href="index.php?action=post&id=' . $post->getId() . '">';
-                                echo '<img class="thumbnailFolder" src="' . $post->getFilePath() . '">';
-                                echo '<img src="public/images/folder.png">';
+                                echo '<img class="thumbnailFolder" src="' . $post->getFilePath() . '" alt="Aperçu de la publication">';
+                                echo '<img src="public/images/folder.png" alt="Publication de type dossier">';
                                 echo '</a></figure>';
                             } else {
                                 echo '<figure title="' . $post->getTitle() . '" class="postOnAside">';
                                 echo '<a href="index.php?action=post&id=' . $post->getId() . '">';
                                 if ($post->getFileType() === 'video' && $post->getFilePath() !== 'public/images/defaultVideoThumbnail.png') {
-                                    echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                                    echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                                 }
-                                echo '<img src="' . $post->getFilePath() . '">';
+                                !empty($post->getTitle()) ? $alt = $post->getTitle() : $alt = 'Publication';
+                                echo '<img src="' . $post->getFilePath() . '" alt="' . $alt . '">';
                                 echo '</a></figure>';
                             }
                         }

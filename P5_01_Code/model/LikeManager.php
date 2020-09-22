@@ -1,6 +1,6 @@
 <?php
-namespace Chemin\ArtSchool\Model;
-use Chemin\ArtSchool\Model\AbstractManager;
+namespace Chemin\ArtSchools\Model;
+use Chemin\ArtSchools\Model\AbstractManager;
 
 abstract class LikeManager extends AbstractManager
 {

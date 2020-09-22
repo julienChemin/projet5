@@ -92,10 +92,6 @@
 #search button:hover{
     color: #CF8B3F;
 }
-.buttonIsFocus{
-    background-color: #161617;
-    color: #CF8B3F!important;
-}
 .menuIsOpen{
     border :solid 2px #CF8B3F!important;
     border-radius: 10px!important;

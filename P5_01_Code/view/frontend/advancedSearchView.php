@@ -7,14 +7,14 @@ if (empty($_POST)) {
             <h1>Filtrer par établissement</h1>
             <div>
                 <input type="radio" name="schoolFilter" id="noSchoolFilter" value="noSchoolFilter" checked>
-                <label for="noSchoolFilter"><div><i class="fas fa-times"></i></div>pas de filtre</label>
+                <label for="noSchoolFilter"><i class="fas fa-times"></i>pas de filtre</label>
                 <?php
                 for ($i=0;$i<count($data['schools']); $i++) {
                     $school = $data['schools'][$i];
                     if ($school->getName() !== NO_SCHOOL) {
                         echo '<input type="radio" name="schoolFilter" id="schoolFilter' . $i .  '" value="' . $school->getName() .  '">';
                         echo '<label for="schoolFilter' . $i .  '">';
-                        echo '<div><img src="' . $school->getLogo() . '"></div>' . $school->getName();
+                        echo '<img src="' . $school->getLogo() . '" alt="Logo de l\'établissement">' . $school->getName();
                         echo '</label>';
                     }
                 }
@@ -40,7 +40,7 @@ if (empty($_POST)) {
             <div>
                 <div>
                     <label for="tagName">Entrez le nom d'un tag</label>
-                    <input type="text" name="tagName" id="tagName">
+                    <input type="text" name="tagName" id="tagName" autocomplete="off">
                 </div>
                 <div id="selectedTags">
                         <h2>Tags sélectionné</h2>
@@ -96,11 +96,11 @@ if (empty($_POST)) {
                         break;
                 }
             } elseif ($post->getFileType() === 'video') {
-                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png">';
+                echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
             }
             ?>
             <a href="index.php?action=post&id=<?=$post->getId()?>">
-                <img src="<?=$post->getFilePath()?>">
+                <img src="<?=$post->getFilePath()?>" alt="Aperçu de la publication">
             </a>
             <?php
             echo '</figure>';

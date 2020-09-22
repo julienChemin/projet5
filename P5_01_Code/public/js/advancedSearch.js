@@ -104,7 +104,7 @@ if (blockFilterAdvancedSearch === null) {
 			blockRecommendedTags.style.display = "none";
 		} else if (inputTag.value.length > 1) {
 			existingTags.forEach(tag => {
-				if (tag.indexOf(inputTag.value) !== -1) {
+				if (tag.toLowerCase().indexOf(inputTag.value.toLowerCase()) !== -1) {
 					if (document.getElementById('tag' + tag[0].toUpperCase() + deleteSpace(tag.substring(1))) === null) {
 						blockRecommendedTags.style.display = "block";
 						createTag(tag);
