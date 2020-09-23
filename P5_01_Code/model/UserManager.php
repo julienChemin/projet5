@@ -244,7 +244,7 @@ class UserManager extends AbstractManager
 			Si le lien ne fonctionne pas, rendez vous a l'adresse suivante : <br>http://julienchemin.fr/projet5/index.php?action=resetPassword&key=" . $temporaryPassword . 
         "&id=" . $user->getId() . "<br><br>L'equipe d'ArtSchools vous remercie.";
         $content = wordwrap($content, 70, "\r\n");
-        $headers = array('From' => '"Art-School"<artschoolsfr@gmail.com>', 
+        $headers = array('From' => '"Art-Schools"<artschoolsfr@gmail.com>', 
             'Content-Type' => 'text/html; charset=utf-8');
         ini_set("sendmail_from", "artschoolsfr@gmail.com");
         mail($user->getMail(), $subject, $content, $headers);

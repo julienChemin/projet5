@@ -163,11 +163,6 @@
     action="indexAdmin.php?action=upload&elem=banner&noBanner=<?=$data['school']->getNoBanner() ? 'true' : 'false'?>" enctype="multipart/form-data">
         <input type="hidden" name="school" value="<?=$data['school']->getName()?>">
         <p>
-            <label for="bannerPath">Adresse de l'image</label>
-            <input type="text" name="bannerPath" id="bannerPath">
-        </p>
-        <p>- ou -</p>
-        <p>
             <label for="dlBanner">Télécharger une image (max : 5Mo) : </label>
             <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
             <input type="file" name="dlBanner" id="dlBanner">
@@ -189,11 +184,6 @@
     <form id="contentMenuEditProfilePicture" class="contentMenuEdit menuEditHeader" method="POST" 
             action="indexAdmin.php?action=upload&elem=picture&orientation=<?=$data['school']->getProfilePictureOrientation()?>&size=<?=$data['school']->getProfilePictureSize()?>"
             enctype="multipart/form-data">
-        <p>
-            <label for="picturePath">Adresse de l'image</label>
-            <input type="text" name="picturePath" id="picturePath">
-        </p>
-        <p>- ou -</p>
         <p>
             <label for="dlPicture">Télécharger une image (max : 5Mo): </label>
             <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
@@ -369,7 +359,7 @@
             </div>
         </div>
         <div id="blockToDelete">
-            <i title="Supprimer" class="fas fa-times"></i>
+            <i title="Supprimer" class="fas fa-trash"></i>
         </div>
     </form>
     <form class="container" method="POST" action="indexAdmin.php?action=updateProfile&elem=content&school=<?=$data['school']->getName()?>">

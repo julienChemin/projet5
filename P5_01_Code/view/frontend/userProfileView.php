@@ -181,11 +181,6 @@ if ($authorizedUser) {
         action="index.php?action=upload&elem=banner&noBanner=<?=$data['user']->getNoBanner() ? 'true' : 'false'?>" enctype="multipart/form-data">
             <input type="hidden" name="userId" value="<?=$data['user']->getId()?>">
             <p>
-                <label for="bannerPath">Adresse de l'image</label>
-                <input type="text" name="bannerPath" id="bannerPath">
-            </p>
-            <p>- ou -</p>
-            <p>
                 <label for="dlBanner">Télécharger une image (max : 5Mo) : </label>
                 <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
                 <input type="file" name="dlBanner" id="dlBanner">
@@ -207,11 +202,6 @@ if ($authorizedUser) {
         <form id="contentMenuEditProfilePicture" class="contentMenuEdit menuEditHeader" method="POST" 
         action="index.php?action=upload&elem=picture&orientation=<?=$data['user']->getProfilePictureOrientation()?>&size=<?=$data['user']->getProfilePictureSize()?>" 
         enctype="multipart/form-data">
-            <p>
-                <label for="picturePath">Adresse de l'image</label>
-                <input type="text" name="picturePath" id="picturePath">
-            </p>
-            <p>- ou -</p>
             <p>
                 <label for="dlPicture">Télécharger une image (max : 5Mo): </label>
                 <input type="hidden" name="MAX_FILE_SIZE" value="6000000">

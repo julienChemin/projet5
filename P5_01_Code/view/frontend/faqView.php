@@ -31,7 +31,7 @@
     <p>
         Si vous ne trouvez pas de réponses dans la F.A.Q, <br>
         vous pouvez rejoindre le <a href="https://discord.gg/uDfwPHH">discord</a> 
-        Art-School pour poser votre question directement à la communauté ou à l'équipe d'Art-School
+        Art-Schools pour poser votre question directement à la communauté ou à l'équipe d'Art-Schools
     </p>
     <?php
     if (!empty($_SESSION) && isset($_SESSION['pseudo'])) {

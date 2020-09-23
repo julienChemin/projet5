@@ -237,7 +237,7 @@ class Frontend extends Controller
                 case 'content' :
                     $ProfileContentManager = new ProfileContentManager();
                     $ProfileContentManager->updateProfileContent($_POST);
-                    $this->redirection();
+                    //$this->redirection();
                     break;
             }
         } else {

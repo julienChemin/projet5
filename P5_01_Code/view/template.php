@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="fr">
     <head>
-        <title>Art-school</title>
+        <title>Artschools</title>
         <link rel="shortcut icon" type="image/png" href="public/images/favicon.png"/>
         <!--meta-->
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="description" content="Art-school est un site qui répertorie des artistes en cours d'études">
+        <meta name="description" content="Artschools est un site qui répertorie des artistes en cours d'études, ainsi que leurs établissements">
 
-        <meta name="twitter:title" content="Art-school">
-        <meta name="twitter:description" content="Art-school est un site qui répertorie des artistes en cours d'études">
+        <meta name="twitter:title" content="Artschools">
+        <meta name="twitter:description" content="Artschools est un site qui répertorie des artistes en cours d'études, ainsi que leurs établissements">
         <meta name="twitter:image" content="images/a.jpeg">
 
-        <meta property="og:title" content="Art-school" />
+        <meta property="og:title" content="Artschools" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="julienchemin.fr/projet5/art-school.html" />
+        <meta property="og:url" content="julienchemin.fr/projet5/index.php" />
         <meta property="og:image" content="images/a.jpeg" />
-        <meta property="og:description" content="Art-school est un site qui répertorie des artistes en cours d'études" /> 
-        <meta property="og:site_name" content="Art-school" />
+        <meta property="og:description" content="Artschools est un site qui répertorie des artistes en cours d'études, ainsi que leurs établissements" /> 
+        <meta property="og:site_name" content="Artschools" />
         <!--css-->
         <?php
         require 'view/style.php';

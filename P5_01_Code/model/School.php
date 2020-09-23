@@ -287,8 +287,9 @@ class School
             $this->setNoBanner(true);
         } elseif (is_string($profileBannerInfo) && strlen($profileBannerInfo) > 0) {
             $infos = explode(' ', $profileBannerInfo);
-            if (strpos($infos[0], 'https://') === 0) {
-                $infos[0] = str_replace('https://julienchemin.fr/projet5/index.php/', '', $infos[0]);
+            if (strpos($infos[0], 'http://') === 0 || strpos($infos[0], 'https://') === 0) {
+                $url = explode('/', $infos[0]);
+                $infos[0] = $url[count($url) - 4] . '/' . $url[count($url) - 3] . '/' . $url[count($url) - 2] . '/' . $url[count($url) - 1];
             }
             $this->setProfileBanner($infos[0]);
             if ($infos[1] === 'true') {
@@ -322,8 +323,9 @@ class School
             $this->setProfilePictureSize('smallPicture');
         } elseif (is_string($profilePictureInfo) && strlen($profilePictureInfo) > 0) {
             $infos = explode(' ', $profilePictureInfo);
-            if (strpos($infos[0], 'https://') === 0) {
-                $infos[0] = str_replace('https://julienchemin.fr/projet5/index.php/', '', $infos[0]);
+            if (strpos($infos[0], 'http://') === 0 || strpos($infos[0], 'https://') === 0) {
+                $url = explode('/', $infos[0]);
+                $infos[0] = $url[count($url) - 4] . '/' . $url[count($url) - 3] . '/' . $url[count($url) - 2] . '/' . $url[count($url) - 1];
             }
             $this->setProfilePicture($infos[0]);
             $this->setProfilePictureOrientation($infos[1]);

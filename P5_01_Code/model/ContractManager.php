@@ -132,9 +132,9 @@ class ContractManager extends AbstractManager
         $content = "Bonjour, <br><br>
             nous vous envoyons un mail de rappel, car votre abonnement prend fin " . $timeLaps . "<br><br>
             Lorsque l'abonnement prend fin, Vous perdez access à certains privilège.<br>
-            Vous pouvez vous référer à la <a href='julienchemin.fr/projet5/index.php?action=faq'>F.A.Q</a> pour en savoir plus. 
+            Vous pouvez vous référer à la <a style='text-decoration: underline;' href='julienchemin.fr/projet5/index.php?action=faq'>F.A.Q</a> pour en savoir plus. 
             (ou sur le site ArtSchools et en cliquant sur 'F.A.Q' en bas de page)<br><br>
-            Vous pouvez renouveler votre abonnement en passant par <a href='julienchemin.fr/projet5/index.php?action=settings'>ce lien</a>, 
+            Vous pouvez renouveler votre abonnement en passant par <a style='text-decoration: underline;' href='julienchemin.fr/projet5/index.php?action=settings'>ce lien</a>, 
             ou sur le site ArtSchools dans les paramètres de votre compte .<br><br>
             L'equipe d'ArtSchools vous remercie.";
         return wordwrap($content, 70, "\r\n");

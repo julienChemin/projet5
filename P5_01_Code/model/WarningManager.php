@@ -184,7 +184,7 @@ class WarningManager extends AbstractManager
             La durée de suspension du compte augmente d'un mois à chaque fois que vous atteignez les 3 avertissements.<br><br>
             L'equipe d'ArtSchools vous remercie.";
         $content = wordwrap($content, 70, "\r\n");
-        $headers = array('From' => '"Art-School"<artschoolsfr@gmail.com>', 
+        $headers = array('From' => '"Art-Schools"<artschoolsfr@gmail.com>', 
             'Content-Type' => 'text/html; charset=utf-8');
         ini_set("sendmail_from", "artschoolsfr@gmail.com");
         mail($user->getMail(), $subject, $content, $headers);
@@ -199,7 +199,7 @@ class WarningManager extends AbstractManager
             La durée de suspension du compte augmente de un mois a chaque fois que vous atteignez les 3 avertissements.<br><br>
             L'equipe d'ArtSchools vous remercie.";
         $content = wordwrap($content, 70, "\r\n");
-        $headers = array('From' => '"Art-School"<artschoolsfr@gmail.com>', 
+        $headers = array('From' => '"Art-Schools"<artschoolsfr@gmail.com>', 
             'Content-Type' => 'text/html; charset=utf-8');
         ini_set("sendmail_from", "artschoolsfr@gmail.com");
         mail($user->getMail(), $subject, $content, $headers);
@@ -212,7 +212,7 @@ class WarningManager extends AbstractManager
             Nous avons le plaisir de vous informer que votre compte est de nouveau disponible.<br><br>
             L'equipe d'ArtSchools vous remercie.";
         $content = wordwrap($content, 70, "\r\n");
-        $headers = array('From' => '"Art-School"<artschoolsfr@gmail.com>', 
+        $headers = array('From' => '"Art-Schools"<artschoolsfr@gmail.com>', 
             'Content-Type' => 'text/html; charset=utf-8');
         ini_set("sendmail_from", "artschoolsfr@gmail.com");
         mail($user->getMail(), $subject, $content, $headers);

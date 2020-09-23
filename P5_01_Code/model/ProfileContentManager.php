@@ -232,8 +232,8 @@ class ProfileContentManager extends AbstractManager
 
     private function deleteProfileContent(int $idProfile, string $type, int $idBlockToDelete, int $orderBlockToDelete, bool $schoolProfile = false)
     {
-        $this->deleteByProfileId($idProfile, $type, $orderBlockToDelete, $schoolProfile)
-            ->deleteAllImgEntries($idBlockToDelete);
+        $this->deleteAllImgEntries($idBlockToDelete)
+            ->deleteByProfileId($idProfile, $type, $orderBlockToDelete, $schoolProfile);
         $contentToUpdate = $this->getContentForDelete($idProfile, $type, $orderBlockToDelete, $schoolProfile);
         foreach ($contentToUpdate as $content) {
             $newOrderContent = intval($content->getContentOrder())-1;
@@ -471,10 +471,11 @@ class ProfileContentManager extends AbstractManager
         return $this;
     }
 
-    private function deleteImgEntry(int $idProfileContent, string $filePathInBdd)
+    private function deleteImgEntry(int $idProfileContent, string $filePathInBdd)//TODO delete varD
     {
-        if (strpos($filePathInBdd, 'https://') === 0) {
-            $filePath = str_replace('https://julienchemin.fr/projet5/index.php/', '', $filePathInBdd);
+        if (strpos($filePathInBdd, 'http://') === 0 || strpos($filePathInBdd, 'https://') === 0) {
+            $url = explode('/', $filePathInBdd);
+            $filePath = $url[count($url) - 4] . '/' . $url[count($url) - 3] . '/' . $url[count($url) - 2] . '/' . $url[count($url) - 1];
         } else {
             $filePath = $filePathInBdd;
         }

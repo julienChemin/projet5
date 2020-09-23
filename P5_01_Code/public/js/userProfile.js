@@ -84,17 +84,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	//MENU EDIT BANNER
 	let formBanner = document.querySelector('#contentMenuEditBanner');
 	let bannerImg = document.querySelector('#banner img');
-	let bannerSrcInBdd = bannerImg.src;
 	let userId = formBanner.elements.userId.value;
-
-	//input banner picture path
-	formBanner.elements.bannerPath.addEventListener('change', function(e){
-		if (e.target.value.indexOf('<script') === -1) {
-			bannerImg.src = e.target.value;
-		} else {
-			e.target.value = "";
-		}
-	});
 
 	//input no banner
 	formBanner.elements.noBanner.addEventListener('change', function(e){
@@ -111,34 +101,23 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	//submit
 	let noBanner = formBanner.elements.noBanner.checked;
 	formBanner.elements.saveBanner.addEventListener('click', function(e){
-		if (formBanner.elements.bannerPath.value !== "" && formBanner.elements.bannerPath.value !== bannerSrcInBdd) {
+		if (formBanner.elements.dlBanner.value === "") {
+			//banner img don't change
 			e.preventDefault();
-			let url = 'index.php?action=updateProfile&userId='+userId;
-			url += '&elem=profileBanner&value='+formBanner.elements.bannerPath.value;
-			url += '&noBanner='+formBanner.elements.noBanner.checked;
-
-			noBanner = formBanner.elements.noBanner.checked;
-			
-			ajaxGet(url, function(){
-				bannerSrcInBdd = formBanner.elements.bannerPath.value;
-				toggleClass(buttonMenuEdit, 'menuIsOpen');
-			});
-		} else if (formBanner.elements.dlBanner.value === "") {
 			if (noBanner !== formBanner.elements.noBanner.checked) {
-				e.preventDefault();
+				//toggle "noBanner" value
 				let url = 'index.php?action=updateProfile&userId='+userId;
 				url += '&elem=profileBanner&value='+bannerImg.src;
 				url += '&noBanner='+formBanner.elements.noBanner.checked;
 
+				//edit actual "noBanner" value
 				noBanner = formBanner.elements.noBanner.checked;
 
 				ajaxGet(url, function(){
 					toggleClass(buttonMenuEdit, 'menuIsOpen');
 				});
-			} else {
-				e.preventDefault();
 			}
-		} 
+		}
 		toggleModal(blockMenuEditing, modal);
 	});
 
@@ -146,16 +125,6 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	let formProfilePicture = document.querySelector('#contentMenuEditProfilePicture');
 	let blockProfilePicture = document.querySelector('#profile > header > div:first-of-type');
 	let profileImg = document.querySelector('#profile img:first-of-type');
-	let profileSrcInBdd = profileImg.src;
-
-	//input picture path
-	formProfilePicture.elements.picturePath.addEventListener('change', function(e){
-		if (e.target.value.indexOf('<script') === -1 || e.target.value.indexOf(' ')) {
-			profileImg.src = e.target.value;
-		} else {
-			e.target.value = "";
-		}
-	});
 
 	//input orientation
 	document.getElementById('widePicture').addEventListener('click', function(e){
@@ -222,36 +191,23 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	let pictureSize = formProfilePicture.elements.pictureSize.value;
 
 	formProfilePicture.elements.saveProfilePicture.addEventListener('click', function(e){
-		if (formProfilePicture.elements.picturePath.value !== "" && formProfilePicture.elements.picturePath.value !== profileSrcInBdd) {
+		if (formProfilePicture.elements.dlPicture.value === "") {
+			// profile picture don't change
 			e.preventDefault();
-			let url = 'index.php?action=updateProfile&userId=' + userId;
-			url += '&elem=profilePicture&value=' + formProfilePicture.elements.picturePath.value;
-			url += '&orientation=' + formProfilePicture.elements.pictureOrientation.value;
-			url += '&size=' + formProfilePicture.elements.pictureSize.value;
-
-			pictureOrientation = formProfilePicture.elements.pictureOrientation.value;
-			pictureSize = formProfilePicture.elements.pictureSize.value;
-			
-			ajaxGet(url, function(){
-				profileSrcInBdd = formProfilePicture.elements.picturePath.value;
-				toggleClass(buttonMenuEdit, 'menuIsOpen');
-			});
-		} else if (formProfilePicture.elements.dlPicture.value === "") {
 			if (pictureOrientation !== formProfilePicture.elements.pictureOrientation.value || pictureSize !== formProfilePicture.elements.pictureSize.value) {
-				e.preventDefault();
+				// toggle "orientation" and / or "size" value
 				let url = 'index.php?action=updateProfile&userId=' + userId;
 				url += '&elem=profilePicture&value=' + profileImg.src;
 				url += '&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 				url += '&size=' + formProfilePicture.elements.pictureSize.value;
 
+				// edit actual "orientation" and / or "size" value
 				pictureOrientation = formProfilePicture.elements.pictureOrientation.value;
 				pictureSize = formProfilePicture.elements.pictureSize.value;
 
 				ajaxGet(url, function(){
 					toggleClass(buttonMenuEdit, 'menuIsOpen');
 				});
-			} else {
-				e.preventDefault();
 			}
 		}
 		toggleModal(blockMenuEditing, modal);

@@ -1,4 +1,4 @@
 new stuff
-    - 
+    - remove the possibility of using a link for the profile picture or the banner -> in school profile and user profile
 fixed issues
-    - some fix so the W3C validator is happy now
+    - 

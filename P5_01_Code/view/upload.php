@@ -6,7 +6,6 @@ $imageFolder = "public/images/dl/";
 $relative_path = "public/images/dl/";
 $maxFileSize = 6000000;
 $fileSize = $temp['size'];
-var_dump($temp, is_uploaded_file($temp['tmp_name']), $fileSize, $maxFileSize);
 
 if (is_uploaded_file($temp['tmp_name']) && $fileSize < $maxFileSize) {
     // Verify extension
