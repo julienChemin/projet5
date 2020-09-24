@@ -1,4 +1,4 @@
 new stuff
-    - remove the possibility of using a link for the profile picture or the banner -> in school profile and user profile
+    - test 2
 fixed issues
     - 
