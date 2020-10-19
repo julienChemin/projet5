@@ -1,7 +1,4 @@
 new stuff
-    - refactoring for the posting system
+    - 
 fixed issues
-    - home frontend -> some post should'nt shown themself, their do not anymore
-    - slide issues (variable multiplication on url)
-    - private post visibility
-    - issue about deleting user post by admin of the same school
+    - we can now post folder on folder on folder on folder [...] with different privacy

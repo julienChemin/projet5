@@ -22,12 +22,15 @@
                     <div>
                         <label for="listGroup">Qui peut voir la publication : </label>
                         <select id="listGroup" name="listGroup">
-                            <option value="all">Tous les groupes</option>
-                            <option value="" selected></option>
+                            <option value=''>Choisir les groupes</option>
                             <?php
                             if (!empty($data['groups'])) {
-                                foreach ($data['groups'] as $group) {
-                                    echo '<option value=' . $group . '>' . $group . '</option>';
+                                foreach ($data['groups'] as $key => $value) {
+                                    if ($key === "all") {
+                                        echo '<option value=' . $key . ' selected>' . $value . '</option>';
+                                    } else {
+                                        echo '<option value=' . $key . '>' . $value . '</option>';
+                                    }
                                 }
                             }
                             ?>

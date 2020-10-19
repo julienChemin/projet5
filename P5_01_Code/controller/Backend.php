@@ -381,15 +381,17 @@ class Backend extends Controller
     {
         $SchoolManager = new SchoolManager();
         $UserManager = new UserManager();
+        $PostsManager = new PostsManager();
         $school = $SchoolManager->getSchoolByName($_SESSION['school']);
         $user = $UserManager->getUserByName($_SESSION['pseudo']);
         if ($_SESSION['school'] !== ALL_SCHOOL && $school && $user) {
             if (!empty($_GET['folder'])) {
-                $this->addSchoolPostOnFolder(new PostsManager(), $user, $school);
+                $this->addSchoolPostOnFolder($PostsManager, $user, $school);
             } else {
+                $authorizedGroups = $PostsManager->getListAuthorizedGroups($school->getListSchoolGroups());
                 RenderView::render(
                     'template.php', 'backend/addSchoolPostView.php', 
-                    ['groups' => $school->getListSchoolGroups(), 'option' => ['addPost', 'tinyMCE']]
+                    ['groups' => $authorizedGroups, 'option' => ['addPost', 'tinyMCE']]
                 );
             }
         } else {
@@ -403,13 +405,13 @@ class Backend extends Controller
         $PostsManager = new PostsManager();
         $arrAcceptedValues = ['onSchoolProfile', 'private'];
         //check listGroup (list authorized group is only for private post by admin / moderator)
-        if (!empty($_POST['listGroup']) && $_POST['listGroup'] === "all") {
+        if (empty($_POST['listAuthorizedGroups'])) {
             $_POST['listAuthorizedGroups'] = null;
         }
         if (isset($_GET['type']) && in_array($_GET['type'], $arrAcceptedValues) && $user = $UserManager->getOneById($_SESSION['id'])) {
             if ($response = $PostsManager->canUploadPost($_GET['type'], $user, $_POST, new TagsManager())) {
                 if ($PostsManager->uploadPost($response, true)) {
-                    //header('Location: indexAdmin.php?action=schoolProfile&school=' . $_SESSION['school']);
+                    header('Location: indexAdmin.php?action=schoolProfile&school=' . $_SESSION['school']);
                 } else {
                     throw new \Exception("Le fichier n'est pas conforme");
                 }
@@ -645,13 +647,14 @@ class Backend extends Controller
                 // post on folder on profile
                 RenderView::render(
                     'template.php', 'backend/addSchoolPostOnPublicFolderView.php', 
-                    ['groups' => $school->getListSchoolGroups(), 'option' => ['addPost', 'tinyMCE']]
+                    ['option' => ['addPost', 'tinyMCE']]
                 ); 
             } elseif ($folder->getIsPrivate() && $user->getIsActive()) {
                 // post on private folder
+                $authorizedGroups = $PostsManager->getListAuthorizedGroups($school->getListSchoolGroups(), $folder->getListAuthorizedGroups(), true);
                 RenderView::render(
                     'template.php', 'backend/addSchoolPostOnPrivateFolderView.php', 
-                    ['groups' => $school->getListSchoolGroups(), 'option' => ['addPost', 'tinyMCE']]
+                    ['groups' => $authorizedGroups, 'option' => ['addPost', 'tinyMCE']]
                 );
             }
         } else {

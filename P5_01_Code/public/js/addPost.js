@@ -129,8 +129,6 @@ if (document.getElementById('addSchoolPost') !== null) {
         listAuthorizedGroups.value += (',' + group);
         //remove this group from list group to add
         listGroup.removeChild(document.querySelector('option[value="' + group + '"]'));
-        //select empty option on list group
-        document.querySelector('option[value=""]').selected = true;
     }
 
     if (checkboxIsPrivate !== undefined) {
@@ -495,12 +493,6 @@ inputSubmit.addEventListener(
                     setErrorMsg('Vous devez ajouter un titre (30 caractères max.)');
                 }
             break;
-            }
-        if (document.getElementById('addSchoolPost') !== null && formAddPost.elements.isPrivate.checked  
-            && formAddPost.elements.listGroup.value !== 'all' && formAddPost.elements.listAuthorizedGroups.value === '') {
-            //no group selected for private school post
-            e.preventDefault();
-            setErrorMsg('Pour une publication privée, vous devez choisir au moins un groupe');
         }
     }
 );

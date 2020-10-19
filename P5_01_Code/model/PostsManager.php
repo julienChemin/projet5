@@ -345,6 +345,35 @@ class PostsManager extends LikeManager
         }
     }
 
+    public function getListAuthorizedGroups(array $schoolList = null, $folderList = null, bool $onPrivateFolder = false)
+    {
+        $response = [];
+        if (!$onPrivateFolder) {
+            $response['all'] = 'Tous les groupes';
+            if (!empty($schoolList)) {
+                foreach ($schoolList as $group) {
+                    $response[$group] = $group;
+                }
+            }
+        } else {
+            if ($schoolList === null) {
+                $response['all'] = 'Tous les groupes';
+            } else {
+                if ($folderList === null) {
+                    $response['all'] = 'Tous les groupes';
+                    foreach ($schoolList as $group) {
+                        $response[$group] = $group;
+                    }
+                } elseif ($folderList !== 'none') {
+                    foreach ($folderList as $group) {
+                        $response[$group] = $group;
+                    }
+                }
+            }
+        }
+        return $response;
+    }
+
     public function canUploadPost(string $type, User $user, array $arrPOST, TagsManager $TagsManager)
     {
         if (!empty($arrPOST['fileTypeValue']) && $this->checkForScriptInsertion([$arrPOST])) {
@@ -423,13 +452,15 @@ class PostsManager extends LikeManager
     public function uploadPost(array $POST, $isSchoolPost = false)
     {
         if (defined('FRONTEND') && FRONTEND === true && $isSchoolPost) {
-            // schoolPost from frontend 
+            // schoolPost from student 
             $POST['listAuthorizedGroups'] = 'none';
         } elseif ($POST['isPrivate']) {
             // private post
             if (!empty($POST['folder']) && $folder = $this->getOneById(intval($POST['folder']))) {
                 if ($folder && ($_SESSION['grade'] === MODERATOR || $_SESSION['grade'] === ADMIN)) {
-                    $POST['listAuthorizedGroups'] = $folder->getAuthorizedGroups();
+                    if ($POST['listAuthorizedGroups'] === null) {
+                        $POST['listAuthorizedGroups'] = $folder->getAuthorizedGroups();
+                    }
                 }
             }
         } else {

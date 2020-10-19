@@ -13,6 +13,32 @@
                 <figcaption>Fichier</figcaption>
                 <img src="public/images/schoolFile.png" title="Publier un fichier" alt="Publier un fichier">
             </figure>
+            <div id="blockIsPrivate" class="fullWidth">
+                <div>
+                    <div>
+                        <input type="checkbox" name="isPrivate" id="isPrivate">
+                        <label for="isPrivate">Publication privée</label>
+                    </div>
+                    <div>
+                        <label for="listGroup">Qui peut voir la publication : </label>
+                        <select id="listGroup" name="listGroup">
+                            <option value=''>Choisir les groupes</option>
+                            <?php
+                            if (!empty($data['groups'])) {
+                                foreach ($data['groups'] as $key => $value) {
+                                    if ($key === "all") {
+                                        echo '<option value=' . $key . ' selected>' . $value . '</option>';
+                                    } else {
+                                        echo '<option value=' . $key . '>' . $value . '</option>';
+                                    }
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+                </div>
+                <div id="authorizedGroups"></div>
+            </div>
         </div>
         <div id="blockAddFile">
             <hr>
