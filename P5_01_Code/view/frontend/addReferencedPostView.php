@@ -1,14 +1,9 @@
 <section id="addPost" class="container">
     <h1>Publication</h1>
-    <form method="POST" action="index.php?action=uploadPost" enctype="multipart/form-data">
-        <input type="hidden" name="postType" value="userPost">
-        <input type="hidden" name="uploadType" value="public">
+    <form method="POST" action="index.php?action=uploadPost&type=referenced" enctype="multipart/form-data">
         <input type="hidden" name="fileTypeValue" value="">
         <input type="hidden" name="folder" value="">
         <input type="hidden" name="listTags" id="listTags" value="">
-        <?php $_SESSION['grade'] === STUDENT ? $isStudent = 'true' : $isStudent = 'false'; ?>
-        <input type="hidden" name="isStudent" id="isStudent" value="<?=$isStudent?>">
-
         <div id="blockUploadType">
             <figure id="btnAddFolder">
                 <figcaption>Dossier</figcaption>

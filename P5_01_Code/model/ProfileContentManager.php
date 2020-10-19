@@ -471,7 +471,7 @@ class ProfileContentManager extends AbstractManager
         return $this;
     }
 
-    private function deleteImgEntry(int $idProfileContent, string $filePathInBdd)//TODO delete varD
+    private function deleteImgEntry(int $idProfileContent, string $filePathInBdd)
     {
         if (strpos($filePathInBdd, 'http://') === 0 || strpos($filePathInBdd, 'https://') === 0) {
             $url = explode('/', $filePathInBdd);

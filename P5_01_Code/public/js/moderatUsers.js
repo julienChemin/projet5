@@ -73,7 +73,7 @@ if (document.getElementById('moderatUsers') !== null) {
 	let inputListGroup = document.querySelectorAll('.inputListGroup');
 
 	function groupNameOk(str) {
-		if (regexGroupName.test(str) && str.length <= 30) {
+		if (regexGroupName.test(str) && str.length <= 30 && str.trim().toLowerCase() !== 'none') {
 			return true;
 		} else {
 			return false;

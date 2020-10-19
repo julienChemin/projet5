@@ -379,48 +379,46 @@ class Backend extends Controller
 
     public function addSchoolPost()
     {
-        if ($_SESSION['school'] !== ALL_SCHOOL) {
-            $SchoolManager = new SchoolManager();
-            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
-            if ($_SESSION['grade'] === STUDENT) {
-                $isStudent = 'true';
-                $urlForm = 'index.php?action=uploadPost';
-                $uploadType = 'private';
+        $SchoolManager = new SchoolManager();
+        $UserManager = new UserManager();
+        $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+        $user = $UserManager->getUserByName($_SESSION['pseudo']);
+        if ($_SESSION['school'] !== ALL_SCHOOL && $school && $user) {
+            if (!empty($_GET['folder'])) {
+                $this->addSchoolPostOnFolder(new PostsManager(), $user, $school);
             } else {
-                $isStudent = 'false';
-                $urlForm = 'indexAdmin.php?action=uploadSchoolPost';
-                $uploadType = 'public';
+                RenderView::render(
+                    'template.php', 'backend/addSchoolPostView.php', 
+                    ['groups' => $school->getListSchoolGroups(), 'option' => ['addPost', 'tinyMCE']]
+                );
             }
-            RenderView::render(
-                'template.php', 'backend/addSchoolPostView.php', 
-                ['isStudent' => $isStudent, 'urlForm' => $urlForm, 'uploadType' => $uploadType, 'groups' => $school->getListSchoolGroups(), 'option' => ['addPost', 'tinyMCE']]);
         } else {
             $this->incorrectInformation();
         }
     }
 
-    public function uploadSchoolPost()
+    public function tryUploadSchoolPost()
     {
-        if (!empty($_POST['fileTypeValue']) && !empty($_POST['uploadType'])) {
-            $PostsManager = new PostsManager();
-            $TagsManager = new TagsManager();
-            //check upload type
-            $_POST['listGroup'] === "all" ? $authorizedGroups = null : $authorizedGroups = $_POST['listAuthorizedGroups'];
-            if (isset($_SESSION['id'], $_POST)) {
-                if ($response = $PostsManager->canUploadPost($_POST, $TagsManager)) {
-                    if ($PostsManager->uploadPost($response, true, $authorizedGroups)) {
-                        header('Location: indexAdmin.php?action=schoolProfile&school=' . $_SESSION['school']);
-                    } else {
-                        throw new \Exception("Le fichier n'est pas conforme");
-                    }
+        $UserManager = new UserManager();
+        $PostsManager = new PostsManager();
+        $arrAcceptedValues = ['onSchoolProfile', 'private'];
+        //check listGroup (list authorized group is only for private post by admin / moderator)
+        if (!empty($_POST['listGroup']) && $_POST['listGroup'] === "all") {
+            $_POST['listAuthorizedGroups'] = null;
+        }
+        if (isset($_GET['type']) && in_array($_GET['type'], $arrAcceptedValues) && $user = $UserManager->getOneById($_SESSION['id'])) {
+            if ($response = $PostsManager->canUploadPost($_GET['type'], $user, $_POST, new TagsManager())) {
+                if ($PostsManager->uploadPost($response, true)) {
+                    //header('Location: indexAdmin.php?action=schoolProfile&school=' . $_SESSION['school']);
                 } else {
-                    $this->incorrectInformation();
+                    throw new \Exception("Le fichier n'est pas conforme");
                 }
             } else {
-                $this->accessDenied();
+                $this->incorrectInformation();
             }
+        } else {
+            $this->accessDenied();
         }
-        header('Location: indexAdmin.php?action=schoolProfile&school=' . $_SESSION['school']);
     }
 
     /*-------------------------------------------------------------------------------------
@@ -597,7 +595,8 @@ class Backend extends Controller
     /*------------------------------ school groups ------------------------------*/
     public function createGroup()
     {
-        if (!empty($_GET['group']) && !empty($_GET['schoolName']) && ($_GET['schoolName'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
+        if (!empty($_GET['group']) && trim(strtolower($_GET['group'])) !== 'none' && !empty($_GET['schoolName']) 
+        && ($_GET['schoolName'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
             $SchoolManager = new SchoolManager();
             echo $SchoolManager->createGroup($_GET);
         } else {
@@ -637,6 +636,28 @@ class Backend extends Controller
     /*-------------------------------------------------------------------------------------
     ----------------------------------- FUNCTION PRIVATE ------------------------------------
     -------------------------------------------------------------------------------------*/
+
+    private function addSchoolPostOnFolder(PostsManager $PostsManager, User $user, School $school)
+    {
+        $folder = $PostsManager->getOneById($_GET['folder']);
+        if ($folder && $folder->getPostType() === "schoolPost" && $PostsManager->canPostOnFolder($folder, $user)) {
+            if (!$folder->getIsPrivate()) {
+                // post on folder on profile
+                RenderView::render(
+                    'template.php', 'backend/addSchoolPostOnPublicFolderView.php', 
+                    ['groups' => $school->getListSchoolGroups(), 'option' => ['addPost', 'tinyMCE']]
+                ); 
+            } elseif ($folder->getIsPrivate() && $user->getIsActive()) {
+                // post on private folder
+                RenderView::render(
+                    'template.php', 'backend/addSchoolPostOnPrivateFolderView.php', 
+                    ['groups' => $school->getListSchoolGroups(), 'option' => ['addPost', 'tinyMCE']]
+                );
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
 
     /*------------------------------ images upload ------------------------------*/
     private function uploadBanner(array $GET, string $finalPath)

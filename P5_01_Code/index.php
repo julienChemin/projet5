@@ -81,7 +81,7 @@ try {
                 $Frontend->addPost();
                 break;
             case 'uploadPost' :
-                $Frontend->uploadPost();
+                $Frontend->tryUploadPost();
                 break;
             case 'getTags' :
                 $Frontend->getTags();

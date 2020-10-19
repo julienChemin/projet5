@@ -1,6 +1,7 @@
 <?php
 $post = $data['post'];
 $asidePosts = $data['asidePosts'];
+$urlAddPostOnFolder = $data['urlAddPostOnFolder'];
 $author = $data['author'];
 $user = $data['user'];
 $userIsAuthor = $data['userInfo']['userIsAuthor'];
@@ -100,7 +101,7 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                         if (!empty($user) && ($userIsAuthor 
                         || ($post->getPostType() === 'schoolPost' && $post->getIsPrivate() && $post->getSchool() === $user->getSchool() 
                         && ($userIsAdmin || $userIsModerator || empty($post->getListAuthorizedGroups()) || in_array($user->getSchoolGroup(), $post->getListAuthorizedGroups()))))) {
-                            echo '<li id="postOnFolder"><a href="index.php?action=addPost&folder=' . $post->getId() . '"><i class="fas fa-folder-plus"></i></a></li>';
+                            echo '<li id="postOnFolder"><a href="' . $urlAddPostOnFolder . '"><i class="fas fa-folder-plus"></i></a></li>';
                         }
                         if (!empty($user) && ($userIsAuthor || $_SESSION['school'] === ALL_SCHOOL || ($post->getPostType() === 'schoolPost' && $post->getSchool() === $_SESSION['school'] && $userIsAdmin))) {
                             echo '<li id="deletePost" title="Supprimer la publication"><i class="far fa-trash-alt"></i></li>';

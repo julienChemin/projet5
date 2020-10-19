@@ -46,7 +46,9 @@ btnAddFolder.addEventListener(
         btnAddFile.style.backgroundColor = '#161617';
         btnAddFile.style.border = 'none';
         blockAddFile.style.display = "none";
-        blockTags.style.display = 'none';
+        if (blockTags !== null) {
+            blockTags.style.display = 'none';
+        }
         if (btnActif.btn !== "") {
             btnActif.btn.style.backgroundColor = '#161617';
             btnActif.btn.style.border = 'none';
@@ -68,7 +70,9 @@ btnAddFile.addEventListener(
 
         btnAddFolder.style.backgroundColor = '#161617';
         btnAddFolder.style.border = 'none';
-        blockTags.style.display = 'none';
+        if (blockTags !== null) {
+            blockTags.style.display = 'none';
+        }
         if (btnActif.btn !== "") {
             btnActif.btn.style.backgroundColor = '#161617';
             btnActif.btn.style.border = 'none';
@@ -129,7 +133,7 @@ if (document.getElementById('addSchoolPost') !== null) {
         document.querySelector('option[value=""]').selected = true;
     }
 
-    if (formAddPost.elements.isStudent.value === 'false') {
+    if (checkboxIsPrivate !== undefined) {
         //display / hide private mode
         checkboxIsPrivate.addEventListener(
             'change', function (e) {
@@ -141,18 +145,18 @@ if (document.getElementById('addSchoolPost') !== null) {
                 if (!checkboxIsPrivate.checked) {
                     blockListGroup.style.display = 'none';
                     blockAuthorizedGroups.style.display = 'none';
-                    formAddPost.elements.uploadType.value = 'public';
+                    formAddPost.action = 'indexAdmin.php?action=uploadSchoolPost&type=onSchoolProfile';
                     if (document.getElementById('addSchoolPost') === null 
                     && (formAddPost.elements.fileTypeValue.value === 'video' || formAddPost.elements.fileTypeValue.value === 'image')) {
                         blockTags.style.display = 'flex';
                     }
                 } else {
                     blockListGroup.style.display = 'inline-block';
-                    formAddPost.elements.uploadType.value = 'private';
+                    formAddPost.action = 'indexAdmin.php?action=uploadSchoolPost&type=private';
                     if (listGroup.value !== "all") {
                         blockAuthorizedGroups.style.display = 'flex';
                     }
-                    if (blockTags.style.display === 'flex') {
+                    if (blockTags !== null && blockTags.style.display === 'flex') {
                         blockTags.style.display = 'none';
                     }
                 }
@@ -193,7 +197,7 @@ btnImg.addEventListener(
         blockUploadFile.style.display = 'flex';
         labelUploadFile.textContent = "Fichier jpg, png, gif - (max : 5Mo)";
         blockTinyMce.style.display = 'flex';
-        if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' && formAddPost.elements.isStudent.value === 'true') {
+        if (blockTags !== null) {
             blockTags.style.display = 'flex';
         }
         inputSubmit.style.display = "inline-block";
@@ -218,7 +222,7 @@ btnVideo.addEventListener(
         blockUploadFile.style.display = 'flex';
         labelUploadFile.textContent = "Thumbnail de la vidéo (jpg, png, gif) - non obligatoire - (max : 5Mo)";
         blockTinyMce.style.display = 'flex';
-        if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' && formAddPost.elements.isStudent.value === 'true') {
+        if (blockTags !== null) {
             blockTags.style.display = 'flex';
         }
         inputSubmit.style.display = "inline-block";
@@ -236,10 +240,10 @@ btnVideo.addEventListener(
     }
 );
 
-if (document.getElementById('addSchoolPost') !== null) {
+if (btnOther !== null) {
     btnOther.addEventListener(
         'click', function () {
-            if (formAddPost.elements.isStudent.value === 'false' && !formAddPost.elements.isPrivate.checked) {
+            if (formAddPost.elements.isPrivate !== undefined && !formAddPost.elements.isPrivate.checked) {
                 formAddPost.elements.isPrivate.click();
             }
             blockTitle.style.display  = "flex";
@@ -248,7 +252,9 @@ if (document.getElementById('addSchoolPost') !== null) {
             labelUploadFile.innerHTML = "Fichier zip, rar - (max : 5Mo)";
             preview.style.display = 'none';
             blockTinyMce.style.display = 'flex';
-            blockTags.style.display = 'none';
+            if (blockTags !== null) {
+                blockTags.style.display = 'none';
+            }
             inputSubmit.style.display = "inline-block";
             formAddPost.elements.fileTypeValue.value = 'compressed';
             //set focus
@@ -391,54 +397,57 @@ function setErrorMsg(msg)
 }
 
 //button add tag
-btnAddTag.addEventListener(
-    'click', function (e) {
-        e.preventDefault();
-        if (tagIsValid(inputTag.value)) {
-            let tagId = 'tag' + inputTag.value[0].toUpperCase() + deleteSpace(inputTag.value.substring(1));
-            if (document.getElementById(tagId) === null) {
-                createTag(inputTag.value, true);
-                inputTag.value = "";
+if (btnAddTag !== null) {
+    btnAddTag.addEventListener(
+        'click', function (e) {
+            e.preventDefault();
+            if (tagIsValid(inputTag.value)) {
+                let tagId = 'tag' + inputTag.value[0].toUpperCase() + deleteSpace(inputTag.value.substring(1));
+                if (document.getElementById(tagId) === null) {
+                    createTag(inputTag.value, true);
+                    inputTag.value = "";
+                } else {
+                    blink(document.getElementById(tagId), true);
+                }
             } else {
-                blink(document.getElementById(tagId), true);
+                blink(textTagRules);
             }
-        } else {
-            blink(textTagRules);
         }
-    }
-);
+    );
+}
 
 //recommended tags
-inputTag.addEventListener(
-    'input', function () {
-        divRecommendedTags.innerHTML = "";
-        if (inputTag.value.length <= 1) {
-            blockRecommendedTags.style.display = "none";
-        } else if (inputTag.value.length > 1) {
-            existingTags.forEach(tag => {
-                if (tag.toLowerCase().indexOf(inputTag.value.toLowerCase()) !== -1) {
-                    if (document.getElementById('tag' + tag[0].toUpperCase() + deleteSpace(tag.substring(1))) === null) {
-                        blockRecommendedTags.style.display = "block";
-                        createTag(tag);
+if (inputTag !== null) {
+    inputTag.addEventListener(
+        'input', function () {
+            divRecommendedTags.innerHTML = "";
+            if (inputTag.value.length <= 1) {
+                blockRecommendedTags.style.display = "none";
+            } else if (inputTag.value.length > 1) {
+                existingTags.forEach(tag => {
+                    if (tag.toLowerCase().indexOf(inputTag.value.toLowerCase()) !== -1) {
+                        if (document.getElementById('tag' + tag[0].toUpperCase() + deleteSpace(tag.substring(1))) === null) {
+                            blockRecommendedTags.style.display = "block";
+                            createTag(tag);
+                        }
                     }
-                }
-            });
+                });
+            }
+            if (divRecommendedTags.innerHTML === "") {
+                blockRecommendedTags.style.display = "none";
+            }
         }
-        if (divRecommendedTags.innerHTML === "") {
-            blockRecommendedTags.style.display = "none";
-        }
-    }
-);
+    );
+}
 
 //button submit
 inputSubmit.addEventListener(
     'click', function (e) {
         switch (formAddPost.elements.fileTypeValue.value) {
             case 'image' :
-                if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' 
-                && formAddPost.elements.isStudent.value === 'true' && inputListTags.value === "")
+                if (inputListTags !== null && inputListTags.value === "")
                 {
-                    //tag is only for public student post
+                    //tag is only for referenced post
                     e.preventDefault();
                     setErrorMsg('Vous devez choisir au moins un tag');
                 }
@@ -452,9 +461,8 @@ inputSubmit.addEventListener(
                 }
             break;
             case 'video' :
-                if (formAddPost.elements.uploadType.value === 'public' && formAddPost.elements.postType.value === 'userPost' 
-                && formAddPost.elements.isStudent.value === 'true' && inputListTags.value === "") {
-                    //tag is only for public student post
+                if (inputListTags !== null && inputListTags.value === "") {
+                    //tag is only for referenced post
                     e.preventDefault();
                     setErrorMsg('Vous devez choisir au moins un tag');
                 }
@@ -482,10 +490,10 @@ inputSubmit.addEventListener(
                 }
             break;
             case 'folder' :
-                    if (formAddPost.elements.title.value === "" || formAddPost.elements.title.value.length > 30) {
-                        e.preventDefault();
-                        setErrorMsg('Vous devez ajouter un titre (30 caractères max.)');
-                    }
+                if (formAddPost.elements.title.value === "" || formAddPost.elements.title.value.length > 30) {
+                    e.preventDefault();
+                    setErrorMsg('Vous devez ajouter un titre (30 caractères max.)');
+                }
             break;
             }
         if (document.getElementById('addSchoolPost') !== null && formAddPost.elements.isPrivate.checked  

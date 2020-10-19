@@ -25,8 +25,6 @@ class Frontend extends Controller
                 $user = $UserManager->getUserByName($_SESSION['pseudo']);
                 if ($user->getIsBan()) {
                     $this->disconnect();
-                } elseif ($_SESSION['group'] !== $user->getSchoolGroup()) {
-                    $this->forceDisconnect();
                 }
             }
         } elseif (isset($_COOKIE['artSchoolsId']) || isset($_COOKIE['artSchoolsAdminId'])) {
@@ -47,7 +45,7 @@ class Frontend extends Controller
             //home
             $PostsManager = new PostsManager();
             $posts = $PostsManager->getPostsForHome(new SchoolManager(), new TagsManager());
-            RenderView::render('template.php', 'frontend/indexView.php', ['posts' => $posts, 'option' => ['home']]);    
+            RenderView::render('template.php', 'frontend/indexView.php', ['posts' => $posts, 'option' => ['home']]);
         }
     }
 
@@ -237,7 +235,7 @@ class Frontend extends Controller
                 case 'content' :
                     $ProfileContentManager = new ProfileContentManager();
                     $ProfileContentManager->updateProfileContent($_POST);
-                    //$this->redirection();
+                    $this->redirection();
                     break;
             }
         } else {
@@ -295,30 +293,34 @@ class Frontend extends Controller
 
     public function addPost()
     {
-        if (!empty($_SESSION['id']) && $_SESSION['school'] !== ALL_SCHOOL) {
+        $UserManager = new UserManager();
+        if (!empty($_SESSION['id']) && $_SESSION['school'] !== ALL_SCHOOL && $user = $UserManager->getOneById($_SESSION['id'])) {
             if (!empty($_GET['folder'])) {
                 // add post on folder
-                $this->addPostOnFolder(new PostsManager());
+                $this->addPostOnFolder(new PostsManager(), $user);
             } else {
                 // add public post
-				RenderView::render('template.php', 'frontend/addPostView.php', ['option' => ['addPost', 'tinyMCE']]);
+                if ($_SESSION['grade'] === STUDENT && $user->getSchool() !== NO_SCHOOL && $user->getIsActive()) {
+                    $view = 'frontend/addReferencedPostView.php';
+                } else {
+                    $view = 'frontend/addUnreferencedPostView.php';
+                }
+				RenderView::render('template.php', $view, ['option' => ['addPost', 'tinyMCE']]);
             }
         } else {
 			$this->accessDenied();
         }
     }
 
-    public function uploadPost()
+    public function tryUploadPost()
     {
+        $UserManager = new UserManager();
         $PostsManager = new PostsManager();
         $TagsManager = new TagsManager();
-        if (isset($_SESSION['id'], $_POST)) {
-            if ($response = $PostsManager->canUploadPost($_POST, $TagsManager)) {
-                if ($_POST['postType'] === 'schoolPost') {
-                    $this->uploadOnSchoolFolder($response, $PostsManager);
-                } else {
-                    $this->uploadUserPost($response, $PostsManager, $TagsManager);
-                }
+        $arrAcceptedValues = ['referenced', 'unreferenced', 'private'];
+        if (isset($_SESSION['id'], $_GET['type']) && in_array($_GET['type'], $arrAcceptedValues) && $user = $UserManager->getOneById($_SESSION['id'])) {
+            if ($response = $PostsManager->canUploadPost($_GET['type'], $user, $_POST, $TagsManager)) {
+                $this->uploadPost($response, $PostsManager, $TagsManager);
             } else {
 				$this->incorrectInformation();
             }
@@ -332,7 +334,8 @@ class Frontend extends Controller
         $PostsManager = new PostsManager();
         $TagsManager = new TagsManager();
         if (isset($_GET['id'], $_SESSION['id']) && $post = $PostsManager->getOneById($_GET['id'])) {
-            if ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['school'] === ALL_SCHOOL) {
+            if ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['school'] === ALL_SCHOOL 
+            || ($post->getSchool() === $_SESSION['school'] && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) ) {
                 if ($post->getFileType() === 'folder') {
                     $PostsManager->deleteFolder($post->getId());
                 } else {
@@ -835,14 +838,21 @@ class Frontend extends Controller
         if ($post->getFileType() === 'folder') {
             // consulting private folder
             $userInfo = $this->getFolderViewInfo($user, $post);
+            $urlAddPostOnFolder = 'index.php?action=addPost&folder=' . $post->getId();
+            if ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {
+                $urlAddPostOnFolder = 'indexAdmin.php?action=addSchoolPost&folder=' . $post->getId();
+            }
             RenderView::render(
                 'template.php', 'frontend/folderView.php', 
                 ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 
-                    'userInfo' => $userInfo, 'option' => ['folderView']]
+                    'userInfo' => $userInfo, 'urlAddPostOnFolder' => $urlAddPostOnFolder, 'option' => ['folderView']]
             );
         } else {
             // consulting private post
-            RenderView::render('template.php', 'frontend/postView.php', ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
+            RenderView::render(
+                'template.php', 'frontend/postView.php', 
+                ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]
+            );
         }
     }
 
@@ -851,10 +861,14 @@ class Frontend extends Controller
         if ($post->getFileType() === 'folder') {
             // consulting public folder
             $userInfo = $this->getFolderViewInfo($user, $post);
+            $urlAddPostOnFolder = 'index.php?action=addPost&folder=' . $post->getId();
+            if ($post->getPostType() === 'schoolPost' && $_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {
+                $urlAddPostOnFolder = 'indexAdmin.php?action=addSchoolPost&folder=' . $post->getId();
+            }
             RenderView::render(
                 'template.php', 'frontend/folderView.php', 
                 ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 
-                    'userInfo' => $userInfo, 'option' => ['folderView']]
+                    'userInfo' => $userInfo, 'urlAddPostOnFolder' => $urlAddPostOnFolder, 'option' => ['folderView']]
             );
         } else {
             //consulting public post
@@ -871,52 +885,44 @@ class Frontend extends Controller
     }
 
     /*------------------------------ add post ------------------------------*/
-    private function addPostOnFolder(PostsManager $PostsManager)
+    private function addPostOnFolder(PostsManager $PostsManager, User $user)
     {
         if ($folder = $PostsManager->getOneById($_GET['folder'])) {
-            if ($_SESSION['grade'] === STUDENT) {
-                $isStudent = 'true';
-                $urlForm = 'index.php?action=uploadPost';
-                $uploadType = 'private';
+            if ($PostsManager->canPostOnFolder($folder, $user)) {
+                if ($folder->getPostType() === "schoolPost") {
+                    // folder is a school post -> private post
+                    RenderView::render('template.php', 'frontend/addPrivatePostView.php', ['option' => ['addPost', 'tinyMCE']]);
+                } elseif ($_SESSION['grade'] === STUDENT && $user->getSchool() !== NO_SCHOOL && $user->getIsActive()) {
+                    // folder belong to user -> public referenced post
+                    RenderView::render('template.php', 'frontend/addReferencedPostView.php', ['option' => ['addPost', 'tinyMCE']]);
+                } else {
+                    // user is connected, but it's not a student, or it's not active -> unreferenced post
+                    RenderView::render('template.php', 'frontend/addUnreferencedPostView.php', ['option' => ['addPost', 'tinyMCE']]);
+                }
             } else {
-                $isStudent = 'false';
-                $urlForm = 'indexAdmin.php?action=uploadSchoolPost';
-                $uploadType = 'public';
-            }
-            if ($folder->getFileType() === 'folder' && $folder->getPostType() === 'schoolPost') {
-                // folder is a school post -> display input to upload other type of file (zip rar)
-                RenderView::render(
-                    'template.php', 'backend/addSchoolPostView.php', 
-                    ['isStudent' => $isStudent, 'urlForm' => $urlForm, 'uploadType' => $uploadType, 
-                        'option' => ['addPost', 'tinyMCE']]);
-            }  else {
-                // folder is public
-                RenderView::render('template.php', 'frontend/addPostView.php', ['option' => ['addPost', 'tinyMCE']]);
+                $this->incorrectInformation();
             }
         } else {
             $this->incorrectInformation();
         }
     }
 
-    private function uploadUserPost($response, PostsManager $PostsManager, TagsManager $TagsManager)
+    private function uploadPost(array $response, PostsManager $PostsManager, TagsManager $TagsManager)
     {
-        // upload user post
-        if ($PostsManager->uploadPost($response)) {
-            if (!empty($_POST['listTags'])) {
-                      $TagsManager->checkForNewTag($_POST['listTags'], $PostsManager->getLastInsertId());
-            }
-            header('Location: index.php?action=userProfile&userId=' . $_SESSION['id']);
+        if ($response['postType'] === 'schoolPost') {
+            $schoolPost = true;
+            $action = 'schoolProfile&school=' . $_SESSION['school'];
+            $response['authorizedGroups'] = 'none';
         } else {
-            throw new \Exception("Le fichier n'est pas conforme");
+            $schoolPost = false;
+            $action = 'userProfile&userId=' . $_SESSION['id'];
+            $response['authorizedGroups'] = null;
         }
-    }
-
-    private function uploadOnSchoolFolder($response, PostsManager $PostsManager)
-    {
-        // upload user post on private school folder
-        $_POST['uploadType'] === 'private';
-        if ($PostsManager->uploadPost($response, true, 'none')) {
-            header('Location: index.php?action=schoolProfile&school=' . $_SESSION['school']);
+        if ($PostsManager->uploadPost($response, $schoolPost)) {
+            if (!empty($response['listTags'])) {
+                $TagsManager->checkForNewTag($response['listTags'], $PostsManager->getLastInsertId());
+            }
+            header('Location: index.php?action=' . $action);
         } else {
             throw new \Exception("Le fichier n'est pas conforme");
         }

@@ -1,4 +1,7 @@
 new stuff
-    - test 2
+    - refactoring for the posting system
 fixed issues
-    - 
+    - home frontend -> some post should'nt shown themself, their do not anymore
+    - slide issues (variable multiplication on url)
+    - private post visibility
+    - issue about deleting user post by admin of the same school

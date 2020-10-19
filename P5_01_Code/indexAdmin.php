@@ -132,7 +132,7 @@ try {
                 $Backend->addSchoolPost();
                 break;
             case 'uploadSchoolPost' :
-                $Backend->uploadSchoolPost();
+                $Backend->tryUploadSchoolPost();
                 break;
             default :
                 //"action" value is unknow
