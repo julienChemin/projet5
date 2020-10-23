@@ -77,7 +77,7 @@
             <div id="slideTab">
                 <div id="tabProfile" class="editable">
                     <?php
-                    if ($authorizedUser) {
+                    if ($authorizedUser && $data['user']->getIsActive()) {
                         echo '<i class="far fa-plus-square iconeEdit"></i>';
                     }
                     ?>
@@ -92,7 +92,7 @@
                                     ?>
                                     <div class="blockContentProfile editable <?=$profileContent->getSize()?> <?=$profileContent->getAlign()?>" style="order:<?=$profileContent->getContentOrder()?>">
                                         <?php
-                                        if ($authorizedUser) {
+                                        if ($authorizedUser && $data['user']->getIsActive()) {
                                             echo '<i class="fas fa-pencil-alt iconeEdit iconeEditProfile" atrsize="' . $profileContent->getSize() .  
                                             '" atralign="' . $profileContent->getAlign() . '"> N° ' . $profileContent->getContentOrder() . '</i>';
                                         }
@@ -106,7 +106,7 @@
                                     }
                                 }
                             }
-                        } elseif ($authorizedUser) {
+                        } elseif ($authorizedUser && $data['user']->getIsActive()) {
                             ?>
                             <div class="blockContentProfile blockTuto big">
                                 <p>
@@ -128,7 +128,7 @@
                 </div>
                 <div id="tabAbout" class="editable">
                     <?php
-                    if ($authorizedUser) {
+                    if ($authorizedUser && $data['user']->getIsActive()) {
                         echo '<i class="far fa-plus-square iconeEdit"></i>';
                     }
                     ?>
@@ -143,7 +143,7 @@
                                     ?>
                                     <div class="blockContentAbout editable <?=$profileContent->getSize()?> <?=$profileContent->getAlign()?>" style="order:<?=$profileContent->getContentOrder()?>">
                                         <?php
-                                        if ($authorizedUser) {
+                                        if ($authorizedUser && $data['user']->getIsActive()) {
                                             echo '<i class="fas fa-pencil-alt iconeEdit iconeEditAbout" atrsize="' . $profileContent->getSize() .  
                                             '" atralign="' . $profileContent->getAlign() . '"> N° ' . $profileContent->getContentOrder() . '</i>';
                                         }
@@ -157,7 +157,7 @@
                                     }
                                 }
                             }
-                        } elseif ($authorizedUser) {
+                        } elseif ($authorizedUser && $data['user']->getIsActive()) {
                             ?>
                             <div class="blockContentAbout blockTuto big">
                                 <p>
@@ -177,6 +177,7 @@
 if ($authorizedUser) {
     ?>
     <div id="modal">
+        <!-- Banniere -->
         <form id="contentMenuEditBanner" class="contentMenuEdit menuEditHeader" method="POST" 
         action="index.php?action=upload&elem=banner&noBanner=<?=$data['user']->getNoBanner() ? 'true' : 'false'?>" enctype="multipart/form-data">
             <input type="hidden" name="userId" value="<?=$data['user']->getId()?>">
@@ -199,6 +200,7 @@ if ($authorizedUser) {
                 </button>
             </p>
         </form>
+        <!-- Profile picture -->
         <form id="contentMenuEditProfilePicture" class="contentMenuEdit menuEditHeader" method="POST" 
         action="index.php?action=upload&elem=picture&orientation=<?=$data['user']->getProfilePictureOrientation()?>&size=<?=$data['user']->getProfilePictureSize()?>" 
         enctype="multipart/form-data">
@@ -243,6 +245,7 @@ if ($authorizedUser) {
                 </button>
             </p>
         </form>
+        <!-- Text position -->
         <form id="contentMenuEditText" class="contentMenuEdit menuEditHeader">
             <div>
                 <input type="radio" name="blockTextPosition" id="blockTextTop"
@@ -310,99 +313,107 @@ if ($authorizedUser) {
                 </button>
             </div>
         </form>
-        <form id="contentMenuEditBlock" class="contentMenuEdit">
-            <div>
-                <p>Largeur</p>
+        <?php
+        if ($data['user']->getIsActive()) {
+            ?>
+            <!-- modal on top to edit block profile content -->
+            <form id="contentMenuEditBlock" class="contentMenuEdit">
                 <div>
-                    <input type="radio" name="blockSize" id="blockSmall"
-                    value="small">
-                    <label for="blockSmall">Petit</label>
+                    <p>Largeur</p>
+                    <div>
+                        <input type="radio" name="blockSize" id="blockSmall"
+                        value="small">
+                        <label for="blockSmall">Petit</label>
 
-                    <input type="radio" name="blockSize" id="blockMedium"
-                    value="medium">
-                    <label for="blockMedium">Moyen</label>
-                
-                    <input type="radio" name="blockSize" id="blockBig"
-                    value="big">
-                    <label for="blockBig">Grand</label>
+                        <input type="radio" name="blockSize" id="blockMedium"
+                        value="medium">
+                        <label for="blockMedium">Moyen</label>
+                    
+                        <input type="radio" name="blockSize" id="blockBig"
+                        value="big">
+                        <label for="blockBig">Grand</label>
+                    </div>
                 </div>
-            </div>
-            <p id="blockProfileListOrder">
-                <label for="profileContentOrder">Bloc numéro :</label>
-                <select name="profileContentOrder" id="profileContentOrder">
-                    <?php
-                    if (count($data['profileContent']) !== 0) {
-                        $j=0;
-                        for ($i=0; $i<count($data['profileContent']); $i++) {
-                            if ($data['profileContent'][$i]->getTab() === 'profile') {
-                                $j+=1;
-                                echo '<option value = ' . $j  . '>' . $j . '</option>';
+                <p id="blockProfileListOrder">
+                    <label for="profileContentOrder">Bloc numéro :</label>
+                    <select name="profileContentOrder" id="profileContentOrder">
+                        <?php
+                        if (count($data['profileContent']) !== 0) {
+                            $j=0;
+                            for ($i=0; $i<count($data['profileContent']); $i++) {
+                                if ($data['profileContent'][$i]->getTab() === 'profile') {
+                                    $j+=1;
+                                    echo '<option value = ' . $j  . '>' . $j . '</option>';
+                                }
                             }
                         }
-                    }
-                    ?>
-                </select>
-            </p>
-            <p id="blockAboutListOrder">
-                <label for="aboutContentOrder">Bloc numéro :</label>
-                <select name="aboutContentOrder" id="aboutContentOrder">
-                    <?php
-                    if (count($data['profileContent']) !== 0) {
-                        $j=0;
-                        for ($i=0; $i<count($data['profileContent']); $i++) {
-                            if ($data['profileContent'][$i]->getTab() === 'about') {
-                                $j+=1;
-                                echo '<option value = ' . $j  . '>' . $j . '</option>';
+                        ?>
+                    </select>
+                </p>
+                <p id="blockAboutListOrder">
+                    <label for="aboutContentOrder">Bloc numéro :</label>
+                    <select name="aboutContentOrder" id="aboutContentOrder">
+                        <?php
+                        if (count($data['profileContent']) !== 0) {
+                            $j=0;
+                            for ($i=0; $i<count($data['profileContent']); $i++) {
+                                if ($data['profileContent'][$i]->getTab() === 'about') {
+                                    $j+=1;
+                                    echo '<option value = ' . $j  . '>' . $j . '</option>';
+                                }
                             }
                         }
-                    }
-                    ?>
-                </select>
-            </p>
-            <p>
-                <label for="align">Bloc seul sur sa ligne</label>
-                <input type="checkbox" name="align" id="align">
-            </p>
-            <div>
-                <p>Alignement</p>
+                        ?>
+                    </select>
+                </p>
+                <p>
+                    <label for="align">Bloc seul sur sa ligne</label>
+                    <input type="checkbox" name="align" id="align">
+                </p>
                 <div>
-                    <input type="radio" name="alignSide" id="alignLeft"
-                    value="elemStart">
-                    <label for="alignLeft">Gauche</label>
+                    <p>Alignement</p>
+                    <div>
+                        <input type="radio" name="alignSide" id="alignLeft"
+                        value="elemStart">
+                        <label for="alignLeft">Gauche</label>
 
-                    <input type="radio" name="alignSide" id="alignCenter"
-                    value="elemCenter">
-                    <label for="alignCenter">Centre</label>
-                
-                    <input type="radio" name="alignSide" id="alignRight"
-                    value="elemEnd">
-                    <label for="alignRight">Droite</label>
+                        <input type="radio" name="alignSide" id="alignCenter"
+                        value="elemCenter">
+                        <label for="alignCenter">Centre</label>
+                    
+                        <input type="radio" name="alignSide" id="alignRight"
+                        value="elemEnd">
+                        <label for="alignRight">Droite</label>
+                    </div>
                 </div>
-            </div>
-            <div id="blockToDelete">
-                <i title="Supprimer" class="fas fa-trash"></i>
-            </div>
-        </form>
-        <form class="container" method="POST" action="index.php?action=updateProfile&elem=content&userId=<?=$data['user']->getId()?>">
-            <div id="warningBeforeDelete">
-                <p>Êtes-vous sûr de vouloir supprimer ce bloc?</p>
-            </div>
-            <div>
-                <textarea id="tinyMCEtextarea" name="tinyMCEtextarea"></textarea>
-            </div>
-            <div class="modalButtons">
-                <input type="hidden" name="type" value="">
-                <input type="hidden" name="blockOrderValue" value="">
-                <input type="hidden" name="newOrderValue" value="">
-                <input type="hidden" name="sizeValue" value="small">
-                <input type="hidden" name="alignValue" value="">
-                <input type="hidden" name="deleteBlock" value="">
-                <input type="hidden" name="idProfileContent" value="">
+                <div id="blockToDelete">
+                    <i title="Supprimer" class="fas fa-trash"></i>
+                </div>
+            </form>
+            <!-- text area for editing content of block profile content -->
+            <form class="container" method="POST" action="index.php?action=updateProfile&elem=content&userId=<?=$data['user']->getId()?>">
+                <div id="warningBeforeDelete">
+                    <p>Êtes-vous sûr de vouloir supprimer ce bloc?</p>
+                </div>
+                <div>
+                    <textarea id="tinyMCEtextarea" name="tinyMCEtextarea"></textarea>
+                </div>
+                <div class="modalButtons">
+                    <input type="hidden" name="type" value="">
+                    <input type="hidden" name="blockOrderValue" value="">
+                    <input type="hidden" name="newOrderValue" value="">
+                    <input type="hidden" name="sizeValue" value="small">
+                    <input type="hidden" name="alignValue" value="">
+                    <input type="hidden" name="deleteBlock" value="">
+                    <input type="hidden" name="idProfileContent" value="">
 
-                <input type="submit" name="submit" value="Valider">
-                <input type="button" name="cancel" value="Annuler">
-            </div>
-        </form>
+                    <input type="submit" name="submit" value="Valider">
+                    <input type="button" name="cancel" value="Annuler">
+                </div>
+            </form>
+            <?php
+        }
+        ?>
     </div>
     <?php
 }

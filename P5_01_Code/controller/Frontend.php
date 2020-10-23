@@ -202,13 +202,21 @@ class Frontend extends Controller
     {
         if (!empty($_GET['school']) && $_GET['school'] !== ALL_SCHOOL && $_GET['school'] !== NO_SCHOOL) {
             $SchoolManager = new SchoolManager();
+            if (!empty($_SESSION['id'])) {
+                $UserManager = new UserManager();
+                $user = $UserManager->getOneById($_SESSION['id']);
+                $userIsActive = $user->getIsActive();
+            } else {
+                $userIsActive = false;
+            }
             if ($school = $SchoolManager->getSchoolByName($_GET['school'])) {
                 $ProfileContentManager = new ProfileContentManager();
                 $profileContent = $ProfileContentManager->getByProfileId($school->getId(), true);
                 $contractInfo = $this->getSchoolContractInfo($school, new ContractManager('school', $SchoolManager), true);
                 RenderView::render(
                     'template.php', 'frontend/schoolProfileView.php', 
-                    ['school' => $school, 'profileContent' => $profileContent, 'contractInfo' => $contractInfo, 'option' => ['schoolProfile']]);
+                    ['school' => $school, 'profileContent' => $profileContent, 'contractInfo' => $contractInfo, 
+                    'userIsActive' => $userIsActive, 'option' => ['schoolProfile']]);
             } else {
 				$this->invalidLink();
             }

@@ -373,7 +373,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 		if (document.querySelector('#profileContentOrder .lastOption') === null) {
 			let option = document.createElement('option');
-			option.classList.add = 'lastOption';
+			option.classList.add('lastOption');
 			option.value = "last";
 			option.textContent = "Dernier";
 			option.selected = true;
@@ -534,7 +534,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 		if (document.querySelector('#newsContentOrder .lastOption') === null) {
 			let option = document.createElement('option');
-			option.classList.add = 'lastOption';
+			option.classList.add('lastOption');
 			option.value = "last";
 			option.textContent = "Dernier";
 			option.selected = true;
@@ -619,7 +619,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 	//plus icone (for adding content) on tab 'about'
 	document.querySelector('#tabAbout .fa-plus-square').addEventListener('click', function(){
-		toggleModal(contentMenuEditBlock, blockMenuEditingTop, modal);
+		toggleModal(blockMenuEditing, modal, formModal);
 		blockToDelete.style.display = "none";
 
 		if (blockAboutListOrder.style.display !== "flex") {
@@ -635,7 +635,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 		if (document.querySelector('#aboutContentOrder .lastOption') === null) {
 			let option = document.createElement('option');
-			option.classList.add = 'lastOption';
+			option.classList.add('lastOption');
 			option.value = "last";
 			option.textContent = "Dernier";
 			option.selected = true;

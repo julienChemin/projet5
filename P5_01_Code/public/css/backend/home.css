@@ -100,7 +100,7 @@
     }
     #homeAdmin .slide{
         min-height: auto;
-        height: 150px;
+        height: auto;
     }
     .itemHomeAdmin{
         height: 250px;
@@ -124,7 +124,7 @@
     }
     #homeAdmin .slide{
         min-height: auto;
-        height: 150px;
+        height: auto;
         margin: 10px 0;
     }
     .itemHomeAdmin{
@@ -160,13 +160,16 @@
     #menuHome > a{
         width: 28%;
     }
+    #slowSlide {
+        height: auto;
+    }
     #homeAdmin .slide{
         min-height: auto;
         height: auto;
         margin: 5px 0;
     }
     #homeAdmin .items{
-        height: 100px;
+        height: 170px;
         width: 32%;
         max-width: none;
         margin: 10px 0;
@@ -204,13 +207,19 @@
     #menuHome > a{
         width: 30%;
     }
+    #slowSlide {
+        height: auto;
+    }
+    #slowSlide figure{
+        height: 60px;
+    }
     #homeAdmin .slide{
         min-height: auto;
         height: auto;
         margin: 5px 0;
     }
     #homeAdmin .items{
-        height: 100px;
+        height: auto;
         width: 32%;
         max-width: none;
         margin: 10px 0;

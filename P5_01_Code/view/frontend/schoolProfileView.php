@@ -30,7 +30,7 @@
                     <li>Actualité</li>
                     <li>Publication</li>
                     <?php
-                    if (!empty($_SESSION) && ($data['school']->getName() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
+                    if (!empty($_SESSION) && (($data['school']->getName() === $_SESSION['school'] && $data['userIsActive']) || $_SESSION['school'] === ALL_SCHOOL)) {
                         echo '<li>Publication privée</li>';
                     }
                     ?>
@@ -88,7 +88,7 @@
                     <div></div>
                 </div>
                 <?php
-                if (!empty($_SESSION) && ($data['school']->getName() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
+                if (!empty($_SESSION) && (($data['school']->getName() === $_SESSION['school'] && $data['userIsActive']) || $_SESSION['school'] === ALL_SCHOOL)) {
                     ?>
                     <div id="tabPrivatePublication">
                         <div></div>

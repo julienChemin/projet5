@@ -403,7 +403,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 		if (document.querySelector('#profileContentOrder .lastOption') === null) {
 			let option = document.createElement('option');
-			option.classList.add = 'lastOption';
+			option.classList.add('lastOption');
 			option.value = "last";
 			option.textContent = "Dernier";
 			option.selected = true;
@@ -564,7 +564,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 		if (document.querySelector('#aboutContentOrder .lastOption') === null) {
 			let option = document.createElement('option');
-			option.classList.add = 'lastOption';
+			option.classList.add('lastOption');
 			option.value = "last";
 			option.textContent = "Dernier";
 			option.selected = true;

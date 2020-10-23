@@ -295,11 +295,13 @@ class Backend extends Controller
     {
         if (!empty($_GET['school']) && ($_GET['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
             $SchoolManager = new SchoolManager();
+            $UserManager = new UserManager();
             $school = $SchoolManager->getSchoolByName($_GET['school']);
+            $user = $UserManager->getOneById($_SESSION['id']);
             $contractInfo = $this->getSchoolContractInfo($school, new ContractManager('school', $SchoolManager), true);
             $ProfileContentManager = new ProfileContentManager();
             $profileContent = $ProfileContentManager->getByProfileId($school->getId(), true);
-            if ($_SESSION['school'] === ALL_SCHOOL || $_SESSION['grade'] !== ADMIN) {
+            if ($user->getSchool() === ALL_SCHOOL || !$user->getIsAdmin() || !$user->getIsActive()) {
                 $view = 'frontend';
             } else {
                 $view = 'backend';
@@ -384,7 +386,7 @@ class Backend extends Controller
         $PostsManager = new PostsManager();
         $school = $SchoolManager->getSchoolByName($_SESSION['school']);
         $user = $UserManager->getUserByName($_SESSION['pseudo']);
-        if ($_SESSION['school'] !== ALL_SCHOOL && $school && $user) {
+        if ($_SESSION['school'] !== ALL_SCHOOL && $school && $user && $user->getIsActive()) {
             if (!empty($_GET['folder'])) {
                 $this->addSchoolPostOnFolder($PostsManager, $user, $school);
             } else {
@@ -394,6 +396,8 @@ class Backend extends Controller
                     ['groups' => $authorizedGroups, 'option' => ['addPost', 'tinyMCE']]
                 );
             }
+        } elseif (!$user->getIsActive()) {
+            $this->error('Vous ne pouvez pas faire de publication sur le profil de votre établissement car il n\'est pas actif');
         } else {
             $this->incorrectInformation();
         }

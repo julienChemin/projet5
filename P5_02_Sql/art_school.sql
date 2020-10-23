@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  jeu. 10 sep. 2020 à 07:27
+-- Généré le :  ven. 23 oct. 2020 à 10:00
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `as_comment` (
   PRIMARY KEY (`id`),
   KEY `idPost` (`idPost`,`idAuthor`),
   KEY `idAuthor` (`idAuthor`)
-) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_comment`
@@ -65,7 +65,12 @@ CREATE TABLE IF NOT EXISTS `as_comment` (
 
 INSERT INTO `as_comment` (`id`, `idPost`, `idAuthor`, `nameAuthor`, `profilePictureAuthor`, `content`, `datePublication`) VALUES
 (79, 147, 61, 'lilou', 'https://media.giphy.com/media/uIGHPjEfdc0Ni/giphy.gif', 'Curabitur sit amet urna lectus', '2020-08-24 13:22:15'),
-(80, 147, 58, 'admin linart principal', 'public/images/question-mark.png', 'Vivamus cursus dui vel arcu viverra placerat. Aliquam hendrerit luctus lorem, eget porta urna. In hac habitasse platea dictumst. Phasellus non metus ac odio rhoncus pharetra sodales quis libero. Morbi at dui eros.\r\n\r\nSuspendisse non tellus quis magna aliquet mollis eget ac sapien. Praesent ac mollis ante. Donec gravida neque dui, et hendrerit ex euismod a. Aenean scelerisque euismod dolor, quis interdum odio pellentesque eu. Aliquam sagittis feugiat erat. Nunc ut tincidunt augue. In pulvinar pellentesque maximus. Fusce placerat purus nulla, id condimentum sapien scelerisque non. Praesent vel turpis sed erat sodales pharetra lobortis vel lectus.', '2020-08-24 13:34:22');
+(80, 147, 58, 'admin linart principal', 'public/images/question-mark.png', 'Vivamus cursus dui vel arcu viverra placerat. Aliquam hendrerit luctus lorem, eget porta urna. In hac habitasse platea dictumst. Phasellus non metus ac odio rhoncus pharetra sodales quis libero. Morbi at dui eros.\r\n\r\nSuspendisse non tellus quis magna aliquet mollis eget ac sapien. Praesent ac mollis ante. Donec gravida neque dui, et hendrerit ex euismod a. Aenean scelerisque euismod dolor, quis interdum odio pellentesque eu. Aliquam sagittis feugiat erat. Nunc ut tincidunt augue. In pulvinar pellentesque maximus. Fusce placerat purus nulla, id condimentum sapien scelerisque non. Praesent vel turpis sed erat sodales pharetra lobortis vel lectus.', '2020-08-24 13:34:22'),
+(83, 149, 61, 'lilou', 'https://media.giphy.com/media/uIGHPjEfdc0Ni/giphy.gif', 'test', '2020-08-29 13:35:23'),
+(84, 149, 61, 'lilou', 'https://media.giphy.com/media/uIGHPjEfdc0Ni/giphy.gif', 'retry\r\n', '2020-08-29 15:09:55'),
+(85, 156, 61, 'lilou', 'https://media.giphy.com/media/uIGHPjEfdc0Ni/giphy.gif', 'try', '2020-08-29 15:12:16'),
+(86, 156, 61, 'lilou', 'https://media.giphy.com/media/uIGHPjEfdc0Ni/giphy.gif', 're', '2020-08-29 15:12:18'),
+(87, 152, 61, 'lilou', 'https://media.giphy.com/media/uIGHPjEfdc0Ni/giphy.gif', 'try\r\n', '2020-08-29 20:44:03');
 
 -- --------------------------------------------------------
 
@@ -82,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `as_history` (
   `dateEntry` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idSchool` (`idSchool`)
-) ENGINE=InnoDB AUTO_INCREMENT=380 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=382 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_history`
@@ -163,7 +168,9 @@ INSERT INTO `as_history` (`id`, `idSchool`, `category`, `entry`, `dateEntry`) VA
 (376, 18, 'profil', 'Julien Chemin a remplacé l\'administrateur principal par : admin old5ide principal', '2020-08-24 19:09:46'),
 (377, 18, 'account', 'admin old5ide 1 a passé moderator old5ide 1 au grade : modérateur', '2020-08-24 19:16:14'),
 (378, 18, 'account', 'admin old5ide principal a créé un compte modérateur : lulu', '2020-08-24 19:24:50'),
-(379, 18, 'account', 'admin old5ide principal a supprimé le compte de lulu', '2020-08-24 19:26:08');
+(379, 18, 'account', 'admin old5ide principal a supprimé le compte de lulu', '2020-08-24 19:26:08'),
+(380, 3, 'account', 'Julien Chemin a activé le compte de user without school', '2020-10-09 11:47:27'),
+(381, 3, 'account', 'Julien Chemin a désactivé le compte de user without school', '2020-10-09 11:58:13');
 
 -- --------------------------------------------------------
 
@@ -187,9 +194,11 @@ INSERT INTO `as_like_post` (`idUser`, `idPost`) VALUES
 (1, 149),
 (58, 147),
 (58, 149),
-(58, 151),
+(61, 148),
 (61, 149),
-(61, 157);
+(61, 152),
+(61, 154),
+(61, 166);
 
 -- --------------------------------------------------------
 
@@ -216,7 +225,7 @@ CREATE TABLE IF NOT EXISTS `as_post` (
   `nbLike` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `idAuthor` (`idAuthor`)
-) ENGINE=InnoDB AUTO_INCREMENT=175 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=280 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_post`
@@ -224,23 +233,16 @@ CREATE TABLE IF NOT EXISTS `as_post` (
 
 INSERT INTO `as_post` (`id`, `idAuthor`, `school`, `title`, `filePath`, `urlVideo`, `description`, `datePublication`, `isPrivate`, `authorizedGroups`, `postType`, `fileType`, `onFolder`, `tags`, `nbLike`) VALUES
 (147, 61, 'Linart', 'post public 1 - user actif', 'public/images/dl/72f78f5f1c290fef9716f15f4bf886e2.png', NULL, '<p style=\"text-align: left;\"><strong>Fusce mauris sem, lobortis id nibh ut, scelerisque ornare nisl.</strong></p>\r\n<p style=\"text-align: left;\">&nbsp;</p>\r\n<p style=\"text-align: center;\"><em> Fusce ornare urna vel nisl fringilla, vel consectetur eros imperdiet. Sed finibus pretium leo, at elementum eros finibus ac. Morbi sed egestas ex. Maecenas tortor nisl, pulvinar accumsan eros convallis, posuere tincidunt justo. Phasellus iaculis cursus purus, ac rutrum orci aliquam non. Vestibulum tincidunt facilisis condimentum. Curabitur sit amet urna lectus. Integer viverra imperdiet leo nec hendrerit. Morbi ultrices arcu vitae laoreet venenatis. Duis finibus lectus vel diam sollicitudin, eget auctor dui pharetra. Vestibulum in varius risus, ut finibus massa. Vestibulum aliquet, libero eget cursus condimentum, nunc nisl efficitur mi, eu bibendum urna metus a quam. Nullam et mi sed dui vehicula fermentum.</em></p>\r\n<p style=\"text-align: center;\"><em><img src=\"https://i.pinimg.com/originals/78/9d/d0/789dd096dba6a2022f284fefef9aac2f.jpg\" alt=\"\" width=\"142\" height=\"92\" /></em></p>\r\n<p style=\"text-align: right;\">Me<em>.</em></p>', '2020-08-24 13:05:52', 0, NULL, 'userPost', 'image', NULL, ',lilou,Linart,post public', 1),
-(148, 61, 'Linart', 'post public 2 - user actif', 'public/images/dl/6fa3583cff7769b31d0fc98cd73f05ec.png', NULL, '<p><em>Curabitur sit amet urna lectus</em></p>', '2020-08-24 13:24:24', 0, NULL, 'userPost', 'image', NULL, ',lilou,post public,Linart', 0),
+(148, 61, 'Linart', 'post public 2 - user actif', 'public/images/dl/6fa3583cff7769b31d0fc98cd73f05ec.png', NULL, '<p><em>Curabitur sit amet urna lectus</em></p>', '2020-08-24 13:24:24', 0, NULL, 'userPost', 'image', NULL, ',lilou,post public,Linart', 1),
 (149, 61, 'Linart', 'dossier public 1 - user actif', 'public/images/dl/80527e2432c429437bc90f4c2a21b88a.png', NULL, '<p style=\"text-align: center;\">dossier public 1 - user actif</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: left;\"><em><strong>Suspendisse non tellus quis magna aliquet mollis eget ac sapien</strong></em></p>', '2020-08-24 13:26:31', 0, NULL, 'userPost', 'folder', NULL, NULL, 3),
 (150, 61, 'Linart', 'dossier public 2 - user actif', 'public/images/dl/7f724fdcb6de833b3e700bf02bb851f9.png', NULL, NULL, '2020-08-24 14:04:46', 0, NULL, 'userPost', 'folder', NULL, NULL, 0),
-(151, 61, 'Linart', 'dossier public 3 - user actif', NULL, NULL, '<p style=\"text-align: center;\"><strong>dossier sans thumbnail</strong></p>', '2020-08-24 14:05:32', 0, NULL, 'userPost', 'folder', NULL, NULL, 1),
-(152, 61, 'Linart', 'post dans dossier public 1', 'public/images/dl/1fe0b354a9a6a6edbd7d8c8494c534dc.png', NULL, NULL, '2020-08-24 14:10:45', 0, NULL, 'userPost', 'image', 149, ',lilou,post public,on folder,Linart', 0),
+(152, 61, 'Linart', 'post dans dossier public 1', 'public/images/dl/1fe0b354a9a6a6edbd7d8c8494c534dc.png', NULL, NULL, '2020-08-24 14:10:45', 0, NULL, 'userPost', 'image', 149, ',lilou,post public,on folder,Linart', 1),
 (153, 61, 'Linart', 'dossier dans dossier public 1', 'public/images/dl/bedcf22b03b5f009392c75c9aa72e33c.png', NULL, NULL, '2020-08-24 14:14:29', 0, NULL, 'userPost', 'folder', 149, NULL, 0),
-(154, 61, 'Linart', 'post dans dossier public 2', 'public/images/dl/884b590de48258d7d92fa1e0110b5c9b.png', NULL, NULL, '2020-08-24 14:17:37', 0, NULL, 'userPost', 'image', 149, ',post public,lilou,Linart,on folder', 0),
+(154, 61, 'Linart', 'post dans dossier public 2', 'public/images/dl/884b590de48258d7d92fa1e0110b5c9b.png', NULL, NULL, '2020-08-24 14:17:37', 0, NULL, 'userPost', 'image', 149, ',post public,lilou,Linart,on folder', 1),
 (156, 61, 'Linart', 'post on folder on folder', 'public/images/dl/5f429944517f8042a1f1e2dd690f5ad0.png', NULL, NULL, '2020-08-24 14:20:59', 0, NULL, 'userPost', 'image', 153, ',on folder,folder on folder,post public,lilou,Linart', 0),
-(157, 58, 'Linart', 'dossier pour tous', 'public/images/dl/e5636f864befeac1716967bfc0633770.png', NULL, NULL, '2020-08-24 14:23:28', 1, NULL, 'schoolPost', 'folder', NULL, NULL, 1),
-(158, 58, 'Linart', 'dossier pour group 1 (linoa)', NULL, NULL, NULL, '2020-08-24 14:26:06', 1, ',group_1', 'schoolPost', 'folder', NULL, NULL, 0),
-(159, 58, 'Linart', 'dossier pour group 2 (lilou)', NULL, NULL, NULL, '2020-08-24 14:26:30', 1, ',group_2', 'schoolPost', 'folder', NULL, NULL, 0),
-(160, 61, 'Linart', 'lilou dans school fold priv', 'public/images/dl/21a89e0c0eb3031acb6679074a677e93.png', NULL, NULL, '2020-08-24 14:30:30', 1, 'none', 'schoolPost', 'image', 157, NULL, 0),
-(161, 61, 'Linart', 'lilou fold on school priv fold', NULL, NULL, NULL, '2020-08-24 14:31:56', 1, 'none', 'schoolPost', 'folder', 157, NULL, 0),
-(162, 60, 'Linart', 'linoa on school priv fold', 'public/images/dl/f634147725856a0f83b2f93d22ed8ba8.png', NULL, NULL, '2020-08-24 14:35:31', 1, 'none', 'schoolPost', 'image', 157, NULL, 0),
 (164, 57, 'Current4ngle', NULL, 'public/images/dl/faaf6c1312c431c87b8476aaf7f65bc3.png', NULL, NULL, '2020-08-24 15:59:19', 0, NULL, 'userPost', 'image', NULL, ',curtiss,post public', 0),
 (165, 57, 'Current4ngle', 'dossier public 1 ', 'public/images/dl/41b131e1442b2c95453df9363e3dd46d.png', NULL, NULL, '2020-08-24 15:59:38', 0, NULL, 'userPost', 'folder', NULL, NULL, 0),
-(166, 57, 'Current4ngle', NULL, 'public/images/dl/da3e47512dc5fee0967360ec4983fce5.png', NULL, NULL, '2020-08-24 16:00:15', 0, NULL, 'userPost', 'image', 165, ',post public,curtiss', 0),
+(166, 57, 'Current4ngle', NULL, 'public/images/dl/da3e47512dc5fee0967360ec4983fce5.png', NULL, NULL, '2020-08-24 16:00:15', 0, NULL, 'userPost', 'image', 165, ',post public,curtiss', 1),
 (174, 61, 'Linart', NULL, NULL, 'S-W0NX97DB0', NULL, '2020-08-24 16:27:14', 0, NULL, 'userPost', 'video', NULL, ',science', 0);
 
 --
@@ -271,7 +273,7 @@ CREATE TABLE IF NOT EXISTS `as_profile_content` (
   PRIMARY KEY (`id`),
   KEY `userId` (`userId`),
   KEY `schoolId` (`schoolId`)
-) ENGINE=InnoDB AUTO_INCREMENT=357 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=373 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_profile_content`
@@ -283,7 +285,7 @@ INSERT INTO `as_profile_content` (`id`, `userId`, `schoolId`, `tab`, `size`, `co
 (348, 60, NULL, 'profile', 'small', 3, 'elemStart', '<p style=\"text-align: center;\"><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"https://www.exobaston.com/wp-content/uploads/2018/07/linoa-dissidia-final-fantsay-nt.jpg\" alt=\"\" width=\"490\" height=\"275\" /></p>\r\n<p style=\"text-align: center;\"><strong><em>\"ipsum\"</em></strong></p>'),
 (349, 60, NULL, 'profile', 'medium', 4, 'elemCenter', '<p style=\"text-align: center;\"><em><strong><img src=\"http://www.ffotaku.com/images/final-fantasy-viii/gifs/Rinoa1.gif\" alt=\"\" width=\"37\" height=\"75\" />primis in faucibus. Etiam non tempor tortor. Curabitur fringilla lorem et odio scelerisque<img src=\"http://www.ffotaku.com/images/final-fantasy-viii/gifs/Rinoa1.gif\" alt=\"\" width=\"35\" height=\"71\" /></strong></em></p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>'),
 (350, 60, NULL, 'profile', 'small', 5, 'elemEnd', '<p style=\"text-align: center;\"><img src=\"https://steamusercontent-a.akamaihd.net/ugc/919168520692309624/22552795EAE6EACB4717D7DDB04F9F202C8C07D6/\" alt=\"\" width=\"488\" height=\"274\" /></p>'),
-(352, 61, NULL, 'profile', 'medium', 1, 'elemStart', '<p><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"http://i.imgur.com/oFtpvhy.jpg\" alt=\"\" width=\"473\" height=\"464\" /></p>'),
+(352, 61, NULL, 'profile', 'medium', 1, 'elemStart', '<p><br /><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"http://i.imgur.com/oFtpvhy.jpg\" alt=\"\" width=\"473\" height=\"464\" /></p>'),
 (353, 61, NULL, 'profile', 'medium', 2, 'elemCenter', '<p style=\"text-align: center;\">&lt;--- Morbi sed egestas ex. Maecenas tortor nisl, pulvinar accumsan eros convallis, posuere tincidunt justo. Phasellus iaculis cursus purus, ac rutrum orci aliquam non. Vestibulum tincidunt facilisis condimentum. Curabitur sit amet urna lectus. Integer viverra imperdiet leo nec hendrerit. Morbi ultrices arcu vitae laoreet venenatis.</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">Duis finibus lectus vel diam sollicitudin, eget auctor dui pharetra. Vestibulum in varius risus, ut finibus massa. Vestibulum aliquet, libero eget cursus condimentum, nunc nisl efficitur mi, eu bibendum urna metus a quam. Nullam et mi sed dui vehicula fermentum. ---&gt;</p>'),
 (354, 61, NULL, 'profile', 'medium', 3, 'elemEnd', '<p><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"http://auto.img.v4.skyrock.net/8644/60908644/pics/3203063487_1_4_qZapi4Ar.gif\" alt=\"\" width=\"1003\" height=\"373\" /></p>'),
 (355, 61, NULL, 'profile', 'big', 4, '', '<p><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"https://31.media.tumblr.com/tumblr_lft3fkYf8Z1qbpdcto1_500.gif\" alt=\"\" width=\"1499\" height=\"552\" /></p>'),
@@ -312,7 +314,7 @@ CREATE TABLE IF NOT EXISTS `as_profile_content_img` (
   `toDelete` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `as_profile_content_img_ibfk_1` (`idProfileContent`)
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_profile_content_img`
@@ -329,7 +331,9 @@ INSERT INTO `as_profile_content_img` (`id`, `idProfileContent`, `filePath`, `toD
 (87, 352, 'http://i.imgur.com/oFtpvhy.jpg', 0),
 (88, 352, 'http://i.imgur.com/oFtpvhy.jpg', 0),
 (89, 354, 'http://auto.img.v4.skyrock.net/8644/60908644/pics/3203063487_1_4_qZapi4Ar.gif', 0),
-(90, 355, 'https://31.media.tumblr.com/tumblr_lft3fkYf8Z1qbpdcto1_500.gif', 0);
+(90, 355, 'https://31.media.tumblr.com/tumblr_lft3fkYf8Z1qbpdcto1_500.gif', 0),
+(91, 352, 'http://i.imgur.com/oFtpvhy.jpg', 0),
+(92, 352, 'http://i.imgur.com/oFtpvhy.jpg', 0);
 
 -- --------------------------------------------------------
 
@@ -380,6 +384,13 @@ CREATE TABLE IF NOT EXISTS `as_report_post` (
   KEY `idAuthor` (`idUser`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Déchargement des données de la table `as_report_post`
+--
+
+INSERT INTO `as_report_post` (`idPost`, `idUser`, `userName`, `dateReport`, `content`) VALUES
+(164, 58, 'admin linart principal', '2020-08-31 14:12:07', '<p>test</p>');
+
 -- --------------------------------------------------------
 
 --
@@ -415,7 +426,7 @@ INSERT INTO `as_school` (`id`, `idAdmin`, `name`, `nameAdmin`, `mail`, `schoolGr
 (3, 12, 'noSchool', 'no school admin 1', '', NULL, 'Ysiiac42kilsfog4ac23b2b', 100000000, 1, '2020-01-24 13:23:47', 'https://cdn.pixabay.com/photo/2014/04/03/11/47/people-312122_960_720.png', 1, NULL, NULL, NULL),
 (18, 48, 'Old5ide', 'admin old5ide principal', 'julchemin@orange.fr', NULL, 'old5idecode', 5, 0, '2020-08-23 14:09:01', 'public/images/dl/f082b28f2c11d2128a0168bce4a359e7.png', 1, NULL, NULL, NULL),
 (20, 54, 'Current4ngle', 'admin current4ngle principal', 'julchemin@orange.fr', NULL, 'Current4nglecode', 0, 0, '2020-08-24 01:49:13', 'public/images/dl/1c29c2815acf937fc561ea318ad668e1.png', 0, NULL, NULL, NULL),
-(21, 58, 'Linart', 'admin linart principal', 'julchemin@orange.fr', ',group_1,group_2', 'Linartcode', 50, 1, '2020-08-24 11:17:59', 'public/images/dl/a0ebbc1f6d7bf1c5560d3968a3ef0c73.png', 1, 'public/images/dl/ec7345db366f178b95bf3f33a496ab5b.png false', 'public/images/dl/3d0ecfff00099ccc4880d151879f7956.png widePicture mediumPicture', NULL);
+(21, 58, 'Linart', 'admin linart principal', 'julchemin@orange.fr', ',group_1,group_2', 'Linartcode', 50, 1, '2020-08-24 11:17:59', 'public/images/dl/a0ebbc1f6d7bf1c5560d3968a3ef0c73.png', 1, 'public/images/dl/1a220e6e40360cedd9f52dbcb523d05f.png false', 'http://localhost/P5_Chemin_Julien/P5_01_Code/public/images/dl/a9598323735f88e7c2429dd292cc2658.png widePicture smallPicture', 'elemStart elemEnd');
 
 -- --------------------------------------------------------
 
@@ -441,10 +452,10 @@ CREATE TABLE IF NOT EXISTS `as_school_contract_reminder` (
 --
 
 INSERT INTO `as_school_contract_reminder` (`id`, `idOwner`, `mailToRemind`, `remindType`, `dateRemind`, `dateContractEnd`, `done`) VALUES
-(41, 18, 'artschoolsfr@gmail.com', 'week', '2020-09-16 00:00:00', '2020-09-23 00:00:00', 0),
-(42, 20, 'artschoolsfr@gmail.com', 'month', '2020-10-23 00:00:00', '2020-08-24 00:00:00', 1),
-(45, 21, 'artschoolsfr@gmail.com', 'month', '2020-12-24 00:00:00', '2020-08-24 00:00:00', 1),
-(46, 21, 'artschoolsfr@gmail.com', 'month', '2020-12-24 00:00:00', '2021-01-24 00:00:00', 0);
+(41, 18, 'julchemin@orange.fr', 'week', '2020-09-16 00:00:00', '2020-09-23 00:00:00', 0),
+(42, 20, 'julchemin@orange.fr', 'month', '2020-10-23 00:00:00', '2020-08-24 00:00:00', 1),
+(45, 21, 'julchemin@orange.fr', 'month', '2020-12-24 00:00:00', '2020-08-24 00:00:00', 1),
+(46, 21, 'julchemin@orange.fr', 'month', '2020-12-24 00:00:00', '2021-01-24 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -458,7 +469,7 @@ CREATE TABLE IF NOT EXISTS `as_tag` (
   `name` varchar(355) NOT NULL,
   `tagCount` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=81 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_tag`
@@ -516,6 +527,21 @@ INSERT INTO `as_tag_post` (`idPost`, `tagName`) VALUES
 (166, 'curtiss'),
 (174, 'science');
 
+--
+-- Déclencheurs `as_tag_post`
+--
+DROP TRIGGER IF EXISTS `tag_post_delete`;
+DELIMITER $$
+CREATE TRIGGER `tag_post_delete` AFTER DELETE ON `as_tag_post` FOR EACH ROW UPDATE as_tag SET tagCount = tagCount - 1 WHERE as_tag.name = OLD.tagName
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `tag_post_new`;
+DELIMITER $$
+CREATE TRIGGER `tag_post_new` AFTER INSERT ON `as_tag_post` FOR EACH ROW UPDATE as_tag SET tagCount = tagCount + 1 
+WHERE NEW.tagName = name
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -541,15 +567,15 @@ CREATE TABLE IF NOT EXISTS `as_user` (
   `profilePictureInfo` text DEFAULT NULL,
   `profileTextInfo` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_user`
 --
 
 INSERT INTO `as_user` (`id`, `name`, `mail`, `school`, `schoolGroup`, `password`, `temporaryPassword`, `beingReset`, `nbWarning`, `isBan`, `isAdmin`, `isModerator`, `isActive`, `profileBannerInfo`, `profilePictureInfo`, `profileTextInfo`) VALUES
-(1, 'Julien Chemin', 'julchemin@orange.fr', 'allSchool', NULL, '$2y$10$kJ1W2sEancIUJPVp3Ecq2ef1Od9BxzF4bpyoyjVkyPuyn72cARy26', '$2y$10$lcWyVNH7ojRtvEjQpBUkMurrgamS1b7XMSiAD9lDQaNUl/eMkfUKu', 0, 0, 0, 1, 0, 1, NULL, '', NULL),
-(12, 'no school admin 1', 'noschool@admin1.fr', 'noSchool', NULL, '$2y$10$GT4./enDDg41G6xCfl2El.lBgJIbCr3gyTRQcJSiDb9rPqVehWKQS', NULL, 0, 0, 0, 1, 0, 1, NULL, NULL, NULL),
+(1, 'Julien Chemin', 'julchemin@orange.fr', 'allSchool', NULL, '$2y$10$a6WKgH4XrjO8.eq/vQ79E.rMlMfMM4xXrySBb/H2ngZSwM2Ir/fSu', '$2y$10$Oaozfl8KS3bEzzFuKzjvNOD.lhYV22rj6H0pvX2QPN8w.K.lL6hMK', 0, 0, 0, 1, 0, 1, NULL, '', NULL),
+(12, 'no school admin 1', 'noschool@admin1.fr', 'noSchool', NULL, '$2y$10$11kGFeXmkx4Znyf3oRPhku7K58Qu44.C/GDzSmcy32P5ygNtvBb9i', NULL, 0, 0, 0, 1, 0, 1, NULL, NULL, NULL),
 (48, 'admin old5ide principal', 'fdhfdthsfthtsfh@drgdsgsdgdgd.fsfffsf', 'Old5ide', NULL, '$2y$10$IvkI7IYMB1035KfmWhukm.vpoR0F/go3bvnBr0KJOyrWylNwTwyXC', NULL, 0, 0, 0, 1, 0, 1, 'https://cdn.pixabay.com/photo/2018/06/15/01/25/texture-3476000_960_720.jpg false', 'https://ici.radio-canada.ca/concours/la_preuve_par_l_image/2019/images/photo/15_Bretheau_g.jpg widePicture bigPicture', NULL),
 (49, 'admin old5ide 1', 'sdgsdvdsgv@sdrgsdrgds.dgvdsvgf', 'Old5ide', NULL, '$2y$10$DL6pdMRlCQVfS3m0gXFwIe.ewE674rKcyz8K9NFNck6JPVXUcfdC6', NULL, 0, 0, 0, 1, 0, 1, NULL, NULL, NULL),
 (50, 'moderator old5ide 1', 'dfdgrd@sefqsfsrf.frcfb', 'Old5ide', NULL, '$2y$10$5/VSF7W6o1AfVaTl7ylbbuLOUiBAXH0f3gQpaz.2Xpx.8TiuGElH.', NULL, 0, 0, 0, 0, 1, 1, NULL, NULL, NULL),
@@ -558,9 +584,10 @@ INSERT INTO `as_user` (`id`, `name`, `mail`, `school`, `schoolGroup`, `password`
 (55, 'admin current4ngle 1', 'sgvgdsqgq@qsrgqgrq.grsg', 'Current4ngle', NULL, '$2y$10$ZNyM4AdZVMStIJL9P4nbeu/NO5Qqjcv1vH.8I9ZXZb8RtOLWLHQr6', NULL, 0, 0, 0, 1, 0, 0, NULL, NULL, NULL),
 (56, 'moderator current4ngle 1', 'wwgvwds@dsgrsqgvbd.gdxvf', 'Current4ngle', NULL, '$2y$10$PF45nlzruqYW7sj/RgEGa.v8VoQrp4vm5KidJPh4/8H1evV3DwUAW', NULL, 0, 0, 0, 0, 1, 0, NULL, NULL, NULL),
 (57, 'curtiss', 'sfsfsf@sqrgdsqrgv.gqrdgd', 'Current4ngle', NULL, '$2y$10$1ToJBQGbPRYVSJfBMmwQZewW/Wm4KeXdMp6fafOIptEBqTryRwsGi', NULL, 0, 0, 0, 0, 0, 0, 'https://th.bing.com/th/id/OIP.OhqjIK0gItw2jdrjmfOrAAHaEo?pid=Api false', 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Curtiss_logo.svg/1280px-Curtiss_logo.svg.png widePicture mediumPicture', NULL),
-(58, 'admin linart principal', 'sqrgfqsgsqg@qsrgqsrgq.gfqrdsf', 'Linart', NULL, '$2y$10$Tt1014DSzfPYcigvwphdMOOpP7ET.HFH34EnDTkytDq3NWdsUn9MG', NULL, 0, 0, 0, 1, 0, 1, NULL, 'https://th.bing.com/th/id/OIP.8pW_MwsPMWDcW_vJvVb3aAHaKj?pid=Api highPicture smallPicture', NULL),
-(60, 'linoa', 'ggvdvg@dgvrdsqg.gdr', 'Linart', 'group_1', '$2y$10$zsdAbbIf5Fgx4IF.Jo84HeDavlNFJtGS1MpVl.LCTG04/expRNUPe', NULL, 0, 0, 0, 0, 0, 0, 'http://ns328286.ip-37-187-113.eu/ew/wallpapers/800x600/06484_800x600.jpg false', 'https://66.media.tumblr.com/8601c4b6dcc3c640a81f9ec49454199b/tumblr_p535oopGlx1wt7ek9o1_1280.jpg highPicture bigPicture', NULL),
-(61, 'lilou', 'qsrgfqgsv@qsgrqsgr.gfr', 'Linart', 'group_2', '$2y$10$B.YdOXkZVu0Xc/fAA8wWPeTIHaU8WhAlPI/OffGmCvnW8fgih6E9m', NULL, 0, 0, 0, 0, 0, 1, 'https://31.media.tumblr.com/tumblr_lft3fkYf8Z1qbpdcto1_500.gif true', 'https://media.giphy.com/media/uIGHPjEfdc0Ni/giphy.gif widePicture mediumPicture', NULL);
+(58, 'admin linart principal', 'sqrgfqsgsqg@qsrgqsrgq.gfqrdsf', 'Linart', NULL, '$2y$10$Tt1014DSzfPYcigvwphdMOOpP7ET.HFH34EnDTkytDq3NWdsUn9MG', NULL, 0, 0, 0, 1, 0, 1, NULL, 'http://localhost/P5_Chemin_Julien/P5_01_Code/public/images/dl/103c841faf08afd875e9223523b739e2.gif highPicture smallPicture', NULL),
+(60, 'linoa', 'ggvdvg@dgvrdsqg.gdr', 'Linart', 'group_1', '$2y$10$zsdAbbIf5Fgx4IF.Jo84HeDavlNFJtGS1MpVl.LCTG04/expRNUPe', NULL, 0, 0, 0, 0, 0, 0, 'public/images/dl/328e758c9dc34df2c9f27d2daba7099f.jpg false', 'public/images/dl/d920350b2fb85256bd70df972be6cd4c.jpg widePicture bigPicture', 'elemStart elemCenter elemEnd'),
+(61, 'lilou', 'qsrgfqgsv@qsgrqsgr.gfr', 'Linart', 'group_2', '$2y$10$B.YdOXkZVu0Xc/fAA8wWPeTIHaU8WhAlPI/OffGmCvnW8fgih6E9m', NULL, 0, 0, 0, 0, 0, 1, 'https://31.media.tumblr.com/tumblr_lft3fkYf8Z1qbpdcto1_500.gif false', 'http://localhost/P5_Chemin_Julien/P5_01_Code/media.giphy.com/media/uIGHPjEfdc0Ni/giphy.gif widePicture mediumPicture', 'elemStart elemStart elemCenter'),
+(63, 'user without school', 'gsgdd@rgdgdrg.dgdrg', 'noSchool', NULL, '$2y$10$CDglK8341HmLdvgeHak6MOdOfCmL0YU8iRVmy1VPR/O/IY1N.DFOG', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -604,11 +631,30 @@ CREATE TABLE IF NOT EXISTS `as_warning` (
 --
 
 --
+-- Contraintes pour la table `as_banishment`
+--
+ALTER TABLE `as_banishment`
+  ADD CONSTRAINT `as_banishment_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Contraintes pour la table `as_comment`
 --
 ALTER TABLE `as_comment`
   ADD CONSTRAINT `as_comment_ibfk_1` FOREIGN KEY (`idPost`) REFERENCES `as_post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `as_comment_ibfk_2` FOREIGN KEY (`idAuthor`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `as_history`
+--
+ALTER TABLE `as_history`
+  ADD CONSTRAINT `as_history_ibfk_1` FOREIGN KEY (`idSchool`) REFERENCES `as_school` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `as_like_post`
+--
+ALTER TABLE `as_like_post`
+  ADD CONSTRAINT `as_like_post_ibfk_1` FOREIGN KEY (`idPost`) REFERENCES `as_post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `as_like_post_ibfk_2` FOREIGN KEY (`idUser`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `as_profile_content`
@@ -618,10 +664,36 @@ ALTER TABLE `as_profile_content`
   ADD CONSTRAINT `as_profile_content_ibfk_2` FOREIGN KEY (`schoolId`) REFERENCES `as_school` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
+-- Contraintes pour la table `as_profile_content_img`
+--
+ALTER TABLE `as_profile_content_img`
+  ADD CONSTRAINT `as_profile_content_img_ibfk_1` FOREIGN KEY (`idProfileContent`) REFERENCES `as_profile_content` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `as_report_comment`
+--
+ALTER TABLE `as_report_comment`
+  ADD CONSTRAINT `as_report_comment_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `as_report_comment_ibfk_2` FOREIGN KEY (`idComment`) REFERENCES `as_comment` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `as_report_post`
+--
+ALTER TABLE `as_report_post`
+  ADD CONSTRAINT `as_report_post_ibfk_1` FOREIGN KEY (`idUser`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `as_report_post_ibfk_2` FOREIGN KEY (`idPost`) REFERENCES `as_post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Contraintes pour la table `as_school`
 --
 ALTER TABLE `as_school`
   ADD CONSTRAINT `as_school_ibfk_1` FOREIGN KEY (`idAdmin`) REFERENCES `as_user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Contraintes pour la table `as_school_contract_reminder`
+--
+ALTER TABLE `as_school_contract_reminder`
+  ADD CONSTRAINT `as_school_contract_reminder_ibfk_1` FOREIGN KEY (`idOwner`) REFERENCES `as_school` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Contraintes pour la table `as_user_contract_reminder`

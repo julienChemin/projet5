@@ -1062,7 +1062,8 @@ class PostsManager extends LikeManager
                 return false;
             }
         }
-        if ($post->getSchool() === $user->getSchool() || $user->getSchool() === ALL_SCHOOL) {
+        if (($post->getSchool() === $user->getSchool() && ($user->getIsActive() || $user->getIsModerator() || $user->getIsAdmin())) 
+        || $user->getSchool() === ALL_SCHOOL) {
             //user is in the school where the post get publish or user is webmaster
             if ($user->getIsModerator() || $user->getIsAdmin() || $user->getId() === $post->getIdAuthor()) {
                 //user is admin ,moderator, or author of this post

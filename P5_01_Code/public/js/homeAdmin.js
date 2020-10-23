@@ -59,30 +59,31 @@ function createSlide(posts){
 			break;
 		}
 	});
-	blockSlides.appendChild(divSlide);
+	blockSlider.appendChild(divSlide);
 }
 
 let addSlide = (slide) => {
-	url = 'index.php?action=getPostsBySchool&offset=' + (slide.positionSlider * slide.nbItemBySlide);
-	url += '&limit=' + slide.nbItemBySlide + '&school=' + document.getElementById('schoolName').value;
-	ajaxGet(url, function(response){
+	myUrl = slide.url + '&offset=' + (slide.positionSlider * slide.nbItemBySlide);
+	myUrl += '&limit=' + slide.nbItemBySlide + '&school=' + document.getElementById('schoolName').value;
+	ajaxGet(myUrl, function(response){
 		if (response !== 'false' && response.length > 0) {
 			createSlide(JSON.parse(response));
 			slide.nbSlide += 1;
 			slide.positionSlider += 1;
-			slide.blockSlides.style.left = '-' + ((slide.positionSlider - 1) * 100) + '%';
-		}
+			slide.blockSlider.style.left = '-' + ((slide.positionSlider - 1) * 100) + '%';
+		} else {slide.goToFirstSlide();}
 	});
 }
-let blockSlides = document.querySelector('.slider');
-const slide = new Slide(blockSlides, 
+let blockSlider = document.querySelector('.slider');
+const slide = new Slide(blockSlider, 
 						document.querySelector('.arrowLeft'), 
 						document.querySelector('.arrowRight'), 
-						5, 
+						6, 
+						'index.php?action=getPostsBySchool', 
 						addSlide);
 window.addEventListener("load", function(){
 	slide.init();
-	url = 'index.php?action=getPostsBySchool&school=' + document.getElementById('schoolName').value + '&limit=5';
+	url = 'index.php?action=getPostsBySchool&school=' + document.getElementById('schoolName').value + '&limit=6';
 	ajaxGet(url, function(response){
 		if (response !== 'false' && response.length > 0) {
 			createSlide(JSON.parse(response));
@@ -90,7 +91,7 @@ window.addEventListener("load", function(){
 			let divSlide = document.createElement('div');
 			divSlide.classList.add('slide');
 			divSlide.textContent = "Il n'y a aucune publication pour l'instant";
-			blockSlides.appendChild(divSlide);
+			blockSlider.appendChild(divSlide);
 		}
 	});
 });

@@ -19,8 +19,10 @@ class Slide{
     }
     toRight()
     {
-        if (this.positionSlider === this.nbSlide) {
+        if (this.positionSlider === this.nbSlide && this.ajaxFunction !== null) {
             this.ajaxFunction(this, this.url);
+        } else if (this.ajaxFunction === null) {
+            this.goToFirstSlide();
         } else {
             this.positionSlider += 1;
             this.blockSlider.style.left = '-' + ((this.positionSlider - 1) * 100) + '%';

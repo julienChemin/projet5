@@ -4,7 +4,11 @@ if (isset($data['option'])) {
         switch ($option) {
             case 'home' :
                 echo '<script src="public/js/slide.js"></script>';
-                echo '<script src="public/js/home.js"></script>';
+                if (defined('FRONTEND') && FRONTEND === true) {
+                    echo '<script src="public/js/home.js"></script>';
+                } else {
+                    echo '<script src="public/js/homeAdmin.js"></script>';
+                }
                 break;
             case 'advancedSearch' :
                 echo '<script src="public/js/advancedSearch.js"></script>';

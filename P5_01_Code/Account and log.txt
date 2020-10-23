@@ -17,7 +17,7 @@ SCHOOL : Linart
     ADMIN
         -> pseudo : admin linart principal | password : alp
     MODERATOR
-        ->
+        -> pseudo : moderator linart 1 | password : ml1
     STUDENT
         -> pseudo : lilou | password : lilou
         -> pseudo : linoa | password : linoa
