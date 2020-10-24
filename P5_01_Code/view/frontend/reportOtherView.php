@@ -10,16 +10,13 @@
                 - Chaque signalement est traité avec attention, il est donc inutile de signaler plusieurs fois le même contenu
             </li>
             <li>
-                - Les signalements abusifs peuvent être sanctionné d'un avertissement
-            </li>
-            <li>
-                - Trois avertissements entraine la suspension du compte pour un mois
+                - Les signalements abusifs peuvent être sanctionné d'un avertissement (trois avertissements entraine la suspension du compte pour un mois)
             </li>
         </ul>
     </div>
     <form id="reportForm" method="POST" action="index.php?action=setReport" enctype="multipart/form-data">
         <input type="hidden" name="elem" value="other">
-        <label for="tinyMCEtextarea"><h2>Pourquoi signalez-vous ce contenu ?</h2></label>
+        <label for="tinyMCEtextarea"><h2>Que voulez vous signaler ?</h2></label>
         <textarea id="tinyMCEtextarea" name="tinyMCEtextarea" placeholder="Un signalement sans description ne sera pas pris en compte"></textarea>
         <p>
             <input type="submit" name="submit" value="Signaler">

@@ -1,12 +1,7 @@
 new stuff
-    - can't post on school profil when school isn't active
-    - can't add or edit a block on school / user profile when isn't active
+    -
 
 fixed issues
-    - homeAdmin.js wasn't use on homeAdmin.php.. for some reason. now it is.
-    - homeAdmin.js update to fit with slide.js fix
-    - slide box fully responsive
-    - issue with block profile content on school / user profil
-    - modal to add / edit profile content on tab "about" wasn't appearing
-    - user inactif can't see tab private post on school profil
-    - user inactif can't see private post either
+    - active user couldn't publish a folder because there are no tags for folder (and active user publish only with tag to be referenced).
+        that exception is now handle
+    - 

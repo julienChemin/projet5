@@ -17,7 +17,7 @@ function toggleList(list, iconeArrow)
 }
 function blink(elem)
 {
-    elem.style.backgroundColor = 'red';
+    elem.style.backgroundColor = '#bb0b0b';
     elem.style.opacity = '0.4';
     setTimeout(function(){
         elem.style.backgroundColor = '#161617';

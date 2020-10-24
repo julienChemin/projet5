@@ -855,7 +855,8 @@ class PostsManager extends LikeManager
     {
         $arrPOST['isPrivate'] = false;
         $arrPOST['postType'] = 'userPost';
-        if ($user->getIsActive() && $_SESSION['grade'] !== ADMIN && $_SESSION['grade'] !== MODERATOR && $_SESSION['school'] !== NO_SCHOOL && !empty($arrPOST['listTags'])) {
+        if ($user->getIsActive() && $_SESSION['grade'] !== ADMIN && $_SESSION['grade'] !== MODERATOR && $_SESSION['school'] !== NO_SCHOOL 
+        && ((!empty($arrPOST['listTags']) && $arrPOST['fileTypeValue'] !== 'folder') || (empty($arrPOST['listTags']) && $arrPOST['fileTypeValue'] === 'folder'))) {
             if (!empty($folder) && $folder->getPostType() === "userPost") {
                 // referenced post on folder
                 $arrPOST['folder'] = intval($arrPOST['folder']);
