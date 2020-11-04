@@ -1,7 +1,6 @@
 new stuff
-    -
+    - field "lastName" and "firstName" in as_user table in bdd
+    - edited User / UserManager models for the new fields
 
 fixed issues
-    - active user couldn't publish a folder because there are no tags for folder (and active user publish only with tag to be referenced).
-        that exception is now handle
-    - 
+    - paging on advanced search wasn't working (i use the wrong var) how can i miss that :O

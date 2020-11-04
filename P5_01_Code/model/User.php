@@ -6,6 +6,8 @@ class User
 {
     private $id,
         $name,
+        $firstName,
+        $lastName,
         $mail,
         $school,
         $schoolGroup,
@@ -69,6 +71,16 @@ class User
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    public function getLastName()
+    {
+        return $this->lastName;
     }
 
     public function getMail()
@@ -194,6 +206,22 @@ class User
     {
         if (strlen($name) > 0) {
             $this->name = $name;
+            return $this;
+        }
+    }
+
+    public function setFirstName(string $firstName)
+    {
+        if (strlen($firstName) > 0) {
+            $this->firstName = $firstName;
+            return $this;
+        }
+    }
+
+    public function setLastName(string $lastName)
+    {
+        if (strlen($lastName) > 0) {
+            $this->lastName = $lastName;
             return $this;
         }
     }

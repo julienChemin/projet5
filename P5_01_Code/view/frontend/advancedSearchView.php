@@ -110,7 +110,7 @@ if (empty($_POST)) {
         if (!empty($data['posts']['posts'])) {
             echo '<nav id="pagingQuickSearch" class="fullWidth">';
             echo '<ol>';
-            !empty($POST['pageToGo']) ? $actualPage = intval($POST['pageToGo']) : $actualPage = 1;
+            !empty($_POST['pageToGo']) ? $actualPage = intval($_POST['pageToGo']) : $actualPage = 1;
             if ($data['nbPage'] > 9) {
                 if ($actualPage < 9) {
                     //display the 9 first page and the last one

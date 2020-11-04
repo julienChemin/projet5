@@ -7,7 +7,7 @@ class UserManager extends AbstractManager
     public static $OBJECT_TYPE = 'Chemin\ArtSchools\Model\User';
     public static $TABLE_NAME = 'as_user';
     public static $TABLE_PK = 'id';
-    public static $TABLE_CHAMPS ='id, name, password, mail, school, schoolGroup, temporaryPassword, beingReset, 
+    public static $TABLE_CHAMPS ='id, name, firstName, lastName, password, mail, school, schoolGroup, temporaryPassword, beingReset, 
         nbWarning, isBan, isAdmin, isModerator, 
         isActive, profileBannerInfo, profilePictureInfo, profileTextInfo';
 

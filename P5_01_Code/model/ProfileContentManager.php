@@ -409,7 +409,7 @@ class ProfileContentManager extends AbstractManager
     private function editIdProfileContent(array $imgEntries, int $oldId, int $newId)
     {
         if (count($imgEntries) > 0 && $oldId > 0 && $newId > 0) {
-            $test = $this->sql(
+            $this->sql(
                 'UPDATE as_profile_content_img 
                 SET idProfileContent = :newId 
                 WHERE idProfileContent = :oldId', 
