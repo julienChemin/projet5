@@ -57,7 +57,7 @@ function fillContentReport() {
 				let tdName = document.createElement('td');
 				let elemLinkName = document.createElement('a');
 				elemLinkName.href = 'index.php?action=userProfile&userId=' + row['idUser'];
-				elemLinkName.textContent = row['userName'];
+				elemLinkName.textContent = row['authorLastName'] + ' ' + row['authorFirstName'];
 				tdName.appendChild(elemLinkName);
 
 				let tdContent = document.createElement('td');
@@ -116,7 +116,7 @@ function fillContentReportFromElem(idElem) {
 				let tdName = document.createElement('td');
 				let elemLinkName = document.createElement('a');
 				elemLinkName.href = 'index.php?action=userProfile&userId=' + row['idUser'];
-				elemLinkName.textContent = row['userName'];
+				elemLinkName.textContent = row['authorLastName'] + ' ' + row['authorFirstName'];
 				tdName.appendChild(elemLinkName);
 				let tdContent = document.createElement('td');
 				tdContent.innerHTML = row['content'];

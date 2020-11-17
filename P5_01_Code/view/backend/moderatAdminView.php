@@ -44,12 +44,16 @@
                         if ($user->getIsAdmin()) {
                             ?>
                             <tr>
-                                <td><a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a></td>
+                                <td>
+                                    <a href="index.php?action=userProfile&userId=<?=$user->getId()?>">
+                                        <?=$user->getLastName()?> <?=$user->getFirstName()?>
+                                    </a>
+                                </td>
                                 <?php
                                 if ($user->getId() !== $school->getIdAdmin() && $user->getId() !== intval($_SESSION['id'])) {
-                                    echo '<td><i class="far fa-minus-square toModerator" schoolname="' . $school->getName() . '"></i></td>';
+                                    echo '<td><i class="far fa-minus-square toModerator" userpseudo="' . $user->getPseudo() . '" schoolname="' . $school->getName() . '"></i></td>';
                                 } else {
-                                    echo '<td><i class="far fa-minus-square inactifLink" schoolname="' . $school->getName() . '"></i></td>';
+                                    echo '<td><i class="far fa-minus-square inactifLink"></i></td>';
                                 }
                                 ?>
                             </tr>
@@ -73,12 +77,14 @@
                                 ?>
                                 <tr>
                                     <td>
-                                        <a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a>
+                                        <a href="index.php?action=userProfile&userId=<?=$user->getId()?>">
+                                            <?=$user->getLastName()?> <?=$user->getFirstName()?>
+                                        </a>
                                     </td>
                                     <td>
-                                        <i class="far fa-plus-square toAdmin" schoolname="<?=$school->getName()?>"></i> - 
-                                        <i class="far fa-minus-square toNormalUser" schoolname="<?=$school->getName()?>"></i> - 
-                                        <i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
+                                        <i class="far fa-plus-square toAdmin" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>"></i> - 
+                                        <i class="far fa-minus-square toNormalUser" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>"></i> - 
+                                        <i class="fas fa-times toDelete" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i>
                                     </td>
                                 </tr>
                                 <?php
@@ -106,6 +112,10 @@
                                     <input type="text" name="moderatorName" required="">
                                 </p>
                                 <p>
+                                    <label for="moderatorMail">Adresse email</label>
+                                    <input type="email" name="moderatorMail" required="">
+                                </p>
+                                <p>
                                     <label for="moderatorPassword">Mot de passe</label>
                                     <input type="password" name="moderatorPassword" required="">
                                 </p>
@@ -114,8 +124,12 @@
                                     <input type="password" name="moderatorConfirmPassword" required="">
                                 </p>
                                 <p>
-                                    <label for="moderatorMail">Adresse email</label>
-                                    <input type="email" name="moderatorMail" required="">
+                                    <label for="moderatorLastName">Nom</label>
+                                    <input type="text" name="moderatorLastName" required="">
+                                </p>
+                                <p>
+                                    <label for="moderatorFirstName">Prénom</label>
+                                    <input type="text" name="moderatorFirstName" required="">
                                 </p>
                             </div>
                             <div>
@@ -125,7 +139,6 @@
                                     <input type="button" name="cancel" value="Annuler">
                                 </p>
                             </div>
-                            <hr>
                         </div>
                     </form>
                     <?php

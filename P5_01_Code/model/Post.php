@@ -55,12 +55,12 @@ class Post
     //GETTERS
     public function getId()
     {
-        return $this->id;
+        return intval($this->id);
     }
 
     public function getIdAuthor()
     {
-        return $this->idAuthor;
+        return intval($this->idAuthor);
     }
 
     public function getSchool()

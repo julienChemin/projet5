@@ -96,7 +96,8 @@
                                             <img src="<?=$result[$i]->getProfilePicture()?>" alt="Photo de profil">
                                         </div>
                                         <figcaption>
-                                            <p><?=$result[$i]->getName()?></p>
+                                            <p><?=$result[$i]->getFirstName()?></p>
+                                            <p><?=$result[$i]->getLastName()?></p>
                                         </figcaption>
                                     </figure>
                                 </a>

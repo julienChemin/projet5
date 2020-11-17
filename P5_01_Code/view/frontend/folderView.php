@@ -1,5 +1,6 @@
 <?php
 $post = $data['post'];
+$comments = $data['comments'];
 $asidePosts = $data['asidePosts'];
 $urlAddPostOnFolder = $data['urlAddPostOnFolder'];
 $author = $data['author'];
@@ -38,7 +39,7 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                 if (!empty($user)) {
                     ?>
                     <input type="hidden" name="userId" value="<?=$user->getId()?>">
-                    <input type="hidden" name="userName" value="<?=$user->getName()?>">
+                    <input type="hidden" name="userName" value="<?=$user->getFirstName()?> <?=$user->getLastName()?>">
                     <input type="hidden" name="userPicture" value="<?=$user->getProfilePicture()?>">
                     <span id="msgComment"></span>
                     <textarea wrap="hard" name="commentContent" placeholder="Ajouter un commentaire"></textarea>
@@ -52,8 +53,8 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
             </form>
             <div class="fullWidth">
                 <?php
-                if (!empty($post->getComments())) {
-                    foreach ($post->getComments() as $comment) {
+                if (!empty($comments)) {
+                    foreach ($comments as $comment) {
                         ?>
                         <div class="comment fullWidth">
                             <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>">
@@ -61,7 +62,7 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                             </a>
                             <div>
                                 <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>">
-                                    <?=$comment->getNameAuthor()?>
+                                    <?=$comment->getFirstNameAuthor()?> <?=$comment->getLastNameAuthor()?>
                                 </a>
                                 <p>
                                     <?=nl2br($comment->getContent())?>
@@ -122,11 +123,17 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                     </a>
                     <div>
                         <a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
-                            <span><?=$author->getName()?></span>
+                            <span><?=$author->getFirstName()?> <?=$author->getLastName()?></span>
                         </a>
-                        <a href="index.php?action=schoolProfile&school=<?=$author->getSchool()?>">
-                            <span><?=$author->getSchool()?></span>
-                        </a>
+                        <?php
+                            if ($author->getSchool() !== NO_SCHOOL) {
+                                ?>
+                                    <a href="index.php?action=schoolProfile&school=<?=$author->getSchool()?>">
+                                        <span><?=$author->getSchool()?></span>
+                                    </a>
+                                <?php
+                            }
+                        ?>
                     </div>
                     <?php
                 } else {

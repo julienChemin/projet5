@@ -5,6 +5,7 @@
     } else {
         $authorizedUser = false;
     }
+    $data['user']->getSchool() === NO_SCHOOL ? $visibility = 'hide' : $visibility = '';
     ?>
 
     <div id="banner" class="editable">
@@ -28,8 +29,8 @@
                 ?>
             </div>
             <div class="<?=$data['user']->getProfileTextBlock()?> editable">
-                <span class="<?=$data['user']->getProfileTextPseudo()?>"><?=$data['user']->getName()?></span>
-                <a href="index.php?action=schoolProfile&school=<?=$data['user']->getSchool()?>" class="<?=$data['user']->getProfileTextSchool()?>">
+                <span class="<?=$data['user']->getProfileTextPseudo()?>"><?=$data['user']->getFirstName()?> <?=$data['user']->getLastName()?></span>
+                <a href="index.php?action=schoolProfile&school=<?=$data['user']->getSchool()?>" class="<?=$data['user']->getProfileTextSchool()?> <?=$visibility?>">
                     <?=$data['user']->getSchool()?>
                 </a>
                 <?php
@@ -286,8 +287,8 @@ if ($authorizedUser) {
                     <img src="public/images/pseudoRight.jpg" title="Pseudo aligné à droite" alt="Pseudo aligné à droite">
                 </label>
             </div>
-            <hr>
-            <div>
+            <hr class="<?=$visibility?>">
+            <div class="<?=$visibility?>">
                 <input type="radio" name="schoolPosition" id="schoolLeft"
                 value="elemStart" <?=$data['user']->getProfileTextSchool() === 'elemStart' ? 'checked' : 'unchecked'?>>
                 <label for="schoolLeft">

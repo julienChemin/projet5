@@ -7,7 +7,8 @@ class Comment
     private $id,
         $idPost,
         $idAuthor,
-        $nameAuthor,
+        $firstNameAuthor,
+        $lastNameAuthor,
         $profilePictureAuthor,
         $content,
         $datePublication;
@@ -46,9 +47,14 @@ class Comment
         return intval($this->idAuthor);
     }
 
-    public function getNameAuthor()
+    public function getFirstNameAuthor()
     {
-        return $this->nameAuthor;
+        return $this->firstNameAuthor;
+    }
+
+    public function getLastNameAuthor()
+    {
+        return $this->lastNameAuthor;
     }
 
     public function getProfilePictureAuthor()
@@ -91,20 +97,35 @@ class Comment
         }
     }
 
-    public function setNameAuthor(string $nameAuthor)
+    public function setFirstNameAuthor(string $firstNameAuthor = null)
     {
-        if (strlen($nameAuthor) > 0) {
-            $this->nameAuthor = $nameAuthor;
+        if (strlen($firstNameAuthor) > 0) {
+            $this->firstNameAuthor = $firstNameAuthor;
             return $this;
         }
     }
 
-    public function setProfilePictureAuthor(string $profilePictureAuthor)
+    public function setLastNameAuthor(string $lastNameAuthor = null)
     {
-        if (strlen($profilePictureAuthor) > 0) {
-            $this->profilePictureAuthor = $profilePictureAuthor;
+        if (strlen($lastNameAuthor) > 0) {
+            $this->lastNameAuthor = $lastNameAuthor;
             return $this;
         }
+    }
+
+    public function setProfilePictureAuthor($profilePictureAuthor)
+    {
+        if ($profilePictureAuthor === null) {
+            $this->profilePictureAuthor = ('public/images/question-mark.png');
+        } elseif (is_string($profilePictureAuthor) && strlen($profilePictureAuthor) > 0) {
+            $infos = explode(' ', $profilePictureAuthor);
+            if (strpos($infos[0], 'http://') === 0 || strpos($infos[0], 'https://') === 0) {
+                $url = explode('/', $infos[0]);
+                $infos[0] = $url[count($url) - 4] . '/' . $url[count($url) - 3] . '/' . $url[count($url) - 2] . '/' . $url[count($url) - 1];
+            }
+            $this->profilePictureAuthor = ($infos[0]);
+        }
+        return $this;
     }
 
     public function setContent(string $content)

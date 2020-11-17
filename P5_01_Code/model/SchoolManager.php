@@ -152,13 +152,25 @@ class SchoolManager extends AbstractManager
         if (!$this->checkForScriptInsertion($POST)) {
             return ['succes' => false, 'message' => "Certaines informations sont incorrects"];
         }
-        //verify if user name is already use
-        if ($UserManager->nameExists($POST['adminName'])) {
-            return ['succes' => false, 'message' => "Ce nom d'utilisateur existe déja"];
+        //verify if user pseudo is already use
+        if (empty(trim($POST['adminName'])) || $UserManager->pseudoExists($POST['adminName'])) {
+            return ['succes' => false, 'message' => "Cet identifiant est déjà utilisé, ou est incorrect"];
+        }
+        //verify if user first name isn't empty
+        if (empty(trim($POST['adminFirstName']))) {
+            return ['succes' => false, 'message' => "Le prénom n'est pas valide"];
+        }
+        //verify if user last name isn't empty
+        if (empty(trim($POST['adminLastName']))) {
+            return ['succes' => false, 'message' => "Le nom n'est pas valide"];
         }
         //verify if user mail is already use
         if ($UserManager->mailExists($POST['adminMail'])) {
             return ['succes' => false, 'message' => "Il existe déja un compte associé a cette adresse mail"];
+        }
+        //verify password
+        if (empty(trim($POST['adminPassword'])) || $POST['adminPassword'] !== $POST['adminConfirmPassword']) {
+            return ['succes' => false, 'message' => "Les deux mots de passe doivent être identique"];
         }
         //verify if school name is already use
         if ($this->nameExists($POST['schoolName']) || $POST['schoolName'] === ALL_SCHOOL) {
@@ -178,47 +190,44 @@ class SchoolManager extends AbstractManager
 
     public function addSchool(array $POST, UserManager $UserManager, HistoryManager $HistoryManager)
     {
-        if ($POST['adminPassword'] === $POST['adminConfirmPassword']) {
-            $POST['schoolDuration'] === '0' ? $isActive = false : $isActive = true;
-            $POST['schoolDuration'] === '0' ? $nbEleve = 0 : $nbEleve = intval($POST['schoolNbEleve']);
-            // add school administrator
-            $UserManager->add(new User(
-                ["name" => $POST['adminName'], 
-                "mail" => $POST['adminMail'], 
-                "password" => password_hash($POST['adminPassword'], PASSWORD_DEFAULT), 
-                "school" => $POST['schoolName'], 
-                "isActive" => $isActive, 
-                "isAdmin" => true, 
-                "isModerator" => false])
-            );
-            // create new school
-            
-            $this->add(new School(
-                ['idAdmin' => $this->getLastInsertId(), 
-                'name' => $POST['schoolName'], 
-                'nameAdmin' => $POST['adminName'], 
-                'mail' => $POST['schoolMail'], 
-                'code' => $POST['schoolCode'], 
-                'nbEleve' => $nbEleve,  
-                'logo' => 'public/images/question-mark.png', 
-                'isActive' => $isActive])
-            );
-            // first history entry
-            if ($POST['schoolDuration'] === '0') {
-                $entry = 'Bienvenue sur ArtSchools !';
-            } else {
-                $entry = 'Bienvenue sur ArtSchools ! Vous vous êtes inscrit pour une période de ' . $POST['schoolDuration'] . 
-                    ' mois, avec ' . $nbEleve . ' compte(s) affiliés a votre établissement';
-            }
-            $HistoryManager->addEntry(new HistoryEntry(
-                ['idSchool' => $this->getLastInsertId(), 
-                'category' => 'activityPeriod', 
-                'entry' => $entry])
-            );
-            return "L'établissement a bien été ajouté";
+        $POST['schoolDuration'] === '0' ? $isActive = false : $isActive = true;
+        $POST['schoolDuration'] === '0' ? $nbEleve = 0 : $nbEleve = intval($POST['schoolNbEleve']);
+        // add school administrator
+        $UserManager->add(new User(
+            ["pseudo" => $POST['adminName'], 
+            "firstName" => $POST['adminFirstName'], 
+            "lastName" => $POST['adminLastName'], 
+            "mail" => $POST['adminMail'], 
+            "password" => password_hash($POST['adminPassword'], PASSWORD_DEFAULT), 
+            "school" => $POST['schoolName'], 
+            "isActive" => $isActive, 
+            "isAdmin" => true, 
+            "isModerator" => false])
+        );
+        // create new school
+        $this->add(new School(
+            ['idAdmin' => $this->getLastInsertId(), 
+            'name' => $POST['schoolName'], 
+            'nameAdmin' => $POST['adminName'], 
+            'mail' => $POST['schoolMail'], 
+            'code' => $POST['schoolCode'], 
+            'nbEleve' => $nbEleve,  
+            'logo' => 'public/images/question-mark.png', 
+            'isActive' => $isActive])
+        );
+        // first history entry
+        if ($POST['schoolDuration'] === '0') {
+            $entry = 'Bienvenue sur ArtSchools !';
         } else {
-            return "Les mots de passe ne correspondent pas";
+            $entry = 'Bienvenue sur ArtSchools ! Vous vous êtes inscrit pour une période de ' . $POST['schoolDuration'] . 
+                ' mois, avec ' . $nbEleve . ' compte(s) affiliés a votre établissement';
         }
+        $HistoryManager->addEntry(new HistoryEntry(
+            ['idSchool' => $this->getLastInsertId(), 
+            'category' => 'activityPeriod', 
+            'entry' => $entry])
+        );
+        return "L'établissement a bien été ajouté";
     }
 
     public function editSchool(array $POST, UserManager $UserManager, HistoryManager $HistoryManager)
@@ -319,40 +328,50 @@ class SchoolManager extends AbstractManager
         if (!$school->getIsActive()) {
             return ['canAdd' => false, 'message' => "Vous ne pouvez pas ajouter de modérateur, cet établissement n'est pas actif"];
         }
-        //verify if user name is already use
-        if ($UserManager->nameExists($POST['moderatorName'])) {
-            return ['canAdd' => false, 'message' => "Ce nom d'utilisateur existe déja"];
+        //verify if user pseudo is already use
+        if (empty(trim($POST['moderatorName'])) || $UserManager->pseudoExists($POST['moderatorName'])) {
+            return ['canAdd' => false, 'message' => "Cet identifiant est déjà utilisé, ou incorrect"];
         }
         //verify if user mail is already use
         if ($UserManager->mailExists($POST['moderatorMail'])) {
             return ['canAdd' => false, 'message' => "Il existe déja un compte associé a cette adresse mail"];
+        }
+        //verify first name
+        if (empty(trim($POST['moderatorFirstName']))) {
+            return ['canAdd' => false, 'message' => "Le prénom n'est pas valide"];
+        }
+        //verify last name
+        if (empty(trim($POST['moderatorLastName']))) {
+            return ['canAdd' => false, 'message' => "Le nom n'est pas valide"];
+        }
+        //verify password
+        if (empty(trim($POST['moderatorPassword'])) || $POST['moderatorPassword'] !== $POST['moderatorConfirmPassword']) {
+            return ['canAdd' => false, 'message' => "Les deux mots de passe doivent être identique"];
         }
         return ['canAdd' => true, 'message' => null];
     }
 
     public function addModerator(array $POST, UserManager $UserManager, HistoryManager $HistoryManager)
     {
-        if ($POST['moderatorPassword'] === $POST['moderatorConfirmPassword']) {
-            $school = $this->getSchoolByName($POST['schoolName']);
-            $UserManager->add(new User(
-                ["name" => $POST['moderatorName'], 
-                "mail" => $POST['moderatorMail'], 
-                "password" => password_hash($POST['moderatorPassword'], PASSWORD_DEFAULT), 
-                "school" => $POST['schoolName'], 
-                "isActive" => true, 
-                "isAdmin" => false, 
-                "isModerator" => true])
-            );
-            //add history entry
-            $HistoryManager->addEntry(new HistoryEntry(
-                ['idSchool' => $school->getId(), 
-                'category' => 'account', 
-                'entry' => $_SESSION['pseudo'] . ' a créé un compte modérateur : ' . $POST['moderatorName']])
-            );
-            return "Le modérateur a bien été ajouté";
-        } else {
-            return "Les mots de passe ne correspondent pas";
-        }
+        $school = $this->getSchoolByName($POST['schoolName']);
+        $UserManager->add(new User(
+            ["pseudo" => $POST['moderatorName'],
+            "firstName" => $POST['moderatorFirstName'],
+            "lastName" => $POST['moderatorLastName'], 
+            "mail" => $POST['moderatorMail'], 
+            "password" => password_hash($POST['moderatorPassword'], PASSWORD_DEFAULT), 
+            "school" => $POST['schoolName'], 
+            "isActive" => true, 
+            "isAdmin" => false, 
+            "isModerator" => true])
+        );
+        //add history entry
+        $HistoryManager->addEntry(new HistoryEntry(
+            ['idSchool' => $school->getId(), 
+            'category' => 'account', 
+            'entry' => $_SESSION['fullName'] . ' a créé un compte modérateur : ' . $POST['moderatorName'] . ' ( ' . $POST['moderatorFirstName'] . ' ' . $POST['moderatorLastName'] . ' )'])
+        );
+        return "Le modérateur a bien été ajouté";
     }
 
     public function createGroup($GET)
@@ -417,7 +436,7 @@ class SchoolManager extends AbstractManager
         $GET['toAdmin'] === 'true' ? $toAdmin = true : $toAdmin = false;
         $GET['toModerator'] === 'true' ? $toModerator = true : $toModerator = false;
         $school = $this->getSchoolByName($GET['schoolName']);
-        $user = $UserManager->getUserByName($GET['userName']);
+        $user = $UserManager->getUserByPseudo($GET['userName']);
         if ($user && $school) {
             if ($toModerator) {
                 if (!$user->getIsAdmin()) {
@@ -434,7 +453,7 @@ class SchoolManager extends AbstractManager
                     throw new \Exception("Il est impossible d'effectuer cette action, vous avez atteint le nombre maximum de compte utilisateur actif");
                 }
             }
-            $UserManager->updateByName($user->getName(), 'grade', ['isAdmin' => $toAdmin, 'isModerator' => $toModerator]);
+            $UserManager->updateByPseudo($user->getPseudo(), 'grade', ['isAdmin' => $toAdmin, 'isModerator' => $toModerator]);
             //add history entry
             if ($toAdmin) {
                 $grade = "administrateur";
@@ -446,7 +465,7 @@ class SchoolManager extends AbstractManager
             $HistoryManager->addEntry(new HistoryEntry(
                 ['idSchool' => $school->getId(), 
                 'category' => 'account', 
-                'entry' => $_SESSION['pseudo'] . ' a passé ' . $user->getName() . ' au grade : ' . $grade])
+                'entry' => $_SESSION['fullName'] . ' a passé ' . $user->getFirstName() . ' ' . $user->getLastName() . ' au grade : ' . $grade])
             );
         } else {
             $this->incorrectInformation();
@@ -473,7 +492,7 @@ class SchoolManager extends AbstractManager
             $HistoryManager->addEntry(new HistoryEntry(
                 ['idSchool' => $school->getId(), 
                 'category' => 'profil', 
-                'entry' => $_SESSION['pseudo'] . ' a modifié le nom de votre établissement en : ' . $POST['editName']])
+                'entry' => $_SESSION['fullName'] . ' a modifié le nom de votre établissement en : ' . $POST['editName']])
             );
             return "Le nom de l'établissement a été modifié";
         } else {
@@ -483,19 +502,22 @@ class SchoolManager extends AbstractManager
 
     private function editSchoolAdmin(array $POST, UserManager $UserManager, HistoryManager $HistoryManager)
     {
-        if ($newAdmin = $UserManager->getUserByName($POST['editAdmin'])) {
+        if ($newAdmin = $UserManager->getUserByPseudo($POST['editAdmin'])) {
             $school = $this->getSchoolByName($POST['schoolName']);
             if ($school && $school->getName() === $newAdmin->getSchool()) {
                 if (intval($_SESSION['id']) === $school->getIdAdmin() || $_SESSION['school'] === ALL_SCHOOL) {
                     if ($newAdmin->getIsActive()) {
-                        $UserManager->updateByName($newAdmin->getName(), 'grade', ['isAdmin' => true, 'isModerator' => false]);
+                        $UserManager->getUserByPseudo($newAdmin->getPseudo(), 'grade', ['isAdmin' => true, 'isModerator' => false]);
                         $this->updateByName($POST['schoolName'], 'idAdmin', $newAdmin->getId())
-                            ->updateByName($POST['schoolName'], 'nameAdmin', $newAdmin->getName());
+                            ->updateByName($POST['schoolName'], 'nameAdmin', $newAdmin->getPseudo());
                         //add history entry
+                        $fullNameAndPseudo = $newAdmin->getPseudo() . ' ( ' . $newAdmin->getFirstName() . ' ' . $newAdmin->getLastName() . ' )';
                         $HistoryManager->addEntry(new HistoryEntry(
-                            ['idSchool' => $school->getId(), 
-                            'category' => 'profil', 
-                            'entry' => $_SESSION['pseudo'] . ' a remplacé l\'administrateur principal par : ' . $newAdmin->getName()])
+                            [
+                                'idSchool' => $school->getId(), 
+                                'category' => 'profil', 
+                                'entry' => $_SESSION['fullName'] . ' a remplacé l\'administrateur principal par : ' . $fullNameAndPseudo
+                            ])
                         );
                         return "L'administrateur de l'établissement a été modifié";
                     } else {
@@ -520,7 +542,7 @@ class SchoolManager extends AbstractManager
             $HistoryManager->addEntry(new HistoryEntry(
                 ['idSchool' => $school->getId(),
                 'category' => 'profil',
-                'entry' => $_SESSION['pseudo'] . ' a modifié l\'adresse mail en : ' . $POST['editCode']])
+                'entry' => $_SESSION['fullName'] . ' a modifié l\'adresse mail en : ' . $POST['editCode']])
             );
             return "L'adresse mail a été modifié";
         } else {
@@ -536,7 +558,7 @@ class SchoolManager extends AbstractManager
             $HistoryManager->addEntry(new HistoryEntry(
                 ['idSchool' => $school->getId(),
                 'category' => 'profil',
-                'entry' => $_SESSION['pseudo'] . ' a modifié le code d\'affiliation en : ' . $POST['editCode']])
+                'entry' => $_SESSION['fullName'] . ' a modifié le code d\'affiliation en : ' . $POST['editCode']])
             );
             return "Le code d'affiliation a été modifié";
         } else {
@@ -574,7 +596,7 @@ class SchoolManager extends AbstractManager
                 $HistoryManager->addEntry(new HistoryEntry(
                     ['idSchool' => $school->getId(), 
                     'category' => 'profil', 
-                    'entry' => $_SESSION['pseudo'] . ' a modifié le logo de l\'établissement'])
+                    'entry' => $_SESSION['fullName'] . ' a modifié le logo de l\'établissement'])
                 );
                 header('Location: indexAdmin.php?action=moderatSchool');
             } elseif (!empty($_FILES['uploadLogo'])) {
@@ -587,7 +609,7 @@ class SchoolManager extends AbstractManager
                     $HistoryManager->addEntry(new HistoryEntry(
                         ['idSchool' => $school->getId(), 
                         'category' => 'profil', 
-                        'entry' => $_SESSION['pseudo'] . ' a modifié le logo de l\'établissement'])
+                        'entry' => $_SESSION['fullName'] . ' a modifié le logo de l\'établissement'])
                     );
                 }
                 header('Location: indexAdmin.php?action=moderatSchool');

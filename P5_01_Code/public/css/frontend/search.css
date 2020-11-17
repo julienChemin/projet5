@@ -102,6 +102,9 @@
     word-break: break-word;
     padding: 5px;
 }
+.figureProfilePicture figcaption p{
+    text-align: center;
+}
 .blockResultUser > div, .blockResultSchool > div, .blockResultPost > div{
     width: 19.5%;
     height: 300px;

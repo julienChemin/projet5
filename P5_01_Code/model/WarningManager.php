@@ -177,7 +177,7 @@ class WarningManager extends AbstractManager
     private function sendWarnMail(User $user, string $reason, int $nbWarn)
     {
         $subject = "Votre compte a fait l'objet d'un avertissement";
-        $content = "Bonjour " . $user->getName() . ".<br><br>
+        $content = "Bonjour " . $user->getPseudo() . ".<br><br>
             Nous vous informons que votre compte a fait l'objet d'un avertissement, pour le motif suivant : <br> - " . $reason . "<br>
             Il s'agit de l'avertissement no° " . $nbWarn . ".<br><br>
             Au bout de 3 avertissements, votre compte est suspendu pendant un mois. 
@@ -193,7 +193,7 @@ class WarningManager extends AbstractManager
     private function sendBanMail(User $user, string $dateUnban)
     {
         $subject = "Votre compte a été suspendu";
-        $content = "Bonjour " . $user->getName() . ".<br><br>
+        $content = "Bonjour " . $user->getPseudo() . ".<br><br>
             Nous vous informons que votre compte a été suspendu, suite à 3 avertissements.<br>
             Votre compte sera de nouveau disponible a partir du " . $dateUnban . ".<br><br>
             La durée de suspension du compte augmente de un mois a chaque fois que vous atteignez les 3 avertissements.<br><br>
@@ -208,7 +208,7 @@ class WarningManager extends AbstractManager
     private function sendUnbanMail(User $user)
     {
         $subject = "Votre compte est de nouveau disponible";
-        $content = "Bonjour " . $user->getName() . ".<br><br>
+        $content = "Bonjour " . $user->getPseudo() . ".<br><br>
             Nous avons le plaisir de vous informer que votre compte est de nouveau disponible.<br><br>
             L'equipe d'ArtSchools vous remercie.";
         $content = wordwrap($content, 70, "\r\n");

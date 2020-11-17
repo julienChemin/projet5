@@ -7,14 +7,21 @@ use Chemin\ArtSchools\Model\AbstractManager;
 class ReportManager extends AbstractManager
 {
     public static $REPORT_POST_TABLE_NAME = 'as_report_post';
-    public static $REPORT_POST_TABLE_CHAMPS = 'idPost, idUser, userName, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
+    public static $REPORT_POST_TABLE_CHAMPS = 'idPost, idUser, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
+    public static $REPORT_POST_TABLE_CHAMPS_WITH_USER = 'r.idPost, r.idUser, DATE_FORMAT(r.dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, r.content, 
+        u.firstName AS authorFirstName, u.lastName AS authorLastName';
 
     public static $REPORT_COMMENT_TABLE_NAME = 'as_report_comment';
-    public static $REPORT_COMMENT_TABLE_CHAMPS = 'idComment, idUser, userName, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
+    public static $REPORT_COMMENT_TABLE_CHAMPS = 'idComment, idUser, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
+    public static $REPORT_COMMENT_TABLE_CHAMPS_WITH_USER = 'r.idComment, r.idUser, DATE_FORMAT(r.dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, r.content, 
+        u.firstName AS authorFirstName, u.lastName AS authorLastName';
 
     public static $REPORT_OTHER_TABLE_NAME = 'as_report_other';
-    public static $REPORT_OTHER_TABLE_CHAMPS = 'id, userName, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
+    public static $REPORT_OTHER_TABLE_CHAMPS = 'id, idUser, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
+    public static $REPORT_OTHER_TABLE_CHAMPS_WITH_USER = 'r.id, r.idUser, DATE_FORMAT(r.dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, r.content, 
+        u.firstName AS authorFirstName, u.lastName AS authorLastName';
 
+    public static $TABLE_USER_NAME = 'as_user';
     public static $LIMIT = 10;
 
     /*-------------------------------------------------------------------------------------
@@ -48,17 +55,21 @@ class ReportManager extends AbstractManager
             switch ($elem) {
             case 'post' :
                 $query = $this->sql(
-                    'SELECT ' . static::$REPORT_POST_TABLE_CHAMPS . ' 
-                    FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
-                    WHERE idPost = :idPost', 
+                    'SELECT ' . static::$REPORT_POST_TABLE_CHAMPS_WITH_USER . ' 
+                    FROM ' . static::$REPORT_POST_TABLE_NAME . ' AS r 
+                    LEFT JOIN ' . static::$TABLE_USER_NAME . ' AS u 
+                    ON u.id = r.idUser 
+                    WHERE r.idPost = :idPost', 
                     [':idPost' => $idElem]
                 );
                 break;
             case 'comment' :
                 $query = $this->sql(
-                    'SELECT ' . static::$REPORT_COMMENT_TABLE_CHAMPS . ' 
-                    FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
-                    WHERE idComment = :idComment', 
+                    'SELECT ' . static::$REPORT_COMMENT_TABLE_CHAMPS_WITH_USER . ' 
+                    FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' AS r 
+                    LEFT JOIN ' . static::$TABLE_USER_NAME . ' AS u 
+                    ON u.id = r.idUser 
+                    WHERE r.idComment = :idComment', 
                     [':idComment' => $idElem]
                 );
                 break;
@@ -69,22 +80,22 @@ class ReportManager extends AbstractManager
         }
     }
 
-    public function setReport(string $elem, string $content, int $idElem = null, int $idUser = null, string $userName = null)
+    public function setReport(string $elem, string $content, int $idElem = null, int $idUser = null)
     {
-        if (!empty($elem) && !empty($content) && $this->checkForScriptInsertion([$content])) {
+        if (!empty($elem) && !empty($content) && $idUser !== null && $idUser > 0 && $this->checkForScriptInsertion([$content])) {
             switch ($elem) {
                 case 'post' :
-                    if (!empty($idElem) && !empty($idUser) && $idElem > 0 && $idUser > 0) {
+                    if (!empty($idElem) && $idElem > 0) {
                         $this->setPostReport($content, $idElem, $idUser);
                     }
                     break;
                 case 'comment' :
-                    if (!empty($idElem) && !empty($idUser) && $idElem > 0 && $idUser > 0) {
+                    if (!empty($idElem) && $idElem > 0) {
                         $this->setCommentReport($content, $idElem, $idUser);
                     }
                     break;
                 case 'other' :
-                    $this->setOtherReport($content, $userName);
+                    $this->setOtherReport($content, $idUser);
                     break;
             }
         }
@@ -186,8 +197,10 @@ class ReportManager extends AbstractManager
     private function getPostReports(string $clauseLimit)
     {
         return $this->sql(
-            'SELECT ' . static::$REPORT_POST_TABLE_CHAMPS . ' 
-            FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
+            'SELECT ' . static::$REPORT_POST_TABLE_CHAMPS_WITH_USER . ' 
+            FROM ' . static::$REPORT_POST_TABLE_NAME . ' AS r 
+            LEFT JOIN ' . static::$TABLE_USER_NAME . ' AS u 
+            ON u.id = r.idUser 
             ' . $clauseLimit
         );
     }
@@ -195,8 +208,10 @@ class ReportManager extends AbstractManager
     private function getCommentReports(string $clauseLimit)
     {
         return $this->sql(
-            'SELECT ' . static::$REPORT_COMMENT_TABLE_CHAMPS . ' 
-            FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
+            'SELECT ' . static::$REPORT_COMMENT_TABLE_CHAMPS_WITH_USER . ' 
+            FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' AS r 
+            LEFT JOIN ' . static::$TABLE_USER_NAME . ' AS u 
+            ON u.id = r.idUser 
             ' . $clauseLimit
         );
     }
@@ -204,8 +219,10 @@ class ReportManager extends AbstractManager
     private function getOtherReports(string $clauseLimit)
     {
         return $this->sql(
-            'SELECT ' . static::$REPORT_OTHER_TABLE_CHAMPS . ' 
-            FROM ' . static::$REPORT_OTHER_TABLE_NAME . ' 
+            'SELECT ' . static::$REPORT_OTHER_TABLE_CHAMPS_WITH_USER . ' 
+            FROM ' . static::$REPORT_OTHER_TABLE_NAME . ' AS r 
+            LEFT JOIN ' . static::$TABLE_USER_NAME . ' AS u 
+            ON u.id = r.idUser 
             ' . $clauseLimit
         );
     }
@@ -213,28 +230,27 @@ class ReportManager extends AbstractManager
     private function setPostReport(string $content, int $idElem, int $idUser)
     {
         $this->sql(
-            'INSERT INTO ' . static::$REPORT_POST_TABLE_NAME . ' (idPost, idUser, userName, content, dateReport) 
-            VALUES (:idPost, :idUser, :userName, :content, NOW())', 
-            [':idPost' => $idElem, ':idUser' => $idUser, ':userName' => $_SESSION['pseudo'], ':content' => $content]
+            'INSERT INTO ' . static::$REPORT_POST_TABLE_NAME . ' (idPost, idUser, content, dateReport) 
+            VALUES (:idPost, :idUser, :content, NOW())', 
+            [':idPost' => $idElem, ':idUser' => $idUser, ':content' => $content]
         );
     }
 
     private function setCommentReport(string $content, int $idElem, int $idUser)
     {
         $this->sql(
-            'INSERT INTO ' . static::$REPORT_COMMENT_TABLE_NAME . ' (idComment, idUser, userName, content, dateReport) 
-            VALUES (:idComment, :idUser, :userName, :content, NOW())', 
-            [':idComment' => $idElem, ':idUser' => $idUser, ':userName' => $_SESSION['pseudo'], ':content' => $content]
+            'INSERT INTO ' . static::$REPORT_COMMENT_TABLE_NAME . ' (idComment, idUser, content, dateReport) 
+            VALUES (:idComment, :idUser, :content, NOW())', 
+            [':idComment' => $idElem, ':idUser' => $idUser, ':content' => $content]
         );
     }
 
-    private function setOtherReport(string $content, string $userName = null)
+    private function setOtherReport(string $content, int $idUser)
     {
-        !empty($userName) ? $userName = $userName : $userName = $_SESSION['pseudo'];
         $this->sql(
-            'INSERT INTO ' . static::$REPORT_OTHER_TABLE_NAME . ' (userName, content, dateReport) 
-            VALUES (:userName, :content, NOW())', 
-            [':userName' => $_SESSION['pseudo'], ':content' => $content]
+            'INSERT INTO ' . static::$REPORT_OTHER_TABLE_NAME . ' (idUser, content, dateReport) 
+            VALUES (:idUser, :content, NOW())', 
+            [':idUser' => $idUser, ':content' => $content]
         );
     }
 

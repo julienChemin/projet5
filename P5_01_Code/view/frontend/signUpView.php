@@ -2,6 +2,8 @@
     <h1>Inscription</h1>
     <form id="formSignUp" method="POST" action="index.php?action=signUp">
         <div>
+            <p class="hide orang" id="idMsg">L'identifiant vous permet de vous connecter</p>
+            <p class="hide orang" id="mailMsg">L'adresse e-mail nous permet de vous contacter</p>
             <div>
                 <p>
                     <label for="signUpPseudo">Identifiant</label>
@@ -13,6 +15,19 @@
                 </p>
             </div>
             <hr>
+            <p class="hide orang" id="nameMsg">Vos nom et prénom seront affiché sur votre profil et sur vos publications</p>
+            <div>
+                <p>
+                    <label for="signUpLastName">Nom</label>
+                    <input type="text" name="signUpLastName" id="signUpLastName" required="">
+                </p>
+                <p>
+                    <label for="signUpFirstName">Prénom</label>
+                    <input type="text" name="signUpFirstName" id="signUpFirstName" required="">
+                </p>
+            </div>
+            <hr>
+            <p class="hide orang" id="passwordMsg">Choisissez un mot de passe pour votre compte</p>
             <div>
                 <p>
                     <label for="password">Mot de passe</label>
@@ -23,8 +38,9 @@
                     <input type="password" name="confirmPassword" id="confirmPassword" required="">
                 </p>
             </div>
+            <hr>
+            <p class="hide orang" id="codeMsg">Ce code est fournit par votre établissement scolaire</p>
             <div>
-                <hr>
                 <p id="postIsAffiliated">
                     <input type="checkbox" name="isAffiliated" id="isAffiliated">
                     <label for="isAffiliated">Lier le compte à un établissement scolaire</label>

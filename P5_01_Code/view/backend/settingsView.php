@@ -1,4 +1,4 @@
-<section id="blockManageContract" class="container">
+<section id="blockSettings" class="container">
     <h1>Paramètres</h1>
     <hr>
     <div class="blockStyleOne">

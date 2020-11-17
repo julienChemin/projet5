@@ -137,6 +137,9 @@ try {
             case 'faq' :
                 $Frontend->faq();
                 break;
+            case 'updateUserInfo' :
+                $Frontend->updateUserInfo();
+                break;
             default :
                 //"action" value is unknow
                 throw new Exception('L\'action renseignée est inexistante.');

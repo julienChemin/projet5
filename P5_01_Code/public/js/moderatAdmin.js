@@ -22,7 +22,7 @@ if (document.getElementById('moderatAdmin')) {
     for (let i=0;i<linksToModo.length;i++) {
         linksToModo[i].addEventListener(
             'click', function () {
-                let name = linksToModo[i].parentNode.parentNode.childNodes[1].textContent.trim();
+                let name = linksToModo[i].getAttribute('userpseudo');
                 let schoolName = linksToModo[i].getAttribute('schoolname');
 
                 modal.style.display = 'flex';
@@ -35,7 +35,7 @@ if (document.getElementById('moderatAdmin')) {
     for (let i=0;i<linksToAdmin.length;i++) {
         linksToAdmin[i].addEventListener(
             'click', function () {
-                let name = linksToAdmin[i].parentNode.parentNode.childNodes[1].textContent.trim();
+                let name = linksToAdmin[i].getAttribute('userpseudo');
                 let schoolName = linksToAdmin[i].getAttribute('schoolname');
 
                 modal.style.display = 'flex';
@@ -48,7 +48,7 @@ if (document.getElementById('moderatAdmin')) {
     for (let i=0;i<linksToNormalUser.length;i++) {
         linksToNormalUser[i].addEventListener(
             'click', function () {
-                let name = linksToNormalUser[i].parentNode.parentNode.childNodes[1].textContent.trim();
+                let name = linksToNormalUser[i].getAttribute('userpseudo');
                 let schoolName = linksToNormalUser[i].getAttribute('schoolname');
 
                 modal.style.display = 'flex';
@@ -61,7 +61,7 @@ if (document.getElementById('moderatAdmin')) {
     for (let i=0;i<linksToDelete.length;i++) {
         linksToDelete[i].addEventListener(
             'click', function () {
-                let name = linksToDelete[i].parentNode.parentNode.childNodes[1].textContent.trim();
+                let name = linksToDelete[i].getAttribute('userpseudo');
                 let schoolName = linksToDelete[i].getAttribute('schoolname');
 
                 modal.style.display = 'flex';
@@ -80,7 +80,7 @@ if (document.getElementById('moderatAdmin')) {
     for (let i=0; i<forms.length;i++) {
         linksAdd[i].addEventListener(
             'click', function () {
-                formContent[i].style.height = "300px";
+                formContent[i].style.height = "400px";
                 forms[i].style.padding = "5px";
             }
         );

@@ -47,9 +47,10 @@ abstract class Controller
                     if(!$SchoolManager->nameExists($user->getSchool()) && $user->getSchool() !== ALL_SCHOOL) {
                         //if school name don't exist and isn't "allSchool"
                         $this->cookieDestroy();
-                        $errorMsg = "L'utilisateur - " . $user->getName() . " - ne peut plus se connecter car";
+                        $fullNameAndPseudo = $user->getPseudo() . " ( " . $user->getFirstname() . " " . $user->getLastName() . " )";
+                        $errorMsg = "L'utilisateur - " . $fullNameAndPseudo . " - ne peut plus se connecter car";
                         $errorMsg .= " l'établissement - " . $user->getSchool() . " - n'existe pas / plus.";
-                        $this->setErrorReport($errorMsg, $user->getName());
+                        $this->setErrorReport($errorMsg, $user->getPseudo());
                         throw new \Exception(
                             "Le nom de l'établissement scolaire auquel vous êtes affilié n'existe pas / plus.
 							Un message d'erreur a été envoyé à un administrateur du site et sera traité dans les plus brefs délais.
@@ -69,16 +70,16 @@ abstract class Controller
         }
     }
 
-    protected function setErrorReport(string $errorMsg = 'no error message', string $userName = null)
+    protected function setErrorReport(string $errorMsg = 'no error message')
     {
         $ReportManager = new ReportManager();
-        $ReportManager->setReport('other', $errorMsg, null, null, $userName);
+        $ReportManager->setReport('other', $errorMsg, null, $_SESSION['id']);
     }
 
     protected function tryToConnect(string $pseudo, string $password, UserManager $UserManager, bool $adminSide, bool $stayConnect = null)
     {
         if ($UserManager->canConnect($pseudo, $password)) {
-            $user = $UserManager->getUserByName($pseudo);
+            $user = $UserManager->getUserByPseudo($pseudo);
             if (!$adminSide || ($adminSide && ($user->getIsAdmin() || $user->getIsModerator()))) {
                 if (isset($stayConnect)) {
                     $this->setCookie($user);
@@ -116,7 +117,10 @@ abstract class Controller
         }
 
         $_SESSION['id'] = $user->getId();
-        $_SESSION['pseudo'] = $user->getName();
+        $_SESSION['pseudo'] = $user->getPseudo();
+        $_SESSION['firstName'] = $user->getFirstName();
+        $_SESSION['lastName'] = $user->getLastName();
+        $_SESSION['fullName'] = $user->getFirstName() . ' ' . $user->getLastName();
         $_SESSION['school'] = $user->getSchool();
         $_SESSION['schoolGroup'] = $user->getSchoolGroup();
 
@@ -157,6 +161,12 @@ abstract class Controller
         if (isset($_COOKIE['artSchoolsAdminId'])) {
             setcookie('artSchoolsAdminId', '', time()-3600, null, null, false, true);
         }
+    }
+
+    protected function eraseCookie(User $user)
+    {
+        $this->cookieDestroy();
+        $this->setcookie($user);
     }
 
     protected function redirection(string $url = null, bool $urlFirst = false)

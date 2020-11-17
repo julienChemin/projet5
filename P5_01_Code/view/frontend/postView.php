@@ -1,5 +1,6 @@
 <?php
 $post = $data['post'];
+$comments = $data['comments'];
 $asidePosts = $data['asidePosts'];
 $author = $data['author'];
 $user = $data['user'];
@@ -16,11 +17,17 @@ $user = $data['user'];
                     </a>
                     <div>
                         <a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
-                            <span><?=$author->getName()?></span>
+                            <span><?=$author->getFirstName()?> <?=$author->getLastName()?></span>
                         </a>
-                        <a href="index.php?action=schoolProfile&school=<?=$author->getSchool()?>">
-                            <span><?=$author->getSchool()?></span>
-                        </a>
+                        <?php
+                            if ($author->getSchool() !== NO_SCHOOL) {
+                                ?>
+                                    <a href="index.php?action=schoolProfile&school=<?=$author->getSchool()?>">
+                                        <span><?=$author->getSchool()?></span>
+                                    </a>
+                                <?php
+                            }
+                        ?>
                     </div>
                     <?php
                 } else {
@@ -36,7 +43,7 @@ $user = $data['user'];
                             echo '<li id="heart"><i class="far fa-heart" idpost="' . $post->getId() . '"></i></li>';
                         }
                         echo '<li id="nbLike"><span><span>' . $post->getNbLike() . '</span><i class="fas fa-heart"></i></span></li>';
-                        if (!empty($_SESSION['id']) && ($post->getIdAuthor() === intval($_SESSION['id']) 
+                        if (!empty($_SESSION['id']) && ($post->getIdAuthor() === $_SESSION['id'] 
                         || $_SESSION['school'] === ALL_SCHOOL 
                         || ($post->getPostType() === 'schoolPost' && $_SESSION['grade'] === ADMIN && $post->getSchool() === $_SESSION['school']))) {
                             echo '<li id="deletePost" title="Supprimer la publication"><i class="far fa-trash-alt"></i></li>';
@@ -108,7 +115,7 @@ $user = $data['user'];
                 if (!empty($user)) {
                     ?>
                     <input type="hidden" name="userId" value="<?=$user->getId()?>">
-                    <input type="hidden" name="userName" value="<?=$user->getName()?>">
+                    <input type="hidden" name="userName" value="<?=$user->getFirstName()?> <?=$user->getLastName()?>">
                     <input type="hidden" name="userPicture" value="<?=$user->getProfilePicture()?>">
                     <span id="msgComment"></span>
                     <textarea wrap="hard" name="commentContent" placeholder="Ajouter un commentaire"></textarea>
@@ -122,8 +129,8 @@ $user = $data['user'];
             </form>
             <div class="fullWidth">
                 <?php
-                if (!empty($post->getComments())) {
-                    foreach ($post->getComments() as $comment) {
+                if (!empty($comments)) {
+                    foreach ($comments as $comment) {
                         ?>
                         <div class="comment fullWidth">
                             <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>">
@@ -131,7 +138,7 @@ $user = $data['user'];
                             </a>
                             <div>
                                 <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>">
-                                    <?=$comment->getNameAuthor()?>
+                                    <?=$comment->getFirstNameAuthor()?> <?=$comment->getLastNameAuthor()?>
                                 </a>
                                 <p>
                                     <?=nl2br($comment->getContent())?>

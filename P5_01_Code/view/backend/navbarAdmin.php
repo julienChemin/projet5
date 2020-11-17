@@ -22,7 +22,7 @@
                     <hr class="hrNavbar hideUnder600Width">
 
                     <li id="pseudo">
-                        <?=$_SESSION['pseudo']?>
+                        <?=$_SESSION['fullName']?>
                         <i class="fas fa-sort-down"></i>
                     </li>
                     <hr class="hrNavbar">

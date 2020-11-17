@@ -63,7 +63,7 @@ function insertUser(user, block)
     elemFigure.appendChild(elemDivOnFigure);
     let elemFigCaption = document.createElement('figcaption');
     let elemP = document.createElement('p');
-    elemP.textContent = user['name'];
+    elemP.textContent = user['firstName'] + ' ' + user['lastName'];
     elemFigCaption.appendChild(elemP);
     elemFigure.appendChild(elemFigCaption);
     elemA.appendChild(elemFigure);

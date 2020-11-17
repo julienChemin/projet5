@@ -5,7 +5,7 @@ namespace Chemin\ArtSchools\Model;
 class User
 {
     private $id,
-        $name,
+        $pseudo,
         $firstName,
         $lastName,
         $mail,
@@ -68,9 +68,9 @@ class User
         return intval($this->id);
     }
 
-    public function getName()
+    public function getPseudo()
     {
-        return $this->name;
+        return $this->pseudo;
     }
 
     public function getFirstName()
@@ -202,10 +202,10 @@ class User
         }
     }
 
-    public function setName(string $name)
+    public function setPseudo(string $pseudo)
     {
-        if (strlen($name) > 0) {
-            $this->name = $name;
+        if (strlen($pseudo) > 0) {
+            $this->pseudo = $pseudo;
             return $this;
         }
     }
@@ -304,7 +304,7 @@ class User
 
     public function setProfileBannerInfo($profileBannerInfo)
     {
-        if ($profileBannerInfo === null) {
+        if ($profileBannerInfo === null || strlen($profileBannerInfo) <= 0) {
             $this->setProfileBanner('noBanner');
             $this->setNoBanner(true);
         } elseif (is_string($profileBannerInfo) && strlen($profileBannerInfo) > 0) {
@@ -339,13 +339,13 @@ class User
 
     public function setProfilePictureInfo($profilePictureInfo)
     {
-        if ($profilePictureInfo === null) {
+        if ($profilePictureInfo === null || strlen($profilePictureInfo) <= 0) {
             $this->setProfilePicture('public/images/question-mark.png');
             $this->setProfilePictureOrientation('widePicture');
             $this->setProfilePictureSize('smallPicture');
         } elseif (is_string($profilePictureInfo) && strlen($profilePictureInfo) > 0) {
             $infos = explode(' ', $profilePictureInfo);
-            if (strpos($infos[0], 'http://') === 0 || strpos($infos[0], 'https://') === 0) {
+            if ((strpos($infos[0], 'http://') === 0 || strpos($infos[0], 'https://') === 0) && strpos($infos[0], 'images/question-mark.png') === false) {
                 $url = explode('/', $infos[0]);
                 $infos[0] = $url[count($url) - 4] . '/' . $url[count($url) - 3] . '/' . $url[count($url) - 2] . '/' . $url[count($url) - 1];
             }

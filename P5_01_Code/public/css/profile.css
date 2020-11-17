@@ -140,6 +140,7 @@
     padding: 50px 0;
     position: relative;
     left: 0%;
+    transition: initial;
 }
 #slideTab > div > div{
     display: flex;
@@ -272,15 +273,22 @@ a[class="iconeEdit"]{
     align-items: center;
 }
 #contentMenuEditText input[type="radio"]{
+    display: none;
     margin: 0;
 }
 #contentMenuEditText label{
     height: 90%;
     width: 30%;
+    margin-left: 20px;
+    cursor: pointer;
 }
 #contentMenuEditText label img{
     width: 100%;
     max-height: 100%;
+    border-radius: 15px;
+}
+#contentMenuEditText label img:hover{
+    border: solid 1px #CF8B3F;
 }
 /*------------ edit profile content ------------*/
 #blockProfile + #modal form:last-of-type > div:nth-child(2){

@@ -1,6 +1,15 @@
 new stuff
-    - field "lastName" and "firstName" in as_user table in bdd
-    - edited User / UserManager models for the new fields
+    - add some informations in signIn / signUp view to explain the use of first/last firstName
+    - add option edit pseudo, first / last name, mail on user settings
+    - backside : moderatUser -> user are sorted by name
 
 fixed issues
-    - paging on advanced search wasn't working (i use the wrong var) how can i miss that :O
+    - refacto table as_comment / as_report(comment - post - other) / as_remind(school - user)
+    - editing php - way to display comment
+    - before, when you get a Post you get the comments too (query inner join). 
+        Now you get the post alone, and you need to get the comments manually 
+        (allow me to make jointure under comments and user and avoid to get multiple useless entries)
+    - action on user / moderator / admin in admin side have to be update to work with the last / first name feature
+    - css fixe on sign up view
+    - school name don't appear anymore for user with no school (either profile and publication)
+    - lil fix for edit profile text (first/last name / school name) for no school user

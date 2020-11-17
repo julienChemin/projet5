@@ -83,6 +83,15 @@ figure img{
     margin-top: 20px;
     background-color: #161617;
 }
+.blockStyleTwo{
+    display: flex;
+    flex-direction: column;
+    border: solid 2px #161617;
+    border-radius: 5px;
+    padding: 50px 100px;
+    margin-top: 20px;
+    background-color: #161617;
+}
 .container{
     max-width: 90%;
     margin: auto;
@@ -370,6 +379,7 @@ table{
 td{
     border: solid 1.5px #CF8B3F;
     padding: 15px;
+    word-break: break-word;
 }
 tr:nth-child(2n + 1){
     background-color: #161617;
@@ -636,7 +646,7 @@ footer ul{
     .container{
         max-width: 600px;
     }
-    .blockStyleOne{
+    .blockStyleOne, .blockStyleTwo{
         padding : 30px 35px;
     }
     #blockSchools .blockSchool{
@@ -707,7 +717,7 @@ footer ul{
     .hideUnder600Width{
         display: none!important;
     }
-    .blockStyleOne{
+    .blockStyleOne, .blockStyleTwo{
         padding : 20px 25px;
     }
     #blockSchools .blockSchool{

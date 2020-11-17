@@ -51,6 +51,10 @@
                             <input type="text" name="adminName" required="">
                         </p>
                         <p>
+                            <label for="adminMail">Adresse email</label>
+                            <input type="email" name="adminMail" required="">
+                        </p>
+                        <p>
                             <label for="adminPassword">Mot de passe</label>
                             <input type="password" name="adminPassword" required="">
                         </p>
@@ -59,8 +63,12 @@
                             <input type="password" name="adminConfirmPassword" required="">
                         </p>
                         <p>
-                            <label for="adminMail">Adresse email</label>
-                            <input type="email" name="adminMail" required="">
+                            <label for="adminFirstName">Prénom</label>
+                            <input type="text" name="adminFirstName" required="">
+                        </p>
+                        <p>
+                            <label for="adminLastName">Nom</label>
+                            <input type="text" name="adminLastName" required="">
                         </p>
                     </div>
                     <div>

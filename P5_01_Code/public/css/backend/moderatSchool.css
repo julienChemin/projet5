@@ -50,6 +50,15 @@
     display: flex;
     justify-content: space-between;
 }
+#formAddSchool > div:nth-of-type(2) > div:nth-of-type(1){ /*block who contain input text (new admin info) */
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+#formAddSchool > div:nth-of-type(2) > div:nth-of-type(1) > p{ /*block input text (new admin info) */
+    flex-direction: column;
+    width: 40%;
+}
 #formAddSchool > div:first-of-type > div > p:last-of-type{
     justify-content: center;
 }
@@ -125,5 +134,10 @@
     }
     #homeModeratSchool > a > div{
         padding: 20px 0;
+    }
+
+    /*add school*/
+    #formAddSchool > div:nth-of-type(2) > div:nth-of-type(1) > p{ /*block input text (new admin info) */
+        width: 50%;
     }
 }

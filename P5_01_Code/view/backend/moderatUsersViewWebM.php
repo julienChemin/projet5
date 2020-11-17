@@ -73,7 +73,10 @@
                                 foreach ($data['users'][$school->getName()]['active'] as $user) {
                                     ?>
                                     <tr>
-                                        <td><a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a></td>
+                                        <td>
+                                            <a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getLastName()?> <?=$user->getFirstName()?></a>
+                                            <span class="hide"><?=$user->getPseudo()?></span>
+                                        </td>
                                         <td>
                                             <span class="userGroup"><?=$user->getSchoolGroup() !== null? $user->getSchoolGroup() : 'Aucun groupe'?></span> - 
                                             <span class="btnEditGroup">Modifier le groupe</span>
@@ -92,9 +95,9 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <i class="fas fa-user-shield toModerator" schoolname="<?=$school->getName()?>" ></i> - 
-                                            <i class="fas fa-user-times toInactive" schoolname="<?=$school->getName()?>" ></i> - 
-                                            <i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
+                                            <i class="fas fa-user-shield toModerator" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i> - 
+                                            <i class="fas fa-user-times toInactive" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i> - 
+                                            <i class="fas fa-times toDelete" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i>
                                         </td>
                                     </tr>
                                     <?php
@@ -122,7 +125,10 @@
                                 foreach ($data['users'][$school->getName()]['inactive'] as $user) {
                                     ?>
                                     <tr>
-                                        <td><a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getName()?></a></td>
+                                        <td>
+                                            <a href="index.php?action=userProfile&userId=<?=$user->getId()?>"><?=$user->getLastName()?> <?=$user->getFirstName()?></a>
+                                            <span class="hide"><?=$user->getPseudo()?></span>
+                                        </td>
                                         <td>
                                             <span class="userGroup"><?=$user->getSchoolGroup() !== null? $user->getSchoolGroup() : 'Aucun groupe'?></span> - 
                                             <span class="btnEditGroup">Modifier le groupe</span>
@@ -141,8 +147,8 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <i class="fas fa-user-plus toActive" schoolname="<?=$school->getName()?>" ></i> - 
-                                            <i class="fas fa-times toDelete" schoolname="<?=$school->getName()?>" ></i>
+                                            <i class="fas fa-user-plus toActive" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i> - 
+                                            <i class="fas fa-times toDelete" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i>
                                         </td>
                                     </tr>
                                     <?php

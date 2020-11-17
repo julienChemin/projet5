@@ -17,12 +17,12 @@ class Frontend extends Controller
             //user is connect, verify SESSION info
             $SchoolManager = new SchoolManager();
             $UserManager = new UserManager();
-            if ((!$SchoolManager->nameExists($_SESSION['school']) && !($_SESSION['school'] === ALL_SCHOOL)) || !$UserManager->nameExists($_SESSION['pseudo'])) {
+            if ((!$SchoolManager->nameExists($_SESSION['school']) && !($_SESSION['school'] === ALL_SCHOOL)) || !$UserManager->pseudoExists($_SESSION['pseudo'])) {
                 //if user name don't exist or if school name don't exist and isn't "allSchool"
                 $this->forceDisconnect();
             } else {
                 //user exist, check his group and if user is ban
-                $user = $UserManager->getUserByName($_SESSION['pseudo']);
+                $user = $UserManager->getUserByPseudo($_SESSION['pseudo']);
                 if ($user->getIsBan()) {
                     $this->disconnect();
                 }
@@ -117,9 +117,9 @@ class Frontend extends Controller
     {
         if (!empty($_SESSION)) {
             $UserManager = new UserManager();
-            $user = $UserManager->getUserByName($_SESSION['pseudo']);
+            $user = $UserManager->getUserByPseudo($_SESSION['pseudo']);
             $contractInfo = $this->getUserContractInfo($user, new ContractManager('user', $UserManager));
-            RenderView::render('template.php', 'frontend/settingsView.php', ['user' => $user, 'contractInfo' => $contractInfo]);
+            RenderView::render('template.php', 'frontend/settingsView.php', ['user' => $user, 'contractInfo' => $contractInfo, 'option' => ['settings']]);
         } else {
             $this->redirection('index.php?action=signUp');
         }
@@ -281,15 +281,18 @@ class Frontend extends Controller
     {
         $UserManager = new UserManager();
         $PostsManager = new PostsManager();
+        $CommentsManager = new CommentsManager();
         !empty($_SESSION) ? $user = $UserManager->getOneById($_SESSION['id']) : $user = null;
         if (!empty($_GET['id']) && $post = $PostsManager->getOneById($_GET['id'])) {
+            //getting comments from this post
+            $comments = $CommentsManager->getFromPost($_GET['id']);
             if ($PostsManager->userCanSeePost($user, $post)) {
                 $asidePosts = $PostsManager->getAsidePosts($post, new TagsManager());
                 $UserManager->exists($post->getIdAuthor()) ? $author = $UserManager->getOneById($post->getIdAuthor()) : $author = null;
                 if ($post->getIsPrivate()) {
-                    $this->privatePost($post, $asidePosts, $user, $author);
+                    $this->privatePost($post, $comments, $asidePosts, $user, $author);
                 } else {
-                    $this->publicPost($post, $asidePosts, $user, $author);
+                    $this->publicPost($post, $comments, $asidePosts, $user, $author);
                 }
             } else {
                 $this->accessDenied();
@@ -619,6 +622,19 @@ class Frontend extends Controller
         }
     }
 
+    public function updateUserInfo()
+    {
+        $UserManager = new UserManager();
+        $arrAcceptedValue = ['pseudo', 'firstName', 'lastName', 'mail'];
+        if (!empty($_SESSION['id']) && isset($_POST['elem'], $_POST['textValue']) && $UserManager->checkForScriptInsertion($_POST) 
+        && in_array($_POST['elem'], $arrAcceptedValue) && $user = $UserManager->getOneById($_SESSION['id'])) {
+            $method = 'updateUser' . ucfirst($_POST['elem']);
+            echo $this->$method($user, $UserManager);
+        } else {
+            echo 'false';
+        }
+    }
+
     /*-------------------------------------------------------------------------------------
     ----------------------------------- FUNCTION PRIVATE ------------------------------------
     -------------------------------------------------------------------------------------*/
@@ -644,7 +660,7 @@ class Frontend extends Controller
         $validSizeValue = array('smallPicture', 'mediumPicture', 'bigPicture');
         if (!empty($GET['orientation']) && in_array($GET['orientation'], $validOrientationValue)
         && !empty($GET['size']) && in_array($GET['size'], $validSizeValue) && $user = $UserManager->getOneById($_SESSION['id'])) {
-            if ($user->getProfilePicture() !== 'public/images/question-mark.png') {
+            if (strpos('images/question-mark.png', $user->getProfilePicture()) === false) {
                 $this->deleteFile($user->getProfilePicture());
             }
             $infos = $finalPath . ' ' . $GET['orientation'] . ' ' . $GET['size'];
@@ -671,7 +687,7 @@ class Frontend extends Controller
     private function updateProfilePicture(User $user, UserManager $UserManager)
     {
         if (isset($_GET['orientation'], $_GET['size'], $_GET['value'])) {
-            if (strpos($_GET['value'], $user->getProfilePicture()) === false) {
+            if (strpos($_GET['value'], $user->getProfilePicture()) === false && strpos('images/question-mark.png', $user->getProfilePicture()) === false) {
                 $this->deleteFile($user->getProfilePicture());
             }
             $infos = $_GET['value'] . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
@@ -696,7 +712,7 @@ class Frontend extends Controller
     {
         $UserManager = new UserManager();
         $SchoolManager = new SchoolManager();
-        if ($user = $UserManager->getUserByName($url)) {
+        if ($user = $UserManager->getUserByPseudo($url)) {
             header('Location: ../index.php?action=userProfile&userId=' . $user->getId());
         } elseif ($SchoolManager->nameExists($url)) {
             header('Location: ../index.php?action=schoolProfile&school=' . $url);
@@ -737,14 +753,18 @@ class Frontend extends Controller
 
         if ($UserManager->checkForScriptInsertion($_POST)) {
             if ($POST['confirmPassword'] === $POST['password']) {
-                if (!$UserManager->nameExists($POST['signUpPseudo'])) {
-                    if (!$UserManager->mailExists($POST['signUpMail'])) {
-                        return ['value' => true];
+                if (!empty(trim($POST['signUpPseudo'])) && !$UserManager->pseudoExists($POST['signUpPseudo'])) {
+                    if (!empty(trim($POST['signUpFirstName'])) && !empty(trim($POST['signUpLastName']))) {
+                        if (!$UserManager->mailExists($POST['signUpMail'])) {
+                            return ['value' => true];
+                        } else {
+                            return ['value' => false, 'msg' => "Cette adresse mail est déja lié a un compte"];
+                        }
                     } else {
-                        return ['value' => false, 'msg' => "Cette adresse mail est déja lié a un compte"];
+                        return ['value' => false, 'msg' => "Le nom ou le prénom est incorrecte"];
                     }
                 } else {
-                    return ['value' => false, 'msg' => "Ce nom d'utilisateur est déja utilisé"];
+                    return ['value' => false, 'msg' => "Cet identifiant est déjà utilisé, ou incorrecte"];
                 }
             } else {
                 return ['value' => false, 'msg' => "Vous devez entrer deux mot de passe identiques"];
@@ -841,7 +861,7 @@ class Frontend extends Controller
     }
 
     /*------------------------------ post view ------------------------------*/
-    private function privatePost(Post $post, array $asidePosts, User $user, User $author)
+    private function privatePost(Post $post, array $comments, array $asidePosts, User $user, User $author)
     {
         if ($post->getFileType() === 'folder') {
             // consulting private folder
@@ -852,19 +872,19 @@ class Frontend extends Controller
             }
             RenderView::render(
                 'template.php', 'frontend/folderView.php', 
-                ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 
+                ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 
                     'userInfo' => $userInfo, 'urlAddPostOnFolder' => $urlAddPostOnFolder, 'option' => ['folderView']]
             );
         } else {
             // consulting private post
             RenderView::render(
                 'template.php', 'frontend/postView.php', 
-                ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]
+                ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 'option' => ['postView']]
             );
         }
     }
 
-    private function publicPost(Post $post, array $asidePosts, $user, User $author)
+    private function publicPost(Post $post, array $comments, array $asidePosts, $user, User $author)
     {
         if ($post->getFileType() === 'folder') {
             // consulting public folder
@@ -875,12 +895,15 @@ class Frontend extends Controller
             }
             RenderView::render(
                 'template.php', 'frontend/folderView.php', 
-                ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 
+                ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 
                     'userInfo' => $userInfo, 'urlAddPostOnFolder' => $urlAddPostOnFolder, 'option' => ['folderView']]
             );
         } else {
             //consulting public post
-            RenderView::render('template.php', 'frontend/postView.php', ['asidePosts' => $asidePosts, 'post' => $post, 'user' => $user, 'author' => $author, 'option' => ['postView']]);
+            RenderView::render(
+                'template.php', 'frontend/postView.php', 
+                ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 
+                'user' => $user, 'author' => $author, 'option' => ['postView']]);
         }
     }
 
@@ -970,5 +993,55 @@ class Frontend extends Controller
     private function reportOther()
     {
         RenderView::render('template.php', 'frontend/reportOtherView.php', ['option' => ['tinyMCE']]);
+    }
+
+    /*------------------------------ update user info ------------------------------*/
+    private function updateUserPseudo(User $user, UserManager $UserManager)
+    {
+        $newPseudo = trim($_POST['textValue']);
+        if (isset($_POST['elem'], $_POST['textValue']) && !empty($newPseudo) && !$UserManager->pseudoExists($newPseudo)) {
+            $UserManager->updateById($user->getId(), $_POST['elem'], $newPseudo);
+            $_SESSION['pseudo'] = $newPseudo;
+            return 'true';
+        } else {
+            return 'false';
+        }
+    }
+
+    private function updateUserFirstName(User $user, UserManager $UserManager)
+    {
+        $newFirstName = trim($_POST['textValue']);
+        if (isset($_POST['elem'], $_POST['textValue']) && !empty($newFirstName)) {
+            $UserManager->updateById($user->getId(), $_POST['elem'], $newFirstName);
+            $_SESSION['firstName'] = $newFirstName;
+            $_SESSION['fullName'] = $newFirstName . ' ' . $user->getLastName();
+            return 'true';
+        } else {
+            return 'false';
+        }
+    }
+
+    private function updateUserLastName(User $user, UserManager $UserManager)
+    {
+        $newLastName = trim($_POST['textValue']);
+        if (isset($_POST['elem'], $_POST['textValue']) && !empty($newLastName)) {
+            $UserManager->updateById($user->getId(), $_POST['elem'], $newLastName);
+            $_SESSION['lastName'] = $newLastName;
+            $_SESSION['fullName'] = $user->getFirstName() . ' ' . $newLastName;
+            return 'true';
+        } else {
+            return 'false';
+        }
+    }
+    
+    private function updateUserMail(User $user, UserManager $UserManager)
+    {
+        $regexMail = '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
+        if (isset($_POST['elem'], $_POST['textValue']) && preg_match($regexMail, $_POST['textValue']) && !$UserManager->mailExists($_POST['textValue'])) {
+            $UserManager->updateById($user->getId(), $_POST['elem'], $_POST['textValue']);
+            return 'true';
+        } else {
+            return 'false';
+        }
     }
 }

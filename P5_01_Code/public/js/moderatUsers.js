@@ -17,7 +17,7 @@ if (document.getElementById('moderatUsers') !== null) {
 
 	for (let i=0;i<linksToModo.length;i++) {
 		linksToModo[i].addEventListener('click', function(){
-			let name = linksToModo[i].parentNode.parentNode.childNodes[1].textContent.trim();
+			let name = linksToModo[i].getAttribute('userpseudo');
 			let schoolName = linksToModo[i].getAttribute('schoolname');
 
 			modal.style.display = 'flex';
@@ -28,7 +28,7 @@ if (document.getElementById('moderatUsers') !== null) {
 
 	for (let i=0;i<linksToActive.length;i++) {
 		linksToActive[i].addEventListener('click', function(){
-			let name = linksToActive[i].parentNode.parentNode.childNodes[1].textContent.trim();
+			let name = linksToActive[i].getAttribute('userpseudo');
 			let schoolName = linksToActive[i].getAttribute('schoolname');
 
 			modal.style.display = 'flex';
@@ -39,7 +39,7 @@ if (document.getElementById('moderatUsers') !== null) {
 
 	for (let i=0;i<linksToInactive.length;i++) {
 		linksToInactive[i].addEventListener('click', function(){
-			let name = linksToInactive[i].parentNode.parentNode.childNodes[1].textContent.trim();
+			let name = linksToInactive[i].getAttribute('userpseudo');
 			let schoolName = linksToInactive[i].getAttribute('schoolname');
 
 			modal.style.display = 'flex';
@@ -50,7 +50,7 @@ if (document.getElementById('moderatUsers') !== null) {
 
 	for (let i=0;i<linksToDelete.length;i++) {
 		linksToDelete[i].addEventListener('click', function(){
-			let name = linksToDelete[i].parentNode.parentNode.childNodes[1].textContent.trim();
+			let name = linksToDelete[i].getAttribute('userpseudo');
 			let schoolName = linksToDelete[i].getAttribute('schoolname');
 
 			modal.style.display = 'flex';
@@ -198,7 +198,7 @@ if (document.getElementById('moderatUsers') !== null) {
 			listEditGroup[i].style.display = "none";
 			btnEditGroup[i].style.display = "inline-block";
 
-			url = 'indexAdmin.php?action=setGroup&userName=' + listEditGroup[i].parentNode.previousElementSibling.textContent;
+			url = 'indexAdmin.php?action=setGroup&userName=' + listEditGroup[i].parentNode.previousElementSibling.childNodes[3].textContent;
 			url += '&group=' + inputListGroup[i].value;
 			ajaxGet(url, function(response){
 				if (response.length > 0 && response !== 'false') {

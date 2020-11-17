@@ -17,11 +17,11 @@ class Backend extends Controller
             //user is connect as admin or moderator
             $SchoolManager = new SchoolManager();
             $UserManager = new UserManager();
-            if((!$SchoolManager->nameExists($_SESSION['school']) && !($_SESSION['school'] === ALL_SCHOOL)) || !$UserManager->nameExists($_SESSION['pseudo'])) {
+            if((!$SchoolManager->nameExists($_SESSION['school']) && !($_SESSION['school'] === ALL_SCHOOL)) || !$UserManager->pseudoExists($_SESSION['pseudo'])) {
                 //if user name don't exist or if school name don't exist and isn't "allSchool" 
                 $this->forceDisconnect();
             } else {
-                $user = $UserManager->getUserByName($_SESSION['pseudo']);
+                $user = $UserManager->getUserByPseudo($_SESSION['pseudo']);
                 if ($user->getIsBan()) {
                     $this->disconnect();
                 }
@@ -66,10 +66,9 @@ class Backend extends Controller
                     $message = $SchoolManager->addSchool($_POST, $UserManager, new HistoryManager());
                     $ContractManager = new ContractManager('school', $SchoolManager);
                     $school = $SchoolManager->getSchoolByName($_POST['schoolName']);
-                    if (intval($_POST['schoolDuration']) > '0') {
+                    if (intval($_POST['schoolDuration']) > 0) {
                         $ContractManager->extendContract($school, $_POST['schoolDuration']);
-                    }
-                    if ($_POST['schoolDuration'] === '0') {
+                    } else {
                         $SchoolManager->schoolToInactive($school->getId(), $UserManager);
                     }
                 } else {
@@ -164,7 +163,7 @@ class Backend extends Controller
             $UserManager = new UserManager();
             $SchoolManager = new SchoolManager();
             $schools = $SchoolManager->getSchoolByName($_SESSION['school']);
-            $users = $UserManager->getUsersBySchool($_SESSION['school'], 'admin');
+            $users = $UserManager->getUsersBySchool($_SESSION['school'], 'admin', ['lastName']);
             $message = null;
             if (isset($_GET['option'], $_POST['schoolName']) && $_GET['option'] === 'addModerator' 
             && ($_SESSION['school'] === ALL_SCHOOL || $schools->getIsActive())) {
@@ -188,7 +187,7 @@ class Backend extends Controller
     {
         $UserManager = new UserManager();
         $SchoolManager = new SchoolManager();
-        $users = $UserManager->getUsersBySchool($_SESSION['school'], 'user');
+        $users = $UserManager->getUsersBySchool($_SESSION['school'], 'user', ['schoolGroup', 'lastName']);
         $schools = $SchoolManager->getSchoolByName($_SESSION['school']);
         $users = $UserManager->orderUsersBySchool($users, true);
         $_SESSION['school'] === ALL_SCHOOL ? $view = 'moderatUsersViewWebM.php' : $view = 'moderatUsersView.php';
@@ -234,7 +233,7 @@ class Backend extends Controller
             if (!($_GET['toAdmin'] === 'true' && $_GET['toModerator'] === 'true')) {
                 $SchoolManager = new SchoolManager();
                 $UserManager = new UserManager();
-                if ($SchoolManager->nameExists($_GET['schoolName']) && $UserManager->nameExists($_GET['userName'])) {
+                if ($SchoolManager->nameExists($_GET['schoolName']) && $UserManager->pseudoExists($_GET['userName'])) {
                     $SchoolManager->editGrade($_GET, $UserManager, new HistoryManager());
                 } else {
                     $this->incorrectInformation();
@@ -254,7 +253,7 @@ class Backend extends Controller
             $SchoolManager = new SchoolManager();
             $UserManager = new UserManager();
             if (!empty($_GET['userName']) && !empty($_GET['schoolName']) 
-            && $SchoolManager->nameExists($_GET['schoolName']) && $UserManager->nameExists($_GET['userName'])) {
+            && $SchoolManager->nameExists($_GET['schoolName']) && $UserManager->pseudoExists($_GET['userName'])) {
                 if ($UserManager->toggleIsActive($_GET, $SchoolManager, new HistoryManager())) {
                     $this->redirection();
                 } else {
@@ -274,7 +273,7 @@ class Backend extends Controller
             $UserManager = new UserManager();
             switch ($_GET['elem']) {
                 case 'user' :
-                    if (!empty($_GET['userName']) && !empty($_GET['schoolName']) && $UserManager->nameExists($_GET['userName']) 
+                    if (!empty($_GET['userName']) && !empty($_GET['schoolName']) && $UserManager->pseudoExists($_GET['userName']) 
                     && ($_SESSION['school'] === ALL_SCHOOL || $_SESSION['school'] === $_GET['schoolName'])) {
                         if ($UserManager->deleteUser($_GET, new SchoolManager())) {
                             $this->redirection();
@@ -385,7 +384,7 @@ class Backend extends Controller
         $UserManager = new UserManager();
         $PostsManager = new PostsManager();
         $school = $SchoolManager->getSchoolByName($_SESSION['school']);
-        $user = $UserManager->getUserByName($_SESSION['pseudo']);
+        $user = $UserManager->getUserByPseudo($_SESSION['pseudo']);
         if ($_SESSION['school'] !== ALL_SCHOOL && $school && $user && $user->getIsActive()) {
             if (!empty($_GET['folder'])) {
                 $this->addSchoolPostOnFolder($PostsManager, $user, $school);
@@ -627,7 +626,7 @@ class Backend extends Controller
         if (!empty($_GET['userName']) && !empty($_GET['group'])) {
             $SchoolManager = new SchoolManager();
             $UserManager = new UserManager();
-            $user = $UserManager->getUserByName($_GET['userName']);
+            $user = $UserManager->getUserByPseudo($_GET['userName']);
             if ($user && ($user->getSchool() === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL) 
             && $SchoolManager->setGroup($_GET, $user, $UserManager)) {
                 echo 'true';

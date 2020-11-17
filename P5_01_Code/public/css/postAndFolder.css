@@ -53,6 +53,8 @@
     height: 20%;
 }
 #authorProfile a{
+    text-align: center;
+    word-break: break-word;
     font-size: 1.2em;
     margin: 0 5px;
     display: flex;
@@ -110,7 +112,7 @@
     color: red;
     margin : 0 0 5px 8px;
 }
-#heart + #nbLike{
+#viewPost #heart + #nbLike{
     cursor: default;
     position: absolute;
     bottom: 5px;
@@ -377,6 +379,8 @@ i[class="fas fa-download"]{
     align-items: center;
 }
 #viewFolder #authorProfile > div > a{
+    text-align: center;
+    word-break: break-word;
     margin-top: 10px;
 }
 #viewFolder #optionList{
@@ -396,8 +400,12 @@ i[class="fas fa-download"]{
     width: 100%;
 }
 #viewFolder #heart + #nbLike{
+    cursor: default;
+    position: absolute;
     top: -50px;
     right: 0;
+    left: 10px;
+    font-size: 1em;
 }
 #viewFolder #confirmDeletePost{
     text-align: center;

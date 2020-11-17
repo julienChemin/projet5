@@ -4,12 +4,19 @@ namespace Chemin\ArtSchools\Model;
 
 class ContractManager extends AbstractManager
 {
+    public static $TABLE_NAME = '';
     public static $TABLE_SCHOOL_CR_NAME = 'as_school_contract_reminder';
     public static $TABLE_USER_CR_NAME = 'as_user_contract_reminder';
 
-    public static $TABLE_NAME = '';
-    public static $TABLE_CHAMPS ='id, idOwner, mailToRemind, remindType, DATE_FORMAT(dateRemind, "%d/%m/%Y") AS dateRemind, 
+    public static $TABLE_OWNER_NAME = '';
+    public static $TABLE_SCHOOL_NAME = 'as_school';
+    public static $TABLE_USER_NAME = 'as_user';
+
+    public static $TABLE_CHAMPS ='id, idOwner, remindType, DATE_FORMAT(dateRemind, "%d/%m/%Y") AS dateRemind, 
         DATE_FORMAT(dateContractEnd, "%d/%m/%Y") AS dateContractEnd, done';
+    public static $TABLE_CHAMPS_WITH_OWNER ='cr.id, cr.idOwner, cr.remindType, DATE_FORMAT(cr.dateRemind, "%d/%m/%Y") AS dateRemind, 
+        DATE_FORMAT(cr.dateContractEnd, "%d/%m/%Y") AS dateContractEnd, cr.done, o.mail AS mailToRemind';
+
     public static $TYPE = '';
     public static $MANAGER;
 
@@ -21,8 +28,10 @@ class ContractManager extends AbstractManager
         //$type -> "user" or "school" / $Manager -> UserManager or SchoolManager
         if ($type === 'user') {
             static::$TABLE_NAME = static::$TABLE_USER_CR_NAME;
+            static::$TABLE_OWNER_NAME = static::$TABLE_USER_NAME;
         } elseif ($type === 'school') {
             static::$TABLE_NAME = static::$TABLE_SCHOOL_CR_NAME;
+            static::$TABLE_OWNER_NAME = static::$TABLE_SCHOOL_NAME;
         }
         static::$TYPE = $type;
         static::$MANAGER = $Manager;
@@ -94,10 +103,15 @@ class ContractManager extends AbstractManager
         $reminds = $this->getAllActiveRemind();
         $arr['nbRemind'] = count($reminds);
         $arr['nbRemindDone'] = 0;
+        $arr['nbRemindFail'] = 0;
         foreach ($reminds as $remind) {
             if ($this->getToday() >= $this->getDateTime($remind['dateRemind'], 'd/m/Y')) {
-                $this->remind($remind);
-                $arr['nbRemindDone'] += 1;
+                $success = $this->remind($remind);
+                if ($success) {
+                    $arr['nbRemindDone'] += 1;
+                } else {
+                    $arr['nbRemindFail'] += 1;
+                }
             }
         }
         return $arr;
@@ -113,7 +127,7 @@ class ContractManager extends AbstractManager
         $headers = array('From' => '"Art-Schools"<artschoolsfr@gmail.com>', 
             'Content-Type' => 'text/html; charset=utf-8');
         ini_set("sendmail_from", "artschoolsfr@gmail.com");
-        mail($mail, $subject, $content, $headers);
+        return mail($mail, $subject, $content, $headers);
     }
 
     private function getMailContent(string $remindType)
@@ -143,12 +157,17 @@ class ContractManager extends AbstractManager
     private function remind(array $remind)
     {
         $dateContractEnd = $this->getDateTime($remind['dateContractEnd'], 'd/m/Y');
-        $this->sendRemindMail($remind['mailToRemind'], $remind['remindType']);
-        $this->disableRemind($remind['id']);
-        if ($this->getToday() >= $dateContractEnd) {
-            $this->contractEnd($remind['idOwner']);
+        $success = $this->sendRemindMail($remind['mailToRemind'], $remind['remindType']);
+        if ($success) {
+            $this->disableRemind($remind['id']);
+            if ($this->getToday() >= $dateContractEnd) {
+                $this->contractEnd($remind['idOwner']);
+            } else {
+                $this->setRemind($remind['idOwner'], $dateContractEnd);
+            }
+            return true;
         } else {
-            $this->setRemind($remind['idOwner'], $remind['mailToRemind'], $dateContractEnd);
+            return false;
         }
     }
 
@@ -165,9 +184,11 @@ class ContractManager extends AbstractManager
     private function getAllActiveRemind()
     {
         $q = $this->sql(
-            'SELECT ' . static::$TABLE_CHAMPS . ' 
-            FROM ' . static::$TABLE_NAME . ' 
-            WHERE done = 0'
+            'SELECT ' . static::$TABLE_CHAMPS_WITH_OWNER . ' 
+            FROM ' . static::$TABLE_NAME . ' AS cr 
+            LEFT JOIN ' . static::$TABLE_OWNER_NAME . ' AS o 
+            ON cr.idOwner = o.id 
+            WHERE cr.done = 0'
         );
         return $q->fetchAll();
     }
@@ -175,9 +196,11 @@ class ContractManager extends AbstractManager
     private function getLastRemind(int $idOwner)
     {
         $q = $this->sql(
-            'SELECT ' . static::$TABLE_CHAMPS . ' 
-            FROM ' . static::$TABLE_NAME . ' 
-            WHERE idOwner = :idOwner 
+            'SELECT ' . static::$TABLE_CHAMPS_WITH_OWNER . ' 
+            FROM ' . static::$TABLE_NAME . ' AS cr 
+            LEFT JOIN ' . static::$TABLE_OWNER_NAME . ' AS o 
+            ON cr.idOwner = o.id 
+            WHERE cr.idOwner = :idOwner 
             ORDER BY id DESC', 
             [':idOwner' => $idOwner]
         );
@@ -188,13 +211,13 @@ class ContractManager extends AbstractManager
         }
     }
 
-    private function setRemind(int $idOwner, string $mailOwner, \DateTime $dateContractEnd)
+    private function setRemind(int $idOwner, \DateTime $dateContractEnd)
     {
         $infoDate = $this->createRemindInfo($dateContractEnd);
         $this->sql(
-            'INSERT INTO ' . static::$TABLE_NAME . ' (idOwner, mailToRemind, remindType, dateRemind, dateContractEnd) 
-            VALUES (:idOwner, :mailToRemind, :remindType, :dateRemind, :dateContractEnd)', 
-            [':idOwner' => $idOwner, ':mailToRemind' => $mailOwner, ':remindType' => $infoDate['remindType'], 
+            'INSERT INTO ' . static::$TABLE_NAME . ' (idOwner, remindType, dateRemind, dateContractEnd) 
+            VALUES (:idOwner, :remindType, :dateRemind, :dateContractEnd)', 
+            [':idOwner' => $idOwner, ':remindType' => $infoDate['remindType'], 
                 ':dateRemind' => $infoDate['dateRemind'], ':dateContractEnd' => $infoDate['dateContractEnd']]
          );
     }

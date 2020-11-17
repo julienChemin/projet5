@@ -2,7 +2,7 @@
     <h1>Foire aux questions</h1>
     <div id="summary">
         <?php
-        if ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {
+        if (!empty($_SESSION) && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) {
             ?>
             <h2 class="summaryCategory">Lorem ipsum dolor sit amet.<i class="fas fa-sort-down"></i></h2>
             <ul>
@@ -44,7 +44,7 @@
     ?>
     <hr>
     <?php
-    if ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {
+    if (!empty($_SESSION) && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) {
         ?>
         <article>
             <h1>Lorem ipsum dolor sit amet.</h1>

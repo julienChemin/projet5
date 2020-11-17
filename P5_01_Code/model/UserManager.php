@@ -7,7 +7,7 @@ class UserManager extends AbstractManager
     public static $OBJECT_TYPE = 'Chemin\ArtSchools\Model\User';
     public static $TABLE_NAME = 'as_user';
     public static $TABLE_PK = 'id';
-    public static $TABLE_CHAMPS ='id, name, firstName, lastName, password, mail, school, schoolGroup, temporaryPassword, beingReset, 
+    public static $TABLE_CHAMPS ='id, pseudo, firstName, lastName, password, mail, school, schoolGroup, temporaryPassword, beingReset, 
         nbWarning, isBan, isAdmin, isModerator, 
         isActive, profileBannerInfo, profilePictureInfo, profileTextInfo';
 
@@ -18,23 +18,24 @@ class UserManager extends AbstractManager
     public function add(User $user)
     {
         $this->sql(
-            'INSERT INTO ' . static::$TABLE_NAME . ' (name, mail, school, password, isAdmin, isModerator, isActive) 
-            VALUES (:name, :mail, :school, :password, :isAdmin, :isModerator, :isActive)', 
-            [':name' => $user->getName(), ':mail' => $user->getMail(), ':school' => $user->getSchool(), 
-            ':password' => $user->getPassword(), ':isAdmin' => intval($user->getIsAdmin()), ':isModerator' => intval($user->getIsModerator()), 
+            'INSERT INTO ' . static::$TABLE_NAME . ' (pseudo, firstName, lastName, mail, school, password, isAdmin, isModerator, isActive) 
+            VALUES (:pseudo, :firstName, :lastName, :mail, :school, :password, :isAdmin, :isModerator, :isActive)', 
+            [':pseudo' => $user->getPseudo(), ':firstName' => $user->getFirstName(), ':lastName' => $user->getLastName(), 
+            ':mail' => $user->getMail(), ':school' => $user->getSchool(), ':password' => $user->getPassword(), 
+            ':isAdmin' => intval($user->getIsAdmin()), ':isModerator' => intval($user->getIsModerator()), 
             ':isActive' => intval($user->getIsActive())]
         );
         return $this;
     }
 
-    public function getUserByName(string $name)
+    public function getUserByPseudo(string $pseudo)
     {
-        if ($this->nameExists($name)) {
+        if ($this->pseudoExists($pseudo)) {
             $q = $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE name = :name', 
-                [':name' => $name]
+                WHERE pseudo = :pseudo', 
+                [':pseudo' => $pseudo]
             );
             $result = $q->fetchObject(static::$OBJECT_TYPE);
             $q->closeCursor();
@@ -78,15 +79,15 @@ class UserManager extends AbstractManager
         }
     }
 
-    public function getUsersBySchool(string $school, string $grade = null)
+    public function getUsersBySchool(string $school, string $grade = null, array $orderBy = [])
     {
         if (strlen($school) > 0) {
             if ($school === ALL_SCHOOL) {
                 //every school
-                $q = $this->getAllSchoolUsers($grade);
+                $q = $this->getAllSchoolUsers($grade, $orderBy);//TODO
             } else {
                 //only school $school
-                $q = $this->getSchoolUsers($school, $grade);
+                $q = $this->getSchoolUsers($school, $grade, $orderBy);//TODO
             }
             $result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
             $q->closeCursor();
@@ -125,15 +126,15 @@ class UserManager extends AbstractManager
         return $this;
     }
 
-    public function updateByName(string $name, string $elem, $value, bool $isBool = false)
+    public function updateByPseudo(string $pseudo, string $elem, $value, bool $isBool = false)
     {
         switch ($elem) {
             case 'grade' :
                 $this->sql(
                     'UPDATE ' . static::$TABLE_NAME . ' 
                     SET isAdmin = :isAdmin, isModerator = :isModerator 
-                    WHERE name = :name', 
-                    [':isAdmin' => intval($value['isAdmin']), ':isModerator' => intval($value['isModerator']), ':name' => $name]
+                    WHERE pseudo = :pseudo', 
+                    [':isAdmin' => intval($value['isAdmin']), ':isModerator' => intval($value['isModerator']), ':pseudo' => $pseudo]
                 );
                 break;
             default :
@@ -141,29 +142,29 @@ class UserManager extends AbstractManager
                     $this->sql(
                         'UPDATE ' . static::$TABLE_NAME . ' 
                         SET ' . $elem . ' = :value 
-                        WHERE name = :name', 
-                        [':value' => intval($value), ':name' => $name]
+                        WHERE pseudo = :pseudo', 
+                        [':value' => intval($value), ':pseudo' => $pseudo]
                     );
                 } else {
                     $this->sql(
                         'UPDATE ' . static::$TABLE_NAME . ' 
                         SET ' . $elem . ' = :value 
-                        WHERE name = :name', 
-                        [':value' => $value, ':name' => $name]
+                        WHERE pseudo = :pseudo', 
+                        [':value' => $value, ':pseudo' => $pseudo]
                     );
                 }
         }
         return $this;
     }
 
-    public function nameExists(string $name)
+    public function pseudoExists(string $pseudo)
     {
-        if (strlen($name) > 0) {
+        if (strlen($pseudo) > 0) {
             $q = $this->sql(
-                'SELECT name 
+                'SELECT pseudo 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE name = :name', 
-                [':name' => $name]
+                WHERE pseudo = :pseudo', 
+                [':pseudo' => $pseudo]
             );
             if ($q->fetch()) {
                 $q->closeCursor();
@@ -182,7 +183,7 @@ class UserManager extends AbstractManager
         $mail = htmlspecialchars($mail);
         if (strlen($mail) > 0) {
             $q = $this->sql(
-                'SELECT name 
+                'SELECT mail 
                 FROM ' . static::$TABLE_NAME . ' 
                 WHERE mail = :mail', 
                 [':mail' => $mail]
@@ -199,9 +200,9 @@ class UserManager extends AbstractManager
         }
     }
 
-    public function canConnect(string $userName, string $password)
+    public function canConnect(string $pseudo, string $password)
     {
-        if (!empty($userName) && !empty($password) && $user = $this->getUserByName($userName)) {
+        if (!empty($pseudo) && !empty($password) && $user = $this->getUserByPseudo($pseudo)) {
             if ($this->checkPassword($user, $password)) {
                 return true;
             } else {
@@ -233,12 +234,12 @@ class UserManager extends AbstractManager
     public function mailTemporaryPassword(User $user)
     {
         // set temporary password
-        $temporaryPassword = password_hash($user->getName() . time(), PASSWORD_DEFAULT);
+        $temporaryPassword = password_hash($user->getPseudo() . time(), PASSWORD_DEFAULT);
         $this->updateById($user->getId(), 'temporaryPassword', $temporaryPassword)
             ->updateById($user->getId(), 'beingReset', true, true);
         // send recoveryMail
         $subject = 'Recuperation de mot de passe';
-        $content = "Bonjour " . $user->getName() . ", vous avez demande a reinitialiser votre mot de passe.<br><br>
+        $content = "Bonjour " . $user->getPseudo() . ", vous avez demande a reinitialiser votre mot de passe.<br><br>
 			En suivant <a style='text-decoration: underline;' href='http://julienchemin.fr/projet5/index.php?action=resetPassword&key=" . $temporaryPassword . "&id=" . 
         $user->getId() . "'>ce lien</a> vous serez redirige vers une page pour modifier votre mot de passe.<br><br>
 			Si le lien ne fonctionne pas, rendez vous a l'adresse suivante : <br>http://julienchemin.fr/projet5/index.php?action=resetPassword&key=" . $temporaryPassword . 
@@ -258,7 +259,7 @@ class UserManager extends AbstractManager
         $q = $this->sql(
             'SELECT ' . static::$TABLE_CHAMPS . ' 
             FROM ' . static::$TABLE_NAME . ' 
-            WHERE name REGEXP ' . $regex
+            WHERE firstName REGEXP ' . $regex . ' OR lastName REGEXP ' . $regex
         );
         $result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
         return $result;
@@ -344,7 +345,7 @@ class UserManager extends AbstractManager
 
     public function toggleIsActive($GET, SchoolManager $SchoolManager, HistoryManager $HistoryManager)
     {
-        $user = $this->getUserByName($GET['userName']);
+        $user = $this->getUserByPseudo($GET['userName']);
         $school = $SchoolManager->getSchoolByName($GET['schoolName']);
         if ($user && $school) {
             if ($user->getIsActive()) {
@@ -361,7 +362,7 @@ class UserManager extends AbstractManager
     {
         $HistoryManager = new HistoryManager();
         $PostsManager = new PostsManager();
-        $user = $this->getUserByName($GET['userName']);
+        $user = $this->getUserByPseudo($GET['userName']);
         $school = $SchoolManager->getSchoolByName($GET['schoolName']);
         $posts = $PostsManager->getPostsByAuthor($user->getId());
         if ($school && $user && !$user->getIsAdmin()) {
@@ -380,7 +381,7 @@ class UserManager extends AbstractManager
             $HistoryManager->addEntry(new HistoryEntry(
                 ['idSchool' => $school->getId(), 
                 'category' => 'account', 
-                'entry' => $_SESSION['pseudo'] . ' a supprimé le compte de ' . $user->getName()])
+                'entry' => $_SESSION['fullName'] . ' a supprimé le compte de ' . $user->getFirstName() . ' ' . $user->getLastName()])
             );
             return true;
         } else {
@@ -392,39 +393,59 @@ class UserManager extends AbstractManager
     ----------------------------------- PRIVATE FUNCTION ------------------------------------
     -------------------------------------------------------------------------------------*/
 
-    private function getAllSchoolUsers(string $grade = null)
+    private function getAllSchoolUsers(string $grade = null, array $orderBy = [])
     {
+        $clauseOrderBy = '';
+        if (count($orderBy) > 0) {
+            $clauseOrderBy = ' ORDER BY ' . $orderBy[0];
+            for ($i = 1; $i<count($orderBy); $i++) {
+                $clauseOrderBy .= ', ' . $orderBy[$i];
+            }
+        }
+        
         if ($grade === 'admin') {
             //admins and moderator
             return $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE isAdmin = true OR isModerator = true'
+                WHERE isAdmin = true OR isModerator = true' . 
+                $clauseOrderBy
             );
         } elseif ($grade === 'user') {
             //users except admins and moderators
             return $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE isAdmin = false AND isModerator = false'
+                WHERE isAdmin = false AND isModerator = false' . 
+                $clauseOrderBy
             );
         } else {
             //all users
             return $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
-                FROM ' . static::$TABLE_NAME
+                FROM ' . static::$TABLE_NAME . 
+                $clauseOrderBy
             );
         }
     }
 
-    private function getSchoolUsers(string $school, string $grade = null)
+    private function getSchoolUsers(string $school, string $grade = null, array $orderBy = [])
     {
+        $clauseOrderBy = '';
+        if (count($orderBy) > 0) {
+            $clauseOrderBy = ' ORDER BY ' . $orderBy[0];
+            for ($i = 1; $i<count($orderBy); $i++) {
+                $clauseOrderBy .= ', ' . $orderBy[$i];
+            }
+        }
+        
         if ($grade === 'admin') {
             //admins and moderators of school $school
             return $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE school = :school AND (isAdmin = true OR isModerator = true)', 
+                WHERE school = :school AND (isAdmin = true OR isModerator = true)' . 
+                $clauseOrderBy, 
                 [':school' => $school]
             );
         } elseif ($grade === 'user') {
@@ -432,7 +453,8 @@ class UserManager extends AbstractManager
             return $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE school = :school AND isAdmin = false AND isModerator = false', 
+                WHERE school = :school AND isAdmin = false AND isModerator = false' . 
+                $clauseOrderBy, 
                 [':school' => $school]
             );
         } else {
@@ -440,7 +462,8 @@ class UserManager extends AbstractManager
             return $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE school = :school', 
+                WHERE school = :school' . 
+                $clauseOrderBy, 
                 [':school' => $school]
             );
         }
@@ -469,7 +492,9 @@ class UserManager extends AbstractManager
     private function objectPostToArray(User $user)
     {
         $arr = ['id' => $user->getId(),
-            'name' => $user->getName(),
+            'pseudo' => $user->getPseudo(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
             'school' => $user->getSchool(), 
             'schoolGroup' => $user->getSchoolGroup(), 
             'nbWarning' => $user->getNbWarning(), 
@@ -507,7 +532,9 @@ class UserManager extends AbstractManager
             if ($school->getNbActiveAccount() < $school->getNbEleve()) {
                 $SchoolManager->updateByName($schoolName, 'nbActiveAccount', $school->getNbActiveAccount() + 1);
                 $this->add(new User(
-                    ['name' => $POST['signUpPseudo'], 
+                    ['pseudo' => $POST['signUpPseudo'], 
+                    'firstName' => $POST['signUpFirstName'], 
+                    'lastName' => $POST['signUpLastName'], 
                     'mail' => $POST['signUpMail'], 
                     'password' => password_hash($POST['password'], PASSWORD_DEFAULT), 
                     'school' => $schoolName, 
@@ -519,7 +546,7 @@ class UserManager extends AbstractManager
                 $HistoryManager->addEntry(new HistoryEntry(
                     ['idSchool' => $school->getId(), 
                     'category' => 'account', 
-                    'entry' => $POST['signUpPseudo'] . ' a créé un compte affilié à votre établissement'])
+                    'entry' => $POST['signUpFirstName'] . ' ' . $POST['signUpLastName'] . ' a créé un compte affilié à votre établissement'])
                 );
                 return "Le compte à bien été créé, vous pouvez maintenant <a href='index.php?action=signIn'>vous connecter</a>";
             } else {
@@ -533,7 +560,9 @@ class UserManager extends AbstractManager
     private function signUpWithoutAffiliation(array $POST)
     {
         $this->add(new User(
-            ['name' => $POST['signUpPseudo'], 
+            ['pseudo' => $POST['signUpPseudo'], 
+            'firstName' => $POST['signUpFirstName'], 
+            'lastName' => $POST['signUpLastName'],
             'mail' => $POST['signUpMail'], 
             'password' => password_hash($POST['password'], PASSWORD_DEFAULT), 
             'school' => NO_SCHOOL, 
@@ -548,14 +577,14 @@ class UserManager extends AbstractManager
     private function userToActive($GET, School $school, User $user, SchoolManager $SchoolManager, HistoryManager $HistoryManager)
     {
         if ($school->getNbActiveAccount() < $school->getNbEleve()) {
-            $this->updateByName($GET['userName'], 'isActive', true, true);
+            $this->updateByPseudo($GET['userName'], 'isActive', true, true);
             //nb active account + 1
             $SchoolManager->updateByName($GET['schoolName'], 'nbActiveAccount', $school->getNbActiveAccount() + 1);
             //add history entry
             $HistoryManager->addEntry(new HistoryEntry(
                 ['idSchool' => $school->getId(), 
                 'category' => 'account', 
-                'entry' => $_SESSION['pseudo'] . ' a activé le compte de ' . $user->getName()])
+                'entry' => $_SESSION['fullName'] . ' a activé le compte de ' . $user->getFirstName() . ' ' . $user->getLastName()])
             );
             return true;
         } else {
@@ -565,14 +594,14 @@ class UserManager extends AbstractManager
 
     private function userToInactive($GET, School $school, User $user, SchoolManager $SchoolManager, HistoryManager $HistoryManager)
     {
-        $this->updateByName($GET['userName'], 'isActive', false, true);
+        $this->updateByPseudo($GET['userName'], 'isActive', false, true);
         //nb active account - 1
         $SchoolManager->updateByName($GET['schoolName'], 'nbActiveAccount', $school->getNbActiveAccount() - 1);
         //add history entry
         $HistoryManager->addEntry(new HistoryEntry(
             ['idSchool' => $school->getId(), 
             'category' => 'account', 
-            'entry' => $_SESSION['pseudo'] . ' a désactivé le compte de ' . $user->getName()])
+            'entry' => $_SESSION['fullName'] . ' a désactivé le compte de ' . $user->getFirstName() . ' ' . $user->getLastName()])
         );
         return true;
     }

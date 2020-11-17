@@ -10,12 +10,12 @@
 
         <meta name="twitter:title" content="Artschools">
         <meta name="twitter:description" content="Artschools est un site qui répertorie des artistes en cours d'études, ainsi que leurs établissements">
-        <meta name="twitter:image" content="images/a.jpeg">
+        <meta name="twitter:image" content="images/logo.png">
 
         <meta property="og:title" content="Artschools" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="julienchemin.fr/projet5/index.php" />
-        <meta property="og:image" content="images/a.jpeg" />
+        <meta property="og:image" content="images/logo.png" />
         <meta property="og:description" content="Artschools est un site qui répertorie des artistes en cours d'études, ainsi que leurs établissements" /> 
         <meta property="og:site_name" content="Artschools" />
         <!--css-->

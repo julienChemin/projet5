@@ -25,36 +25,6 @@ class PostsManager extends LikeManager
     ----------------------------------- PUBLIC FUNCTION ------------------------------------
     -------------------------------------------------------------------------------------*/
 
-    public function getOneById(int $id)
-    {
-        if ($id > 0 && $this->exists($id)) {
-            $q = $this->sql(
-                'SELECT ' . static::$TABLE_CHAMPS_WITH_COMMENTS . ' 
-                FROM ' . static::$TABLE_NAME . ' AS a 
-                LEFT JOIN ' . static::$TABLE_COMMENTS . ' AS c 
-                ON a.id = c.idPost 
-                WHERE a.id = :id 
-                ORDER BY c.datePublication', 
-                [':id' => $id]
-            );
-            $result = $q->fetch();
-            $post = new Post($result);
-            $arrComments = [];
-            if ($result['idComment'] !== null) {
-                do {
-                    $comment = new Comment();
-                    $comment->setId($result['idComment'])->setIdPost($result['commentIdPost'])->setIdAuthor($result['commentIdAuthor'])->setNameAuthor($result['commentNameAuthor'])->setProfilePictureAuthor($result['commentProfilePictureAuthor'])->setContent($result['commentContent'])->setDatePublication($result['commentDatePublication']);
-                    array_unshift($arrComments, $comment);
-                } while ($result = $q->fetch());    
-            }
-            $post->setComments($arrComments);
-            $q->closeCursor();
-            return $post;
-        } else {
-            return false;
-        }
-    }
-
     public function getPostsByAuthor(int $idAuthor, int $offset = 0, int $limit = null)
     {
         if ($idAuthor > 0) {

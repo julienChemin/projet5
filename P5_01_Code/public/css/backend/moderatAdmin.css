@@ -80,11 +80,13 @@
 }
 .formAddModerator > div:first-of-type > div:first-of-type{
     display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
 }
 .formAddModerator > div:first-of-type > div:first-of-type > p{
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 40%;
 }
 .blockMsg{
     font-size: 1.2em;
@@ -164,6 +166,9 @@
     }
     .formAddModerator > div > div:first-of-type{
         flex-wrap: wrap;
+    }
+    .formAddModerator > div:first-of-type > div:first-of-type > p{
+        width: 50%;
     }
     .tableAdminModerator > table:nth-of-type(2) td:nth-child(2) > i{
         width: 100%;

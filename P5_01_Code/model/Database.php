@@ -13,15 +13,11 @@ abstract class Database
 
     protected function getConnection()
     {
-        try {
-            if (empty(self::$db)) {
-                self::$db = new \PDO(self::DB_HOST, self::DB_LOGIN, self::DB_PASSWORD, self::DB_ERRMODE);
-                return self::$db;
-            } else {
-                return self::$db;
-            }
-        } catch (Exception $e) {
-                error($e->getMessage());
+        if (empty(self::$db)) {
+            self::$db = new \PDO(self::DB_HOST, self::DB_LOGIN, self::DB_PASSWORD, self::DB_ERRMODE);
+            return self::$db;
+        } else {
+            return self::$db;
         }
     }
 

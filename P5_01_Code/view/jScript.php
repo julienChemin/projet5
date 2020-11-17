@@ -78,6 +78,9 @@ if (isset($data['option'])) {
             case 'faq' :
                 echo '<script src="public/js/faq.js"></script>';
                 break;
+            case 'settings' :
+                echo '<script src="public/js/settings.js"></script>';
+                break;
             default :
                 throw new Exception('L\'option indiqué n\'existe pas.');
                 break;

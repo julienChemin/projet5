@@ -1,6 +1,52 @@
-#blockManageContract{
+
+#blockSettings{
     padding: 50px 0 100px 0;
 }
-#blockManageContract .blockStyleOne{
+#blockSettings h3{
+    margin-bottom: 0;
+}
+#blockSettings .blockStyleOne{
     padding: 0;
+}
+#blockSettings button{
+    margin-left: 25px;
+}
+
+/* account parameters */
+#accountSettings{
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+#accountSettings > div{
+    width: 50%;
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px) {
+    #accountSettings > div{
+        width: 100%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px) {
+    #accountSettings > div{
+        width: 100%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px) {
+    #accountSettings > div{
+        width: 100%;
+    }
 }
