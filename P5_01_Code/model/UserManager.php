@@ -84,10 +84,10 @@ class UserManager extends AbstractManager
         if (strlen($school) > 0) {
             if ($school === ALL_SCHOOL) {
                 //every school
-                $q = $this->getAllSchoolUsers($grade, $orderBy);//TODO
+                $q = $this->getAllSchoolUsers($grade, $orderBy);
             } else {
                 //only school $school
-                $q = $this->getSchoolUsers($school, $grade, $orderBy);//TODO
+                $q = $this->getSchoolUsers($school, $grade, $orderBy);
             }
             $result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
             $q->closeCursor();

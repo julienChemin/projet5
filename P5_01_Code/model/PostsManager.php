@@ -795,7 +795,7 @@ class PostsManager extends LikeManager
             $clauseWhereTag = '';
             for ($i=1; $i<count($listTags); $i++) {
                 if ($i !== 1) {
-                    $clauseWhereTag .= 'OR ';
+                    $clauseWhereTag .= 'AND ';
                 }
                 $regex = "'(," . $listTags[$i] . ",.+)|(," . $listTags[$i] . "$)'";
                 $clauseWhereTag .= 'tags REGEXP ' . $regex . ' ';

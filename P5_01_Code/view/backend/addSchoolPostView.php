@@ -77,7 +77,7 @@
                 <div>
                     <label for="uploadFile">(max : 5Mo)</label>
                     <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
-                    <input type="file" name="uploadFile" id="uploadFile">
+                    <input type="file" name="uploadFile" id="uploadFile" accept="image/*">
                 </div>
                 <figure id="preview">
                     <img src="" title="preview" alt ="Aperçu">

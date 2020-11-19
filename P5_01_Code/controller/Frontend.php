@@ -127,7 +127,7 @@ class Frontend extends Controller
 
     public function search()
     {
-        if (!empty($_POST['keyWord'])) {
+        if (!empty($_POST['keyWord']) && $this->checkForScriptInsertion([$_POST['keyWord']])) {
             // search by key word
             $result = $this->searchForKeyWord($_POST['keyWord']);
             RenderView::render('template.php', 'frontend/searchView.php', ['result' => $result]);
@@ -139,6 +139,7 @@ class Frontend extends Controller
                 ['nbPage' => $result['nbPage'], 'nbPostsByPage' => $result['nbPostsByPage'], 'items' => $result['items']]
             );
         } else {
+            $_POST['keyWord'] = null;
 			RenderView::render('template.php', 'frontend/searchView.php');
         }
     }

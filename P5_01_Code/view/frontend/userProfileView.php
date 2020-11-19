@@ -185,7 +185,7 @@ if ($authorizedUser) {
             <p>
                 <label for="dlBanner">Télécharger une image (max : 5Mo) : </label>
                 <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
-                <input type="file" name="dlBanner" id="dlBanner">
+                <input type="file" name="dlBanner" id="dlBanner" accept="image/*">
             </p>
             <p>- ou -</p>
             <p>
@@ -208,7 +208,7 @@ if ($authorizedUser) {
             <p>
                 <label for="dlPicture">Télécharger une image (max : 5Mo): </label>
                 <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
-                <input type="file" name="dlPicture" id="dlPicture">
+                <input type="file" name="dlPicture" id="dlPicture" accept="image/*">
             </p>
             <hr>
             <p>

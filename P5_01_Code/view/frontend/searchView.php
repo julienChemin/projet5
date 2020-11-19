@@ -42,7 +42,7 @@
         <div id="searchByKeyWord">
             <h1>Recherche par mots-clés</h1>
             <form id="formSearchByKeyWord" method="POST" action="index.php?action=search">
-                <input type="text" name="keyWord">
+                <input type="text" name="keyWord" value="<?=$_POST['keyWord']?>">
                 <input type="submit" name="Rechercher">
             </form>
         </div>

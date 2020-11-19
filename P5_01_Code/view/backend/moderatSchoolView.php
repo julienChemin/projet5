@@ -112,7 +112,7 @@
                 <p>
                     <label for="uploadLogo">Télécharger un nouveau logo (max : 5Mo)</label>
                     <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
-                    <input type="file" name="uploadLogo">
+                    <input type="file" name="uploadLogo" accept="image/*">
                 </p>
             </div>
             <p id="blockMail">

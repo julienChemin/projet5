@@ -351,7 +351,7 @@ class ProfileContentManager extends AbstractManager
         //also, editing the field 'idProfileContent' for each img entries cause we delete and re-create the profileContent
         $newIdProfileContent = $this->getLastInsertId();
         $oldImgEntries = $this->getImgEntries($idProfileContent);
-        $this->editIdProfileContent($oldImgEntries, $idProfileContent, $newIdProfileContent);
+        $this->editIdProfileContentOnImgEntry($oldImgEntries, $newIdProfileContent);
         $newImgEntries = $this->checkForImgEntries($content);
         $this->updateImgEntries($newIdProfileContent, $newImgEntries);
     }
@@ -363,7 +363,7 @@ class ProfileContentManager extends AbstractManager
             $oldImgEntries = $this->getImgEntries($idProfileContent);
             if (count($newImgEntries) > 0 && count($oldImgEntries) > 0) {
                 //check if old entries stay on updated profileContent
-                $this->checkImgEntriesOnUpdatedProfileContent($idProfileContent, $oldImgEntries, $newImgEntries);
+                $newImgEntries = $this->checkImgEntriesOnUpdatedProfileContent($idProfileContent, $oldImgEntries, $newImgEntries);
                 //then set new img entries
                 if (count($newImgEntries) > 0) {
                     foreach ($newImgEntries as $entry) {
@@ -406,15 +406,17 @@ class ProfileContentManager extends AbstractManager
         return intval($result[0]);
     }
 
-    private function editIdProfileContent(array $imgEntries, int $oldId, int $newId)
+    private function editIdProfileContentOnImgEntry(array $imgEntries, int $newProfileContentId)
     {
-        if (count($imgEntries) > 0 && $oldId > 0 && $newId > 0) {
-            $this->sql(
-                'UPDATE as_profile_content_img 
-                SET idProfileContent = :newId 
-                WHERE idProfileContent = :oldId', 
-                [':newId' => $newId, ':oldId' => $oldId]
-            );
+        if (count($imgEntries) > 0 && $newProfileContentId > 0) {
+            foreach($imgEntries as $entry) {
+                $this->sql(
+                    'UPDATE as_profile_content_img 
+                    SET idProfileContent = :newProfileContentId 
+                    WHERE id = :id', 
+                    [':newProfileContentId' => $newProfileContentId, ':id' => $entry['id']]
+                );
+            }
         }
         return $this;
     }
@@ -514,6 +516,7 @@ class ProfileContentManager extends AbstractManager
                            $this->unsetToDelete($oldImgEntries[$i]['id']);
                     }
                     unset($newImgEntries[$j]);
+                    $newImgEntries = $this->arrayWithoutEmptyEntries($newImgEntries);
                     $finded = true;
                 }
             }
@@ -521,6 +524,7 @@ class ProfileContentManager extends AbstractManager
                 $this->deleteImgEntry($idProfileContent, $oldImgEntries[$i]['filePath']);
             }
         }
+        return $newImgEntries;
     }
 
     private function checkForImgEntries(string $content)

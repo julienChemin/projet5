@@ -50,7 +50,7 @@ class ContractManager extends AbstractManager
                 // (new school is create as active before there is any remind set)
                 $dateContractEnd = $this->adjustDate($this->getToday(true), '+', $extensionDuration, 'month');
             }
-            $this->setRemind($owner->getId(), $owner->getMail(), $dateContractEnd);
+            $this->setRemind($owner->getId(), $dateContractEnd);
             if (static::$TYPE === 'school') {
                 // add history entry
                 $HistoryManager = new HistoryManager();
@@ -63,7 +63,7 @@ class ContractManager extends AbstractManager
         } else {
             // set remind and set owner account as active
             $dateContractEnd = $this->adjustDate($this->getToday(true), '+', $extensionDuration, 'month');
-            $this->setRemind($owner->getId(), $owner->getMail(), $dateContractEnd);
+            $this->setRemind($owner->getId(), $dateContractEnd);
             if (static::$TYPE === 'user') {
                 static::$MANAGER->updateById($owner->getId(), 'isActive', true, true);
             } elseif (static::$TYPE === 'school') {

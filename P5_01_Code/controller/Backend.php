@@ -67,7 +67,7 @@ class Backend extends Controller
                     $ContractManager = new ContractManager('school', $SchoolManager);
                     $school = $SchoolManager->getSchoolByName($_POST['schoolName']);
                     if (intval($_POST['schoolDuration']) > 0) {
-                        $ContractManager->extendContract($school, $_POST['schoolDuration']);
+                        $ContractManager->extendContract($school, intval($_POST['schoolDuration']));
                     } else {
                         $SchoolManager->schoolToInactive($school->getId(), $UserManager);
                     }

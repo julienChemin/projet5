@@ -15,11 +15,11 @@
             </figure>
             <div id="blockIsPrivate" class="fullWidth">
                 <div>
-                    <div>
-                        <input type="checkbox" name="isPrivate" id="isPrivate">
+                    <div class="forcedHide">
+                        <input type="checkbox" name="isPrivate" id="isPrivate" checked="true">
                         <label for="isPrivate">Publication privée</label>
                     </div>
-                    <div>
+                    <div class="forcedInlineBlock">
                         <label for="listGroup">Qui peut voir la publication : </label>
                         <select id="listGroup" name="listGroup">
                             <option value=''>Choisir les groupes</option>
@@ -37,7 +37,7 @@
                         </select>
                     </div>
                 </div>
-                <div id="authorizedGroups"></div>
+                <div id="authorizedGroups" class="forcedFlex"></div>
             </div>
         </div>
         <div id="blockAddFile">
@@ -77,7 +77,7 @@
                 <div>
                     <label for="uploadFile">(max : 5Mo)</label>
                     <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
-                    <input type="file" name="uploadFile" id="uploadFile">
+                    <input type="file" name="uploadFile" id="uploadFile" accept="image/*">
                 </div>
                 <figure id="preview">
                     <img src="" title="preview" alt ="Aperçu">

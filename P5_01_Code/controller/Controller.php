@@ -272,4 +272,23 @@ abstract class Controller
         }
         return $this;
     }
+
+    /*--- other ---*/
+    protected function checkForScriptInsertion(array $arr)
+    {
+        $regexScript = '/^.*&lt; *script.*$/is';
+        $regexIframe = '/^.*&lt; *iframe.*$/is';
+        if (!empty($arr)) {
+            foreach ($arr as $str) {
+                if (is_array($str)) {
+                    if (!$this->checkForScriptInsertion($str)) {
+                        return false;
+                    }
+                } elseif (is_string($str) && (preg_match($regexScript, htmlspecialchars($str)) || preg_match($regexIframe, htmlspecialchars($str)))) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
