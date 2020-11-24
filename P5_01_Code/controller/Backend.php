@@ -13,17 +13,23 @@ class Backend extends Controller
 
     public function verifyInformation()
     {
+        // this function is call every time the visitor open a new page
+        // verify user information (school, pseudo, mail [etc..] can change)
         if (isset($_SESSION['grade']) && ($_SESSION['grade'] === ADMIN  || $_SESSION['grade'] === MODERATOR)) {
             //user is connect as admin or moderator
             $SchoolManager = new SchoolManager();
             $UserManager = new UserManager();
             if((!$SchoolManager->nameExists($_SESSION['school']) && !($_SESSION['school'] === ALL_SCHOOL)) || !$UserManager->pseudoExists($_SESSION['pseudo'])) {
-                //if user name don't exist or if school name don't exist and isn't "allSchool" 
+                //if user name or school name don't exist and isn't "allSchool" -> disconnect
                 $this->forceDisconnect();
             } else {
                 $user = $UserManager->getUserByPseudo($_SESSION['pseudo']);
                 if ($user->getIsBan()) {
+                    // user is ban -> disconnect
                     $this->disconnect();
+                } else {
+                    // all it's ok -> MAJ session info
+                    $this->sessionUpdate($user);
                 }
             }
         } elseif (isset($_SESSION['grade']) && $_SESSION['grade'] !== ADMIN  && $_SESSION['grade'] !== MODERATOR) {
@@ -274,7 +280,7 @@ class Backend extends Controller
             switch ($_GET['elem']) {
                 case 'user' :
                     if (!empty($_GET['userName']) && !empty($_GET['schoolName']) && $UserManager->pseudoExists($_GET['userName']) 
-                    && ($_SESSION['school'] === ALL_SCHOOL || $_SESSION['school'] === $_GET['schoolName'])) {
+                    && ($_SESSION['school'] === ALL_SCHOOL || ($_SESSION['school'] === $_GET['schoolName'] && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)))) {
                         if ($UserManager->deleteUser($_GET, new SchoolManager())) {
                             $this->redirection();
                         } else {
@@ -290,6 +296,41 @@ class Backend extends Controller
         }
     }
 
+    public function leaveSchool()
+    {
+        // Admin can remove user from his school
+        if (!empty($_SESSION['id']) && !empty($_GET['userName']) && !empty($_GET['schoolName'])) {
+            $UserManager = new UserManager();
+            $user = $UserManager->getUserByPseudo($_GET['userName']);
+            $SchoolManager = new SchoolManager();
+            $school = $SchoolManager->getSchoolByName($_GET['schoolName']);
+            if ($user && $school && !$user->getIsAdmin() && $user->getSchool() === $school->getName() && $school->getName() === $_SESSION['school'] && $_SESSION['grade'] === ADMIN) {
+                $HistoryManager = new HistoryManager();
+                // nb active account - 1
+                if (!$user->getIsModerator() && $user->getIsActive() && $school->getIsActive()) {
+                    $SchoolManager->updateByName($school->getName(), 'nbActiveAccount', $school->getNbActiveAccount() - 1);
+                }
+                // edit User info
+                $UserManager->updateById($user->getId(), 'school', NO_SCHOOL)
+                    ->updateById($user->getId(), 'isActive', false, true)
+                    ->updateById($user->getId(), 'isAdmin', false, true)
+                    ->updateById($user->getId(), 'isModerator', false, true)
+                    ->updateById($user->getId(), 'schoolGroup', null);
+                // add school history entry
+                $HistoryManager->addEntry(new HistoryEntry(
+                    ['idSchool' => $school->getId(), 
+                    'category' => 'account', 
+                    'entry' => $user->getFirstName() . ' ' . $user->getLastName() . ' a quitté l\'établissement'])
+                );
+                $this->redirection();
+            } else {
+                $this->incorrectInformation();
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
     public function schoolProfile()
     {
         if (!empty($_GET['school']) && ($_GET['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
@@ -297,6 +338,7 @@ class Backend extends Controller
             $UserManager = new UserManager();
             $school = $SchoolManager->getSchoolByName($_GET['school']);
             $user = $UserManager->getOneById($_SESSION['id']);
+            $userIsActive = $user->getIsActive();
             $contractInfo = $this->getSchoolContractInfo($school, new ContractManager('school', $SchoolManager), true);
             $ProfileContentManager = new ProfileContentManager();
             $profileContent = $ProfileContentManager->getByProfileId($school->getId(), true);
@@ -307,7 +349,7 @@ class Backend extends Controller
             }
             RenderView::render('template.php', $view . '/schoolProfileView.php', 
                 ['school' => $school, 'profileContent' => $profileContent, 'contractInfo' => $contractInfo, 
-                'option' => ['schoolProfile', 'tinyMCE']]);
+                'userIsActive' => $userIsActive, 'option' => ['schoolProfile', 'tinyMCE']]);
         } else {
             $this->incorrectInformation();
         }

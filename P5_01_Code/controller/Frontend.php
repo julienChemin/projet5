@@ -13,18 +13,23 @@ class Frontend extends Controller
 
     public function verifyInformation()
     {
+        // this function is call every time the visitor open a new page
+        // verify user information (school, pseudo, mail [etc..] can change)
         if (isset($_SESSION['pseudo'])) {
             //user is connect, verify SESSION info
             $SchoolManager = new SchoolManager();
             $UserManager = new UserManager();
             if ((!$SchoolManager->nameExists($_SESSION['school']) && !($_SESSION['school'] === ALL_SCHOOL)) || !$UserManager->pseudoExists($_SESSION['pseudo'])) {
-                //if user name don't exist or if school name don't exist and isn't "allSchool"
+                //if user name or school name don't exist and isn't "allSchool" -> disconnect
                 $this->forceDisconnect();
             } else {
-                //user exist, check his group and if user is ban
                 $user = $UserManager->getUserByPseudo($_SESSION['pseudo']);
                 if ($user->getIsBan()) {
+                    // user is ban -> disconnect
                     $this->disconnect();
+                } else {
+                    // all it's ok -> MAJ session info
+                    $this->sessionUpdate($user);
                 }
             }
         } elseif (isset($_COOKIE['artSchoolsId']) || isset($_COOKIE['artSchoolsAdminId'])) {
@@ -626,8 +631,8 @@ class Frontend extends Controller
     public function updateUserInfo()
     {
         $UserManager = new UserManager();
-        $arrAcceptedValue = ['pseudo', 'firstName', 'lastName', 'mail'];
-        if (!empty($_SESSION['id']) && isset($_POST['elem'], $_POST['textValue']) && $UserManager->checkForScriptInsertion($_POST) 
+        $arrAcceptedValue = ['pseudo', 'firstName', 'lastName', 'mail', 'school'];
+        if (!empty($_SESSION['id']) && !empty($_POST['elem']) && $UserManager->checkForScriptInsertion($_POST) 
         && in_array($_POST['elem'], $arrAcceptedValue) && $user = $UserManager->getOneById($_SESSION['id'])) {
             $method = 'updateUser' . ucfirst($_POST['elem']);
             echo $this->$method($user, $UserManager);
@@ -999,11 +1004,15 @@ class Frontend extends Controller
     /*------------------------------ update user info ------------------------------*/
     private function updateUserPseudo(User $user, UserManager $UserManager)
     {
-        $newPseudo = trim($_POST['textValue']);
-        if (isset($_POST['elem'], $_POST['textValue']) && !empty($newPseudo) && !$UserManager->pseudoExists($newPseudo)) {
-            $UserManager->updateById($user->getId(), $_POST['elem'], $newPseudo);
-            $_SESSION['pseudo'] = $newPseudo;
-            return 'true';
+        if (!empty($_POST['textValue'])) {
+            $newPseudo = trim($_POST['textValue']);
+            if (!empty($_POST['elem']) && !empty($newPseudo) && !$UserManager->pseudoExists($newPseudo)) {
+                $UserManager->updateById($user->getId(), $_POST['elem'], $newPseudo);
+                $_SESSION['pseudo'] = $newPseudo;
+                return 'true';
+            } else {
+                return 'false';
+            }
         } else {
             return 'false';
         }
@@ -1011,12 +1020,16 @@ class Frontend extends Controller
 
     private function updateUserFirstName(User $user, UserManager $UserManager)
     {
-        $newFirstName = trim($_POST['textValue']);
-        if (isset($_POST['elem'], $_POST['textValue']) && !empty($newFirstName)) {
-            $UserManager->updateById($user->getId(), $_POST['elem'], $newFirstName);
-            $_SESSION['firstName'] = $newFirstName;
-            $_SESSION['fullName'] = $newFirstName . ' ' . $user->getLastName();
-            return 'true';
+        if (!empty($_POST['textValue'])) {
+            $newFirstName = trim($_POST['textValue']);
+            if (!empty($_POST['elem']) && !empty($newFirstName)) {
+                $UserManager->updateById($user->getId(), $_POST['elem'], $newFirstName);
+                $_SESSION['firstName'] = $newFirstName;
+                $_SESSION['fullName'] = $newFirstName . ' ' . $user->getLastName();
+                return 'true';
+            } else {
+                return 'false';
+            }
         } else {
             return 'false';
         }
@@ -1024,12 +1037,16 @@ class Frontend extends Controller
 
     private function updateUserLastName(User $user, UserManager $UserManager)
     {
-        $newLastName = trim($_POST['textValue']);
-        if (isset($_POST['elem'], $_POST['textValue']) && !empty($newLastName)) {
-            $UserManager->updateById($user->getId(), $_POST['elem'], $newLastName);
-            $_SESSION['lastName'] = $newLastName;
-            $_SESSION['fullName'] = $user->getFirstName() . ' ' . $newLastName;
-            return 'true';
+        if (!empty($_POST['textValue'])) {
+            $newLastName = trim($_POST['textValue']);
+            if (!empty($_POST['elem']) && !empty($newLastName)) {
+                $UserManager->updateById($user->getId(), $_POST['elem'], $newLastName);
+                $_SESSION['lastName'] = $newLastName;
+                $_SESSION['fullName'] = $user->getFirstName() . ' ' . $newLastName;
+                return 'true';
+            } else {
+                return 'false';
+            }
         } else {
             return 'false';
         }
@@ -1037,10 +1054,89 @@ class Frontend extends Controller
     
     private function updateUserMail(User $user, UserManager $UserManager)
     {
-        $regexMail = '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
-        if (isset($_POST['elem'], $_POST['textValue']) && preg_match($regexMail, $_POST['textValue']) && !$UserManager->mailExists($_POST['textValue'])) {
-            $UserManager->updateById($user->getId(), $_POST['elem'], $_POST['textValue']);
+        if (!empty($_POST['textValue'])) {
+            $regexMail = '/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/';
+            if (!empty($_POST['elem']) && preg_match($regexMail, $_POST['textValue']) && !$UserManager->mailExists($_POST['textValue'])) {
+                $UserManager->updateById($user->getId(), $_POST['elem'], $_POST['textValue']);
+                return 'true';
+            } else {
+                return 'false';
+            }
+        } else {
+            return 'false';
+        }
+    }
+
+    private function updateUserSchool(User $user, UserManager $UserManager)
+    {
+        // join or leave school using the setting button
+        if (!empty($_POST['textValue'])) {
+            if ($user->getSchool() === NO_SCHOOL) {
+                // try to JOIN a school
+                return $this->userTryToJoinSchool($user, $UserManager, new SchoolManager(), new HistoryManager());
+            } else {
+                // LEAVE school
+                return $this->userTryToLeaveSchool($user, $UserManager, new SchoolManager(), new HistoryManager(), $_POST['textValue']);
+            }
+        } else {
+            return 'false';
+        }
+    }
+
+    private function userTryToLeaveSchool(User $user, UserManager $UserManager, SchoolManager $SchoolManager, HistoryManager $HistoryManager, string $schoolToLeave)
+    {
+        if ($schoolToLeave === $user->getSchool()) {
+            $school = $SchoolManager->getSchoolByName($user->getSchool());
+            // nb active account - 1
+            if (!$user->getIsModerator() && $user->getIsActive() && $school->getIsActive()) {
+                $SchoolManager->updateByName($school->getName(), 'nbActiveAccount', $school->getNbActiveAccount() - 1);
+            }
+            // edit User info
+            $UserManager->updateById($user->getId(), 'school', NO_SCHOOL)
+                ->updateById($user->getId(), 'isActive', false, true)
+                ->updateById($user->getId(), 'isAdmin', false, true)
+                ->updateById($user->getId(), 'isModerator', false, true)
+                ->updateById($user->getId(), 'schoolGroup', null);
+            // edit SESSION info
+            $_SESSION['school'] = NO_SCHOOL;
+            $_SESSION['schoolGroup'] = null;
+            $_SESSION['grade'] = USER;
+            // add school history entry
+            $HistoryManager->addEntry(new HistoryEntry(
+                ['idSchool' => $school->getId(), 
+                'category' => 'account', 
+                'entry' => $_SESSION['fullName'] . ' a quitté l\'établissement'])
+            );
             return 'true';
+        } else {
+            return 'false';
+        }
+    }
+
+    private function userTryToJoinSchool(User $user, UserManager $UserManager, SchoolManager $SchoolManager, HistoryManager $HistoryManager)
+    {
+        $result = $SchoolManager->affiliationCodeExists($_POST['textValue']);
+        if ($result['exist']) {
+            $school = $SchoolManager->getSchoolByName($result['name']);
+            if ($SchoolManager->haveSlotForNewStudent($school)) {
+                // edit User info
+                $UserManager->updateById($user->getId(), 'school', $school->getName())
+                    ->updateById($user->getId(), 'isActive', true, true);
+                // edit SESSION info
+                $_SESSION['school'] = $school->getName();
+                $_SESSION['grade'] = STUDENT;
+                // nb active account + 1
+                $SchoolManager->updateByName($school->getName(), 'nbActiveAccount', $school->getNbActiveAccount() + 1);
+                // add school history entry
+                $HistoryManager->addEntry(new HistoryEntry(
+                    ['idSchool' => $school->getId(), 
+                    'category' => 'account', 
+                    'entry' => $_SESSION['fullName'] . ' a rejoint l\'établissement'])
+                );
+                return 'true';
+            } else {
+                return 'false';
+            }
         } else {
             return 'false';
         }

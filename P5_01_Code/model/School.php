@@ -103,7 +103,7 @@ class School
 
     public function getNbEleve()
     {
-        return $this->nbEleve;
+        return intval($this->nbEleve);
     }
 
     public function getNbActiveAccount()

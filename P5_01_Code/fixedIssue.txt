@@ -1,10 +1,9 @@
 new stuff
-    - 
+    - user can join or leave school in settings
+    - admin can delete moderator account
+    - admin and moderator can take off an user from his school
 
 fixed issues
-    - after a keyword search, the keyword stay in the input
-    - bug contract manager->extend contract (forgot to update some arg after previous refacto)
-    - add post on private folder in backside -> "isPrivate" was uncheckable, now it's not
-    - advanced search with multiple tag was searching for post with tag1 OR tag2, now it search post with tag1 AND tag2, 
-    - issue with multiple images on profile content
-    - access to galery on tablet / phone when uploading
+    - only mebmaster can delete user
+    - admin can delete only moderator account
+    - update function verifyInformation (update session info everytime)

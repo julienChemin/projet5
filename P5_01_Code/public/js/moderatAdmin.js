@@ -2,7 +2,8 @@ if (document.getElementById('moderatAdmin')) {
     let linksToModo = document.querySelectorAll('.toModerator');
     let linksToAdmin = document.querySelectorAll('.toAdmin');
     let linksToNormalUser = document.querySelectorAll('.toNormalUser');
-    let linksToDelete = document.querySelectorAll('.toDelete'); 
+    let linksToDelete = document.querySelectorAll('.toDelete');
+    let linksToLeaveSchool = document.querySelectorAll('.toLeaveSchool');
 
     let pathToModo = '&toAdmin=false&toModerator=true';
     let pathToAdmin = '&toAdmin=true&toModerator=false';
@@ -13,12 +14,14 @@ if (document.getElementById('moderatAdmin')) {
     let btnConfirm = document.querySelector('#modal a');
     let btnCancel = document.querySelector("#modal input[name='cancel']");
 
+    /* BUTTON CANCEL */
     btnCancel.addEventListener(
         'click', function () {
             modal.style.display='none';
         }
     );
 
+    /** ALL BUTTON USER TO MODO */
     for (let i=0;i<linksToModo.length;i++) {
         linksToModo[i].addEventListener(
             'click', function () {
@@ -32,6 +35,7 @@ if (document.getElementById('moderatAdmin')) {
         );
     }
 
+    /** ALL BUTTON MODO TO ADMIN */
     for (let i=0;i<linksToAdmin.length;i++) {
         linksToAdmin[i].addEventListener(
             'click', function () {
@@ -45,6 +49,7 @@ if (document.getElementById('moderatAdmin')) {
         );
     }
 
+    /** ALL BUTTON MODO TO USER */
     for (let i=0;i<linksToNormalUser.length;i++) {
         linksToNormalUser[i].addEventListener(
             'click', function () {
@@ -58,6 +63,7 @@ if (document.getElementById('moderatAdmin')) {
         );
     }
 
+    /** ALL BUTTON DELETE USER */
     for (let i=0;i<linksToDelete.length;i++) {
         linksToDelete[i].addEventListener(
             'click', function () {
@@ -71,11 +77,23 @@ if (document.getElementById('moderatAdmin')) {
         );
     }
 
+    /** ALL BUTTON REMOVE USER FROM SCHOOL */
+	for (let i=0;i<linksToLeaveSchool.length;i++) {
+		linksToLeaveSchool[i].addEventListener('click', function(){
+			let name = linksToLeaveSchool[i].getAttribute('userpseudo');
+			let schoolName = linksToLeaveSchool[i].getAttribute('schoolname');
+
+			modal.style.display = 'flex';
+			textModal.textContent = name + " ne fera plus parti de votre établissement";
+			btnConfirm.href = "indexAdmin.php?action=leaveSchool&userName=" + name + "&schoolName=" + schoolName;
+		});
+	}
+
     //form add moderator
     let forms = document.querySelectorAll('.formAddModerator');
     let linksAdd = document.querySelectorAll('.formAddModerator > p:first-of-type');
     let formContent = document.querySelectorAll('.formAddModerator > div:first-of-type');
-    let btnCancelAddModerator = document.querySelectorAll('.formAddModerator input[type="button"]')
+    let btnCancelAddModerator = document.querySelectorAll('.formAddModerator input[type="button"]');
 
     for (let i=0; i<forms.length;i++) {
         linksAdd[i].addEventListener(

@@ -371,7 +371,7 @@ class SchoolManager extends AbstractManager
             'category' => 'account', 
             'entry' => $_SESSION['fullName'] . ' a créé un compte modérateur : ' . $POST['moderatorName'] . ' ( ' . $POST['moderatorFirstName'] . ' ' . $POST['moderatorLastName'] . ' )'])
         );
-        return "Le modérateur a bien été ajouté";
+        return "Le modérateur a bien été ajouté (rechargez la page pour le voir dans la liste)";
     }
 
     public function createGroup($GET)
@@ -469,6 +469,15 @@ class SchoolManager extends AbstractManager
             );
         } else {
             $this->incorrectInformation();
+        }
+    }
+
+    public function haveSlotForNewStudent(School $school)
+    {
+        if (($school->getNbActiveAccount() + 1) <= $school->getNbEleve()) {
+            return true;
+        } else {
+            return false;
         }
     }
 

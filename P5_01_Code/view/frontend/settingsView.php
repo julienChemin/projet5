@@ -5,9 +5,10 @@
     <div>
         <?php
         if ($_SESSION['school'] === NO_SCHOOL) {
+            // TODO following h2 and div are hide -> futur feature
             ?>
-            <h2>Activation du compte</h2>
-            <div class="blockStyleTwo">
+            <h2 class="hide">Activation du compte</h2>
+            <div class="hide blockStyleTwo">
                 <p>Activer votre compte vous donne accès a plusieurs fonctionnalitées - <a href="index.php?action=faq">Voir les avantages</a></p>
                 <p><?=$data['contractInfo']?></p>
                 <form id="formExtendContract">
@@ -63,6 +64,26 @@
                 <p>
                     Mail actuel : <span><?=$data['user']->getMail()?></span><button id="editMail" inputNeeded="text" elem="mail">Modifier</button>
                 </p>
+                <span></span>
+           </div>
+
+           <div class="fullWidth">
+                <h3 class="orang">Établissement scolaire</h3>
+                <?php
+                if ($data['user']->getSchool() === NO_SCHOOL) {
+                    ?>
+                    <p>
+                        <span>Vous ne faite parti d'aucun établissement scolaire</span><button id="editSchool" inputNeeded="text" elem="joinSchool">Rejoindre un établissement</button>
+                    </p>
+                    <?php
+                } else {
+                    ?>
+                    <p>
+                        Établissement actuel : <span><?=$data['user']->getSchool()?></span><button id="editSchool" inputNeeded="text" elem="leaveSchool">Quitter l'établissement</button>
+                    </p>
+                    <?php
+                }
+                ?>
                 <span></span>
            </div>
         </div>

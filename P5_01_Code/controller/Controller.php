@@ -115,24 +115,7 @@ abstract class Controller
                 throw new \Exception("Votre compte a reçu 3 avertissements et est bloqué jusqu'aux " . $banEntry['dateUnbanishment']);
             }
         }
-
-        $_SESSION['id'] = $user->getId();
-        $_SESSION['pseudo'] = $user->getPseudo();
-        $_SESSION['firstName'] = $user->getFirstName();
-        $_SESSION['lastName'] = $user->getLastName();
-        $_SESSION['fullName'] = $user->getFirstName() . ' ' . $user->getLastName();
-        $_SESSION['school'] = $user->getSchool();
-        $_SESSION['schoolGroup'] = $user->getSchoolGroup();
-
-        if ($user->getIsAdmin()) {
-            $_SESSION['grade'] = ADMIN;
-        } elseif ($user->getIsModerator()) {
-            $_SESSION['grade'] = MODERATOR;
-        } elseif (static::$SIDE === 'frontend' && $_SESSION['school'] !== NO_SCHOOL) {
-            $_SESSION['grade'] = STUDENT;
-        } elseif (static::$SIDE === 'frontend') {
-            $_SESSION['grade'] = USER;
-        }
+        $this->sessionUpdate($user);
     }
 
     protected function forceDisconnect()
@@ -142,6 +125,27 @@ abstract class Controller
             $this->useCookieToSignIn();
         } else {
             throw new \Exception("Certaines informations lié a votre compte ne sont plus valide, veuillez vous reconnecter pour mettre à jour ces informations.Cocher la case 'rester connecté' lors de la connection peu vous éviter ce genre de désagrément");
+        }
+    }
+
+    protected function sessionUpdate(User $user)
+    {
+        $_SESSION['id'] = $user->getId();
+        $_SESSION['pseudo'] = $user->getPseudo();
+        $_SESSION['firstName'] = $user->getFirstName();
+        $_SESSION['lastName'] = $user->getLastName();
+        $_SESSION['fullName'] = $user->getFirstName() . ' ' . $user->getLastName();
+        $_SESSION['school'] = $user->getSchool();
+        $_SESSION['schoolGroup'] = $user->getSchoolGroup();
+        
+        if ($user->getIsAdmin()) {
+            $_SESSION['grade'] = ADMIN;
+        } elseif ($user->getIsModerator()) {
+            $_SESSION['grade'] = MODERATOR;
+        } elseif (static::$SIDE === 'frontend' && $_SESSION['school'] !== NO_SCHOOL) {
+            $_SESSION['grade'] = STUDENT;
+        } elseif (static::$SIDE === 'frontend') {
+            $_SESSION['grade'] = USER;
         }
     }
 

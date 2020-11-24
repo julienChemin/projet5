@@ -366,7 +366,7 @@ class UserManager extends AbstractManager
         $school = $SchoolManager->getSchoolByName($GET['schoolName']);
         $posts = $PostsManager->getPostsByAuthor($user->getId());
         if ($school && $user && !$user->getIsAdmin()) {
-            //if account is active and not moderator, nb active account -1
+            //nb active account -1 if account is active and not moderator 
             if ($user->getIsActive() && !$user->getIsModerator()) {
                 $SchoolManager->updateByName($GET['schoolName'], 'nbActiveAccount', $school->getNbActiveAccount() - 1);
             }
@@ -374,7 +374,7 @@ class UserManager extends AbstractManager
             foreach ($posts as $post) {
                 $PostsManager->deletePost($post->getId());
             }
-            //delete account
+            //delete PP, banner and then account
             $this->deleteFile($user->getProfileBanner())->deleteFile($user->getProfilePicture());
             $this->delete($user->getId());
             //add history entry

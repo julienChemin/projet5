@@ -113,6 +113,9 @@ try {
             case 'delete' :
                 $Backend->delete();
                 break;
+            case 'leaveSchool' :
+                $Backend->leaveSchool();
+                break;
             case 'schoolProfile' :
                 $Backend->schoolProfile();
                 break;

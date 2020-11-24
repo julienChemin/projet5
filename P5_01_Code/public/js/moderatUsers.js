@@ -3,6 +3,7 @@ if (document.getElementById('moderatUsers') !== null) {
 	let linksToActive = document.querySelectorAll('.toActive');
 	let linksToInactive = document.querySelectorAll('.toInactive');
 	let linksToDelete = document.querySelectorAll('.toDelete');
+	let linksToLeaveSchool = document.querySelectorAll('.toLeaveSchool');
 
 	let pathToModo = '&toAdmin=false&toModerator=true';
 
@@ -11,10 +12,12 @@ if (document.getElementById('moderatUsers') !== null) {
 	let btnConfirm = document.querySelector('#modal a');
 	let btnCancel = document.querySelector("#modal input[name='cancel']");
 
+	/* BUTTON CANCEL */
 	btnCancel.addEventListener('click', function(){
 		modal.style.display='none';
 	});
 
+	/** ALL BUTTON USER TO MODO */
 	for (let i=0;i<linksToModo.length;i++) {
 		linksToModo[i].addEventListener('click', function(){
 			let name = linksToModo[i].getAttribute('userpseudo');
@@ -26,6 +29,7 @@ if (document.getElementById('moderatUsers') !== null) {
 		});
 	}
 
+	/** ALL BUTTON USER TO ACTIVE */
 	for (let i=0;i<linksToActive.length;i++) {
 		linksToActive[i].addEventListener('click', function(){
 			let name = linksToActive[i].getAttribute('userpseudo');
@@ -37,6 +41,7 @@ if (document.getElementById('moderatUsers') !== null) {
 		});
 	}
 
+	/** ALL BUTTON USER TO INACTIVE */
 	for (let i=0;i<linksToInactive.length;i++) {
 		linksToInactive[i].addEventListener('click', function(){
 			let name = linksToInactive[i].getAttribute('userpseudo');
@@ -48,6 +53,7 @@ if (document.getElementById('moderatUsers') !== null) {
 		});
 	}
 
+	/** ALL BUTTON DELETE USER */
 	for (let i=0;i<linksToDelete.length;i++) {
 		linksToDelete[i].addEventListener('click', function(){
 			let name = linksToDelete[i].getAttribute('userpseudo');
@@ -59,14 +65,26 @@ if (document.getElementById('moderatUsers') !== null) {
 		});
 	}
 
-	//form add group
+	/** ALL BUTTON REMOVE USER FROM SCHOOL */
+	for (let i=0;i<linksToLeaveSchool.length;i++) {
+		linksToLeaveSchool[i].addEventListener('click', function(){
+			let name = linksToLeaveSchool[i].getAttribute('userpseudo');
+			let schoolName = linksToLeaveSchool[i].getAttribute('schoolname');
+
+			modal.style.display = 'flex';
+			textModal.textContent = name + " ne fera plus parti de votre établissement";
+			btnConfirm.href = "indexAdmin.php?action=leaveSchool&userName=" + name + "&schoolName=" + schoolName;
+		});
+	}
+
+	/** FORM ADD GROUP */
 	let formAddGroup = document.querySelectorAll('.formAddGroup');
 	let btnOpenForm  = document.querySelectorAll('.formAddGroup > p');
 	let formContent = document.querySelectorAll('.formAddGroup > div:first-of-type');
 	let blockListGroup = document.querySelectorAll('.formAddGroup > div:last-of-type');
 	let listsGroup = document.querySelectorAll('.listGroup');
 	let regexGroupName = /^[a-z0-9]+[a-z0-9-_]*[a-z0-9]+$/i;
-	//edit user group
+	/** EDIT USER GROUP */
 	let btnEditGroup = document.querySelectorAll('.btnEditGroup');
 	let listEditGroup = document.querySelectorAll('.listEditGroup');
 	let userGroup = document.querySelectorAll('.userGroup');
@@ -112,7 +130,7 @@ if (document.getElementById('moderatUsers') !== null) {
 		blockGroup.appendChild(elemLi);
 	}
 
-	//form add group
+	/** FORM ADD GROUP */
 	for (let i=0;i<formAddGroup.length;i++) {
 		//open form and fill list group
 		btnOpenForm[i].addEventListener('click', function(){
@@ -186,7 +204,7 @@ if (document.getElementById('moderatUsers') !== null) {
 		});
 	}
 
-	//edit user group
+	/** EDIT USER GROUP */
 	for (let i=0;i<btnEditGroup.length;i++) {
 		//display list group
 		btnEditGroup[i].addEventListener('click', function(){

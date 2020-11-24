@@ -49,8 +49,8 @@
                     <ul>
                         <li><i class="fas fa-user-shield"></i>Donner les droits de modérateur</li>
                         <li><i class="fas fa-user-plus"></i>Activer le compte</li>
-                        <li><i class="fas fa-user-times"></i>Désactiver le compte</li>
-                        <li><i class="fas fa-times"></i>Supprimer le compte</li>
+                        <li><i class="fas fa-user-minus"></i>Désactiver le compte</li>
+                        <li><i class="fas fa-user-times"></i>Retirer le compte de l'établissement scolaire</li>
                     </ul>
                 </div>
                 <?php
@@ -91,8 +91,14 @@
                                 </td>
                                 <td>
                                     <i class="fas fa-user-shield toModerator" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i> - 
-                                    <i class="fas fa-user-times toInactive" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i> - 
-                                    <i class="fas fa-times toDelete" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i>
+                                    <i class="fas fa-user-minus toInactive" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i> - 
+                                    <?php
+                                    if ($_SESSION['grade'] === ADMIN) {
+                                        ?>
+                                        <i class="fas fa-user-times toLeaveSchool" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i>
+                                        <?php
+                                    }
+                                    ?>
                                 </td>
                             </tr>
                             <?php
@@ -143,7 +149,13 @@
                                 </td>
                                 <td>
                                     <i class="fas fa-user-plus toActive" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i> - 
-                                    <i class="fas fa-times toDelete" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i>
+                                    <?php
+                                    if ($_SESSION['grade'] === ADMIN) {
+                                        ?>
+                                        <i class="fas fa-user-times toLeaveSchool" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i>
+                                        <?php
+                                    }
+                                    ?>
                                 </td>
                             </tr>
                             <?php
