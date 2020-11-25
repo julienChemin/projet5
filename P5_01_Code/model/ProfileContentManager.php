@@ -527,21 +527,6 @@ class ProfileContentManager extends AbstractManager
         return $newImgEntries;
     }
 
-    private function checkForImgEntries(string $content)
-    {
-        if (strlen($content) > 0) {
-            $regex = '/src=\"(.+)\"/U';
-            preg_match_all($regex, $content, $matches, PREG_OFFSET_CAPTURE);
-            $imgEntries = [];
-            if (!empty($matches[1])) {
-                foreach ($matches[1] as $filePath) {
-                    $imgEntries[] = $filePath[0];
-                }
-            }
-            return($imgEntries);
-        }
-    }
-
     private function imgEntryExists(int $idProfileContent, string $filePath)
     {
         if ($idProfileContent > 0 && strlen($filePath) > 0) {

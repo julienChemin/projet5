@@ -27,21 +27,36 @@ class ReportManager extends AbstractManager
     /*-------------------------------------------------------------------------------------
     ----------------------------------- PUBLIC FUNCTION ------------------------------------
     -------------------------------------------------------------------------------------*/
+    public function getReport(string $elem, int $id, int $idUser = null)
+    {
+        if (!empty($elem) && $id > 0 && $this->reportExists($elem, $id, $idUser)) {
+            switch ($elem) {
+                case 'post' :
+                    return $this->getPostReport($id, $idUser);
+                case 'comment' :
+                    return $this->getCommentReport($id, $idUser);
+                case 'other' :
+                    return $this->getOtherReport($id);
+                default :
+                    return null;
+            }
+        }
+    }
 
     public function getReports(string $elem, bool $limit = false, int $offset = 0)
     {
         if (!empty($elem)) {
             $limit ? $clauseLimit = 'LIMIT ' . static::$LIMIT . ' OFFSET ' . $offset : $clauseLimit = '';
             switch ($elem) {
-            case 'post' :
-                $query = $this->getPostReports($clauseLimit);
-                break;
-            case 'comment' :
-                $query = $this->getCommentReports($clauseLimit);
-                break;
-            case 'other' :
-                $query = $this->getOtherReports($clauseLimit);
-                break;
+                case 'post' :
+                    $query = $this->getPostReports($clauseLimit);
+                    break;
+                case 'comment' :
+                    $query = $this->getCommentReports($clauseLimit);
+                    break;
+                case 'other' :
+                    $query = $this->getOtherReports($clauseLimit);
+                    break;
             }
             $result = $query->fetchAll();
             $query->closeCursor();
@@ -122,22 +137,31 @@ class ReportManager extends AbstractManager
 
     public function deleteReportsFromElem(string $elem, int $idElem)
     {
-        if (!empty($elem) && $idElem > 0) {
+        $arrAcceptedValue = ['post', 'comment'];
+        if (!empty($elem) && in_array($elem, $arrAcceptedValue) && $idElem > 0) {
+            // check and delete img on those reports
+            $reports = $this->getReportsFromElem($elem, $idElem);
+            if (!empty($reports) && count($reports) > 0) {
+                array_map(function(array $report) {
+                    $this->deleteImgOnReportContent($report['content']);
+                }, $reports);
+            }
+            // delete reports
             switch ($elem) {
-            case 'post' :
-                $this->sql(
-                    'DELETE FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
-                    WHERE idPost = :idPost',
-                    [':idPost' => $idElem]
-                );
-                break;
-            case 'comment' :
-                $this->sql(
-                    'DELETE FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
-                    WHERE idComment = :idComment',
-                    [':idComment' => $idElem]
-                );
-                break;
+                case 'post' :
+                    $this->sql(
+                        'DELETE FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
+                        WHERE idPost = :idPost',
+                        [':idPost' => $idElem]
+                    );
+                    break;
+                case 'comment' :
+                    $this->sql(
+                        'DELETE FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
+                        WHERE idComment = :idComment',
+                        [':idComment' => $idElem]
+                    );
+                    break;
             }
         }
         return $this;
@@ -193,6 +217,42 @@ class ReportManager extends AbstractManager
     /*-------------------------------------------------------------------------------------
     ----------------------------------- PRIVATE FUNCTION ------------------------------------
     -------------------------------------------------------------------------------------*/
+    private function getPostReport(int $idPost, int $idUser)
+    {
+        if ($idUser > 0) {
+            $q = $this->sql(
+                'SELECT ' . static::$REPORT_POST_TABLE_CHAMPS . ' 
+                FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
+                WHERE idPost = :idPost AND idUser = :idUser', 
+                [':idPost' => $idPost, ':idUser' => $idUser]
+            );
+            return $q->fetch();
+        }
+    }
+
+    private function getCommentReport(int $idComment, int $idUser)
+    {
+        if ($idUser > 0) {
+            $q = $this->sql(
+                'SELECT ' . static::$REPORT_COMMENT_TABLE_CHAMPS . ' 
+                FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
+                WHERE idComment = :idComment AND idUser = :idUser', 
+                [':idComment' => $idComment, ':idUser' => $idUser]
+            );
+            return $q->fetch();
+        }
+    }
+
+    private function getOtherReport(int $id)
+    {
+        $q = $this->sql(
+            'SELECT ' . static::$REPORT_OTHER_TABLE_CHAMPS . ' 
+            FROM ' . static::$REPORT_OTHER_TABLE_NAME . ' 
+            WHERE id = :id', 
+            [':id' => $id]
+        );
+        return $q->fetch();
+    }
 
     private function getPostReports(string $clauseLimit)
     {
@@ -256,10 +316,14 @@ class ReportManager extends AbstractManager
 
     private function deletePostReport(int $idElem, int $idUser)
     {
-        if ($idElem > 0 && $idUser > 0 && $this->reportExists('post', $idElem, $idUser)) {
+        $report = $this->getReport('post', $idElem, $idUser);
+        if (!empty($report)) {
+            // check img on report content
+            $this->deleteImgOnReportContent($report['content']);
+            // delete report
             $this->sql(
                 'DELETE FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
-                WHERE idUser = :idUser AND idPost = :idPost',
+                WHERE idUser = :idUser AND idPost = :idPost', 
                 [':idUser' => $idUser, ':idPost' => $idElem]
             );
         }
@@ -267,7 +331,11 @@ class ReportManager extends AbstractManager
 
     private function deleteCommentReport(int $idElem, int $idUser)
     {
-        if ($idElem > 0 && $idUser > 0 && $this->reportExists('comment', $idElem, $idUser)) {
+        $report = $this->getReport('comment', $idElem, $idUser);
+        if (!empty($report)) {
+            // check img on report content
+            $this->deleteImgOnReportContent($report['content']);
+            // delete report
             $this->sql(
                 'DELETE FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
                 WHERE idUser = :idUser AND idComment = :idComment',
@@ -278,7 +346,11 @@ class ReportManager extends AbstractManager
 
     private function deleteOtherReport(int $idElem)
     {
-        if ($idElem > 0 && $this->reportExists('other', $idElem)) {
+        $report = $this->getReport('other', $idElem);
+        if (!empty($report)) {
+            // check img on report content
+            $this->deleteImgOnReportContent($report['content']);
+            // delete report
             $this->sql(
                 'DELETE FROM ' . static::$REPORT_OTHER_TABLE_NAME . ' 
                 WHERE id = :id',
@@ -382,5 +454,18 @@ class ReportManager extends AbstractManager
             'SELECT COUNT(*) 
             FROM ' . static::$REPORT_OTHER_TABLE_NAME
         );
+    }
+
+    private function deleteImgOnReportContent(string $content = null)
+    {
+        if (!empty($content)) {
+            // get filePath from img entries on content
+            $filePaths = $this->extractFilePath($this->checkForImgEntries($content));
+            if (count($filePaths) > 0) {
+                array_map(function(string $path){
+                    $this->deleteFile($path);
+                }, $filePaths);
+            }
+        }
     }
 }

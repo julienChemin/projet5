@@ -78,6 +78,45 @@ abstract class AbstractManager extends Database
         return true;
     }
 
+    public function checkForImgEntries(string $content)
+    {
+        $imgEntries = [];
+        if (strlen($content) > 0) {
+            $regex = '/src=\"(.+)\"/U';
+            preg_match_all($regex, $content, $matches, PREG_OFFSET_CAPTURE);
+            if (!empty($matches[1])) {
+                foreach ($matches[1] as $filePath) {
+                    $imgEntries[] = $filePath[0];
+                }
+            }
+        }
+        return($imgEntries);
+    }
+
+    public function extractFilePath(array $imgEntries)
+    {
+        $arrFilePath = [];
+        if (count($imgEntries) > 0) {
+            foreach ($imgEntries as $entry) {
+                $arr = explode('/', $entry);
+                if (count($arr) > 0) {
+                    $uri = '';
+                    for ($i = count($arr) - 1; $i >= 0; $i--) {
+                        if ($i < count($arr) - 1) {
+                            $uri = '/' . $uri;
+                        }
+                        $uri = $arr[$i] . $uri;
+                        if ($arr[$i] === 'public') {
+                            break;
+                        }
+                    }
+                }
+                $arrFilePath[] = $uri;
+            }
+        }
+        return $arrFilePath;
+    }
+
     /*-------------------------------------------------------------------------------------
     ----------------------------------- PROTECTED FUNCTION ------------------------------------
     -------------------------------------------------------------------------------------*/

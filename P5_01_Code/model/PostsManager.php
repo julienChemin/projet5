@@ -233,8 +233,18 @@ class PostsManager extends LikeManager
     public function deletePost(int $postId)
     {
         $post = $this->getOneById($postId);
+        // delete file (img or compressed)
         if (!empty($post->getFilePath())) {
             $this->deleteFile($post->getFilePath());
+        }
+        // search for img on description
+        if (!empty($post->getDescription())) {
+            $filePaths = $this->extractFilePath($this->checkForImgEntries($post->getDescription()));
+            if (count($filePaths) > 0) {
+                foreach($filePaths as $filePath) {
+                    $this->deleteFile($filePath);
+                }
+            }
         }
         $this->delete($post->getId());
         return $this;

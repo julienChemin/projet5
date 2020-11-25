@@ -358,8 +358,9 @@ class Frontend extends Controller
                 } else {
                     $PostsManager->deletePost($post->getId());
                 }
-                //at the same time, delete unused tags
+                // at the same time, delete unused tags
                 $TagsManager->deleteUnusedTags();
+                // redirection
                 if ($_SESSION['school'] === ALL_SCHOOL) {
                     header('Location: index.php');
                 } elseif ($post->getPostType() === 'schoolPost') {

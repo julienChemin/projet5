@@ -381,6 +381,10 @@ td{
     padding: 15px;
     word-break: break-word;
 }
+td img{
+    max-width: 100%;
+    height: auto;
+}
 tr:nth-child(2n + 1){
     background-color: #161617;
 }
