@@ -404,11 +404,15 @@ class Frontend extends Controller
         && !empty($_POST['tinyMCEtextarea'])) {
             $ReportManager = new ReportManager();
             !empty($_POST['idElem']) ? $idElem = intval($_POST['idElem']) : $idElem = null;
-            $ReportManager->setReport($_POST['elem'], $_POST['tinyMCEtextarea'], $idElem, $_SESSION['id']);
-            if (!empty($_POST['idPost']) && intval($_POST['idPost']) > 0) {
-                header('Location: index.php?action=post&id=' . $_POST['idPost']);
+            // do report
+            if ($ReportManager->setReport($_POST['elem'], $_POST['tinyMCEtextarea'], $idElem, $_SESSION['id'])) {
+                if (!empty($_POST['idPost']) && intval($_POST['idPost']) > 0) {
+                    header('Location: index.php?action=post&id=' . $_POST['idPost']);
+                } else {
+                    $this->redirection('index.php', true);
+                }
             } else {
-				$this->redirection('index.php', true);
+                $this->incorrectInformation();
             }
         } else {
 			$this->incorrectInformation();

@@ -18,6 +18,10 @@ let slides = document.querySelectorAll('#slideTab > div');
 let allButtonsTab = document.querySelectorAll('#blockTabs > li');
 let focusButton = {elem :allButtonsTab[0]};
 
+
+/*------------------------
+ --------- TABS ----------
+ -----------------------*/
 for (let i=0; i<allButtonsTab.length; i++) {
 	allButtonsTab[i].addEventListener('click', function(){
 		if (!allButtonsTab[i].classList.contains('buttonIsFocus')) {
@@ -29,7 +33,9 @@ for (let i=0; i<allButtonsTab.length; i++) {
 	});
 }
 
-//profile editing
+/*-----------------------------------
+ --------- PROFILE EDITING ----------
+ ----------------------------------*/
 if (document.getElementById('blockTabsEditProfile') !== null) {
 	function toggleModal(blockMenu, modal, formDisplay = null){
 		if (formDisplay === null) {
@@ -54,7 +60,9 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	let allButtonsEditHeader = document.querySelectorAll('.editable > .iconeEditHeader');
 	let allContentMenuEditHeader = document.querySelectorAll('.menuEditHeader');
 
-	//open - close edit mode
+	/*-----------------------------------
+	--------- TOGGLE EDIT MODE ----------
+	----------------------------------*/
 	buttonMenuEdit.addEventListener('click', function(){
 		if (buttonMenuEdit.classList.contains('menuIsOpen')) {
 			toggleClass(buttonMenuEdit, 'menuIsOpen');
@@ -76,7 +84,9 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		}
 	});
 
-	//MENUS EDIT HEADER ( BANNER / PROFILE PICTURE / TEXT)
+	/*-------------------------------------------------------------------------
+ 	-------- MENUS EDIT HEADER ( BANNER / PROFILE PICTURE / TEXT) ----------
+ 	------------------------------------------------------------------------*/
 	for (let i=0; i<allButtonsEditHeader.length; i++) {
 		allButtonsEditHeader[i].addEventListener('click', function(){
 			toggleModal(blockMenuEditing, modal, allContentMenuEditHeader[i]);
@@ -387,7 +397,9 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		toggleModal(blockMenuEditing, modal);
 	});
 
-	//MENU EDIT PROFILE CONTENT
+	/*-------------------------------------------
+ 	-------- MENU EDIT PROFILE CONTENT ----------
+ 	-------------------------------------------*/
 	let formModal = document.querySelector('#modal form:last-of-type');
 	let allButtonsEditProfile = document.querySelectorAll('.editable > .iconeEditProfile');
 	let allBlockContentProfile = document.querySelectorAll('.blockContentProfile');
@@ -554,7 +566,9 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		});
 	}
 
-	//MENU EDIT ABOUT
+	/*-------------------------------------------
+ 	------------ MENU EDIT TAB ABOUT ------------
+ 	-------------------------------------------*/
 	let allButtonsEditAbout = document.querySelectorAll('.editable > .iconeEditAbout');
 	let allBlockContentAbout = document.querySelectorAll('.blockContentAbout');
 	let allIdBlockContentAbout = document.querySelectorAll('.blockContentAbout + .hide');
@@ -667,7 +681,9 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		});
 	}
 
-	//MODAL
+	/*-----------------------
+ 	-------- MODAL ----------
+	-----------------------*/
 	//button cancel
 	if (formModal.elements.cancel !== undefined) {
 		formModal.elements.cancel.addEventListener('click', function(e){

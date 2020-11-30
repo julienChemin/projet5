@@ -534,8 +534,12 @@ class Backend extends Controller
     public function checkUnusedImg()
     {
         if (!empty($_SESSION['school']) && $_SESSION['school'] === ALL_SCHOOL) {
+            $response = [];
             $ProfileContentManager = new ProfileContentManager();
-            $response = $ProfileContentManager->deleteUnusedImg();
+            // delete unused img on profileContent
+            $response['profileContent'] = $ProfileContentManager->deleteUnusedImg();
+            // delete unused img on temp folder
+            $response['tempFolder'] = $this->deleteImgOnTempFolder();
             echo json_encode($response);
         } else {
             return 'false';
@@ -808,6 +812,29 @@ class Backend extends Controller
                 break;
             default :
                 $this->incorrectInformation();
+        }
+    }
+
+    /*-------------------------- moderat website ---------------------------*/
+    private function deleteImgOnTempFolder()
+    {
+        $nbDeletedFile = 0;
+        $dir = 'public/images/temp';
+        if (is_dir($dir) && $folder = opendir($dir)) {
+            while (($file = readdir($folder)) !== false) {
+                $filePath = $dir . '/' . $file;
+                if (!is_dir($filePath)) {
+                    ['atime' => $atime] = stat($filePath);
+                    if ((time() - $atime) >= 3600) {
+                        $this->deleteFile($filePath);
+                        $nbDeletedFile++;
+                    }
+                }
+            }
+            closedir($folder);
+            return $nbDeletedFile;
+        } else {
+            return 'fail to open the folder';
         }
     }
 }

@@ -357,6 +357,7 @@ class PostsManager extends LikeManager
     public function canUploadPost(string $type, User $user, array $arrPOST, TagsManager $TagsManager)
     {
         if (!empty($arrPOST['fileTypeValue']) && $this->checkForScriptInsertion([$arrPOST])) {
+            // check folder value and if user can post on it
             $folder = null;
             $OK = false;
             if (empty($arrPOST['folder'])) {
@@ -366,60 +367,13 @@ class PostsManager extends LikeManager
                     $OK = true;
                 }
             }
-            if ($OK) {
-                // check values depending on fileType of uploaded file
-                switch ($arrPOST['fileTypeValue']) {
-                    case 'image':
-                        if (empty($_FILES['uploadFile'])) {
-                            return false;
-                        }
-                        break;
-                    case 'video':
-                        if (empty($arrPOST['videoLink'])) {
-                            return false;
-                        }
-                        break;
-                    case 'compressed':
-                        if (empty($_FILES['uploadFile']) || empty($arrPOST['title'])) {
-                            return false;
-                        }
-                        break;
-                    case 'folder':
-                        if (empty($arrPOST['title'])) {
-                            return false;
-                        }
-                        break;
-                    default :
-                        return false;
-                }
-                // check list tag
-                if (!empty($arrPOST['listTags'])) {
-                    $listTags = explode(',', $arrPOST['listTags']);
-                    array_shift($listTags);
-                    if (!$TagsManager->tagsAreValide($listTags)) {
-                        return false;
-                    }
-                }
-                // check title length
-                if (!empty($arrPOST['title']) && strlen($arrPOST['title']) > 30) {
+            // check previous result and some other value depending on fileType
+            if ($OK && $response = $this->checkValueDependingOnFileType($arrPOST, $type, $user, $folder, $TagsManager)) {
+                // user can upload post -> 'setupContent' move uploaded img from 'temp' to 'dl' folder and update filePaths on post description
+                if ($response['tinyMCEtextarea'] = $this->moveImgAndUpdateContent($arrPOST['tinyMCEtextarea'], 'public/images/dl')) {
+                    return $response;
+                } else {
                     return false;
-                }
-                // more check depending of the upload type
-                switch ($type) {
-                    case 'referenced' :
-                        return $this->canUploadReferencedPost($user, $arrPOST, $folder);
-                    break;
-                    case 'unreferenced' :
-                        return $this->canUploadUnreferencedPost($user, $arrPOST, $folder);
-                    break;
-                    case 'private' :
-                        return $this->canUploadPrivatePost($user, $arrPOST, $folder);
-                    break;
-                    case 'onSchoolProfile' :
-                        return $this->canUploadOnSchoolProfile($user, $arrPOST, $folder);
-                    break;
-                    default :
-                        return false;
                 }
             } else {
                 return false;
@@ -831,6 +785,64 @@ class PostsManager extends LikeManager
     //////////////////
     // upload Post //
     ////////////////
+    private function checkValueDependingOnFileType(array $arrPOST, string $type, User $user, $folder, TagsManager $TagsManager)
+    {
+        // check values depending on fileType of uploaded file
+        switch ($arrPOST['fileTypeValue']) {
+            case 'image':
+                if (empty($_FILES['uploadFile'])) {
+                    return false;
+                }
+                break;
+            case 'video':
+                if (empty($arrPOST['videoLink'])) {
+                    return false;
+                }
+                break;
+            case 'compressed':
+                if (empty($_FILES['uploadFile']) || empty($arrPOST['title'])) {
+                    return false;
+                }
+                break;
+            case 'folder':
+                if (empty($arrPOST['title'])) {
+                    return false;
+                }
+                break;
+            default :
+                return false;
+        }
+        // check list tag
+        if (!empty($arrPOST['listTags'])) {
+            $listTags = explode(',', $arrPOST['listTags']);
+            array_shift($listTags);
+            if (!$TagsManager->tagsAreValide($listTags)) {
+                return false;
+            }
+        }
+        // check title length
+        if (!empty($arrPOST['title']) && strlen($arrPOST['title']) > 30) {
+            return false;
+        }
+        // more check depending of the upload type
+        switch ($type) {
+            case 'referenced' :
+                return $this->canUploadReferencedPost($user, $arrPOST, $folder);
+            break;
+            case 'unreferenced' :
+                return $this->canUploadUnreferencedPost($user, $arrPOST, $folder);
+            break;
+            case 'private' :
+                return $this->canUploadPrivatePost($user, $arrPOST, $folder);
+            break;
+            case 'onSchoolProfile' :
+                return $this->canUploadOnSchoolProfile($user, $arrPOST, $folder);
+            break;
+            default :
+                return false;
+        }
+    }
+
     private function canUploadReferencedPost(User $user, array $arrPOST, $folder = null)
     {
         $arrPOST['isPrivate'] = false;

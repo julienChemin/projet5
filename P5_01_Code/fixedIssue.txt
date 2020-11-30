@@ -2,7 +2,6 @@ new stuff
     - 
 
 fixed issues
-    - images on posts description and on reports content are now deleted when posts/reports are deleted
-
-
+    - tinyMCE image management (img were upload right when we put it in the editor. now still but those are upload on a temp folder then moved when user validate)
+    - manageWebsite for webmaster -> button "delete unused image" also delete img on temp folder
     

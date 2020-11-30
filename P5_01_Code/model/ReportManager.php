@@ -98,23 +98,29 @@ class ReportManager extends AbstractManager
     public function setReport(string $elem, string $content, int $idElem = null, int $idUser = null)
     {
         if (!empty($elem) && !empty($content) && $idUser !== null && $idUser > 0 && $this->checkForScriptInsertion([$content])) {
-            switch ($elem) {
-                case 'post' :
-                    if (!empty($idElem) && $idElem > 0) {
-                        $this->setPostReport($content, $idElem, $idUser);
-                    }
-                    break;
-                case 'comment' :
-                    if (!empty($idElem) && $idElem > 0) {
-                        $this->setCommentReport($content, $idElem, $idUser);
-                    }
-                    break;
-                case 'other' :
-                    $this->setOtherReport($content, $idUser);
-                    break;
+            // if there is uploaded img on content, move them from 'temp' to 'reports' folder && edit imgPath on content
+            if ($content = $this->moveImgAndUpdateContent($content, 'public/images/reports')) {
+                // set report
+                switch ($elem) {
+                    case 'post' :
+                        if (!empty($idElem) && $idElem > 0) {
+                            $this->setPostReport($content, $idElem, $idUser);
+                        }
+                        break;
+                    case 'comment' :
+                        if (!empty($idElem) && $idElem > 0) {
+                            $this->setCommentReport($content, $idElem, $idUser);
+                        }
+                        break;
+                    case 'other' :
+                        $this->setOtherReport($content, $idUser);
+                        break;
+                }
+                return true;
+            } else {
+                return false;
             }
         }
-        return $this;
     }
 
     public function deleteReport(string $elem, int $idElem, int $idUser = null)

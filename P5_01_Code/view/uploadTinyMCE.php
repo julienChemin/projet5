@@ -2,8 +2,8 @@
 
 reset($_FILES);
 $temp = current($_FILES);
-$imageFolder = "../public/images/dl/";
-$relative_path = "public/images/dl/";
+$imageFolder = "../public/images/temp/";
+$relative_path = "public/images/temp/";
 $maxFileSize = 2000000;
 $fileSize = $temp['size'];
 

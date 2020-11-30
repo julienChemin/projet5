@@ -296,9 +296,11 @@ a[class="iconeEdit"]{
 }
 #blockProfile + #modal form:last-of-type, #blockProfile + #modal form:nth-child(-2){
     display: none;
+    flex-direction: column;
 }
 #contentMenuEditBlock{
     flex-direction: row;
+    min-width: 50%;
 }
 #contentMenuEditBlock > div{
     margin: 5px;
@@ -359,7 +361,6 @@ a[class="iconeEdit"]{
 }
 #blockProfile + #modal form{
     padding: 5px;
-    min-width: 50%;
     max-width: 90%;
     border: solid 1px  #CF8B3F;
     flex-wrap: wrap;

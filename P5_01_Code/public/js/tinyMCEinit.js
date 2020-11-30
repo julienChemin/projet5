@@ -8,7 +8,7 @@ tinymce.init({
     toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image",
 	paste_data_images: true,
 	image_title: true,
-	images_upload_url: 'view/uploadTinyMCE.php',
+    images_upload_url: 'view/uploadTinyMCE.php',
     convert_urls:true,
     remove_script_host:false,
     relative_urls:false,

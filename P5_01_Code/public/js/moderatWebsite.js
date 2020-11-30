@@ -164,7 +164,8 @@ window.addEventListener(
                 ajaxGet('indexAdmin.php?action=checkUnusedImg', function(response) {
                     if (response.length > 0 && response !== 'false') {
                         response = JSON.parse(response);
-                        setMsgBox('- ' + response + ' image(s) ont été supprimée(s).', msgBoxImgTag);
+                        setMsgBox('- profileContent entries : ' + response['profileContent'], msgBoxImgTag);
+                        setMsgBox('- temp folder : ' + response['tempFolder'], msgBoxImgTag);
                     }
                 });
             }

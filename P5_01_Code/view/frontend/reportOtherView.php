@@ -4,13 +4,10 @@
         <h2>À savoir</h2>
         <ul>
             <li>
-                - Vous pouvez joindre une capture d'écran pour appuyer votre signalement
+                - Vous pouvez joindre jusqu'à 5 captures d'écran pour appuyer votre signalement
             </li>
             <li>
-                - Chaque signalement est traité avec attention, il est donc inutile de signaler plusieurs fois le même contenu
-            </li>
-            <li>
-                - Les signalements abusifs peuvent être sanctionné d'un avertissement (trois avertissements entraine la suspension du compte pour un mois)
+                - Vous pouvez aussi parler à un modérateur sur le <a href="https://discord.gg/uDfwPHH">discord</a> pour un contacte direct
             </li>
         </ul>
     </div>

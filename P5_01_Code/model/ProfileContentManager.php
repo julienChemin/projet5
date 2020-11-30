@@ -53,7 +53,9 @@ class ProfileContentManager extends AbstractManager
             //delete content
             $this->deleteProfileContent($idProfile, $arrPOST['type'], $arrPOST['idProfileContent'], $arrPOST['deleteBlock'], $schoolProfile);
         } else {
-            if ($this->checkForScriptInsertion([$arrPOST['tinyMCEtextarea']])) {
+            if ($this->checkForScriptInsertion([$arrPOST['tinyMCEtextarea']]) && $arrPOST['tinyMCEtextarea'] = $this->moveImgAndUpdateContent($arrPOST['tinyMCEtextarea'], 'public/images/profileContent')) {
+                // delete copy past images
+                $arrPOST['tinyMCEtextarea'] = $this->deleteImgDoublon($arrPOST['tinyMCEtextarea']);
                 if ($arrPOST['blockOrderValue'] === 'new') {
                     //add new content
                     $this->addNewProfileContent($arrPOST['newOrderValue'], $idProfile, $arrPOST['type'], $arrPOST['sizeValue'], 

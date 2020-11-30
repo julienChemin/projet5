@@ -3,6 +3,8 @@ namespace Chemin\ArtSchools\Model;
 
 abstract class Controller
 {
+    public static $SIDE = '';
+    public static $INDEX = '';
     /*-------------------------------------------------------------------------------------
     ----------------------------------- PUBLIC FUNCTION ------------------------------------
     -------------------------------------------------------------------------------------*/
@@ -275,6 +277,22 @@ abstract class Controller
             unlink($filePath);
         }
         return $this;
+    }
+
+    protected function moveFile(string $filePath, string $destination = "public/images/dl/")
+    {
+        if (!file_exists($filePath)) {
+            return -1;
+        } else {
+            if(!copy($filePath, $destination)) {
+                return -2;
+            } else {
+                if(!unlink($filePath)) {
+                    return -3;
+                }
+            }
+        }
+        return 1;
     }
 
     /*--- other ---*/
