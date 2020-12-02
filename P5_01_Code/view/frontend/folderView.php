@@ -99,7 +99,7 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                             echo '<li id="heart"><i class="far fa-heart" idpost="' . $post->getId() . '"></i></li>';
                         }
                         echo '<li id="nbLike"><span><span>' . $post->getNbLike() . '</span><i class="fas fa-heart"></i></span></li>';
-                        if (!empty($user) && ($userIsAuthor 
+                        if (!empty($user) && $user->getIsActive() && ($userIsAuthor 
                         || ($post->getPostType() === 'schoolPost' && $post->getIsPrivate() && $post->getSchool() === $user->getSchool() 
                         && ($userIsAdmin || $userIsModerator || empty($post->getListAuthorizedGroups()) || in_array($user->getSchoolGroup(), $post->getListAuthorizedGroups()))))) {
                             echo '<li id="postOnFolder"><a href="' . $urlAddPostOnFolder . '"><i class="fas fa-folder-plus"></i></a></li>';

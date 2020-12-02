@@ -1,7 +1,10 @@
 new stuff
-    - 
+    - user inactif can't publish
 
 fixed issues
-    - tinyMCE image management (img were upload right when we put it in the editor. now still but those are upload on a temp folder then moved when user validate)
-    - manageWebsite for webmaster -> button "delete unused image" also delete img on temp folder
+    - edited navbar to remove "addPost" link
+    - (same for togglable menu in navbar)
+    - remove button "addPost" on profile for inactif user
+    - remove button "addPostOnFolder" on folderView for inactif user
+    - actif user without school couldn't post, now they can
     

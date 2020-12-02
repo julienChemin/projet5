@@ -13,10 +13,16 @@
                     </li>
                     <hr class="hrNavbar">
 
-                    <li title="Publication" class="hideUnder600Width">
-                        <a href="index.php?action=addPost"><i class="fas fa-file-import"></i></a>
-                    </li>
-                    <hr class="hrNavbar hideUnder600Width">
+                    <?php
+                    if ($_SESSION['isActive']) {
+                        ?>
+                        <li title="Publication" class="hideUnder600Width">
+                            <a href="index.php?action=addPost"><i class="fas fa-file-import"></i></a>
+                        </li>
+                        <hr class="hrNavbar hideUnder600Width">
+                        <?php
+                    }
+                    ?>
 
                     <li title="Profil" class="hideUnder600Width">
                         <a href="index.php?action=userProfile&userId=<?=$_SESSION['id']?>"><i class="far fa-address-card"></i></a>
@@ -56,11 +62,18 @@
                     </li>
                     <hr>
 
-                    <li>
-                        <a href="index.php?action=addPost">
-                            Publication<i class="fas fa-file-import"></i>
-                        </a>
-                    </li>
+                    <?php
+                    if ($_SESSION['isActive']) {
+                        ?>
+                        <li>
+                            <a href="index.php?action=addPost">
+                                Publication<i class="fas fa-file-import"></i>
+                            </a>
+                        </li>
+                        <?php
+                    }
+                    ?>
+                    
                     <li>
                         <a href="index.php?action=userProfile&userId=<?=$_SESSION['id']?>">
                         Profil<i class="far fa-address-card"></i>

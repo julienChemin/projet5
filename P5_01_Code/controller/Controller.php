@@ -139,6 +139,7 @@ abstract class Controller
         $_SESSION['fullName'] = $user->getFirstName() . ' ' . $user->getLastName();
         $_SESSION['school'] = $user->getSchool();
         $_SESSION['schoolGroup'] = $user->getSchoolGroup();
+        $_SESSION['isActive'] = $user->getIsActive();
         
         if ($user->getIsAdmin()) {
             $_SESSION['grade'] = ADMIN;

@@ -312,17 +312,21 @@ class Frontend extends Controller
     {
         $UserManager = new UserManager();
         if (!empty($_SESSION['id']) && $_SESSION['school'] !== ALL_SCHOOL && $user = $UserManager->getOneById($_SESSION['id'])) {
-            if (!empty($_GET['folder'])) {
-                // add post on folder
-                $this->addPostOnFolder(new PostsManager(), $user);
-            } else {
-                // add public post
-                if ($_SESSION['grade'] === STUDENT && $user->getSchool() !== NO_SCHOOL && $user->getIsActive()) {
-                    $view = 'frontend/addReferencedPostView.php';
+            if ($user->getIsActive()) {
+                if (!empty($_GET['folder'])) {
+                    // add post on folder
+                    $this->addPostOnFolder(new PostsManager(), $user);
                 } else {
-                    $view = 'frontend/addUnreferencedPostView.php';
+                    // add public post
+                    if ($_SESSION['grade'] === STUDENT && $user->getSchool() !== NO_SCHOOL && $user->getIsActive()) {
+                        $view = 'frontend/addReferencedPostView.php';
+                    } else {
+                        $view = 'frontend/addUnreferencedPostView.php';
+                    }
+                    RenderView::render('template.php', $view, ['option' => ['addPost', 'tinyMCE']]);
                 }
-				RenderView::render('template.php', $view, ['option' => ['addPost', 'tinyMCE']]);
+            } else {
+                $this->accessDenied();
             }
         } else {
 			$this->accessDenied();

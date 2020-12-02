@@ -121,7 +121,7 @@
                 </div>
                 <div id="tabPublication" class="editable">
                     <?php
-                    if ($authorizedUser) {
+                    if ($authorizedUser && $data['user']->getIsActive()) {
                         echo '<a href="index.php?action=addPost"><i class="far fa-plus-square iconeEdit"></i></a>';
                     }
                     ?>

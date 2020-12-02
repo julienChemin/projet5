@@ -370,7 +370,8 @@ class PostsManager extends LikeManager
             // check previous result and some other value depending on fileType
             if ($OK && $response = $this->checkValueDependingOnFileType($arrPOST, $type, $user, $folder, $TagsManager)) {
                 // user can upload post -> 'setupContent' move uploaded img from 'temp' to 'dl' folder and update filePaths on post description
-                if ($response['tinyMCEtextarea'] = $this->moveImgAndUpdateContent($arrPOST['tinyMCEtextarea'], 'public/images/dl')) {
+                $response['tinyMCEtextarea'] = $this->moveImgAndUpdateContent($response['tinyMCEtextarea'], 'public/images/dl');
+                if ($response['tinyMCEtextarea'] !== false) {
                     return $response;
                 } else {
                     return false;
