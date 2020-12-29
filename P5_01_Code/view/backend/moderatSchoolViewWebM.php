@@ -88,7 +88,7 @@
                 <input type="text" name="editName">
             </p>
             <p id="blockAdmin">
-                <label for="editAdmin">Nom du nouvel Administrateur</label>
+                <label for="editAdmin">Identifiant du compte du nouvel Administrateur</label>
                 <input type="text" name="editAdmin">
             </p>
             <p id="blockCode">
@@ -101,11 +101,6 @@
             </p>
             <div id="blockLogo">
                 <p>
-                    <label for="editLogo">Url du nouveau logo</label>
-                    <input type="text" name="editLogo">
-                </p>
-                <p>ou</p>
-                <p>
                     <label for="uploadLogo">Télécharger un nouveau logo (max : 5Mo)</label>
                     <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
                     <input type="file" name="uploadLogo" accept="image/*">
@@ -113,7 +108,7 @@
             </div>
             <p id="blockMail">
             <label for="editMail">Nouvelle adresse mail de l'établissement</label>
-                <input type="text" name="editMail">
+                <input type="email" name="editMail">
             </p>
             <p id="blockToActive">
                 <label for="editToActive">Pour activer l'établissement, indiquez le nombre de compte(s) élève(s)</label>

@@ -125,6 +125,9 @@ if (document.getElementById('blockModeratSchool') !== null) {
                 case 'admin' :
                     blockAdmin.style.display = "none";
                     break;
+                case 'mail' :
+                    blockMail.style.display = "none";
+                    break;
                 case 'code' :
                     blockCode.style.display = "none";
                     break;
@@ -133,9 +136,6 @@ if (document.getElementById('blockModeratSchool') !== null) {
                     break;
                 case 'logo' :
                     blockLogo.style.display = "none";
-                    break;
-                case 'mail' :
-                    blockMail.style.display = "none";
                     break;
                 case 'toActive' :
                     blockToActive.style.display = "none";

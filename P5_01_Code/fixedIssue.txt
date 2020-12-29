@@ -1,10 +1,5 @@
 new stuff
-    - user inactif can't publish
+    - folder 'faq' on images folder, to store img/gif used on faqView
 
 fixed issues
-    - edited navbar to remove "addPost" link
-    - (same for togglable menu in navbar)
-    - remove button "addPost" on profile for inactif user
-    - remove button "addPostOnFolder" on folderView for inactif user
-    - actif user without school couldn't post, now they can
-    
+    - issues with school info editing

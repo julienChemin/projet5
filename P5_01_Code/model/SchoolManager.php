@@ -118,17 +118,21 @@ class SchoolManager extends AbstractManager
 
     public function affiliationCodeExists(string $code)
     {
-        $q = $this->sql(
-            'SELECT name 
-            FROM ' . static::$TABLE_NAME . ' 
-            WHERE code = :code', 
-            [':code' => $code]
-        );
-        if ($result = $q->fetch()) {
-            $q->closeCursor();
-            return ['exist' => true, 'name' => $result['name']];
+        if (!empty($code)) {
+            $q = $this->sql(
+                'SELECT name 
+                FROM ' . static::$TABLE_NAME . ' 
+                WHERE code = :code', 
+                [':code' => $code]
+            );
+            if ($result = $q->fetch()) {
+                $q->closeCursor();
+                return ['exist' => true, 'name' => $result['name']];
+            } else {
+                $q->closeCursor();
+                return ['exist' => false, 'name' => null];
+            }
         } else {
-            $q->closeCursor();
             return ['exist' => false, 'name' => null];
         }
     }
@@ -232,33 +236,37 @@ class SchoolManager extends AbstractManager
 
     public function editSchool(array $POST, UserManager $UserManager, HistoryManager $HistoryManager)
     {
-        switch ($POST['elem']) {
-            case 'name' :
-                return $this->editSchoolName($POST, $UserManager, $HistoryManager);
-                break;
-            case 'admin' :
-                return $this->editSchoolAdmin($POST, $UserManager, $HistoryManager);
-                break;
-            case 'mail' :
-                return $this->editSchoolMail($POST, $HistoryManager);
-                break;
-            case 'code' :
-                return $this->editSchoolCode($POST, $HistoryManager);
-                break;
-            case 'nbEleve' :
-                return $this->editSchoolNbEleve($POST, $HistoryManager);
-                break;
-            case 'logo' :
-                return $this->editSchoolLogo($POST, $HistoryManager);
-                break;
-            case 'toActive' :
-                return $this->editSchoolToActive($POST);
-                break;
-            case 'toInactive' :
-                return $this->editSchoolToInactive($POST, $UserManager);
-                break;
-            default :
-                return "Les informations renseignées sont incorrectes";
+        if ($this->checkForScriptInsertion($POST)) {
+            switch ($POST['elem']) {
+                case 'name' :
+                    return $this->editSchoolName($POST, $UserManager, $HistoryManager);
+                    break;
+                case 'admin' :
+                    return $this->editSchoolAdmin($POST, $UserManager, $HistoryManager);
+                    break;
+                case 'mail' :
+                    return $this->editSchoolMail($POST, $HistoryManager);
+                    break;
+                case 'code' :
+                    return $this->editSchoolCode($POST, $HistoryManager);
+                    break;
+                case 'nbEleve' :
+                    return $this->editSchoolNbEleve($POST, $HistoryManager);
+                    break;
+                case 'logo' :
+                    return $this->editSchoolLogo($POST, $HistoryManager);
+                    break;
+                case 'toActive' :
+                    return $this->editSchoolToActive($POST);
+                    break;
+                case 'toInactive' :
+                    return $this->editSchoolToInactive($POST, $UserManager);
+                    break;
+                default :
+                    return "Les informations renseignées sont incorrectes";
+            }
+        } else {
+            return "Les informations renseignées sont incorrectes";
         }
     }
 
@@ -487,7 +495,7 @@ class SchoolManager extends AbstractManager
 
     private function editSchoolName(array $POST, UserManager $UserManager, HistoryManager $HistoryManager)
     {
-        if ($POST['editName'] !== ALL_SCHOOL && !$this->nameExists($POST['editName'])) {
+        if (!empty($POST['editName']) && $POST['editName'] !== ALL_SCHOOL && !$this->nameExists($POST['editName'])) {
             $users = $UserManager->getUsersBySchool($POST['schoolName']);
             foreach ($users as $user) {
                 $UserManager->updateById($user->getId(), 'school', $POST['editName']);
@@ -505,7 +513,7 @@ class SchoolManager extends AbstractManager
             );
             return "Le nom de l'établissement a été modifié";
         } else {
-            return "Ce nom est déja utilisé";
+            return "Ce nom est déjà utilisé ou incorrect";
         }
     }
 
@@ -545,7 +553,7 @@ class SchoolManager extends AbstractManager
 
     private function editSchoolMail(array $POST, HistoryManager $HistoryManager)
     {
-        if ($school = $this->getSchoolByName($POST['schoolName'])) {
+        if (!empty($POST['editMail']) && $school = $this->getSchoolByName($POST['schoolName'])) {
             $this->updateByName($POST['schoolName'], 'mail', $POST['editMail']);
             //add history entry
             $HistoryManager->addEntry(new HistoryEntry(
@@ -555,13 +563,14 @@ class SchoolManager extends AbstractManager
             );
             return "L'adresse mail a été modifié";
         } else {
-            $this->incorrectInformation();
+            return "L'adresse mail est incorrecte";
         }
     }
 
     private function editSchoolCode(array $POST, HistoryManager $HistoryManager)
     {
-        if (!$this->affiliationCodeExists($POST['editCode'])["exist"] && $school = $this->getSchoolByName($POST['schoolName'])) {
+        $school = $this->getSchoolByName($POST['schoolName']);
+        if (!empty($POST['editCode']) && $school && !$this->affiliationCodeExists($POST['editCode'])["exist"]) {
             $this->updateByName($POST['schoolName'], 'code', $POST['editCode']);
             //add history entry
             $HistoryManager->addEntry(new HistoryEntry(
@@ -577,7 +586,7 @@ class SchoolManager extends AbstractManager
 
     private function editSchoolNbEleve(array $POST, HistoryManager $HistoryManager)
     {
-        if ($_SESSION['school'] === ALL_SCHOOL && $school = $this->getSchoolByName($POST['schoolName'])) {
+        if (!empty($POST['editNbEleve']) && $_SESSION['school'] === ALL_SCHOOL && $school = $this->getSchoolByName($POST['schoolName'])) {
             if (intval($school->getNbActiveAccount()) <= $POST['editNbEleve']) {
                 $this->updateByName($POST['schoolName'], 'nbEleve', intval($POST['editNbEleve']));
                 //add history entry
@@ -598,17 +607,7 @@ class SchoolManager extends AbstractManager
     private function editSchoolLogo(array $POST, HistoryManager $HistoryManager)
     {
         if ($school = $this->getSchoolByName($POST['schoolName'])) {
-            if (!empty($POST['editLogo'])) {
-                $this->deleteFile($school->getLogo());
-                $this->updateByName($POST['schoolName'], 'logo', $POST['editLogo']);
-                //add history entry
-                $HistoryManager->addEntry(new HistoryEntry(
-                    ['idSchool' => $school->getId(), 
-                    'category' => 'profil', 
-                    'entry' => $_SESSION['fullName'] . ' a modifié le logo de l\'établissement'])
-                );
-                header('Location: indexAdmin.php?action=moderatSchool');
-            } elseif (!empty($_FILES['uploadLogo'])) {
+            if (!empty($_FILES['uploadLogo'])) {
                 $arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
                 require 'view/upload.php';
                 if (!empty($final_path)) {

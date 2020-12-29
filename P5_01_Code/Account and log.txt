@@ -13,9 +13,9 @@ SCHOOL : Old 5ide
         -> pseudo : oldo - the old donovan | password : otod
 
 ____________________________________________________________
-SCHOOL : Linart
+SCHOOL : artleatoire
     ADMIN
-        -> pseudo : admin linart principal | password : alp
+        -> pseudo : admin aleatoire | password : alp
     MODERATOR
         -> pseudo : moderator linart 1 | password : ml1
     STUDENT
