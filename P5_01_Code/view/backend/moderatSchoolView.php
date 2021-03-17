@@ -30,7 +30,7 @@
                             <td><button class="btnEditName"><i class="fas fa-pen"></i></button></td>
                         </tr>
                         <tr>
-                            <td>Administrateur</td>
+                            <td>Administrateur principal</td>
                             <td><?=$school->getNameAdmin()?></td>
                             <td>
                                 <?php

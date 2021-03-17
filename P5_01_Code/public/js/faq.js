@@ -1,53 +1,53 @@
-let arrayElemH3 = document.querySelectorAll('#summary > h3');
-let arrayElemI = document.querySelectorAll('#summary > h3 > i');
+let arrayElemH2 = document.querySelectorAll('#summary > h2');
+let arrayElemI = document.querySelectorAll('#summary > h2 > i');
 let arrayElemUl = document.querySelectorAll('#summary > ul');
 let arrayElemA = document.querySelectorAll('#summary li > a');
 
 function toggleList(list, iconeArrow, previousIconeArrow = null, nextIconeArrow = null)
 {
-    let toggledH3 = iconeArrow.parentNode;
-    let previousH3 = null
+    let toggledH2 = iconeArrow.parentNode;
+    let previousH2 = null
     if (previousIconeArrow !== null) {
-        previousH3 = previousIconeArrow.parentNode;
+        previousH2 = previousIconeArrow.parentNode;
     }
-    let nextH3 = null
+    let nextH2 = null
     if (nextIconeArrow !== null) {
-        nextH3 = nextIconeArrow.parentNode;
+        nextH2 = nextIconeArrow.parentNode;
     }
     if (iconeArrow.classList.contains('fa-sort-down')) {
         // open
         iconeArrow.classList.remove('fa-sort-down');
         iconeArrow.classList.add('fa-sort-up');
-        toggledH3.classList.add('categorySummaryOpen');
-        if (previousH3 !== null) {
-            previousH3.classList.add('bottomRadius');
+        toggledH2.classList.add('categorySummaryOpen');
+        if (previousH2 !== null) {
+            previousH2.classList.add('bottomRadius');
         }
-        if (nextH3 !== null) {
-            nextH3.classList.add('topRadius');
+        if (nextH2 !== null) {
+            nextH2.classList.add('topRadius');
         }
         list.style.display = 'block';
     } else {
         // close
         iconeArrow.classList.remove('fa-sort-up');
         iconeArrow.classList.add('fa-sort-down');
-        toggledH3.classList.remove('categorySummaryOpen');
-        if (previousH3 !== null) {
-            previousH3.classList.remove('bottomRadius');
+        toggledH2.classList.remove('categorySummaryOpen');
+        if (previousH2 !== null) {
+            previousH2.classList.remove('bottomRadius');
         }
-        if (nextH3 !== null) {
-            nextH3.classList.remove('topRadius');
+        if (nextH2 !== null) {
+            nextH2.classList.remove('topRadius');
         }
         list.style.display = 'none';
     }
 }
 function blink(elem)
 {
-    elem.style.backgroundColor = '#bb0b0b';
-    elem.style.opacity = '0.4';
+    elem.style.color = '#ff5000';
+    elem.style.opacity = '0.9';
     setTimeout(function(){
-        elem.style.backgroundColor = '#161617';
+        elem.style.color = '#CF8B3F';
         elem.style.opacity = '1';
-    }, 300);
+    }, 600);
 }
 function checkUrl()
 {
@@ -61,8 +61,8 @@ window.addEventListener('load', function() {
     checkUrl();
 });
 
-for (let i=0; i < arrayElemH3.length; i++) {
-    arrayElemH3[i].addEventListener('click', function() {
+for (let i=0; i < arrayElemH2.length; i++) {
+    arrayElemH2[i].addEventListener('click', function() {
         toggleList(arrayElemUl[i], arrayElemI[i], arrayElemI[i-1], arrayElemI[i+1]);
     });
 }

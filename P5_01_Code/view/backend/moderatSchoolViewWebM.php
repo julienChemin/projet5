@@ -37,7 +37,7 @@
                                 <td><button class="btnEditName"><i class="fas fa-pen"></i></button></td>
                             </tr>
                             <tr>
-                                <td>Administrateur</td>
+                                <td>Administrateur principal</td>
                                 <td><?=$schools[$i]->getNameAdmin()?></td>
                                 <td><button class="btnEditAdmin"><i class="fas fa-pen"></i></button></td>
                             </tr>

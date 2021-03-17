@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  mar. 17 nov. 2020 à 12:19
+-- Généré le :  mer. 17 mars 2021 à 15:28
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS `as_history` (
   `dateEntry` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idSchool` (`idSchool`)
-) ENGINE=InnoDB AUTO_INCREMENT=414 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=448 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_history`
@@ -200,7 +200,41 @@ INSERT INTO `as_history` (`id`, `idSchool`, `category`, `entry`, `dateEntry`) VA
 (410, 21, 'account', 'time traveler a passé aauliu zzz au grade : administrateur', '2020-11-12 20:55:59'),
 (411, 21, 'account', 'time traveler a passé aauliu zzz au grade : modérateur', '2020-11-12 20:56:02'),
 (412, 21, 'account', 'time traveler a passé aauliu zzz au grade : utilisateur', '2020-11-12 20:56:05'),
-(413, 21, 'activityPeriod', 'L\'établissement n\'est plus actif', '2020-11-17 11:15:18');
+(413, 21, 'activityPeriod', 'L\'établissement n\'est plus actif', '2020-11-17 11:15:18'),
+(414, 21, 'activityPeriod', 'L\'établissement a été activé', '2020-11-18 23:54:19'),
+(415, 21, 'activityPeriod', 'La date de fin d\'abonnement a été repoussé jusqu\'au 18/11/2021', '2020-11-18 23:54:19'),
+(416, 21, 'account', 'time traveler a activé le compte de multipass lilou', '2020-11-19 11:42:24'),
+(417, 21, 'account', 'multipass lilou a quitté l\'établissement', '2020-11-21 15:36:37'),
+(418, 21, 'account', 'multipass lilou a rejoint l\'établissement', '2020-11-21 15:56:06'),
+(419, 21, 'account', 'multiPass Lilou a quitté l\'établissement', '2020-11-21 16:02:38'),
+(420, 21, 'account', 'multiPass Lilou a rejoint l\'établissement', '2020-11-21 16:02:52'),
+(421, 21, 'account', 'time traveler a activé le compte de aauliu zzz', '2020-11-22 18:03:53'),
+(422, 21, 'account', 'time traveler a désactivé le compte de aauliu zzz', '2020-11-22 18:04:02'),
+(423, 21, 'account', 'multiPass Lilou a quitté l\'établissement', '2020-11-22 22:37:14'),
+(424, 21, 'account', 'multiPass Lilou a rejoint l\'établissement', '2020-11-22 22:40:15'),
+(425, 21, 'account', 'zzzul aaa a quitté l\'établissement', '2020-11-22 22:40:39'),
+(426, 21, 'account', 'time traveler a créé un compte modérateur : midori ( ri mido )', '2020-11-22 22:44:24'),
+(427, 21, 'account', 'time traveler a passé ri mido au grade : administrateur', '2020-11-23 11:41:14'),
+(428, 21, 'account', 'time traveler a passé ri mido au grade : modérateur', '2020-11-23 11:41:19'),
+(429, 21, 'account', 'time traveler a passé ri mido au grade : administrateur', '2020-11-24 00:43:38'),
+(430, 21, 'account', 'time traveler a passé ri mido au grade : modérateur', '2020-11-24 00:43:41'),
+(431, 21, 'account', 'ri mido a quitté l\'établissement', '2020-11-24 00:44:58'),
+(432, 21, 'account', 'riri mido a rejoint l\'établissement', '2020-11-24 11:33:31'),
+(433, 21, 'account', 'time traveler a passé riri mido au grade : modérateur', '2020-11-24 11:34:29'),
+(434, 3, 'account', 'Julien Chemin a activé le compte de nostradamus way', '2020-12-01 14:23:33'),
+(435, 3, 'account', 'Julien Chemin a désactivé le compte de nostradamus way', '2020-12-01 14:44:01'),
+(436, 21, 'profil', 'time traveler a modifié l\'adresse mail en : ', '2020-12-03 15:32:03'),
+(437, 21, 'profil', 'time traveler a modifié l\'adresse mail en : ', '2020-12-03 15:32:17'),
+(438, 21, 'profil', 'time traveler a modifié l\'adresse mail en : ', '2020-12-03 15:32:37'),
+(439, 21, 'profil', 'time traveler a modifié le code d\'affiliation en : ', '2020-12-03 15:34:16'),
+(440, 21, 'profil', 'time traveler a modifié le code d\'affiliation en : xfvxwv', '2020-12-03 15:56:27'),
+(441, 21, 'profil', 'time traveler a modifié le code d\'affiliation en : LinartCode', '2020-12-03 15:56:58'),
+(442, 21, 'profil', 'time traveler a modifié l\'adresse mail en : ', '2020-12-03 16:01:14'),
+(443, 21, 'profil', 'time traveler a modifié l\'adresse mail en : ', '2020-12-03 16:02:15'),
+(444, 21, 'profil', 'time traveler a modifié le logo de l\'établissement', '2020-12-04 15:29:34'),
+(445, 21, 'profil', 'time traveler a modifié le nom de votre établissement en : Artléatoire', '2020-12-04 15:29:54'),
+(446, 21, 'profil', 'Roger Lapin a modifié l\'adresse mail en : ', '2020-12-04 16:13:37'),
+(447, 21, 'profil', 'Roger Lapin a modifié le code d\'affiliation en : ancienCode', '2020-12-04 16:14:03');
 
 -- --------------------------------------------------------
 
@@ -224,6 +258,7 @@ INSERT INTO `as_like_post` (`idUser`, `idPost`) VALUES
 (1, 149),
 (58, 147),
 (58, 149),
+(58, 298),
 (61, 148),
 (61, 149),
 (61, 152),
@@ -256,7 +291,7 @@ CREATE TABLE IF NOT EXISTS `as_post` (
   `nbLike` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `idAuthor` (`idAuthor`)
-) ENGINE=InnoDB AUTO_INCREMENT=286 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=300 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_post`
@@ -274,7 +309,12 @@ INSERT INTO `as_post` (`id`, `idAuthor`, `school`, `title`, `filePath`, `urlVide
 (164, 57, 'Current4ngle', NULL, 'public/images/dl/faaf6c1312c431c87b8476aaf7f65bc3.png', NULL, NULL, '2020-08-24 15:59:19', 0, NULL, 'userPost', 'image', NULL, ',curtiss,post public', 1),
 (165, 57, 'Current4ngle', 'dossier public 1 ', 'public/images/dl/41b131e1442b2c95453df9363e3dd46d.png', NULL, NULL, '2020-08-24 15:59:38', 0, NULL, 'userPost', 'folder', NULL, NULL, 0),
 (166, 57, 'Current4ngle', NULL, 'public/images/dl/da3e47512dc5fee0967360ec4983fce5.png', NULL, NULL, '2020-08-24 16:00:15', 0, NULL, 'userPost', 'image', 165, ',post public,curtiss', 1),
-(174, 61, 'Linart', NULL, NULL, 'S-W0NX97DB0', NULL, '2020-08-24 16:27:14', 0, NULL, 'userPost', 'video', NULL, ',science', 0);
+(174, 61, 'Linart', NULL, NULL, 'S-W0NX97DB0', NULL, '2020-08-24 16:27:14', 0, NULL, 'userPost', 'video', NULL, ',science', 0),
+(286, 58, 'Linart', 'priv fold', NULL, NULL, NULL, '2020-11-19 11:43:56', 1, ',group_1', 'schoolPost', 'folder', NULL, NULL, 0),
+(287, 61, 'Linart', 'try', NULL, NULL, NULL, '2020-11-19 11:45:12', 1, 'none', 'schoolPost', 'folder', 286, NULL, 0),
+(288, 58, 'Linart', 'test public on private', NULL, NULL, NULL, '2020-11-19 11:45:48', 1, 'none', 'schoolPost', 'folder', 287, NULL, 0),
+(298, 58, 'Artléatoire', NULL, 'public/images/dl/87da18278165b5aee390be1fb632457d.gif', NULL, NULL, '2021-01-21 14:45:40', 0, NULL, 'userPost', 'image', NULL, NULL, 1),
+(299, 58, 'Artléatoire', 'dossier privé', 'public/images/dl/cda2b7137d2fc0a6aaebfe37c54ce368.gif', NULL, NULL, '2021-03-16 17:15:14', 1, NULL, 'schoolPost', 'folder', NULL, NULL, 0);
 
 --
 -- Déclencheurs `as_post`
@@ -304,7 +344,7 @@ CREATE TABLE IF NOT EXISTS `as_profile_content` (
   PRIMARY KEY (`id`),
   KEY `userId` (`userId`),
   KEY `schoolId` (`schoolId`)
-) ENGINE=InnoDB AUTO_INCREMENT=373 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=407 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_profile_content`
@@ -316,11 +356,17 @@ INSERT INTO `as_profile_content` (`id`, `userId`, `schoolId`, `tab`, `size`, `co
 (348, 60, NULL, 'profile', 'small', 3, 'elemStart', '<p style=\"text-align: center;\"><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"https://www.exobaston.com/wp-content/uploads/2018/07/linoa-dissidia-final-fantsay-nt.jpg\" alt=\"\" width=\"490\" height=\"275\" /></p>\r\n<p style=\"text-align: center;\"><strong><em>\"ipsum\"</em></strong></p>'),
 (349, 60, NULL, 'profile', 'medium', 4, 'elemCenter', '<p style=\"text-align: center;\"><em><strong><img src=\"http://www.ffotaku.com/images/final-fantasy-viii/gifs/Rinoa1.gif\" alt=\"\" width=\"37\" height=\"75\" />primis in faucibus. Etiam non tempor tortor. Curabitur fringilla lorem et odio scelerisque<img src=\"http://www.ffotaku.com/images/final-fantasy-viii/gifs/Rinoa1.gif\" alt=\"\" width=\"35\" height=\"71\" /></strong></em></p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>'),
 (350, 60, NULL, 'profile', 'small', 5, 'elemEnd', '<p style=\"text-align: center;\"><img src=\"https://steamusercontent-a.akamaihd.net/ugc/919168520692309624/22552795EAE6EACB4717D7DDB04F9F202C8C07D6/\" alt=\"\" width=\"488\" height=\"274\" /></p>'),
-(352, 61, NULL, 'profile', 'medium', 1, 'elemStart', '<p><br /><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"http://i.imgur.com/oFtpvhy.jpg\" alt=\"\" width=\"473\" height=\"464\" /></p>'),
-(353, 61, NULL, 'profile', 'medium', 2, 'elemCenter', '<p style=\"text-align: center;\">&lt;--- Morbi sed egestas ex. Maecenas tortor nisl, pulvinar accumsan eros convallis, posuere tincidunt justo. Phasellus iaculis cursus purus, ac rutrum orci aliquam non. Vestibulum tincidunt facilisis condimentum. Curabitur sit amet urna lectus. Integer viverra imperdiet leo nec hendrerit. Morbi ultrices arcu vitae laoreet venenatis.</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">Duis finibus lectus vel diam sollicitudin, eget auctor dui pharetra. Vestibulum in varius risus, ut finibus massa. Vestibulum aliquet, libero eget cursus condimentum, nunc nisl efficitur mi, eu bibendum urna metus a quam. Nullam et mi sed dui vehicula fermentum. ---&gt;</p>'),
+(353, 61, NULL, 'profile', 'medium', 1, 'elemCenter', '<p style=\"text-align: center;\">&lt;--- Morbi sed egestas ex. Maecenas tortor nisl, pulvinar accumsan eros convallis, posuere tincidunt justo. Phasellus iaculis cursus purus, ac rutrum orci aliquam non. Vestibulum tincidunt facilisis condimentum. Curabitur sit amet urna lectus. Integer viverra imperdiet leo nec hendrerit. Morbi ultrices arcu vitae laoreet venenatis.</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">Duis finibus lectus vel diam sollicitudin, eget auctor dui pharetra. Vestibulum in varius risus, ut finibus massa. Vestibulum aliquet, libero eget cursus condimentum, nunc nisl efficitur mi, eu bibendum urna metus a quam. Nullam et mi sed dui vehicula fermentum. ---&gt;</p>'),
 (354, 61, NULL, 'profile', 'medium', 3, 'elemEnd', '<p><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"http://auto.img.v4.skyrock.net/8644/60908644/pics/3203063487_1_4_qZapi4Ar.gif\" alt=\"\" width=\"1003\" height=\"373\" /></p>'),
 (355, 61, NULL, 'profile', 'big', 4, '', '<p><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"https://31.media.tumblr.com/tumblr_lft3fkYf8Z1qbpdcto1_500.gif\" alt=\"\" width=\"1499\" height=\"552\" /></p>'),
-(356, 61, NULL, 'about', 'big', 1, '', '<p><em>Curabitur sit amet urna lectus</em></p>\r\n<p style=\"text-align: center;\"><em>Curabitur sit amet urna lectus</em></p>\r\n<p style=\"text-align: right;\"><em>Curabitur sit amet urna lectus</em></p>');
+(356, 61, NULL, 'about', 'big', 1, '', '<p><em>Curabitur sit amet urna lectus</em></p>\r\n<p style=\"text-align: center;\"><em>Curabitur sit amet urna lectus</em></p>\r\n<p style=\"text-align: right;\"><em>Curabitur sit amet urna lectus</em></p>'),
+(373, 61, NULL, 'profile', 'medium', 2, 'elemStart', '<p><br /><img style=\"display: block; margin-left: auto; margin-right: auto;\" src=\"http://i.imgur.com/oFtpvhy.jpg\" alt=\"\" width=\"473\" height=\"464\" /></p>'),
+(390, 58, NULL, 'profile', 'small', 1, '', '<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">1</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>'),
+(399, 58, NULL, 'profile', 'small', 2, '', '<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">2</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>'),
+(401, 58, NULL, 'profile', 'big', 4, '', '<p style=\"text-align: center;\">4</p>'),
+(402, 58, NULL, 'profile', 'medium', 5, '', '<p style=\"text-align: center;\">5</p>'),
+(403, 58, NULL, 'profile', 'small', 6, '', '<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">6</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>'),
+(405, 58, NULL, 'profile', 'medium', 3, '', '<p style=\"text-align: center;\">3</p>');
 
 --
 -- Déclencheurs `as_profile_content`
@@ -344,8 +390,8 @@ CREATE TABLE IF NOT EXISTS `as_profile_content_img` (
   `filePath` varchar(355) NOT NULL,
   `toDelete` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  KEY `as_profile_content_img_ibfk_1` (`idProfileContent`)
-) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8;
+  KEY `idProfileContent` (`idProfileContent`)
+) ENGINE=InnoDB AUTO_INCREMENT=162 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_profile_content_img`
@@ -359,12 +405,9 @@ INSERT INTO `as_profile_content_img` (`id`, `idProfileContent`, `filePath`, `toD
 (83, 349, 'http://www.ffotaku.com/images/final-fantasy-viii/gifs/Rinoa1.gif', 0),
 (84, 349, 'http://www.ffotaku.com/images/final-fantasy-viii/gifs/Rinoa1.gif', 0),
 (85, 350, 'https://steamusercontent-a.akamaihd.net/ugc/919168520692309624/22552795EAE6EACB4717D7DDB04F9F202C8C07D6/', 0),
-(87, 352, 'http://i.imgur.com/oFtpvhy.jpg', 0),
-(88, 352, 'http://i.imgur.com/oFtpvhy.jpg', 0),
 (89, 354, 'http://auto.img.v4.skyrock.net/8644/60908644/pics/3203063487_1_4_qZapi4Ar.gif', 0),
 (90, 355, 'https://31.media.tumblr.com/tumblr_lft3fkYf8Z1qbpdcto1_500.gif', 0),
-(91, 352, 'http://i.imgur.com/oFtpvhy.jpg', 0),
-(92, 352, 'http://i.imgur.com/oFtpvhy.jpg', 0);
+(104, 373, 'http://i.imgur.com/oFtpvhy.jpg', 0);
 
 -- --------------------------------------------------------
 
@@ -396,7 +439,15 @@ CREATE TABLE IF NOT EXISTS `as_report_other` (
   `content` text NOT NULL,
   PRIMARY KEY (`id`),
   KEY `idUser` (`idUser`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `as_report_other`
+--
+
+INSERT INTO `as_report_other` (`id`, `idUser`, `dateReport`, `content`) VALUES
+(20, 58, '2020-12-03 15:19:33', 'L\'utilisateur - admin linart principal ( time traveler ) - ne peut plus se connecter car l\'établissement -  - n\'existe pas / plus.'),
+(21, 58, '2020-12-03 15:26:23', 'L\'utilisateur - admin linart principal ( time traveler ) - ne peut plus se connecter car l\'établissement -  - n\'existe pas / plus.');
 
 -- --------------------------------------------------------
 
@@ -449,7 +500,7 @@ INSERT INTO `as_school` (`id`, `idAdmin`, `name`, `nameAdmin`, `mail`, `schoolGr
 (3, 12, 'noSchool', 'no school admin 1', '', NULL, 'Ysiiac42kilsfog4ac23b2b', 100000000, 1, '2020-01-24 13:23:47', 'https://cdn.pixabay.com/photo/2014/04/03/11/47/people-312122_960_720.png', 1, NULL, NULL, NULL),
 (18, 48, 'Old5ide', 'admin old5ide principal', 'julchemin@orange.fr', NULL, 'old5idecode', 0, 0, '2020-08-23 14:09:01', 'public/images/dl/f082b28f2c11d2128a0168bce4a359e7.png', 0, NULL, NULL, NULL),
 (20, 54, 'Current4ngle', 'admin current4ngle principal', 'julchemin@orange.fr', NULL, 'Current4nglecode', 0, 0, '2020-08-24 01:49:13', 'public/images/dl/1c29c2815acf937fc561ea318ad668e1.png', 0, NULL, NULL, NULL),
-(21, 58, 'Linart', 'admin linart principal', 'julchemin@orange.fr', ',group_1,group_2', 'Linartcode', 0, 0, '2020-08-24 11:17:59', 'public/images/dl/a0ebbc1f6d7bf1c5560d3968a3ef0c73.png', 0, 'public/images/dl/1a220e6e40360cedd9f52dbcb523d05f.png false', 'http://localhost/P5_Chemin_Julien/P5_01_Code/public/images/dl/a9598323735f88e7c2429dd292cc2658.png widePicture smallPicture', 'elemStart elemEnd');
+(21, 58, 'Artléatoire', 'admin linart principal', 'mauvais@mail.fr', ',group_1,group_2', 'ancienCode', 50, 1, '2020-08-24 11:17:59', 'public/images/dl/73d37dcb755e07b63eb2516831a41965.png', 1, 'public/images/dl/1a220e6e40360cedd9f52dbcb523d05f.png false', 'http://localhost/P5_Chemin_Julien/P5_01_Code/public/images/dl/a9598323735f88e7c2429dd292cc2658.png widePicture smallPicture', 'elemStart elemEnd');
 
 -- --------------------------------------------------------
 
@@ -467,15 +518,14 @@ CREATE TABLE IF NOT EXISTS `as_school_contract_reminder` (
   `done` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `as_school_contract_reminder_ibfk_1` (`idOwner`)
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_school_contract_reminder`
 --
 
 INSERT INTO `as_school_contract_reminder` (`id`, `idOwner`, `remindType`, `dateRemind`, `dateContractEnd`, `done`) VALUES
-(46, 21, 'month', '2020-11-17 00:00:00', '2021-01-17 00:00:00', 1),
-(53, 21, 'month', '2020-12-17 00:00:00', '2021-01-17 00:00:00', 0);
+(54, 21, 'month', '2021-10-18 00:00:00', '2021-11-18 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -589,7 +639,7 @@ CREATE TABLE IF NOT EXISTS `as_user` (
   `profilePictureInfo` text DEFAULT NULL,
   `profileTextInfo` text DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_user`
@@ -606,12 +656,14 @@ INSERT INTO `as_user` (`id`, `pseudo`, `firstName`, `lastName`, `mail`, `school`
 (55, 'admin current4ngle 1', 'pitka', 'frogy', 'sgvgdsqgq@qsrgqgrq.grsg', 'Current4ngle', NULL, '$2y$10$ZNyM4AdZVMStIJL9P4nbeu/NO5Qqjcv1vH.8I9ZXZb8RtOLWLHQr6', NULL, 0, 0, 0, 1, 0, 0, NULL, NULL, NULL),
 (56, 'moderator current4ngle 1', 'aspie', 'papabear', 'wwgvwds@dsgrsqgvbd.gdxvf', 'Current4ngle', NULL, '$2y$10$PF45nlzruqYW7sj/RgEGa.v8VoQrp4vm5KidJPh4/8H1evV3DwUAW', NULL, 0, 0, 0, 0, 1, 0, NULL, NULL, NULL),
 (57, 'curtiss', 'kurt', 'cobinla', 'sfsfsf@sqrgdsqrgv.gqrdgd', 'Current4ngle', NULL, '$2y$10$1ToJBQGbPRYVSJfBMmwQZewW/Wm4KeXdMp6fafOIptEBqTryRwsGi', NULL, 0, 0, 0, 0, 0, 0, 'https://th.bing.com/th/id/OIP.OhqjIK0gItw2jdrjmfOrAAHaEo?pid=Api false', 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Curtiss_logo.svg/1280px-Curtiss_logo.svg.png widePicture mediumPicture', NULL),
-(58, 'admin linart principal', 'time', 'traveler', 'sqrgfqsgsqg@qsrgqsrgq.gfqrdsf', 'Linart', NULL, '$2y$10$Tt1014DSzfPYcigvwphdMOOpP7ET.HFH34EnDTkytDq3NWdsUn9MG', NULL, 0, 0, 0, 1, 0, 0, NULL, 'http://localhost/P5_Chemin_Julien/P5_01_Code/public/images/dl/103c841faf08afd875e9223523b739e2.gif highPicture smallPicture', NULL),
-(60, 'linoa', 'rinoa', 'from_final_fantasy_everyone_know_me', 'ggvdvg@dgvrdsqg.gdr', 'Linart', 'group_1', '$2y$10$zsdAbbIf5Fgx4IF.Jo84HeDavlNFJtGS1MpVl.LCTG04/expRNUPe', NULL, 0, 0, 0, 0, 0, 0, 'public/images/dl/328e758c9dc34df2c9f27d2daba7099f.jpg false', 'public/images/dl/d920350b2fb85256bd70df972be6cd4c.jpg widePicture bigPicture', 'elemStart elemCenter elemEnd'),
-(61, 'lilou', 'multipass', 'lilou', 'lilou@lilou.lilou', 'Linart', 'group_2', '$2y$10$B.YdOXkZVu0Xc/fAA8wWPeTIHaU8WhAlPI/OffGmCvnW8fgih6E9m', NULL, 0, 0, 0, 0, 0, 0, 'https://31.media.tumblr.com/tumblr_lft3fkYf8Z1qbpdcto1_500.gif false', 'public/images/dl/f03af32acba7f044837d60be056ee27a.png highPicture mediumPicture', 'elemCenter elemCenter elemEnd'),
+(58, 'admin aleatoire', 'Roger', 'Lapin', 'sqrgfqsgsqg@qsrgqsrgq.gfqrdsf', 'Artléatoire', NULL, '$2y$10$Tt1014DSzfPYcigvwphdMOOpP7ET.HFH34EnDTkytDq3NWdsUn9MG', NULL, 0, 0, 0, 1, 0, 1, 'public/images/dl/7c8ec283216191e1e8bf4db12c1b17c8.gif false', 'http://localhost/P5_Chemin_Julien/P5_01_Code/public/images/dl/5344402f3324b922adc83effc4897998.gif highPicture smallPicture', NULL),
+(60, 'linoa', 'rinoa', 'from_final_fantasy_everyone_know_me', 'ggvdvg@dgvrdsqg.gdr', 'Artléatoire', 'group_1', '$2y$10$zsdAbbIf5Fgx4IF.Jo84HeDavlNFJtGS1MpVl.LCTG04/expRNUPe', NULL, 0, 0, 0, 0, 0, 0, 'public/images/dl/328e758c9dc34df2c9f27d2daba7099f.jpg false', 'public/images/dl/d920350b2fb85256bd70df972be6cd4c.jpg widePicture bigPicture', 'elemStart elemCenter elemEnd'),
+(61, 'lilou', 'multiPass', 'Lilou', 'lilou@lilou.lilou', 'Artléatoire', NULL, '$2y$10$B.YdOXkZVu0Xc/fAA8wWPeTIHaU8WhAlPI/OffGmCvnW8fgih6E9m', NULL, 0, 0, 0, 0, 0, 1, 'https://31.media.tumblr.com/tumblr_lft3fkYf8Z1qbpdcto1_500.gif false', 'http://localhost/P5_Chemin_Julien/P5_01_Code/public/images/dl/f03af32acba7f044837d60be056ee27a.png highPicture bigPicture', 'elemEnd elemCenter elemEnd'),
 (63, 'user without school', 'nostradamus', 'way', 'gsgdd@rgdgdrg.dgdrg', 'noSchool', NULL, '$2y$10$CDglK8341HmLdvgeHak6MOdOfCmL0YU8iRVmy1VPR/O/IY1N.DFOG', NULL, 0, 0, 0, 0, 0, 0, 'public/images/dl/aa5b33572511ec7658529740d1ed88f7.jpg false', 'http://localhost/P5_Chemin_Julien/P5_01_Code/public/images/dl/257bb73e27d920eaf3ff390067858673.jpg highPicture smallPicture', 'elemEnd elemCenter elemEnd'),
-(70, 'aaa', 'zzzul', 'aaa', 'zzeez@eze.ze', 'Linart', 'group_1', '$2y$10$JWRn3pKEyfGYXwC0bxPUDOOUK2dJ6ZcQKQQ2CQpJCnKIvlAfdKGNK', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL),
-(71, 'zzz', 'aauliu', 'zzz', 'zzdsdseez@eze.ze', 'Linart', NULL, '$2y$10$r6QY2dCh5QAE0sXsgpIwxOWNjIQ8MShDDb1JXcUJ3cD59m5op1cq2', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL);
+(70, 'aaa', 'zzzul', 'aaa', 'zzeez@eze.ze', 'noSchool', NULL, '$2y$10$JWRn3pKEyfGYXwC0bxPUDOOUK2dJ6ZcQKQQ2CQpJCnKIvlAfdKGNK', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL),
+(71, 'zzz', 'aauliu', 'zzz', 'zzdsdseez@eze.ze', 'Artléatoire', NULL, '$2y$10$r6QY2dCh5QAE0sXsgpIwxOWNjIQ8MShDDb1JXcUJ3cD59m5op1cq2', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL),
+(72, 'testy', 'testy', 'testy', 'tettest@stset.ets', 'noSchool', NULL, '$2y$10$Glwen1uxn67svsKT5xUcD.pvRZXiQG//YTaAqpHcl1Tm.EQdMIDAu', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL),
+(73, 'midori', 'riri', 'mido', 'midori@midori.midori', 'Artléatoire', NULL, '$2y$10$kNC4Hw7iqXIcKfYNrKIvVObY8ZFbpo8gp89DCY6UMOG9w8.K1dHFu', NULL, 0, 0, 0, 0, 1, 1, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -685,12 +737,6 @@ ALTER TABLE `as_like_post`
 ALTER TABLE `as_profile_content`
   ADD CONSTRAINT `as_profile_content_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `as_profile_content_ibfk_2` FOREIGN KEY (`schoolId`) REFERENCES `as_school` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `as_profile_content_img`
---
-ALTER TABLE `as_profile_content_img`
-  ADD CONSTRAINT `as_profile_content_img_ibfk_1` FOREIGN KEY (`idProfileContent`) REFERENCES `as_profile_content` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `as_report_comment`

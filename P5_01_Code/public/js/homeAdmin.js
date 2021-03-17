@@ -90,6 +90,7 @@ window.addEventListener("load", function(){
 		} else {
 			let divSlide = document.createElement('div');
 			divSlide.classList.add('slide');
+			divSlide.classList.add('emptySlide');
 			divSlide.textContent = "Il n'y a aucune publication pour l'instant";
 			blockSlider.appendChild(divSlide);
 		}

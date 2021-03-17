@@ -6,7 +6,7 @@
         <p>Nombre de comptes : <?=$data['school']->getNbEleve()?> dont <?=$data['school']->getNbActiveAccount()?> actif(s)</p>
     </div>
     <div>
-        <h2>Prolongation du contrat</h2>
+        <h2>Prolongation de l'abonnement</h2>
         <form id="formExtendContract">
             <p class="orang">Le nombre de compte ne peut être inférieur au nombre de comptes actif</p>
             <p>

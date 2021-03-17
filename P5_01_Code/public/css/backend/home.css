@@ -53,6 +53,9 @@
 #homeAdmin .slide > p{
     margin: auto;
 }
+#homeAdmin .emptySlide{
+    justify-content: center;
+}
 .itemHomeAdmin{
     display: flex;
     flex-direction: column;

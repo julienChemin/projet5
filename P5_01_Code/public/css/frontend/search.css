@@ -41,6 +41,15 @@
 }
 #formSearchByKeyWord{
     padding: 10px;
+    border: none;
+}
+#formSearchByKeyWord input[type='submit']{
+    background-color: #161617;
+    border-width: 1px;
+    border-radius: 5px;
+}
+#formSearchByKeyWord input[type='submit']:hover{
+    background-color: #222224;
 }
 #frequentlySearched > div{
     display: flex;
@@ -52,15 +61,22 @@
 #frequentlySearched > div > a{
     margin: 7px 0;
     padding: 3px 0;
-    border: solid 1px #CF8B3F;
     border-radius: 5px;
     text-align: center;
+}
+#frequentlySearched > div > a:hover {
+    background-color: #222224;
+    border: solid 1px #CF8B3F;
+    border-top-width: 0;
+    border-bottom-width: 0;
 }
 #advancedSearch > p:last-of-type{
     border: solid 1px #CF8B3F;
     border-radius: 5px;
     padding: 4px;
     font-weight: bold;
+}
+#advancedSearch > p:last-of-type:hover{
     background-color: #222224;
 }
 /*result of search by key word*/

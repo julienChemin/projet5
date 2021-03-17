@@ -1,5 +1,6 @@
 new stuff
-    - folder 'faq' on images folder, to store img/gif used on faqView
+    - FAQ !
 
 fixed issues
-    - issues with school info editing
+    - css fix for slide on home admin
+    - css fix on FAQ

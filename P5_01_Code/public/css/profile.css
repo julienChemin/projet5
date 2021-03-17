@@ -172,6 +172,13 @@
 .blockContentProfile:hover, .blockContentNews:hover, .blockContentAbout:hover{
     background-color: #222224;
 }
+.blockContentProfile .iconeEdit, .blockContentNews .iconeEdit, .blockContentAbout .iconeEdit{
+    border-radius: 10px;
+    left: 1px;
+    top: 1px;
+    margin: 0;
+    padding: 5px 10px;
+}
 .blockContentProfile img, .blockContentNews img, .blockContentAbout img{
     max-width: 100%!important;
     height: 100%;
@@ -227,9 +234,6 @@ a[class="iconeEdit"]{
     transition: 0.2s linear;
     -webkit-transition: 0.2s linear;
     background-color: #222224;
-}
-.editing:hover{
-    transform: scale(0.98);
 }
 .editing > .iconeEdit{
     background-color: transparent;

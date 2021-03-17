@@ -4,45 +4,37 @@
 #blockFaq hr{
     margin: 40px;
 }
-#blockFaq h2{
-    margin-top: 40px;
-}
-#blockFaq > article > div{
-    background-color: #161617;
-    margin-top: 20px;
-    padding: 10px;
-    border-radius: 10px;
-    transition: 0.3s linear;
-    -webkit-transition: 0.3s linear;
-}
-#summary h3{
+#summary h2{
+    font-size: 1.15em;
     background-color: #161617;
     color: white;
     margin: 0;
-    padding: 15px;
+    padding: 13px;
     cursor: pointer;
     display: flex;
     align-items: center;
     transition: linear 0.1s;
     -webkit-transition: linear 0.1s;
 }
+#summary .summaryCategory:hover{
+    color: #CF8B3F;
+}
 #summary .firstCategorySummary, #summary .topRadius{
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    margin-top: 20px;
 }
 #summary .lastCategorySummary, #summary .bottomRadius{
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    margin-bottom: 20px;
 }
 #summary .categorySummaryOpen{
     color: #CF8B3F;
     margin: 15px 0;
     border-radius: 10px;
 }
-#summary .summaryCategory:hover{
-    color: #CF8B3F;
-}
-#summary h3 > i{
+#summary h2 > i{
     margin-left: 20px;
 }
 #summary ul{
@@ -55,9 +47,9 @@
     margin-top: 0;
 }
 #summary li{
-    margin: 15px 0;
+    width: fit-content;
+    margin: 0 0 8px 0;
     padding: 0 10px;
-    border: solid 1px #CF8B3F;
     border-radius: 10px;
     transition: linear 0.1s;
     -webkit-transition: linear 0.1s;
@@ -79,4 +71,92 @@
     padding: 5px;
     text-align: center;
     font-size: 1.2em;
+}
+#blockFaq > article > div{
+    background-color: #161617;
+    margin-top: 20px;
+    padding: 5px 20px;
+    border-radius: 10px;
+    transition: 0.3s linear;
+    -webkit-transition: 0.3s linear;
+}
+#blockFaq > article > h2{
+    padding-top: 10px;
+    transition: linear 0.6s;
+    -webkit-transition: linear 0.6s;
+}
+#blockFaq a{
+    font-size: 1em;
+}
+#blockFaq figure{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin: 5px 0;
+    height: auto;
+}
+#blockFaq figure img{
+    align-self: center;
+    border: solid 2px #222224;
+    background-color: #222224;
+    padding: 20px 10px;
+    margin: 15px 0;
+    width: 60%;
+    height: auto;
+    max-width: none;
+    max-height: none;
+}
+article ul li{
+    list-style-type: none;
+    margin: 25px 0;
+}
+article ul li h3{
+    font-size: 1em;
+}
+#blockFaq article ul li *{
+    margin-left: 25px;
+}
+article h2 + div span{
+    font-weight: bold;
+}
+
+/*====================================================================================================================================
+                                                            medium desktops laptops
+====================================================================================================================================*/
+
+@media all and (min-width:992px) and (max-width:1200px){
+    #blockFaq figure img{
+        width: 65%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px){
+    #blockFaq figure img{
+        width: 70%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px){
+    #blockFaq figure img{
+        width: 75%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px){
+    #blockFaq figure img{
+        width: 80%;
+    }
 }
