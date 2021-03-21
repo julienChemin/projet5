@@ -57,6 +57,7 @@ function createSlide(posts, blockSlider){
 	});
 	blockSlider.appendChild(divSlide);
 }
+
 if (document.getElementById('home') !== null) {
 	//user side
 	let arrBlockSlider = document.querySelectorAll('.slider');
@@ -64,6 +65,7 @@ if (document.getElementById('home') !== null) {
 	let arrArrowRight = document.querySelectorAll('.arrowRight');
 	let arrSlides = [];
 	let url = '';
+
 	for (let i=0; i<arrBlockSlider.length; i++) {
 		switch (arrBlockSlider[i].getAttribute('slidetype')) {
 			case 'lastPosted' :
@@ -81,6 +83,7 @@ if (document.getElementById('home') !== null) {
 				url = 'index.php?action=getPostsByTag&tag=' + tag;
 			break;
 		}
+
 		let addSlide = (slide) => {
 			let myUrl = slide.url + '&offset=' + (slide.positionSlider * slide.nbItemBySlide);
 			myUrl += '&limit=' + slide.nbItemBySlide;
@@ -93,6 +96,7 @@ if (document.getElementById('home') !== null) {
 				} else {slide.goToFirstSlide();}
 			});
 		};
+
 		arrSlides[i] = new Slide(arrBlockSlider[i], 
 								arrArrowLeft[i], 
 								arrArrowRight[i], 
@@ -100,6 +104,7 @@ if (document.getElementById('home') !== null) {
 								url, 
 								addSlide);
 	}
+
 	window.addEventListener("load", function(){
 		arrSlides.forEach(slide => {
 			slide.init();

@@ -4,7 +4,7 @@ class Post
 {
     private $id,
         $idAuthor,
-        $school,
+        $idSchool,
         $title,
         $filePath,
         $urlVideo,
@@ -63,9 +63,9 @@ class Post
         return intval($this->idAuthor);
     }
 
-    public function getSchool()
+    public function getIdSchool()
     {
-        return $this->school;
+        return intval($this->idSchool);
     }
 
     public function getTitle()
@@ -160,10 +160,10 @@ class Post
         return $this;
     }
 
-    public function setSchool(string $school)
+    public function setIdSchool(int $idSchool)
     {
-        if (strlen($school) > 0) {
-            $this->school = $school;
+        if ($idSchool > 0) {
+            $this->idSchool = $idSchool;
         }
         return $this;
     }

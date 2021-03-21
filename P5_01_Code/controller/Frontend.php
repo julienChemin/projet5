@@ -157,7 +157,9 @@ class Frontend extends Controller
             RenderView::render('template.php', 'frontend/advancedSearchView.php', ['schools' => $schools, 'option' => ['advancedSearch']]);
         } else {
             $PostsManager = new PostsManager();
+            $SchoolManager = new SchoolManager();
             $nbPostsByPage = 12;
+            $_POST['school'] = $SchoolManager->getSchoolByName($_POST['schoolFilter']);
             $posts = $PostsManager->advancedSearch($_POST, $nbPostsByPage);
             $nbPage = ceil($posts['count'] / $nbPostsByPage);
             RenderView::render(
@@ -315,7 +317,7 @@ class Frontend extends Controller
             if ($user->getIsActive()) {
                 if (!empty($_GET['folder'])) {
                     // add post on folder
-                    $this->addPostOnFolder(new PostsManager(), $user);
+                    $this->addPostOnFolder(new PostsManager(), new SchoolManager(), $user);
                 } else {
                     // add public post
                     if ($_SESSION['grade'] === STUDENT && $user->getSchool() !== NO_SCHOOL && $user->getIsActive()) {
@@ -335,13 +337,16 @@ class Frontend extends Controller
 
     public function tryUploadPost()
     {
+        $SchoolManager = new SchoolManager();
         $UserManager = new UserManager();
         $PostsManager = new PostsManager();
         $TagsManager = new TagsManager();
         $arrAcceptedValues = ['referenced', 'unreferenced', 'private'];
+        $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+
         if (isset($_SESSION['id'], $_GET['type']) && in_array($_GET['type'], $arrAcceptedValues) && $user = $UserManager->getOneById($_SESSION['id'])) {
-            if ($response = $PostsManager->canUploadPost($_GET['type'], $user, $_POST, $TagsManager)) {
-                $this->uploadPost($response, $PostsManager, $TagsManager);
+            if ($response = $PostsManager->canUploadPost($_GET['type'], $user, $_POST, $TagsManager, $SchoolManager)) {
+                $this->uploadPost($response, $school->getId(), $PostsManager, $TagsManager);
             } else {
 				$this->incorrectInformation();
             }
@@ -356,7 +361,7 @@ class Frontend extends Controller
         $TagsManager = new TagsManager();
         if (isset($_GET['id'], $_SESSION['id']) && $post = $PostsManager->getOneById($_GET['id'])) {
             if ($post->getIdAuthor() === intval($_SESSION['id']) || $_SESSION['school'] === ALL_SCHOOL 
-            || ($post->getSchool() === $_SESSION['school'] && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) ) {
+            || ($post->getIdSchool() === $_SESSION['idSchool'] && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) ) {
                 if ($post->getFileType() === 'folder') {
                     $PostsManager->deleteFolder($post->getId());
                 } else {
@@ -461,11 +466,14 @@ class Frontend extends Controller
     {
         $SchoolManager = new SchoolManager();
         $PostsManager = new PostsManager();
-        if (!empty($_GET['school']) && $SchoolManager->nameExists($_GET['school'])) {
+
+        if (!empty($_GET['school']) && $school = $SchoolManager->getSchoolByName($_GET['school'])) {
             empty($_GET['offset']) ? $offset = 0 : $offset = $_GET['offset'];
             empty($_GET['limit']) ? $limit = null : $limit = $_GET['limit'];
             empty($_GET['withFolder']) ? $withFolder = false : $withFolder = true;
-            $posts = $PostsManager->getPostsBySchool($_GET['school'], $withFolder, $offset, $limit);
+
+            $posts = $PostsManager->getPostsBySchool($school->getId(), $withFolder, $offset, $limit);
+
             if (count($posts) > 0) {
                 echo json_encode($PostsManager->toArray($posts));
             } else {
@@ -513,8 +521,9 @@ class Frontend extends Controller
     {
         $SchoolManager = new SchoolManager();
         $PostsManager = new PostsManager();
-        if (!empty($_GET['school']) && $SchoolManager->nameExists($_GET['school'])) {
-            $posts = $PostsManager->getSchoolPosts($_GET['school']);
+
+        if (!empty($_GET['school']) && $school = $SchoolManager->getSchoolByName($_GET['school'])) {
+            $posts = $PostsManager->getSchoolPosts($school->getId());
             if (count($posts) > 0) {
                 $arrSortedPosts = $PostsManager->sortForProfile($posts);
                 echo json_encode($arrSortedPosts);
@@ -546,6 +555,7 @@ class Frontend extends Controller
         if (!empty($_GET['limit']) && !empty($_GET['offset'])) {
             $PostsManager = new PostsManager();
             $lastPosts = $PostsManager->getLastPosted($_GET['limit'], $_GET['offset']);
+
             if (!empty($lastPosts)) {
                 echo json_encode($PostsManager->toArray($lastPosts));
             } else {
@@ -559,8 +569,17 @@ class Frontend extends Controller
     public function getMostLikedPosts()
     {
         if (!empty($_GET['limit']) && !empty($_GET['offset'])) {
+            $SchoolManager = new SchoolManager();
             $PostsManager = new PostsManager();
-            $mostLikedPosts = $PostsManager->getMostLikedPosts($_GET['limit'], $_GET['offset']);
+
+            if (!empty($_GET['school']) && $school = $SchoolManager->getSchoolByName($_GET['school'])) {
+                $idSchool = $school->getId();
+            } else {
+                $idSchool = null;
+            }
+
+            $mostLikedPosts = $PostsManager->getMostLikedPosts($_GET['limit'], $_GET['offset'], $idSchool);
+
             if (!empty($mostLikedPosts)) {
                 echo json_encode($PostsManager->toArray($mostLikedPosts));
             } else {
@@ -796,6 +815,7 @@ class Frontend extends Controller
         $SchoolManager = new SchoolManager();
         $TagsManager = new TagsManager();
         !empty($_GET['offset']) && $_GET['offset'] % $nbPostsByPage === 0 ? $offset = $_GET['offset'] : $offset = 0;
+
         switch ($_GET['sortBy']) {
             case 'lastPosted' :
                 $result['nbPostsByPage'] = $nbPostsByPage;
@@ -826,10 +846,12 @@ class Frontend extends Controller
             $result['items'] = $SchoolManager->getSchoolByName(ALL_SCHOOL);
             $result['nbPage'] = 0;
         } else {
-            if ($SchoolManager->nameExists($_GET['school']) && $_GET['school'] !== NO_SCHOOL) {
+            $SchoolManager = new SchoolManager();
+
+            if ($_GET['school'] !== NO_SCHOOL && $school = $SchoolManager->getSchoolByName($_GET['school'])) {
                 $result['nbPostsByPage'] = $nbPostsByPage;
-                $result['items'] = $PostsManager->getPostsBySchool($_GET['school'], false, $offset, $nbPostsByPage);
-                $result['nbPage'] = ceil($PostsManager->getCountPostsBySchool($_GET['school']) / $nbPostsByPage);
+                $result['items'] = $PostsManager->getPostsBySchool($school->getId(), false, $offset, $nbPostsByPage);
+                $result['nbPage'] = ceil($PostsManager->getCountPostsBySchool($school->getId()) / $nbPostsByPage);
             } else {
                 $this->incorrectInformation();
             }
@@ -880,14 +902,18 @@ class Frontend extends Controller
     {
         if ($post->getFileType() === 'folder') {
             // consulting private folder
+            $SchoolManager = new SchoolManager();
+            $user ? $userSchool = $SchoolManager->getSchoolByName($user->getSchool()) : $userSchool = null;
             $userInfo = $this->getFolderViewInfo($user, $post);
             $urlAddPostOnFolder = 'index.php?action=addPost&folder=' . $post->getId();
-            if ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {
+
+            if (!empty($_SESSION['grade']) && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) {
                 $urlAddPostOnFolder = 'indexAdmin.php?action=addSchoolPost&folder=' . $post->getId();
             }
+
             RenderView::render(
                 'template.php', 'frontend/folderView.php', 
-                ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 
+                ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'userSchool' => $userSchool, 'user' => $user, 'author' => $author, 
                     'userInfo' => $userInfo, 'urlAddPostOnFolder' => $urlAddPostOnFolder, 'option' => ['folderView']]
             );
         } else {
@@ -903,14 +929,18 @@ class Frontend extends Controller
     {
         if ($post->getFileType() === 'folder') {
             // consulting public folder
+            $SchoolManager = new SchoolManager();
+            $user ? $userSchool = $SchoolManager->getSchoolByName($user->getSchool()) : $userSchool = null;
             $userInfo = $this->getFolderViewInfo($user, $post);
             $urlAddPostOnFolder = 'index.php?action=addPost&folder=' . $post->getId();
-            if ($post->getPostType() === 'schoolPost' && $_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR) {
+
+            if ($post->getPostType() === 'schoolPost' && !empty($_SESSION['grade']) && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)) {
                 $urlAddPostOnFolder = 'indexAdmin.php?action=addSchoolPost&folder=' . $post->getId();
             }
+
             RenderView::render(
                 'template.php', 'frontend/folderView.php', 
-                ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 
+                ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'userSchool' => $userSchool, 'user' => $user, 'author' => $author, 
                     'userInfo' => $userInfo, 'urlAddPostOnFolder' => $urlAddPostOnFolder, 'option' => ['folderView']]
             );
         } else {
@@ -931,10 +961,12 @@ class Frontend extends Controller
     }
 
     /*------------------------------ add post ------------------------------*/
-    private function addPostOnFolder(PostsManager $PostsManager, User $user)
+    private function addPostOnFolder(PostsManager $PostsManager, SchoolManager $SchoolManager, User $user)
     {
         if ($folder = $PostsManager->getOneById($_GET['folder'])) {
-            if ($PostsManager->canPostOnFolder($folder, $user)) {
+            $userSchool = $SchoolManager->getSchoolByName($user->getSchool());
+
+            if ($userSchool && $PostsManager->canPostOnFolder($folder, $user, $userSchool)) {
                 if ($folder->getPostType() === "schoolPost") {
                     // folder is a school post -> private post
                     RenderView::render('template.php', 'frontend/addPrivatePostView.php', ['option' => ['addPost', 'tinyMCE']]);
@@ -953,8 +985,9 @@ class Frontend extends Controller
         }
     }
 
-    private function uploadPost(array $response, PostsManager $PostsManager, TagsManager $TagsManager)
+    private function uploadPost(array $response, int $idSchool, PostsManager $PostsManager, TagsManager $TagsManager)
     {
+
         if ($response['postType'] === 'schoolPost') {
             $schoolPost = true;
             $action = 'schoolProfile&school=' . $_SESSION['school'];
@@ -964,7 +997,8 @@ class Frontend extends Controller
             $action = 'userProfile&userId=' . $_SESSION['id'];
             $response['authorizedGroups'] = null;
         }
-        if ($PostsManager->uploadPost($response, $schoolPost)) {
+
+        if ($PostsManager->uploadPost($response, $idSchool, $schoolPost)) {
             if (!empty($response['listTags'])) {
                 $TagsManager->checkForNewTag($response['listTags'], $PostsManager->getLastInsertId());
             }

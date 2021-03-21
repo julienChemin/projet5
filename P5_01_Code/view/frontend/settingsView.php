@@ -9,7 +9,7 @@
             ?>
             <h2 class="hide">Activation du compte</h2>
             <div class="hide blockStyleTwo">
-                <p>Activer votre compte vous donne accès a plusieurs fonctionnalitées - <a href="index.php?action=faq">Voir les avantages</a></p>
+                <p>Activer votre compte vous donne accès à plusieurs fonctionnalitées - <a href="index.php?action=faq">Voir les avantages</a></p>
                 <p><?=$data['contractInfo']?></p>
                 <form id="formExtendContract">
                     <p>

@@ -10,10 +10,10 @@ class PostsManager extends LikeManager
     public static $TABLE_NAME = 'as_post';
     public static $TABLE_COMMENTS = 'as_comment';
 
-    public static $TABLE_CHAMPS ='id, idAuthor, school, title, filePath, urlVideo, description, 
+    public static $TABLE_CHAMPS ='id, idAuthor, idSchool, title, filePath, urlVideo, description, 
         DATE_FORMAT(datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, isPrivate, 
         authorizedGroups, postType, fileType, onFolder, tags, nbLike';
-    public static $TABLE_CHAMPS_WITH_COMMENTS ='a.id, a.idAuthor, a.school, a.title, a.filePath, a.urlVideo, 
+    public static $TABLE_CHAMPS_WITH_COMMENTS ='a.id, a.idAuthor, a.idSchool, a.title, a.filePath, a.urlVideo, 
         a.description, DATE_FORMAT(a.datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, a.isPrivate, 
         a.authorizedGroups, a.postType, a.fileType, a.onFolder, a.tags, a.nbLike, 
         c.id AS idComment, c.idPost AS commentIdPost, c.idAuthor AS commentIdAuthor, c.NameAuthor AS commentNameAuthor, 
@@ -54,14 +54,14 @@ class PostsManager extends LikeManager
         }
     }
 
-    public function getPostsBySchool(string $school, bool $withFolder = false, int $offset = 0, int $limit = null)
+    public function getPostsBySchool(int $idSchool, bool $withFolder = false, int $offset = 0, int $limit = null)
     {
-        //get users posts affiliated to $school
-        if (strlen($school) > 0) {
+        //get users posts affiliated to $idSchool
+        if ($idSchool > 0) {
             if ($withFolder) {
-                $q = $this->getPostsBySchoolWithFolder($school, $offset, $limit);
+                $q = $this->getPostsBySchoolWithFolder($idSchool, $offset, $limit);
             } else {
-                $q = $this->getPostsBySchoolWithoutFolder($school, $offset, $limit);
+                $q = $this->getPostsBySchoolWithoutFolder($idSchool, $offset, $limit);
             }
             $result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
             $q->closeCursor();
@@ -71,16 +71,17 @@ class PostsManager extends LikeManager
         }
     }
 
-    public function getSchoolPosts(string $school)
+    public function getSchoolPosts(int $idSchool)
     {
-        if (strlen($school) > 0) {
+        if ($idSchool > 0) {
             $q = $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE school = :school AND postType = "schoolPost" 
+                WHERE idSchool = :idSchool AND postType = "schoolPost" 
                 ORDER BY id DESC', 
-                [':school' => $school]
+                [':idSchool' => $idSchool]
             );
+
             $result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
             $q->closeCursor();
             return $result;
@@ -136,11 +137,11 @@ class PostsManager extends LikeManager
         }
     }
 
-    public function getMostLikedPosts(int $limit = null, int $offset = 0, string $school = null)
+    public function getMostLikedPosts(int $limit = null, int $offset = 0, int $idSchool = null)
     {
-        if (!empty($school)) {
+        if (!empty($idSchool)) {
             //by school
-            $q = $this->getMostLikedPostsBySchool($limit, $offset, $school);
+            $q = $this->getMostLikedPostsBySchool($limit, $offset, $idSchool);
         } else {
             //all school
             $q = $this->getMostLikedPostsAllSchool($limit, $offset);
@@ -150,9 +151,10 @@ class PostsManager extends LikeManager
         return $result;
     }
 
-    public function getLastPosted(int $limit = null, int $offset = 0, string $schoolName = null)
+    public function getLastPosted(int $limit = null, int $offset = 0, int $idSchool = null)
     {
-        !empty($schoolName) ? $clauseWhere = 'AND school = "' . $schoolName . ' "' : $clauseWhere = '';
+        !empty($idSchool) ? $clauseWhere = 'AND idSchool = "' . $idSchool . ' "' : $clauseWhere = '';
+
         if (!empty($limit)) {
             $q = $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
@@ -170,14 +172,15 @@ class PostsManager extends LikeManager
                 ORDER BY id DESC'
             );
         }
+
         $result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
         $q->closeCursor();
         return $result;
     }
 
-    public function getCountReferencedPosts(string $schoolName = null)
+    public function getCountReferencedPosts(int $idSchool = null)
     {
-        !empty($schoolName) ? $clauseWhere = 'AND school = "' . $schoolName . '"' : $clauseWhere = '';
+        !empty($idSchool) ? $clauseWhere = 'AND idSchool = "' . $idSchool . '"' : $clauseWhere = '';
         $q = $this->sql(
             'SELECT COUNT(*) 
             FROM ' . static::$TABLE_NAME . ' 
@@ -187,28 +190,31 @@ class PostsManager extends LikeManager
         return intval($result[0]);
     }
 
-    public function getCountPostsBySchool(string $school, bool $withFolder = false)
+    public function getCountPostsBySchool(int $idSchool, bool $withFolder = false)
     {
-        if (strlen($school) > 0) {
-            if ($withFolder) {
-                $q = $this->sql(
-                    'SELECT COUNT(*) 
-                    FROM ' . static::$TABLE_NAME . ' 
-                    WHERE school = :school AND postType = "userPost" AND onFolder IS NULL AND isPrivate = "0"', 
-                    [':school' => $school]
-                );
-            } else {
-                $q = $this->sql(
-                    'SELECT COUNT(*) 
-                    FROM ' . static::$TABLE_NAME . ' 
-                    WHERE school = :school AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0"', 
-                    [':school' => $school]
-                );
-            }
-            $result = $q->fetch();
-            $q->closeCursor();
-            return intval($result[0]);
+        if ($idSchool < 1) {
+            return 0;
         }
+
+        if ($withFolder) {
+            $q = $this->sql(
+                'SELECT COUNT(*) 
+                FROM ' . static::$TABLE_NAME . ' 
+                WHERE idSchool = :idSchool AND postType = "userPost" AND onFolder IS NULL AND isPrivate = "0"', 
+                [':idSchool' => $idSchool]
+            );
+        } else {
+            $q = $this->sql(
+                'SELECT COUNT(*) 
+                FROM ' . static::$TABLE_NAME . ' 
+                WHERE idSchool = :idSchool AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0"', 
+                [':idSchool' => $idSchool]
+            );
+        }
+
+        $result = $q->fetch();
+        $q->closeCursor();
+        return intval($result[0]);
     }
 
     public function getCountPostsByTag(string $tag = null)
@@ -298,22 +304,23 @@ class PostsManager extends LikeManager
     public function advancedSearch(array $POST, int $limit = 12, int $offset = 0)
     {
         // return posts depending of the search arguments
+
         $values = $this->getValuesForAdvancedSearch($POST, $limit, $offset);
         $result['posts'] = $this->getPostsForAdvancedSearch($values['clauseWhere'], $values['clauseOrderBy'], $values['arrValue']);
         $result['count'] = $this->getPostsCountForAdvancedsearch($values['clauseWhere'], $values['clauseOrderBy'], $values['arrValueForCount']);
         return $result;
     }
 
-    public function canPostOnFolder(Post $post, User $user)
+    public function canPostOnFolder(Post $post, User $user, School $userSchool)
     {
         if (!empty($_SESSION['pseudo']) && $post->getFileType() === 'folder') {
             if ($post->getIdAuthor() === $user->getId()) {
                 // folder belong to user
                 return true;
-            } elseif ($post->getPostType() === "schoolPost" && $post->getSchool() === $user->getSchool() && ($user->getIsModerator() || $user->getIsAdmin())) {
+            } elseif ($post->getPostType() === "schoolPost" && $post->getIdSchool() === $userSchool->getId() && ($user->getIsModerator() || $user->getIsAdmin())) {
                 // school folder -> admin and moderator can post 
                 return true;
-            } elseif ($post->getPostType() === "schoolPost" && $post->getSchool() === $user->getSchool() && $user->getIsActive() && $post->getIsPrivate() 
+            } elseif ($post->getPostType() === "schoolPost" && $post->getIdSchool() === $userSchool->getId() && $user->getIsActive() && $post->getIsPrivate() 
             && ($post->getAuthorizedGroups() !== 'none' && (empty($post->getListAuthorizedGroups()) || in_array($user->getSchoolGroup(), $post->getListAuthorizedGroups())))) {
                 // private school folder -> authorized user can post
                 return true;
@@ -354,23 +361,27 @@ class PostsManager extends LikeManager
         return $response;
     }
 
-    public function canUploadPost(string $type, User $user, array $arrPOST, TagsManager $TagsManager)
+    public function canUploadPost(string $type, User $user, array $arrPOST, TagsManager $TagsManager, SchoolManager $SchoolManager)
     {
         if (!empty($arrPOST['fileTypeValue']) && $this->checkForScriptInsertion([$arrPOST])) {
             // check folder value and if user can post on it
             $folder = null;
             $OK = false;
+            $userSchool = $SchoolManager->getSchoolByName($user->getSchool());
+
             if (empty($arrPOST['folder'])) {
                 $OK = true;
             } elseif (!empty($arrPOST['folder']) && $folder = $this->getOneById(intval($arrPOST['folder']))){
-                if ($this->canPostOnFolder($folder, $user)) {
+                if ($userSchool && $this->canPostOnFolder($folder, $user, $userSchool)) {
                     $OK = true;
                 }
             }
+
             // check previous result and some other value depending on fileType
             if ($OK && $response = $this->checkValueDependingOnFileType($arrPOST, $type, $user, $folder, $TagsManager)) {
                 // user can upload post -> 'setupContent' move uploaded img from 'temp' to 'dl' folder and update filePaths on post description
                 $response['tinyMCEtextarea'] = $this->moveImgAndUpdateContent($response['tinyMCEtextarea'], 'public/images/dl');
+
                 if ($response['tinyMCEtextarea'] !== false) {
                     return $response;
                 } else {
@@ -384,7 +395,7 @@ class PostsManager extends LikeManager
         }
     }
 
-    public function uploadPost(array $POST, $isSchoolPost = false)
+    public function uploadPost(array $POST, int $idSchool, $isSchoolPost = false)
     {
         if (defined('FRONTEND') && FRONTEND === true && $isSchoolPost) {
             // schoolPost from student 
@@ -402,18 +413,21 @@ class PostsManager extends LikeManager
             // public post
             $POST['listAuthorizedGroups'] = null;
         }
+
+
+
         switch ($POST['fileTypeValue']) {
             case 'image':
-                return $this->uploadImagePost($POST);
+                return $this->uploadImagePost($POST, $idSchool);
                 break;
             case 'video':
-                return $this->uploadVideoPost($POST);
+                return $this->uploadVideoPost($POST, $idSchool);
                 break;
             case 'compressed':
-                return $this->uploadOtherPost($POST, $isSchoolPost);
+                return $this->uploadOtherPost($POST, $idSchool, $isSchoolPost);
                 break;
             case 'folder':
-                return $this->uploadFolder($POST);
+                return $this->uploadFolder($POST, $idSchool);
                 break;
         }
     }
@@ -457,7 +471,7 @@ class PostsManager extends LikeManager
     {
         //return posts to display on post view and folder view as aside
         $asidePosts = [];
-        $post->getPostType() === 'userPost' ? $posts = $this->sortForProfile($this->getPostsByAuthor($post->getIdAuthor())) : $posts = $this->sortForProfile($this->getSchoolPosts($post->getSchool()));
+        $post->getPostType() === 'userPost' ? $posts = $this->sortForProfile($this->getPostsByAuthor($post->getIdAuthor())) : $posts = $this->sortForProfile($this->getSchoolPosts($post->getIdSchool()));
         $postedByUser = array_merge($posts['public'], $posts['private']);
         foreach ($posts['folder'] as $arr) {
             $postedByUser = array_merge($postedByUser, $arr);
@@ -481,6 +495,7 @@ class PostsManager extends LikeManager
         $homePosts = [];
         $homePosts['lastPosted'] = $this->getLastPosted($qtt);
         $homePosts['mostLiked'] = $this->getMostLikedPosts($qtt);
+
         //pick 4 most popular tag then pick '$qtt' posts of them
         $mostPopularTags = $this->getElemOnArray($TagsManager->getMostPopularTags($qtt), -1, true, 4);
         $arrPostsByTags = [];
@@ -489,13 +504,14 @@ class PostsManager extends LikeManager
             $arrPostsByTags[$tag['name']] = $this->getElemOnArray($posts, -1, true, $qtt);
         }
         $homePosts['withTag'] = $arrPostsByTags;
+
         //pick 2 school random then pick '$qtt' posts of them
         $noSchool = $SchoolManager->getSchoolByName(NO_SCHOOL);
         $allSchool = $SchoolManager->getSchoolByName(ALL_SCHOOL);
         $randomSchool = $this->getElemOnArray($allSchool, $noSchool->getId(), true, 2);
         $arrPostsBySchool = [];
         foreach ($randomSchool as $school) {
-            $posts = $this->getPostsBySchool($school->getName(), false, 0, 100);
+            $posts = $this->getPostsBySchool($school->getId(), false, 0, 100);
             $arrPostsBySchool[$school->getName()] = $this->getElemOnArray($posts, -1, true, $qtt);
         }
         $homePosts['bySchool'] = $arrPostsBySchool;
@@ -523,10 +539,10 @@ class PostsManager extends LikeManager
     private function set(Post $Post)
     {
         $this->sql(
-            'INSERT INTO ' . static::$TABLE_NAME . ' (idAuthor, school ,title, filePath, urlVideo, description, isPrivate, authorizedGroups, postType, 
+            'INSERT INTO ' . static::$TABLE_NAME . ' (idAuthor, idSchool ,title, filePath, urlVideo, description, isPrivate, authorizedGroups, postType, 
             fileType, onFolder, tags, datePublication) 
-            VALUES(:idAuthor, :school, :title, :filePath, :urlVideo, :description, :isPrivate, :authorizedGroups, :postType, :fileType, :onFolder, :tags, NOW())', 
-            [':idAuthor' => $Post->getIdAuthor(), ':school' => $Post->getSchool(), ':title' => $Post->getTitle(), ':filePath' => $Post->getFilePath(), ':urlVideo' => $Post->getUrlVideo(), 
+            VALUES(:idAuthor, :idSchool, :title, :filePath, :urlVideo, :description, :isPrivate, :authorizedGroups, :postType, :fileType, :onFolder, :tags, NOW())', 
+            [':idAuthor' => $Post->getIdAuthor(), ':idSchool' => $Post->getIdSchool(), ':title' => $Post->getTitle(), ':filePath' => $Post->getFilePath(), ':urlVideo' => $Post->getUrlVideo(), 
             ':description' => $Post->getDescription(), ':isPrivate' => intval($Post->getIsPrivate()), ':authorizedGroups' => $Post->getAuthorizedGroups(), 
             ':postType' => $Post->getPostType(), ':fileType' => $Post->getFileType(), ':onFolder' => $Post->getOnFolder(), ':tags' => $Post->getTags()]
         );
@@ -537,7 +553,7 @@ class PostsManager extends LikeManager
     {
         $arr = ['id' => $post->getId(),
         'idAuthor' => $post->getIdAuthor(), 
-        'school' => $post->getSchool(), 
+        'idSchool' => $post->getIdSchool(), 
         'title' => $post->getTitle(), 
         'filePath' => $post->getFilePath(), 
         'urlVideo' => $post->getUrlVideo(), 
@@ -556,7 +572,8 @@ class PostsManager extends LikeManager
     private function getElemOnArray(array $elements, int $unwantedElem = -1, bool $random = true, int $qtt = 6)
     {
         //'unwantedElem' is the id of unwanted elem, this is a specific treatment for posts
-        //can work for other elem if array $elements have one of this form : (array) $elements[(int) index][(int) 'id'] OR (array) $elements[(int) index][(int) object->getId()]
+        //can work for other elem if array $elements have one of this form :
+        // -> (array) $elements[(int) index][(int) 'id'] OR (array) $elements[(int) index][(int) object->getId()]
         //after doing this function, i discovered array.rand...whatever
         if (count($elements) > 0 && $qtt > 0) {
             if ($random) {
@@ -612,68 +629,68 @@ class PostsManager extends LikeManager
         return $response;
     }
 
-    private function getPostsBySchoolWithFolder(string $school, int $offset, int $limit)
+    private function getPostsBySchoolWithFolder(int $idSchool, int $offset, int $limit)
     {
         if (!empty($limit)) {
             return $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE school = :school AND postType = "userPost" AND onFolder IS NULL AND isPrivate = "0" AND tags != "null" 
+                WHERE idSchool = :idSchool AND postType = "userPost" AND onFolder IS NULL AND isPrivate = "0" AND tags != "null" 
                 ORDER BY id DESC 
                 LIMIT :limit OFFSET :offset', 
-                [':school' => $school, ':offset' => $offset, ':limit' => $limit]
+                [':idSchool' => $idSchool, ':offset' => $offset, ':limit' => $limit]
             );
         } else {
             return $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE school = :school AND postType = "userPost" AND onFolder IS NULL AND isPrivate = "0" AND tags != "null" 
+                WHERE idSchool = :idSchool AND postType = "userPost" AND onFolder IS NULL AND isPrivate = "0" AND tags != "null" 
                 ORDER BY id DESC', 
-                [':school' => $school]
+                [':idSchool' => $idSchool]
             );
         }
     }
 
-    private function getPostsBySchoolWithoutFolder(string $school, int $offset, int $limit)
+    private function getPostsBySchoolWithoutFolder(int $idSchool, int $offset, int $limit)
     {
         if (!empty($limit)) {
             return $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE school = :school AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0" AND tags != "null" 
+                WHERE idSchool = :idSchool AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0" AND tags != "null" 
                 ORDER BY id DESC 
                 LIMIT :limit OFFSET :offset', 
-                [':school' => $school, ':offset' => $offset, ':limit' => $limit]
+                [':idSchool' => $idSchool, ':offset' => $offset, ':limit' => $limit]
             );
         } else {
             return $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE school = :school AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0" AND tags != "null" 
+                WHERE idSchool = :idSchool AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0" AND tags != "null" 
                 ORDER BY id DESC', 
-                [':school' => $school]
+                [':idSchool' => $idSchool]
             );
         }
     }
 
-    private function getMostLikedPostsBySchool(int $limit, int $offset, string $school)
+    private function getMostLikedPostsBySchool(int $limit, int $offset, int $idSchool)
     {
         if (!empty($limit)) {
             return $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE school = :school AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0" AND tags != "null" 
+                WHERE idSchool = :idSchool AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0" AND tags != "null" 
                 ORDER BY nbLike DESC 
                 LIMIT :limit OFFSET :offset', 
-                [':school' => $school, ':limit' => $limit, ':offset' => $offset]
+                [':idSchool' => $idSchool, ':limit' => $limit, ':offset' => $offset]
             );
         } else {
             return $this->sql(
                 'SELECT ' . static::$TABLE_CHAMPS . ' 
                 FROM ' . static::$TABLE_NAME . ' 
-                WHERE school = :school AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0" AND tags != "null" 
+                WHERE idSchool = :idSchool AND postType = "userPost" AND fileType != "folder" AND isPrivate = "0" AND tags != "null" 
                 ORDER BY nbLike DESC', 
-                [':school' => $school]
+                [':idSchool' => $idSchool]
             );
         }
     }
@@ -737,14 +754,17 @@ class PostsManager extends LikeManager
         if (!empty($POST['pageToGo'])) {
             $offset = (intval($POST['pageToGo'])-1)*$limit;
         }
+
         $clauseWhere = $this->getClauseWhereForAdvancedSearch($POST);
         $clauseOrderBy = $this->getClauseOrderByForAdvancedSearch($POST);
         $arrValue = [':offset' => $offset, ':limit' => $limit];
         $arrValueForCount = [];
-        if ($POST['schoolFilter'] !== 'noSchoolFilter') {
-            $arrValue[':school'] = $POST['schoolFilter'];
-            $arrValueForCount[':school'] = $POST['schoolFilter'];
+
+        if ($POST['schoolFilter'] !== 'noSchoolFilter' && $POST['school']) {
+            $arrValue[':idSchool'] = $POST['school']->getId();
+            $arrValueForCount[':idSchool'] = $POST['school']->getId();
         }
+
         return ['clauseWhere' => $clauseWhere, 'clauseOrderBy' => $clauseOrderBy, 'arrValue' => $arrValue, 'arrValueForCount' => $arrValueForCount];
     }
 
@@ -752,7 +772,7 @@ class PostsManager extends LikeManager
     {
         $clauseWhere = '';
         if ($POST['schoolFilter'] !== 'noSchoolFilter') {
-            $clauseWhere .= 'AND school = :school ';
+            $clauseWhere .= 'AND idSchool = :idSchool ';
         }
 
         if (!empty($POST['listTags'])) {
@@ -928,7 +948,7 @@ class PostsManager extends LikeManager
         }
     }
 
-    private function uploadImagePost(array $POST)
+    private function uploadImagePost(array $POST, int $idSchool)
     {
         $arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
         require 'view/upload.php';
@@ -936,7 +956,7 @@ class PostsManager extends LikeManager
             $this->set(
                 new Post(
                     ['idAuthor' => $_SESSION['id'], 
-                    'school' => $_SESSION['school'], 
+                    'idSchool' => $idSchool,
                     'title' => $POST['title'], 
                     'filePath' => $final_path, 
                     'description' => $POST['tinyMCEtextarea'], 
@@ -954,7 +974,7 @@ class PostsManager extends LikeManager
         }
     }
 
-    private function uploadVideoPost(array $POST)
+    private function uploadVideoPost(array $POST, int $idSchool)
     {
         $filePath = null;
         if ($_FILES['uploadFile']['error'] === 0) {
@@ -969,7 +989,7 @@ class PostsManager extends LikeManager
         $this->set(
             new Post(
                 ['idAuthor' => $_SESSION['id'], 
-                'school' => $_SESSION['school'], 
+                'idSchool' => $idSchool, 
                 'title' => $POST['title'], 
                 'filePath' => $filePath, 
                 'urlVideo' => $POST['videoLink'], 
@@ -985,7 +1005,7 @@ class PostsManager extends LikeManager
         return true;
     }
 
-    private function uploadOtherPost(array $POST, string $isSchoolPost)
+    private function uploadOtherPost(array $POST, int $idSchool, string $isSchoolPost)
     {
         if ($isSchoolPost) {
             $arrAcceptedExtention = array("zip", "rar");
@@ -994,7 +1014,7 @@ class PostsManager extends LikeManager
                 $this->set(
                     new Post(
                         ['idAuthor' => $_SESSION['id'], 
-                        'school' => $_SESSION['school'], 
+                        'idSchool' => $idSchool, 
                         'title' => $POST['title'], 
                         'filePath' => $final_path, 
                         'description' => $POST['tinyMCEtextarea'], 
@@ -1014,7 +1034,7 @@ class PostsManager extends LikeManager
         }
     }
 
-    private function uploadFolder(array $POST)
+    private function uploadFolder(array $POST, int $idSchool)
     {
         $filePath = null;
         if ($_FILES['uploadFile']['error'] === 0) {
@@ -1029,7 +1049,7 @@ class PostsManager extends LikeManager
         $this->set(
             new Post(
                 ['idAuthor' => $_SESSION['id'], 
-                'school' => $_SESSION['school'], 
+                'idSchool' => $idSchool, 
                 'title' => $POST['title'], 
                 'filePath' => $filePath,  
                 'description' => $POST['tinyMCEtextarea'], 
@@ -1056,7 +1076,11 @@ class PostsManager extends LikeManager
                 return false;
             }
         }
-        if (($post->getSchool() === $user->getSchool() && ($user->getIsActive() || $user->getIsModerator() || $user->getIsAdmin())) 
+
+        $SchoolManager = new SchoolManager();
+        $userSchool = $SchoolManager->getSchoolByName($user->getSchool());
+
+        if (($post->getIdSchool() === $userSchool->getId() && ($user->getIsActive() || $user->getIsModerator() || $user->getIsAdmin())) 
         || $user->getSchool() === ALL_SCHOOL) {
             //user is in the school where the post get publish or user is webmaster
             if ($user->getIsModerator() || $user->getIsAdmin() || $user->getId() === $post->getIdAuthor()) {
@@ -1067,6 +1091,7 @@ class PostsManager extends LikeManager
                 return true;
             } elseif($post->getAuthorizedGroups() === 'none' && $post->getOnFolder() !== null) {
                 $folder = $this->getOneById($post->getOnFolder());
+
                 if ($folder && $this->userCanSeePrivatePost($folder, $user)) {
                     return true;
                 }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le :  mer. 17 mars 2021 à 15:28
+-- Généré le :  Dim 21 mars 2021 à 11:05
 -- Version du serveur :  10.4.10-MariaDB
 -- Version de PHP :  7.3.12
 
@@ -276,7 +276,7 @@ DROP TABLE IF EXISTS `as_post`;
 CREATE TABLE IF NOT EXISTS `as_post` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `idAuthor` int(11) NOT NULL,
-  `school` varchar(100) NOT NULL,
+  `idSchool` int(11) NOT NULL,
   `title` varchar(30) DEFAULT NULL,
   `filePath` text DEFAULT NULL,
   `urlVideo` varchar(355) DEFAULT NULL,
@@ -290,31 +290,34 @@ CREATE TABLE IF NOT EXISTS `as_post` (
   `tags` text DEFAULT NULL,
   `nbLike` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
-  KEY `idAuthor` (`idAuthor`)
-) ENGINE=InnoDB AUTO_INCREMENT=300 DEFAULT CHARSET=utf8;
+  KEY `idAuthor` (`idAuthor`),
+  KEY `idSchool` (`idSchool`)
+) ENGINE=InnoDB AUTO_INCREMENT=303 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_post`
 --
 
-INSERT INTO `as_post` (`id`, `idAuthor`, `school`, `title`, `filePath`, `urlVideo`, `description`, `datePublication`, `isPrivate`, `authorizedGroups`, `postType`, `fileType`, `onFolder`, `tags`, `nbLike`) VALUES
-(147, 61, 'Linart', 'post public 1 - user actif', 'public/images/dl/72f78f5f1c290fef9716f15f4bf886e2.png', NULL, '<p style=\"text-align: left;\"><strong>Fusce mauris sem, lobortis id nibh ut, scelerisque ornare nisl.</strong></p>\r\n<p style=\"text-align: left;\">&nbsp;</p>\r\n<p style=\"text-align: center;\"><em> Fusce ornare urna vel nisl fringilla, vel consectetur eros imperdiet. Sed finibus pretium leo, at elementum eros finibus ac. Morbi sed egestas ex. Maecenas tortor nisl, pulvinar accumsan eros convallis, posuere tincidunt justo. Phasellus iaculis cursus purus, ac rutrum orci aliquam non. Vestibulum tincidunt facilisis condimentum. Curabitur sit amet urna lectus. Integer viverra imperdiet leo nec hendrerit. Morbi ultrices arcu vitae laoreet venenatis. Duis finibus lectus vel diam sollicitudin, eget auctor dui pharetra. Vestibulum in varius risus, ut finibus massa. Vestibulum aliquet, libero eget cursus condimentum, nunc nisl efficitur mi, eu bibendum urna metus a quam. Nullam et mi sed dui vehicula fermentum.</em></p>\r\n<p style=\"text-align: center;\"><em><img src=\"https://i.pinimg.com/originals/78/9d/d0/789dd096dba6a2022f284fefef9aac2f.jpg\" alt=\"\" width=\"142\" height=\"92\" /></em></p>\r\n<p style=\"text-align: right;\">Me<em>.</em></p>', '2020-08-24 13:05:52', 0, NULL, 'userPost', 'image', NULL, ',lilou,Linart,post public', 1),
-(148, 61, 'Linart', 'post public 2 - user actif', 'public/images/dl/6fa3583cff7769b31d0fc98cd73f05ec.png', NULL, '<p><em>Curabitur sit amet urna lectus</em></p>', '2020-08-24 13:24:24', 0, NULL, 'userPost', 'image', NULL, ',lilou,post public,Linart', 1),
-(149, 61, 'Linart', 'dossier public 1 - user actif', 'public/images/dl/80527e2432c429437bc90f4c2a21b88a.png', NULL, '<p style=\"text-align: center;\">dossier public 1 - user actif</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: left;\"><em><strong>Suspendisse non tellus quis magna aliquet mollis eget ac sapien</strong></em></p>', '2020-08-24 13:26:31', 0, NULL, 'userPost', 'folder', NULL, NULL, 3),
-(150, 61, 'Linart', 'dossier public 2 - user actif', 'public/images/dl/7f724fdcb6de833b3e700bf02bb851f9.png', NULL, NULL, '2020-08-24 14:04:46', 0, NULL, 'userPost', 'folder', NULL, NULL, 0),
-(152, 61, 'Linart', 'post dans dossier public 1', 'public/images/dl/1fe0b354a9a6a6edbd7d8c8494c534dc.png', NULL, NULL, '2020-08-24 14:10:45', 0, NULL, 'userPost', 'image', 149, ',lilou,post public,on folder,Linart', 1),
-(153, 61, 'Linart', 'dossier dans dossier public 1', 'public/images/dl/bedcf22b03b5f009392c75c9aa72e33c.png', NULL, NULL, '2020-08-24 14:14:29', 0, NULL, 'userPost', 'folder', 149, NULL, 0),
-(154, 61, 'Linart', 'post dans dossier public 2', 'public/images/dl/884b590de48258d7d92fa1e0110b5c9b.png', NULL, NULL, '2020-08-24 14:17:37', 0, NULL, 'userPost', 'image', 149, ',post public,lilou,Linart,on folder', 1),
-(156, 61, 'Linart', 'post on folder on folder', 'public/images/dl/5f429944517f8042a1f1e2dd690f5ad0.png', NULL, NULL, '2020-08-24 14:20:59', 0, NULL, 'userPost', 'image', 153, ',on folder,folder on folder,post public,lilou,Linart', 0),
-(164, 57, 'Current4ngle', NULL, 'public/images/dl/faaf6c1312c431c87b8476aaf7f65bc3.png', NULL, NULL, '2020-08-24 15:59:19', 0, NULL, 'userPost', 'image', NULL, ',curtiss,post public', 1),
-(165, 57, 'Current4ngle', 'dossier public 1 ', 'public/images/dl/41b131e1442b2c95453df9363e3dd46d.png', NULL, NULL, '2020-08-24 15:59:38', 0, NULL, 'userPost', 'folder', NULL, NULL, 0),
-(166, 57, 'Current4ngle', NULL, 'public/images/dl/da3e47512dc5fee0967360ec4983fce5.png', NULL, NULL, '2020-08-24 16:00:15', 0, NULL, 'userPost', 'image', 165, ',post public,curtiss', 1),
-(174, 61, 'Linart', NULL, NULL, 'S-W0NX97DB0', NULL, '2020-08-24 16:27:14', 0, NULL, 'userPost', 'video', NULL, ',science', 0),
-(286, 58, 'Linart', 'priv fold', NULL, NULL, NULL, '2020-11-19 11:43:56', 1, ',group_1', 'schoolPost', 'folder', NULL, NULL, 0),
-(287, 61, 'Linart', 'try', NULL, NULL, NULL, '2020-11-19 11:45:12', 1, 'none', 'schoolPost', 'folder', 286, NULL, 0),
-(288, 58, 'Linart', 'test public on private', NULL, NULL, NULL, '2020-11-19 11:45:48', 1, 'none', 'schoolPost', 'folder', 287, NULL, 0),
-(298, 58, 'Artléatoire', NULL, 'public/images/dl/87da18278165b5aee390be1fb632457d.gif', NULL, NULL, '2021-01-21 14:45:40', 0, NULL, 'userPost', 'image', NULL, NULL, 1),
-(299, 58, 'Artléatoire', 'dossier privé', 'public/images/dl/cda2b7137d2fc0a6aaebfe37c54ce368.gif', NULL, NULL, '2021-03-16 17:15:14', 1, NULL, 'schoolPost', 'folder', NULL, NULL, 0);
+INSERT INTO `as_post` (`id`, `idAuthor`, `idSchool`, `title`, `filePath`, `urlVideo`, `description`, `datePublication`, `isPrivate`, `authorizedGroups`, `postType`, `fileType`, `onFolder`, `tags`, `nbLike`) VALUES
+(147, 61, 21, 'post public 1 - user actif', 'public/images/dl/72f78f5f1c290fef9716f15f4bf886e2.png', NULL, '<p style=\"text-align: left;\"><strong>Fusce mauris sem, lobortis id nibh ut, scelerisque ornare nisl.</strong></p>\r\n<p style=\"text-align: left;\">&nbsp;</p>\r\n<p style=\"text-align: center;\"><em> Fusce ornare urna vel nisl fringilla, vel consectetur eros imperdiet. Sed finibus pretium leo, at elementum eros finibus ac. Morbi sed egestas ex. Maecenas tortor nisl, pulvinar accumsan eros convallis, posuere tincidunt justo. Phasellus iaculis cursus purus, ac rutrum orci aliquam non. Vestibulum tincidunt facilisis condimentum. Curabitur sit amet urna lectus. Integer viverra imperdiet leo nec hendrerit. Morbi ultrices arcu vitae laoreet venenatis. Duis finibus lectus vel diam sollicitudin, eget auctor dui pharetra. Vestibulum in varius risus, ut finibus massa. Vestibulum aliquet, libero eget cursus condimentum, nunc nisl efficitur mi, eu bibendum urna metus a quam. Nullam et mi sed dui vehicula fermentum.</em></p>\r\n<p style=\"text-align: center;\"><em><img src=\"https://i.pinimg.com/originals/78/9d/d0/789dd096dba6a2022f284fefef9aac2f.jpg\" alt=\"\" width=\"142\" height=\"92\" /></em></p>\r\n<p style=\"text-align: right;\">Me<em>.</em></p>', '2020-08-24 13:05:52', 0, NULL, 'userPost', 'image', NULL, ',lilou,Linart,post public', 1),
+(148, 61, 21, 'post public 2 - user actif', 'public/images/dl/6fa3583cff7769b31d0fc98cd73f05ec.png', NULL, '<p><em>Curabitur sit amet urna lectus</em></p>', '2020-08-24 13:24:24', 0, NULL, 'userPost', 'image', NULL, ',lilou,post public,Linart', 1),
+(149, 61, 21, 'dossier public 1 - user actif', 'public/images/dl/80527e2432c429437bc90f4c2a21b88a.png', NULL, '<p style=\"text-align: center;\">dossier public 1 - user actif</p>\r\n<p style=\"text-align: center;\">&nbsp;</p>\r\n<p style=\"text-align: left;\"><em><strong>Suspendisse non tellus quis magna aliquet mollis eget ac sapien</strong></em></p>', '2020-08-24 13:26:31', 0, NULL, 'userPost', 'folder', NULL, NULL, 3),
+(150, 61, 21, 'dossier public 2 - user actif', 'public/images/dl/7f724fdcb6de833b3e700bf02bb851f9.png', NULL, NULL, '2020-08-24 14:04:46', 0, NULL, 'userPost', 'folder', NULL, NULL, 0),
+(152, 61, 21, 'post dans dossier public 1', 'public/images/dl/1fe0b354a9a6a6edbd7d8c8494c534dc.png', NULL, NULL, '2020-08-24 14:10:45', 0, NULL, 'userPost', 'image', 149, ',lilou,post public,on folder,Linart', 1),
+(153, 61, 21, 'dossier dans dossier public 1', 'public/images/dl/bedcf22b03b5f009392c75c9aa72e33c.png', NULL, NULL, '2020-08-24 14:14:29', 0, NULL, 'userPost', 'folder', 149, NULL, 0),
+(154, 61, 21, 'post dans dossier public 2', 'public/images/dl/884b590de48258d7d92fa1e0110b5c9b.png', NULL, NULL, '2020-08-24 14:17:37', 0, NULL, 'userPost', 'image', 149, ',post public,lilou,Linart,on folder', 1),
+(156, 61, 21, 'post on folder on folder', 'public/images/dl/5f429944517f8042a1f1e2dd690f5ad0.png', NULL, NULL, '2020-08-24 14:20:59', 0, NULL, 'userPost', 'image', 153, ',on folder,folder on folder,post public,lilou,Linart', 0),
+(164, 57, 20, NULL, 'public/images/dl/faaf6c1312c431c87b8476aaf7f65bc3.png', NULL, NULL, '2020-08-24 15:59:19', 0, NULL, 'userPost', 'image', NULL, ',curtiss,post public', 1),
+(165, 57, 20, 'dossier public 1 ', 'public/images/dl/41b131e1442b2c95453df9363e3dd46d.png', NULL, NULL, '2020-08-24 15:59:38', 0, NULL, 'userPost', 'folder', NULL, NULL, 0),
+(166, 57, 20, NULL, 'public/images/dl/da3e47512dc5fee0967360ec4983fce5.png', NULL, NULL, '2020-08-24 16:00:15', 0, NULL, 'userPost', 'image', 165, ',post public,curtiss', 1),
+(174, 61, 21, NULL, NULL, 'S-W0NX97DB0', NULL, '2020-08-24 16:27:14', 0, NULL, 'userPost', 'video', NULL, ',science', 0),
+(286, 58, 21, 'priv fold', NULL, NULL, NULL, '2020-11-19 11:43:56', 1, ',group_1', 'schoolPost', 'folder', NULL, NULL, 0),
+(287, 61, 21, 'try', NULL, NULL, NULL, '2020-11-19 11:45:12', 1, 'none', 'schoolPost', 'folder', 286, NULL, 0),
+(288, 58, 21, 'test public on private', NULL, NULL, NULL, '2020-11-19 11:45:48', 1, 'none', 'schoolPost', 'folder', 287, NULL, 0),
+(298, 58, 21, NULL, 'public/images/dl/87da18278165b5aee390be1fb632457d.gif', NULL, NULL, '2021-01-21 14:45:40', 0, NULL, 'userPost', 'image', NULL, NULL, 1),
+(299, 58, 21, 'dossier privé', 'public/images/dl/cda2b7137d2fc0a6aaebfe37c54ce368.gif', NULL, NULL, '2021-03-16 17:15:14', 1, NULL, 'schoolPost', 'folder', NULL, NULL, 0),
+(300, 61, 21, NULL, 'public/images/dl/b493daec1cfe2ef1607b12a3494bfa91.png', NULL, NULL, '2021-03-21 11:34:56', 0, NULL, 'userPost', 'image', NULL, ',lilou,post public,red', 0),
+(301, 58, 21, NULL, 'public/images/dl/1b30368793bd776cf7e860381bbfbdac.gif', NULL, NULL, '2021-03-21 11:37:50', 1, ',group_1', 'schoolPost', 'image', NULL, NULL, 0);
 
 --
 -- Déclencheurs `as_post`
@@ -539,20 +542,21 @@ CREATE TABLE IF NOT EXISTS `as_tag` (
   `name` varchar(355) NOT NULL,
   `tagCount` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `as_tag`
 --
 
 INSERT INTO `as_tag` (`id`, `name`, `tagCount`) VALUES
-(66, 'lilou', 5),
+(66, 'lilou', 6),
 (67, 'Linart', 5),
-(68, 'post public', 7),
+(68, 'post public', 8),
 (69, 'on folder', 3),
 (70, 'folder on folder', 1),
 (72, 'curtiss', 2),
-(80, 'science', 1);
+(80, 'science', 1),
+(91, 'red', 1);
 
 -- --------------------------------------------------------
 
@@ -595,7 +599,10 @@ INSERT INTO `as_tag_post` (`idPost`, `tagName`) VALUES
 (164, 'post public'),
 (166, 'post public'),
 (166, 'curtiss'),
-(174, 'science');
+(174, 'science'),
+(300, 'lilou'),
+(300, 'post public'),
+(300, 'red');
 
 --
 -- Déclencheurs `as_tag_post`
@@ -658,7 +665,7 @@ INSERT INTO `as_user` (`id`, `pseudo`, `firstName`, `lastName`, `mail`, `school`
 (57, 'curtiss', 'kurt', 'cobinla', 'sfsfsf@sqrgdsqrgv.gqrdgd', 'Current4ngle', NULL, '$2y$10$1ToJBQGbPRYVSJfBMmwQZewW/Wm4KeXdMp6fafOIptEBqTryRwsGi', NULL, 0, 0, 0, 0, 0, 0, 'https://th.bing.com/th/id/OIP.OhqjIK0gItw2jdrjmfOrAAHaEo?pid=Api false', 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Curtiss_logo.svg/1280px-Curtiss_logo.svg.png widePicture mediumPicture', NULL),
 (58, 'admin aleatoire', 'Roger', 'Lapin', 'sqrgfqsgsqg@qsrgqsrgq.gfqrdsf', 'Artléatoire', NULL, '$2y$10$Tt1014DSzfPYcigvwphdMOOpP7ET.HFH34EnDTkytDq3NWdsUn9MG', NULL, 0, 0, 0, 1, 0, 1, 'public/images/dl/7c8ec283216191e1e8bf4db12c1b17c8.gif false', 'http://localhost/P5_Chemin_Julien/P5_01_Code/public/images/dl/5344402f3324b922adc83effc4897998.gif highPicture smallPicture', NULL),
 (60, 'linoa', 'rinoa', 'from_final_fantasy_everyone_know_me', 'ggvdvg@dgvrdsqg.gdr', 'Artléatoire', 'group_1', '$2y$10$zsdAbbIf5Fgx4IF.Jo84HeDavlNFJtGS1MpVl.LCTG04/expRNUPe', NULL, 0, 0, 0, 0, 0, 0, 'public/images/dl/328e758c9dc34df2c9f27d2daba7099f.jpg false', 'public/images/dl/d920350b2fb85256bd70df972be6cd4c.jpg widePicture bigPicture', 'elemStart elemCenter elemEnd'),
-(61, 'lilou', 'multiPass', 'Lilou', 'lilou@lilou.lilou', 'Artléatoire', NULL, '$2y$10$B.YdOXkZVu0Xc/fAA8wWPeTIHaU8WhAlPI/OffGmCvnW8fgih6E9m', NULL, 0, 0, 0, 0, 0, 1, 'https://31.media.tumblr.com/tumblr_lft3fkYf8Z1qbpdcto1_500.gif false', 'http://localhost/P5_Chemin_Julien/P5_01_Code/public/images/dl/f03af32acba7f044837d60be056ee27a.png highPicture bigPicture', 'elemEnd elemCenter elemEnd'),
+(61, 'lilou', 'multiPass', 'Lilou', 'lilou@lilou.lilou', 'Artléatoire', 'group_1', '$2y$10$B.YdOXkZVu0Xc/fAA8wWPeTIHaU8WhAlPI/OffGmCvnW8fgih6E9m', NULL, 0, 0, 0, 0, 0, 1, 'https://31.media.tumblr.com/tumblr_lft3fkYf8Z1qbpdcto1_500.gif false', 'http://localhost/P5_Chemin_Julien/P5_01_Code/public/images/dl/f03af32acba7f044837d60be056ee27a.png highPicture bigPicture', 'elemEnd elemCenter elemEnd'),
 (63, 'user without school', 'nostradamus', 'way', 'gsgdd@rgdgdrg.dgdrg', 'noSchool', NULL, '$2y$10$CDglK8341HmLdvgeHak6MOdOfCmL0YU8iRVmy1VPR/O/IY1N.DFOG', NULL, 0, 0, 0, 0, 0, 0, 'public/images/dl/aa5b33572511ec7658529740d1ed88f7.jpg false', 'http://localhost/P5_Chemin_Julien/P5_01_Code/public/images/dl/257bb73e27d920eaf3ff390067858673.jpg highPicture smallPicture', 'elemEnd elemCenter elemEnd'),
 (70, 'aaa', 'zzzul', 'aaa', 'zzeez@eze.ze', 'noSchool', NULL, '$2y$10$JWRn3pKEyfGYXwC0bxPUDOOUK2dJ6ZcQKQQ2CQpJCnKIvlAfdKGNK', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL),
 (71, 'zzz', 'aauliu', 'zzz', 'zzdsdseez@eze.ze', 'Artléatoire', NULL, '$2y$10$r6QY2dCh5QAE0sXsgpIwxOWNjIQ8MShDDb1JXcUJ3cD59m5op1cq2', NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL),
@@ -730,6 +737,13 @@ ALTER TABLE `as_history`
 ALTER TABLE `as_like_post`
   ADD CONSTRAINT `as_like_post_ibfk_1` FOREIGN KEY (`idPost`) REFERENCES `as_post` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `as_like_post_ibfk_2` FOREIGN KEY (`idUser`) REFERENCES `as_user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `as_post`
+--
+ALTER TABLE `as_post`
+  ADD CONSTRAINT `as_post_ibfk_1` FOREIGN KEY (`idAuthor`) REFERENCES `as_user` (`id`),
+  ADD CONSTRAINT `as_post_ibfk_2` FOREIGN KEY (`idSchool`) REFERENCES `as_school` (`id`);
 
 --
 -- Contraintes pour la table `as_profile_content`

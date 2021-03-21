@@ -132,6 +132,12 @@ abstract class Controller
 
     protected function sessionUpdate(User $user)
     {
+        $SchoolManager = new SchoolManager();
+        
+        if ($school = $SchoolManager->getSchoolByName($user->getSchool())) {
+            $_SESSION['idSchool'] = $school->getId();
+        }
+        
         $_SESSION['id'] = $user->getId();
         $_SESSION['pseudo'] = $user->getPseudo();
         $_SESSION['firstName'] = $user->getFirstName();

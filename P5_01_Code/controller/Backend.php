@@ -446,16 +446,20 @@ class Backend extends Controller
 
     public function tryUploadSchoolPost()
     {
+        $SchoolManager = new SchoolManager();
         $UserManager = new UserManager();
         $PostsManager = new PostsManager();
         $arrAcceptedValues = ['onSchoolProfile', 'private'];
+        $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+
         //check listGroup (list authorized group is only for private post by admin / moderator)
         if (empty($_POST['listAuthorizedGroups'])) {
             $_POST['listAuthorizedGroups'] = null;
         }
+
         if (isset($_GET['type']) && in_array($_GET['type'], $arrAcceptedValues) && $user = $UserManager->getOneById($_SESSION['id'])) {
-            if ($response = $PostsManager->canUploadPost($_GET['type'], $user, $_POST, new TagsManager())) {
-                if ($PostsManager->uploadPost($response, true)) {
+            if ($response = $PostsManager->canUploadPost($_GET['type'], $user, $_POST, new TagsManager(), $SchoolManager)) {
+                if ($PostsManager->uploadPost($response, $school->getId(), true)) {
                     header('Location: indexAdmin.php?action=schoolProfile&school=' . $_SESSION['school']);
                 } else {
                     throw new \Exception("Le fichier n'est pas conforme");
@@ -691,7 +695,7 @@ class Backend extends Controller
     private function addSchoolPostOnFolder(PostsManager $PostsManager, User $user, School $school)
     {
         $folder = $PostsManager->getOneById($_GET['folder']);
-        if ($folder && $folder->getPostType() === "schoolPost" && $PostsManager->canPostOnFolder($folder, $user)) {
+        if ($folder && $folder->getPostType() === "schoolPost" && $PostsManager->canPostOnFolder($folder, $user, $school)) {
             if (!$folder->getIsPrivate()) {
                 // post on folder on profile
                 RenderView::render(

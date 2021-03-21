@@ -44,6 +44,7 @@ if (blockFilterAdvancedSearch === null) {
 			setFocus('schoolFilter', input);
 		});
 	});
+
 	inputSortBy.forEach(input => {
 		input.addEventListener('click', function() {
 			setFocus('sortBy', input);
@@ -75,6 +76,7 @@ if (blockFilterAdvancedSearch === null) {
 					blockSelectedTags.style.display = 'none';
 				}
 			});
+
 			divSelectedTags.appendChild(tag);
 		} else {
 			//recommended tags
@@ -87,19 +89,25 @@ if (blockFilterAdvancedSearch === null) {
 				divRecommendedTags.removeChild(tag);
 				createTag(tagValue, true);
 			});
+
 			divRecommendedTags.appendChild(tag);
 		}
 	}
+
 	function deleteSpace(str){
 		let arr = str.split(" ");
 		let string = "";
+
 		arr.forEach(char => {
 			string += char;
 		});
+
 		return string;
 	}
+
 	inputTag.addEventListener('input', function(){
 		divRecommendedTags.innerHTML = "";
+
 		if (inputTag.value.length <= 1) {
 			blockRecommendedTags.style.display = "none";
 		} else if (inputTag.value.length > 1) {
@@ -112,16 +120,19 @@ if (blockFilterAdvancedSearch === null) {
 				}
 			});
 		}
+
 		if (divRecommendedTags.innerHTML === "") {
 			blockRecommendedTags.style.display = "none";
 		}
 	});
+
 	window.addEventListener('load', function() {
 		setFocus('schoolFilter', inputSchoolFilter[0]);
 		form.elements.schoolFilter[0].checked = true;
 		setFocus('sortBy', inputSortBy[0]);
 		form.elements.sortBy[0].checked = true;
 		form.elements.tagName.value = '';
+		
 		ajaxGet('index.php?action=getTags', function(response){
 			if (response.length > 0) {
 				existingTags = JSON.parse(response);

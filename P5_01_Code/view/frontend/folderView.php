@@ -4,6 +4,7 @@ $comments = $data['comments'];
 $asidePosts = $data['asidePosts'];
 $urlAddPostOnFolder = $data['urlAddPostOnFolder'];
 $author = $data['author'];
+$userSchool = $data['userSchool'];
 $user = $data['user'];
 $userIsAuthor = $data['userInfo']['userIsAuthor'];
 $userIsAdmin = $data['userInfo']['userIsAdmin'];
@@ -100,11 +101,11 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                         }
                         echo '<li id="nbLike"><span><span>' . $post->getNbLike() . '</span><i class="fas fa-heart"></i></span></li>';
                         if (!empty($user) && $user->getIsActive() && ($userIsAuthor 
-                        || ($post->getPostType() === 'schoolPost' && $post->getIsPrivate() && $post->getSchool() === $user->getSchool() 
+                        || ($post->getPostType() === 'schoolPost' && $post->getIsPrivate() && $userSchool && $post->getIdSchool() === $userSchool->getId() 
                         && ($userIsAdmin || $userIsModerator || empty($post->getListAuthorizedGroups()) || in_array($user->getSchoolGroup(), $post->getListAuthorizedGroups()))))) {
                             echo '<li id="postOnFolder"><a href="' . $urlAddPostOnFolder . '"><i class="fas fa-folder-plus"></i></a></li>';
                         }
-                        if (!empty($user) && ($userIsAuthor || $_SESSION['school'] === ALL_SCHOOL || ($post->getPostType() === 'schoolPost' && $post->getSchool() === $_SESSION['school'] && $userIsAdmin))) {
+                        if (!empty($user) && ($userIsAuthor || $_SESSION['school'] === ALL_SCHOOL || ($post->getPostType() === 'schoolPost' && $post->getIdSchool() === $_SESSION['idSchool'] && $userIsAdmin))) {
                             echo '<li id="deletePost" title="Supprimer la publication"><i class="far fa-trash-alt"></i></li>';
                             echo '<a href="index.php?action=deletePost&id=' . $post->getId() . '" id="confirmDeletePost" title="Supprimer la publication">Supprimer définitivement la publication ?</i></a>';
                         } elseif (!empty($user)) {

@@ -45,7 +45,7 @@ $user = $data['user'];
                         echo '<li id="nbLike"><span><span>' . $post->getNbLike() . '</span><i class="fas fa-heart"></i></span></li>';
                         if (!empty($_SESSION['id']) && ($post->getIdAuthor() === $_SESSION['id'] 
                         || $_SESSION['school'] === ALL_SCHOOL 
-                        || ($post->getPostType() === 'schoolPost' && $_SESSION['grade'] === ADMIN && $post->getSchool() === $_SESSION['school']))) {
+                        || ($post->getPostType() === 'schoolPost' && $_SESSION['grade'] === ADMIN && $post->getIdSchool() === $_SESSION['idSchool']))) {
                             echo '<li id="deletePost" title="Supprimer la publication"><i class="far fa-trash-alt"></i></li>';
                             echo '<a href="index.php?action=deletePost&id=' . $post->getId() . '" id="confirmDeletePost" 
                                 title="Supprimer la publication">Supprimer définitivement la publication ?</i></a>';
