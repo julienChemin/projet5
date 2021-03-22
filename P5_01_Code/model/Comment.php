@@ -7,11 +7,14 @@ class Comment
     private $id,
         $idPost,
         $idAuthor,
+        $authorSchoolName,
         $firstNameAuthor,
         $lastNameAuthor,
         $profilePictureAuthor,
         $content,
-        $datePublication;
+        $datePublication,
+        $authorIsAdmin,
+        $authorIsModerator;
 
     public function __construct(array $data = null)
     {
@@ -47,6 +50,11 @@ class Comment
         return intval($this->idAuthor);
     }
 
+    public function getAuthorSchoolName()
+    {
+        return $this->authorSchoolName;
+    }
+
     public function getFirstNameAuthor()
     {
         return $this->firstNameAuthor;
@@ -72,6 +80,16 @@ class Comment
         return $this->datePublication;
     }
 
+    public function getAuthorIsAdmin()
+    {
+        return boolval($this->authorIsAdmin);
+    }
+
+    public function getAuthorIsModerator()
+    {
+        return boolval($this->authorIsModerator);
+    }
+
     //SETTERS
     public function setId(int $idComment)
     {
@@ -93,6 +111,14 @@ class Comment
     {
         if ($idAuthor > 0) {
             $this->idAuthor = $idAuthor;
+            return $this;
+        }
+    }
+
+    public function setAuthorSchoolName(string $authorSchoolName)
+    {
+        if (strlen($authorSchoolName) > 0) {
+            $this->authorSchoolName = $authorSchoolName;
             return $this;
         }
     }
@@ -142,5 +168,17 @@ class Comment
             $this->datePublication = $date;
             return $this;
         }
+    }
+
+    public function setAuthorIsAdmin($bool)
+    {
+        $this->authorIsAdmin = $bool;
+        return $this;
+    }
+
+    public function setAuthorIsModerator($bool)
+    {
+        $this->authorIsModerator = $bool;
+        return $this;
     }
 }

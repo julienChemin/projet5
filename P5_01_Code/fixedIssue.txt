@@ -1,8 +1,5 @@
 new stuff
-    - BDD - table as_post -> field 'id_school'
-        -> UPDATE as_post SET school = Artléatoire WHERE school = Linart
-        -> UPDATE as_post SET idSchool = (SELECT id FROM as_school WHERE name = school)
-        -> primary key for idauthor et id school
+    - color depending on user grade : on comments, on bloc profil (post view ,folder view, aside posts)
 
 fixed issues
-    - 
+    - lil thing u know

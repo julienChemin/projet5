@@ -11,12 +11,20 @@ $user = $data['user'];
             <aside id="authorProfile">
                 <?php
                 if ($author !== null) {
+                    if ($author->getIsAdmin() || $author->getIsModerator()) {
+                        $authorColor = '#de522f';
+                    } elseif ($author->getSchool() !== NO_SCHOOL) {
+                        $authorColor = '#CF8B3F';
+                    } else {
+                        $authorColor = '#b0a396';
+                    }
                     ?>
+
                     <a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
                         <img src="<?=$author->getProfilePicture()?>" alt="Photo de profil">
                     </a>
                     <div>
-                        <a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
+                        <a href="index.php?action=userProfile&userId=<?=$author->getId()?>" style="color:<?=$authorColor?>;">
                             <span><?=$author->getFirstName()?> <?=$author->getLastName()?></span>
                         </a>
                         <?php
@@ -131,13 +139,21 @@ $user = $data['user'];
                 <?php
                 if (!empty($comments)) {
                     foreach ($comments as $comment) {
+                        if ($comment->getAuthorIsAdmin() || $comment->getAuthorIsModerator()) {
+                            $userColor = '#de522f';
+                        } elseif ($comment->getAuthorSchoolName() !== NO_SCHOOL) {
+                            $userColor = '#CF8B3F';
+                        } else {
+                            $userColor = '#b0a396';
+                        }
                         ?>
+
                         <div class="comment fullWidth">
-                            <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>">
+                            <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>" style="border-top-color:<?=$userColor?>; border-bottom-color:<?=$userColor?>;">
                                 <img src="<?=$comment->getProfilePictureAuthor()?>" alt="Photo de profil">
                             </a>
                             <div>
-                                <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>">
+                                <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>" style="color:<?=$userColor?>;">
                                     <?=$comment->getFirstNameAuthor()?> <?=$comment->getLastNameAuthor()?>
                                 </a>
                                 <p>

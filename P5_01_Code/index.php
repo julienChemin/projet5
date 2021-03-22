@@ -1,4 +1,5 @@
 <?php
+
 if (!empty($_GET['action']) && ($_GET['action'] === 'search' || $_GET['action'] === 'advancedSearch')) {
     //disable validation of form by the browser
     session_cache_limiter('private_no_expire');

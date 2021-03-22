@@ -10,8 +10,9 @@ class CommentsManager extends AbstractManager
     public static $TABLE_USER_NAME = 'as_user';
 
     public static $TABLE_CHAMPS = 'id, idPost, idAuthor, content, DATE_FORMAT(datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication';
-    public static $TABLE_CHAMPS_WITH_USER = 'c.id, c.idPost, c.idAuthor, c.content, DATE_FORMAT(c.datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication,
-        u.firstName AS firstNameAuthor, u.lastName AS lastNameAuthor, u.profilePictureInfo AS profilePictureAuthor';
+    public static $TABLE_CHAMPS_WITH_USER = 'c.id, c.idPost, c.idAuthor, c.content, DATE_FORMAT(c.datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication, 
+        u.school AS authorSchoolname, u.firstName AS firstNameAuthor, u.lastName AS lastNameAuthor, 
+        u.profilePictureInfo AS profilePictureAuthor, u.isAdmin AS authorIsAdmin, u.isModerator AS authorIsModerator';
 
     public static $TABLE_PK = 'id';
 

@@ -238,8 +238,8 @@ i[class="fas fa-download"]{
     align-items: center;
     width: 15%;
     height: 150px;
-    border-top: solid 1px #CF8B3F;
-    border-bottom: solid 1px #CF8B3F;
+    border-top: solid 1px white;
+    border-bottom: solid 1px white;
     border-radius: 10px;
     overflow: hidden;
 }

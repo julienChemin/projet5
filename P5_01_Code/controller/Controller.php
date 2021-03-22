@@ -133,10 +133,9 @@ abstract class Controller
     protected function sessionUpdate(User $user)
     {
         $SchoolManager = new SchoolManager();
+        $school = $SchoolManager->getSchoolByName($user->getSchool());
         
-        if ($school = $SchoolManager->getSchoolByName($user->getSchool())) {
-            $_SESSION['idSchool'] = $school->getId();
-        }
+        $school && is_object($school) ? $_SESSION['idSchool'] = $school->getId() : $_SESSION['idSchool'] = 0;
         
         $_SESSION['id'] = $user->getId();
         $_SESSION['pseudo'] = $user->getPseudo();
@@ -149,12 +148,16 @@ abstract class Controller
         
         if ($user->getIsAdmin()) {
             $_SESSION['grade'] = ADMIN;
+            $_SESSION['color'] = '#de3b12';
         } elseif ($user->getIsModerator()) {
             $_SESSION['grade'] = MODERATOR;
+            $_SESSION['color'] = '#de3b12';
         } elseif (static::$SIDE === 'frontend' && $_SESSION['school'] !== NO_SCHOOL) {
             $_SESSION['grade'] = STUDENT;
+            $_SESSION['color'] = '#CF8B3F';
         } elseif (static::$SIDE === 'frontend') {
             $_SESSION['grade'] = USER;
+            $_SESSION['color'] = '#b0a396';
         }
     }
 
