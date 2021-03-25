@@ -60,6 +60,7 @@ $isAdmin = $isLoggedUser && $_SESSION['grade'] === ADMIN ? true : false;
             <li><a href="#whatUserAdvantagesWithSub">- Quels sont les avantages d'un abonnement ?</a></li>
             <li><a href="#whatIfUserSubEnd">- Que se passe-t-il si mon abonnement expire ?</a></li>
             <li><a href="#howToGetMyPersonnalPage">- Comment obtenir ma page perso "CV / Portfolio" en ligne gratuitement ?</a></li>
+            <li><a href="#dmca">- Digital Millennium Copyright Act - DMCA</a></li>
         </ul>
     </div>
 
@@ -619,7 +620,36 @@ $isAdmin = $isLoggedUser && $_SESSION['grade'] === ADMIN ? true : false;
             <p>
                 Ces pages seront directement relié à votre compte. 
                 <br>
-                Vous y aurez accès à partir de votre profil, ou directement avec l'adresse : artschools.fr/*nom*_*prenom*
+                Vous y aurez accès à partir de votre profil, ou directement avec l'adresse : artschools.fr/cv/*nom*_*prenom*
+            </p>
+        </div>
+    </article>
+
+    <!-- DMCA -->
+    <hr>
+    <article>
+        <h2 id="dmca">Digital Millennium Copyright Act - DMCA</h2>
+
+        <div>
+            <p>
+                <span>Faire une DMCA vous permet de signaler une violation de vos droits d'auteur</span>
+            </p>
+
+            <p>
+                Votre signalement doit inclure un lien direct (URL) vers chaque document contrefait que vous souhaitez que nous supprimions.
+                <br>
+                Veillez à donner un maximum d'informations.
+                <br>
+                Vous pouvez inclure autant de liens que nécessaire dans un seul signalement.
+            </p>
+
+            <p>
+                Nous ne pouvons pas appliquer des revendications non spécifiques basées sur des mots clés, des requêtes de recherche, 
+                le titre, le nom ou la ressemblance (physique ou autre) avec un autre document.
+            </p>
+
+            <p>
+                <span><a href="index.php?action=report&elem=other">Cliquez ici pour faire une DMCA</a></span>
             </p>
         </div>
     </article>

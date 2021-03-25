@@ -1,5 +1,7 @@
 new stuff
-    - color depending on user grade : on comments, on bloc profil (post view ,folder view, aside posts)
+    - CGU, RGPD
+    - DMCA entry in faq
+    - need to accept the CGU to create an account
 
 fixed issues
-    - lil thing u know
+    - style of signUp view

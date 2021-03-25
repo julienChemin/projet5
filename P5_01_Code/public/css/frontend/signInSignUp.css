@@ -24,10 +24,10 @@
     display: flex;
     justify-content: center;
 }
-#formSignUp > div > div:last-of-type{
+#blockIsAffiliated, #blockAcceptCgu{
     flex-direction: column;
 }
-#formSignUp #postIsAffiliated{
+#formSignUp #postIsAffiliated, #formSignUp #blockAcceptCgu > p{
     display: inline;
 }
 #postAffiliationCode{

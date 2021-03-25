@@ -15,6 +15,7 @@
                 </p>
             </div>
             <hr>
+
             <p class="hide orang" id="nameMsg">Vos nom et prénom seront affiché sur votre profil et sur vos publications</p>
             <div>
                 <p>
@@ -27,7 +28,10 @@
                 </p>
             </div>
             <hr>
+
             <p class="hide orang" id="passwordMsg">Choisissez un mot de passe pour votre compte</p>
+            <p class="hide orang" id="confirmPasswordMsg">Confirmez votre mot de passe</p>
+            <p class="hide orang" id="errorPasswordMsg">Vous devez entrer deux mot de passe identiques</p>
             <div>
                 <p>
                     <label for="password">Mot de passe</label>
@@ -39,8 +43,9 @@
                 </p>
             </div>
             <hr>
+
             <p class="hide orang" id="codeMsg">Ce code est fournit par votre établissement scolaire</p>
-            <div>
+            <div id="blockIsAffiliated">
                 <p id="postIsAffiliated">
                     <input type="checkbox" name="isAffiliated" id="isAffiliated">
                     <label for="isAffiliated">Lier le compte à un établissement scolaire</label>
@@ -51,6 +56,15 @@
                 </p>
                 <hr>
             </div>
+
+            <p id="cguMsg" class="hide orang">Vous devez accepter les conditions générales d'utilisation pour pouvoir créer un compte</p>
+            <div id="blockAcceptCgu">
+                <p>
+                    <input type="checkbox" name="acceptCgu" id="acceptCgu" require>
+                    <label for="acceptCgu">J'accepte les <a href="index.php?action=cgu">conditions générales d'utilisation</a></label>
+                </p>
+            </div>
+
             <p>
                 <input type="submit" name="submit" value="Valider">
             </p>

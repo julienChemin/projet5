@@ -114,7 +114,7 @@ article ul li{
 article ul li h3{
     font-size: 1em;
 }
-#blockFaq article ul li *{
+#blockFaq article ul li > *{
     margin-left: 25px;
 }
 article h2 + div span{

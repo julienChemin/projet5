@@ -138,6 +138,9 @@ try {
             case 'faq' :
                 $Frontend->faq();
                 break;
+            case 'cgu' :
+                $Frontend->cgu();
+                break;
             case 'updateUserInfo' :
                 $Frontend->updateUserInfo();
                 break;

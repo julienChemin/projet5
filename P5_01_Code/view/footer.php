@@ -3,16 +3,20 @@
 		<div>
 			<article id="linksList">
 				<h3>Établissement inscrit sur ArtSchools</h3>
+
 				<div>
 					<ul></ul>
 				</div>
 			</article>
 			<hr class="hrFooter">
-			<article>
+
+			<article id="about">
 				<h3>En savoir plus</h3>
+
 				<p>
 					Vous pouvez consulter la <a href="index.php?action=faq">F.A.Q</a> , ou rejoindre le <a href="https://discord.gg/uDfwPHH">discord</a> <strong>ArtSchools</strong>
 				</p>
+
 				<?php
 				if (!empty($_SESSION) && isset($_SESSION['pseudo'])) {
 					?>
@@ -22,10 +26,18 @@
 					<?php
 				}
 				?>
+
+				<ul>
+					<li><a href="index.php?action=cgu">Conditions générales d'utilisation</a></li>
+					<li><a href="index.php?action=cgu#rgpd">Mentions légales</a></li>
+					<li><a href="index.php?action=faq#dmca">DMCA</a></li>
+				</ul>
 			</article>
 			<hr class="hrFooter">
+
 			<article id="contact">
 				<h3>Contact</h3>
+
 				<ul>
 					<li><a href="mailto:artschoolsfr@gmail.com"><i class="fas fa-envelope-square"></i></a></li>
 					<li><a href="https://discord.gg/uDfwPHH"><i class="fab fa-discord"></i></a></li>

@@ -27,10 +27,36 @@ let firstLastNameMsg = document.getElementById('nameMsg');
 let inputPassword = form.elements.password;
 let inputConfirmPassword = form.elements.confirmPassword;
 let passwordMsg = document.getElementById('passwordMsg');
+let confirmPasswordMsg = document.getElementById('confirmPasswordMsg');
+let errorPasswordMsg = document.getElementById('errorPasswordMsg');
 let inputCode = form.elements.affiliationCode;
 let codeMsg = document.getElementById('codeMsg');
+let cguMsg = document.getElementById('cguMsg');
 let lastMsgDisplay = "";
 
+form.addEventListener(
+    'submit', function(e) {
+        if (inputPassword.value !== inputConfirmPassword.value) {
+            e.preventDefault();
+
+            if (lastMsgDisplay !== '') {
+                lastMsgDisplay.classList.add('hide');
+            }
+            errorPasswordMsg.classList.remove('hide');
+            lastMsgDisplay = errorPasswordMsg;
+        }
+
+        if(!form.elements.acceptCgu.checked) {
+            e.preventDefault();
+
+            if (lastMsgDisplay !== '') {
+                lastMsgDisplay.classList.add('hide');
+            }
+            cguMsg.classList.remove('hide');
+            lastMsgDisplay = cguMsg;
+        }
+    }
+);
 inputIdentifier.addEventListener(
     "focus", function() {
         if (lastMsgDisplay !== '') {
@@ -39,7 +65,7 @@ inputIdentifier.addEventListener(
         identifierMsg.classList.remove('hide');
         lastMsgDisplay = identifierMsg;
     }
-)
+);
 inputMail.addEventListener(
     "focus", function() {
         if (lastMsgDisplay !== '') {
@@ -48,7 +74,7 @@ inputMail.addEventListener(
         mailMsg.classList.remove('hide');
         lastMsgDisplay = mailMsg;
     }
-)
+);
 inputFirstName.addEventListener(
     "focus", function() {
         if (lastMsgDisplay !== '') {
@@ -57,7 +83,7 @@ inputFirstName.addEventListener(
         firstLastNameMsg.classList.remove('hide');
         lastMsgDisplay = firstLastNameMsg;
     }
-)
+);
 inputLastName.addEventListener(
     "focus", function() {
         if (lastMsgDisplay !== '') {
@@ -66,7 +92,7 @@ inputLastName.addEventListener(
         firstLastNameMsg.classList.remove('hide');
         lastMsgDisplay = firstLastNameMsg;
     }
-)
+);
 inputPassword.addEventListener(
     "focus", function() {
         if (lastMsgDisplay !== '') {
@@ -75,16 +101,16 @@ inputPassword.addEventListener(
         passwordMsg.classList.remove('hide');
         lastMsgDisplay = passwordMsg;
     }
-)
+);
 inputConfirmPassword.addEventListener(
     "focus", function() {
         if (lastMsgDisplay !== '') {
             lastMsgDisplay.classList.add('hide');
         }
-        passwordMsg.classList.remove('hide');
-        lastMsgDisplay = passwordMsg;
+        confirmPasswordMsg.classList.remove('hide');
+        lastMsgDisplay = confirmPasswordMsg;
     }
-)
+);
 inputCode.addEventListener(
     "focus", function() {
         if (lastMsgDisplay !== '') {
@@ -93,4 +119,4 @@ inputCode.addEventListener(
         codeMsg.classList.remove('hide');
         lastMsgDisplay = codeMsg;
     }
-)
+);

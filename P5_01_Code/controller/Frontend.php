@@ -433,6 +433,11 @@ class Frontend extends Controller
         RenderView::render('template.php', 'frontend/faqView.php', ['option' => ['faq']]);
     }
 
+    public function cgu()
+    {
+        RenderView::render('template.php', 'cguView.php');
+    }
+
     /*-------------------------------------------------------------------------------------
     ----------------------------------- FUNCTION AJAX ------------------------------------
     -------------------------------------------------------------------------------------*/
@@ -786,22 +791,26 @@ class Frontend extends Controller
     {
 
         if ($UserManager->checkForScriptInsertion($_POST)) {
-            if ($POST['confirmPassword'] === $POST['password']) {
-                if (!empty(trim($POST['signUpPseudo'])) && !$UserManager->pseudoExists($POST['signUpPseudo'])) {
-                    if (!empty(trim($POST['signUpFirstName'])) && !empty(trim($POST['signUpLastName']))) {
-                        if (!$UserManager->mailExists($POST['signUpMail'])) {
-                            return ['value' => true];
+            if (isset($POST['acceptCgu']) && $POST['acceptCgu']) {
+                if ($POST['confirmPassword'] === $POST['password']) {
+                    if (!empty(trim($POST['signUpPseudo'])) && !$UserManager->pseudoExists($POST['signUpPseudo'])) {
+                        if (!empty(trim($POST['signUpFirstName'])) && !empty(trim($POST['signUpLastName']))) {
+                            if (!$UserManager->mailExists($POST['signUpMail'])) {
+                                return ['value' => true];
+                            } else {
+                                return ['value' => false, 'msg' => "Cette adresse mail est déja lié a un compte"];
+                            }
                         } else {
-                            return ['value' => false, 'msg' => "Cette adresse mail est déja lié a un compte"];
+                            return ['value' => false, 'msg' => "Le nom ou le prénom est incorrecte"];
                         }
                     } else {
-                        return ['value' => false, 'msg' => "Le nom ou le prénom est incorrecte"];
+                        return ['value' => false, 'msg' => "Cet identifiant est déjà utilisé, ou incorrecte"];
                     }
                 } else {
-                    return ['value' => false, 'msg' => "Cet identifiant est déjà utilisé, ou incorrecte"];
+                    return ['value' => false, 'msg' => "Vous devez entrer deux mot de passe identiques"];
                 }
             } else {
-                return ['value' => false, 'msg' => "Vous devez entrer deux mot de passe identiques"];
+                return ['value' => false, 'msg' => "Vous devez accepter les conditions générales d'utilisation"];
             }
         } else {
             return ['value' => false, 'msg' => "Les informations renseignées sont incorrectes"];

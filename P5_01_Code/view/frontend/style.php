@@ -44,6 +44,9 @@ if (isset($_GET['action'])) {
         case 'faq' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/faq.css">';
             break;
+        case 'cgu' :
+            echo '<link rel="stylesheet" type="text/css" href="public/css/cgu.css">';
+            break;
     }
 } else {
     //"action" undefined
