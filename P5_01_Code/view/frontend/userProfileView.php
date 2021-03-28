@@ -199,7 +199,7 @@ if ($authorizedUser) {
     <div id="modal">
         <!-- Banniere -->
         <form id="contentMenuEditBanner" class="contentMenuEdit menuEditHeader" method="POST" 
-        action="index.php?action=upload&elem=banner&noBanner=<?=$data['user']->getNoBanner() ? 'true' : 'false'?>" enctype="multipart/form-data">
+        action="index.php?action=upload&elem=banner&noBanner=<?=$data['user']->getNoBanner() ? 'true' : 'false'?>&userId=<?=$data['user']->getId()?>" enctype="multipart/form-data">
             <input type="hidden" name="userId" value="<?=$data['user']->getId()?>">
             <p>
                 <label for="dlBanner">Télécharger une image (max : 5Mo) : </label>
@@ -222,7 +222,7 @@ if ($authorizedUser) {
         </form>
         <!-- Profile picture -->
         <form id="contentMenuEditProfilePicture" class="contentMenuEdit menuEditHeader" method="POST" 
-        action="index.php?action=upload&elem=picture&orientation=<?=$data['user']->getProfilePictureOrientation()?>&size=<?=$data['user']->getProfilePictureSize()?>" 
+        action="index.php?action=upload&elem=picture&orientation=<?=$data['user']->getProfilePictureOrientation()?>&size=<?=$data['user']->getProfilePictureSize()?>&userId=<?=$data['user']->getId()?>" 
         enctype="multipart/form-data">
             <p>
                 <label for="dlPicture">Télécharger une image (max : 5Mo): </label>

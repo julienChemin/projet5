@@ -88,7 +88,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 	//input no banner
 	formBanner.elements.noBanner.addEventListener('change', function(e){
-		let url = 'indexAdmin.php?action=upload&elem=banner&noBanner='+ formBanner.elements.noBanner.checked;
+		let url = 'indexAdmin.php?action=upload&elem=banner&noBanner='+ formBanner.elements.noBanner.checked + '&school=' + school;
 		formBanner.action = url;
 			
 		if (e.target.checked) {
@@ -135,6 +135,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
+			url += '&school=' + school;
 			formProfilePicture.action = url;
 	});
 
@@ -146,6 +147,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
+			url += '&school=' + school;
 			formProfilePicture.action = url;
 	});
 
@@ -159,6 +161,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
+			url += '&school=' + school;
 			formProfilePicture.action = url;
 	});
 
@@ -171,6 +174,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
+			url += '&school=' + school;
 			formProfilePicture.action = url;
 	});
 
@@ -183,6 +187,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
+			url += '&school=' + school;
 			formProfilePicture.action = url;
 	});
 

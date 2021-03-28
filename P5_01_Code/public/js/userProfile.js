@@ -98,13 +98,12 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	//MENU EDIT BANNER
 	let formBanner = document.querySelector('#contentMenuEditBanner');
 	let bannerImg = document.querySelector('#banner img');
+	let userId = formBanner.elements.userId.value;
 
 	//input no banner
 	if (formBanner !== null) {
-		let userId = formBanner.elements.userId.value;
-
 		formBanner.elements.noBanner.addEventListener('change', function(e){
-			let url = 'index.php?action=upload&elem=banner&noBanner='+ formBanner.elements.noBanner.checked;
+			let url = 'index.php?action=upload&elem=banner&noBanner='+ formBanner.elements.noBanner.checked + '&userId=' + userId;
 			formBanner.action = url;
 				
 			if (e.target.checked) {
@@ -153,6 +152,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 			let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 				url += '&size=' + formProfilePicture.elements.pictureSize.value;
+				url += '&userId=' + userId;
 				formProfilePicture.action = url;
 		});
 
@@ -164,6 +164,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 			let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 				url += '&size=' + formProfilePicture.elements.pictureSize.value;
+				url += '&userId=' + userId;
 				formProfilePicture.action = url;
 		});
 
@@ -177,6 +178,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 			let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 				url += '&size=' + formProfilePicture.elements.pictureSize.value;
+				url += '&userId=' + userId;
 				formProfilePicture.action = url;
 		});
 
@@ -189,6 +191,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 			let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 				url += '&size=' + formProfilePicture.elements.pictureSize.value;
+				url += '&userId=' + userId;
 				formProfilePicture.action = url;
 		});
 
@@ -201,6 +204,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 			let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
 				url += '&size=' + formProfilePicture.elements.pictureSize.value;
+				url += '&userId=' + userId;
 				formProfilePicture.action = url;
 		});
 

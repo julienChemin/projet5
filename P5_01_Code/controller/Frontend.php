@@ -236,7 +236,7 @@ class Frontend extends Controller
     public function updateProfile()
     {
         $UserManager = new UserManager();
-        if (!empty($_GET['userId']) && !empty($_GET['elem']) && intval($_GET['userId']) === $_SESSION['id'] 
+        if (!empty($_GET['userId']) && !empty($_GET['elem']) && (intval($_GET['userId']) === $_SESSION['id'] || $_SESSION['school'] === ALL_SCHOOL) 
         && $user = $UserManager->getOneById(intval($_GET['userId']))) {
             switch ($_GET['elem']) {
                 case 'profileBanner' :
@@ -250,7 +250,7 @@ class Frontend extends Controller
                     break;
                 case 'content' :
                     $ProfileContentManager = new ProfileContentManager();
-                    $ProfileContentManager->updateProfileContent($_POST);
+                    $ProfileContentManager->updateProfileContent($_POST, $user->getId(), false);
                     $this->redirection();
                     break;
             }
@@ -264,17 +264,26 @@ class Frontend extends Controller
         if (!empty($_GET['elem'])) {
             $arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
             require 'view/upload.php';
+
             $UserManager = new UserManager();
+            if (!empty($_GET['userId']) && $_SESSION['school'] === ALL_SCHOOL) {
+                $user = $UserManager->getOneById(intval($_GET['userId']));
+            } else {
+                $user = $UserManager->getOneById(intval($_SESSION['id']));
+            }
+
             if (!empty($final_path)) {
                 switch ($_GET['elem']) {
-                case 'banner' :
-                    $this->uploadBanner($_GET, $final_path);
+                    case 'banner' :
+                        $this->uploadBanner($_GET, $user, $final_path);
                     break;
-                case 'picture' :
-                    $this->uploadProfilePicture($_GET, $final_path);
+
+                    case 'picture' :
+                        $this->uploadProfilePicture($_GET, $user, $final_path);
                     break;
-                default :
-                    $this->incorrectInformation();
+                    
+                    default :
+                        $this->incorrectInformation();
                 }
                 $this->redirection();
             } else {
@@ -690,31 +699,34 @@ class Frontend extends Controller
     -------------------------------------------------------------------------------------*/
 
     /*------------------------------ images upload ------------------------------*/
-    private function uploadBanner(array $GET, string $finalPath)
+    private function uploadBanner(array $GET, User $user, string $finalPath)
     {
         $UserManager = new UserManager();
         $validBannerValue = array('true', 'false');
-        if (!empty($GET['noBanner']) && in_array($GET['noBanner'], $validBannerValue) && $user = $UserManager->getOneById($_SESSION['id'])) {
+
+        if ($user && !empty($GET['noBanner']) && in_array($GET['noBanner'], $validBannerValue)) {
             $this->deleteFile($user->getProfileBanner());
             $infos = $finalPath . ' ' . $GET['noBanner'];
-            $UserManager->updateById($_SESSION['id'], 'profileBannerInfo', $infos);
+            $UserManager->updateById($user->getId(), 'profileBannerInfo', $infos);
         } else {
 			$this->incorrectInformation();
         }
     }
 
-    private function uploadProfilePicture(array $GET, string $finalPath)
+    private function uploadProfilePicture(array $GET, User $user, string $finalPath)
     {
         $UserManager = new UserManager();
         $validOrientationValue = array('highPicture', 'widePicture');
         $validSizeValue = array('smallPicture', 'mediumPicture', 'bigPicture');
-        if (!empty($GET['orientation']) && in_array($GET['orientation'], $validOrientationValue)
-        && !empty($GET['size']) && in_array($GET['size'], $validSizeValue) && $user = $UserManager->getOneById($_SESSION['id'])) {
+
+        if ($user && !empty($GET['orientation']) && in_array($GET['orientation'], $validOrientationValue)
+        && !empty($GET['size']) && in_array($GET['size'], $validSizeValue)) {
             if (strpos('images/question-mark.png', $user->getProfilePicture()) === false) {
                 $this->deleteFile($user->getProfilePicture());
             }
+
             $infos = $finalPath . ' ' . $GET['orientation'] . ' ' . $GET['size'];
-            $UserManager->updateById($_SESSION['id'], 'profilePictureInfo', $infos);
+            $UserManager->updateById($user->getId(), 'profilePictureInfo', $infos);
         } else {
 			$this->incorrectInformation();
         }

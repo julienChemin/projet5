@@ -1080,8 +1080,8 @@ class PostsManager extends LikeManager
         $SchoolManager = new SchoolManager();
         $userSchool = $SchoolManager->getSchoolByName($user->getSchool());
 
-        if (($post->getIdSchool() === $userSchool->getId() && ($user->getIsActive() || $user->getIsModerator() || $user->getIsAdmin())) 
-        || $user->getSchool() === ALL_SCHOOL) {
+        if (($user->getSchool() === ALL_SCHOOL 
+        || ($post->getIdSchool() === $userSchool->getId() && ($user->getIsActive() || $user->getIsModerator() || $user->getIsAdmin())))) {
             //user is in the school where the post get publish or user is webmaster
             if ($user->getIsModerator() || $user->getIsAdmin() || $user->getId() === $post->getIdAuthor()) {
                 //user is admin ,moderator, or author of this post

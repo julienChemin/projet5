@@ -1,6 +1,6 @@
 new stuff
-    - table as_report_profile
-    - feature -> report user profile
+    - webmaster can edit schools/users banner / profile picture
+    - webmaster can delete profile content
 
 fixed issues
-    -
+    - webmaster can see private post (issue with last postManager chang)

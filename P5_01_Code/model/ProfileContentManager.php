@@ -37,18 +37,8 @@ class ProfileContentManager extends AbstractManager
         return $result;
     }
 
-    public function updateProfileContent(array $arrPOST, bool $schoolProfile = false, int $schoolId = 0)
+    public function updateProfileContent(array $arrPOST, int $idProfile, bool $schoolProfile = false)
     {
-        if ($schoolProfile) {
-            if ($schoolId > 0) {
-                $idProfile = $schoolId;
-            } else {
-                $this->incorrectInformation();
-            }
-        } else {
-            $idProfile = $_SESSION['id'];
-        }
-
         if (!empty($arrPOST['deleteBlock'])) {
             //delete content
             $this->deleteProfileContent($idProfile, $arrPOST['type'], $arrPOST['idProfileContent'], $arrPOST['deleteBlock'], $schoolProfile);

@@ -343,7 +343,7 @@ class Backend extends Controller
             $contractInfo = $this->getSchoolContractInfo($school, new ContractManager('school', $SchoolManager), true);
             $ProfileContentManager = new ProfileContentManager();
             $profileContent = $ProfileContentManager->getByProfileId($school->getId(), true);
-            if ($user->getSchool() === ALL_SCHOOL || !$user->getIsAdmin() || !$user->getIsActive()) {
+            if (!$user->getIsAdmin() || !$user->getIsActive()) {
                 $view = 'frontend';
             } else {
                 $view = 'backend';
@@ -359,23 +359,26 @@ class Backend extends Controller
     public function updateProfile()
     {
         $SchoolManager = new SchoolManager();
-        if (!empty($_GET['school']) && !empty($_GET['elem']) && $_GET['school'] === $_SESSION['school']) {
+        if (!empty($_GET['school']) && !empty($_GET['elem']) && ($_GET['school'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) {
             $school = $SchoolManager->getSchoolByName($_GET['school']);
             switch ($_GET['elem']) {
                 case 'profileBanner' :
                     $this->updateProfileBanner($school, $SchoolManager);
-                    break;
+                break;
+
                 case 'profilePicture' :
                     $this->updateProfilePicture($school, $SchoolManager);
-                    break;
+                break;
+
                 case 'profileText' :
                     $this->updateProfileText($SchoolManager);
-                    break;
+                break;
+
                 case 'content' :
                     $ProfileContentManager = new ProfileContentManager();
-                    $ProfileContentManager->updateProfileContent($_POST, true, intval($school->getId()));
+                    $ProfileContentManager->updateProfileContent($_POST, intval($school->getId()), true);
                     $this->redirection();
-                    break;
+                break;
             } 
         } else {
             $this->incorrectInformation();
@@ -387,14 +390,24 @@ class Backend extends Controller
         if (!empty($_GET['elem'])) {
             $arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
             require 'view/upload.php';
+
+            $SchoolManager = new SchoolManager();
+            if (!empty($_GET['school']) && $_SESSION['school'] === ALL_SCHOOL) {
+                $school = $SchoolManager->getSchoolByName($_GET['school']);
+            } else {
+                $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+            }
+
             if (!empty($final_path)) {
                 switch ($_GET['elem']) {
                     case 'banner' :
-                        $this->uploadBanner($_GET, $final_path);
-                        break;
+                        $this->uploadBanner($_GET, $school, $final_path);
+                    break;
+
                     case 'picture' :
-                        $this->uploadProfilePicture($_GET, $final_path);
-                        break;
+                        $this->uploadProfilePicture($_GET, $school, $final_path);
+                    break;
+
                     default :
                         $this->incorrectInformation();
                 }
@@ -717,32 +730,29 @@ class Backend extends Controller
     }
 
     /*------------------------------ images upload ------------------------------*/
-    private function uploadBanner(array $GET, string $finalPath)
+    private function uploadBanner(array $GET, School $school, string $finalPath)
     {
         $validBannerValue = array('true', 'false');
         if (!empty($GET['noBanner']) && in_array($GET['noBanner'], $validBannerValue)) {
             $SchoolManager = new SchoolManager();
-            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
             $this->deleteFile($school->getProfileBanner());
             $infos = $finalPath . ' ' . $GET['noBanner'];
-            $SchoolManager->updateByName($_SESSION['school'], 'profileBannerInfo', $infos);
+            $SchoolManager->updateByName($school->getName(), 'profileBannerInfo', $infos);
         } else {
             $this->incorrectInformation();
         }
     }
 
-    private function uploadProfilePicture(array $GET, string $finalPath)
+    private function uploadProfilePicture(array $GET, School $school, string $finalPath)
     {
         $validOrientationValue = array('highPicture', 'widePicture');
         $validSizeValue = array('smallPicture', 'mediumPicture', 'bigPicture');
         if (!empty($GET['orientation']) && in_array($GET['orientation'], $validOrientationValue)
-            && !empty($GET['size']) && in_array($GET['size'], $validSizeValue)
-        ) {
+        && !empty($GET['size']) && in_array($GET['size'], $validSizeValue)) {
             $SchoolManager = new SchoolManager();
-            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
             $this->deleteFile($school->getProfilePicture());
             $infos = $finalPath . ' ' . $GET['orientation'] . ' ' . $GET['size'];
-            $SchoolManager->updateByName($_SESSION['school'], 'profilePictureInfo', $infos);
+            $SchoolManager->updateByName($school->getName(), 'profilePictureInfo', $infos);
         } else {
             $this->incorrectInformation();
         }

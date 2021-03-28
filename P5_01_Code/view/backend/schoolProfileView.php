@@ -160,7 +160,7 @@
 </section>
 <div id="modal">
     <form id="contentMenuEditBanner" class="contentMenuEdit menuEditHeader" method="POST" 
-    action="indexAdmin.php?action=upload&elem=banner&noBanner=<?=$data['school']->getNoBanner() ? 'true' : 'false'?>" enctype="multipart/form-data">
+    action="indexAdmin.php?action=upload&elem=banner&noBanner=<?=$data['school']->getNoBanner() ? 'true' : 'false'?>&school=<?=$data['school']->getName()?>" enctype="multipart/form-data">
         <input type="hidden" name="school" value="<?=$data['school']->getName()?>">
         <p>
             <label for="dlBanner">Télécharger une image (max : 5Mo) : </label>
@@ -182,7 +182,7 @@
         </p>
     </form>
     <form id="contentMenuEditProfilePicture" class="contentMenuEdit menuEditHeader" method="POST" 
-            action="indexAdmin.php?action=upload&elem=picture&orientation=<?=$data['school']->getProfilePictureOrientation()?>&size=<?=$data['school']->getProfilePictureSize()?>"
+            action="indexAdmin.php?action=upload&elem=picture&orientation=<?=$data['school']->getProfilePictureOrientation()?>&size=<?=$data['school']->getProfilePictureSize()?>&school=<?=$data['school']->getName()?>"
             enctype="multipart/form-data">
         <p>
             <label for="dlPicture">Télécharger une image (max : 5Mo): </label>
