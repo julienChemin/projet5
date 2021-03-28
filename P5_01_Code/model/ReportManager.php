@@ -6,6 +6,11 @@ use Chemin\ArtSchools\Model\AbstractManager;
 
 class ReportManager extends AbstractManager
 {
+    public static $REPORT_PROFILE_TABLE_NAME = 'as_report_profile';
+    public static $REPORT_PROFILE_TABLE_CHAMPS = 'idProfile, idUser, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
+    public static $REPORT_PROFILE_TABLE_CHAMPS_WITH_USER = 'r.idProfile, r.idUser, DATE_FORMAT(r.dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, r.content, 
+        u.firstName AS authorFirstName, u.lastName AS authorLastName';
+
     public static $REPORT_POST_TABLE_NAME = 'as_report_post';
     public static $REPORT_POST_TABLE_CHAMPS = 'idPost, idUser, DATE_FORMAT(dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, content';
     public static $REPORT_POST_TABLE_CHAMPS_WITH_USER = 'r.idPost, r.idUser, DATE_FORMAT(r.dateReport, "%d/%m/%Y à %H:%i %s") AS dateReport, r.content, 
@@ -31,6 +36,8 @@ class ReportManager extends AbstractManager
     {
         if (!empty($elem) && $id > 0 && $this->reportExists($elem, $id, $idUser)) {
             switch ($elem) {
+                case 'profile' :
+                    return $this->getProfileReport($id, $idUser);
                 case 'post' :
                     return $this->getPostReport($id, $idUser);
                 case 'comment' :
@@ -48,6 +55,9 @@ class ReportManager extends AbstractManager
         if (!empty($elem)) {
             $limit ? $clauseLimit = 'LIMIT ' . static::$LIMIT . ' OFFSET ' . $offset : $clauseLimit = '';
             switch ($elem) {
+                case 'profile' :
+                    $query = $this->getProfileReports($clauseLimit);
+                    break;
                 case 'post' :
                     $query = $this->getPostReports($clauseLimit);
                     break;
@@ -68,29 +78,43 @@ class ReportManager extends AbstractManager
     {
         if (!empty($elem) && $idElem > 0) {
             switch ($elem) {
-            case 'post' :
-                $query = $this->sql(
-                    'SELECT ' . static::$REPORT_POST_TABLE_CHAMPS_WITH_USER . ' 
-                    FROM ' . static::$REPORT_POST_TABLE_NAME . ' AS r 
-                    LEFT JOIN ' . static::$TABLE_USER_NAME . ' AS u 
-                    ON u.id = r.idUser 
-                    WHERE r.idPost = :idPost', 
-                    [':idPost' => $idElem]
-                );
+                case 'profile' :
+                    $query = $this->sql(
+                        'SELECT ' . static::$REPORT_PROFILE_TABLE_CHAMPS_WITH_USER . ' 
+                        FROM ' . static::$REPORT_PROFILE_TABLE_NAME . ' AS r 
+                        LEFT JOIN ' . static::$TABLE_USER_NAME . ' AS u 
+                        ON u.id = r.idUser 
+                        WHERE r.idProfile = :idProfile', 
+                        [':idProfile' => $idElem]
+                    );
                 break;
-            case 'comment' :
-                $query = $this->sql(
-                    'SELECT ' . static::$REPORT_COMMENT_TABLE_CHAMPS_WITH_USER . ' 
-                    FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' AS r 
-                    LEFT JOIN ' . static::$TABLE_USER_NAME . ' AS u 
-                    ON u.id = r.idUser 
-                    WHERE r.idComment = :idComment', 
-                    [':idComment' => $idElem]
-                );
+
+                case 'post' :
+                    $query = $this->sql(
+                        'SELECT ' . static::$REPORT_POST_TABLE_CHAMPS_WITH_USER . ' 
+                        FROM ' . static::$REPORT_POST_TABLE_NAME . ' AS r 
+                        LEFT JOIN ' . static::$TABLE_USER_NAME . ' AS u 
+                        ON u.id = r.idUser 
+                        WHERE r.idPost = :idPost', 
+                        [':idPost' => $idElem]
+                    );
+                break;
+                
+                case 'comment' :
+                    $query = $this->sql(
+                        'SELECT ' . static::$REPORT_COMMENT_TABLE_CHAMPS_WITH_USER . ' 
+                        FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' AS r 
+                        LEFT JOIN ' . static::$TABLE_USER_NAME . ' AS u 
+                        ON u.id = r.idUser 
+                        WHERE r.idComment = :idComment', 
+                        [':idComment' => $idElem]
+                    );
                 break;
             }
+
             $result = $query->fetchAll();
             $query->closeCursor();
+
             return $result;
         }
     }
@@ -102,20 +126,29 @@ class ReportManager extends AbstractManager
             if ($content = $this->moveImgAndUpdateContent($content, 'public/images/reports')) {
                 // set report
                 switch ($elem) {
+                    case 'profile' :
+                        if (!empty($idElem) && $idElem > 0) {
+                            $this->setProfileReport($content, $idElem, $idUser);
+                        }
+                    break;
+
                     case 'post' :
                         if (!empty($idElem) && $idElem > 0) {
                             $this->setPostReport($content, $idElem, $idUser);
                         }
-                        break;
+                    break;
+
                     case 'comment' :
                         if (!empty($idElem) && $idElem > 0) {
                             $this->setCommentReport($content, $idElem, $idUser);
                         }
-                        break;
+                    break;
+
                     case 'other' :
                         $this->setOtherReport($content, $idUser);
-                        break;
+                    break;
                 }
+
                 return true;
             } else {
                 return false;
@@ -127,49 +160,68 @@ class ReportManager extends AbstractManager
     {
         if (!empty($elem)) {
             switch ($elem) {
+                case 'profile' :
+                    $this->deleteProfileReport($idElem, $idUser);
+                break;
+
                 case 'post' :
                     $this->deletePostReport($idElem, $idUser);
-                    break;
+                break;
+
                 case 'comment' :
                     $this->deleteCommentReport($idElem, $idUser);
-                    break;
+                break;
+
                 case 'other' :
                     $this->deleteOtherReport($idElem);
-                    break;
+                break;
             }
         }
+
         return $this;
     }
 
     public function deleteReportsFromElem(string $elem, int $idElem)
     {
-        $arrAcceptedValue = ['post', 'comment'];
+        $arrAcceptedValue = ['profile', 'post', 'comment'];
         if (!empty($elem) && in_array($elem, $arrAcceptedValue) && $idElem > 0) {
             // check and delete img on those reports
             $reports = $this->getReportsFromElem($elem, $idElem);
+
             if (!empty($reports) && count($reports) > 0) {
                 array_map(function(array $report) {
                     $this->deleteImgOnReportContent($report['content']);
                 }, $reports);
             }
+
             // delete reports
             switch ($elem) {
+                case 'profile' :
+                    $this->sql(
+                        'DELETE FROM ' . static::$REPORT_PROFILE_TABLE_NAME . ' 
+                        WHERE idProfile = :idProfile',
+                        [':idProfile' => $idElem]
+                    );
+                break;
+
                 case 'post' :
                     $this->sql(
                         'DELETE FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
                         WHERE idPost = :idPost',
                         [':idPost' => $idElem]
                     );
-                    break;
+                break;
+
                 case 'comment' :
                     $this->sql(
                         'DELETE FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
                         WHERE idComment = :idComment',
                         [':idComment' => $idElem]
                     );
-                    break;
+                break;
             }
         }
+
         return $this;
     }
 
@@ -177,18 +229,26 @@ class ReportManager extends AbstractManager
     {
         if (!empty($elem)) {
             switch ($elem) {
+                case 'profile' :
+                    $result = $this->profileReportExists($idElem, $idUser);
+                break;
+
                 case 'post' :
                     $result = $this->postReportExists($idElem, $idUser);
-                    break;
+                break;
+
                 case 'comment' :
                     $result = $this->commentReportExists($idElem, $idUser);
-                    break;
+                break;
+
                 case 'other' :
                     $result = $this->otherReportExists($idElem);
-                    break;
+                break;
+
                 default : 
                     return false;
             }
+
             if ($result) {
                 return true;
             } else {
@@ -203,19 +263,27 @@ class ReportManager extends AbstractManager
     {
         if (!empty($elem)) {
             switch ($elem) {
+                case 'profile' :
+                    $query = $this->getProfileReportCount($idElem);
+                break;
+
                 case 'post' :
                     $query = $this->getPostReportCount($idElem);
-                    break;
+                break;
+
                 case 'comment' :
                     $query = $this->getCommentReportCount($idElem);
-                    break;
+                break;
+
                 case 'other' :
                     //count all other reports
                     $query = $this->getOtherReportCount();
-                    break;
+                break;
             }
+
             $response = $query->fetch();
             $query->closeCursor();
+
             return $response[0];
         }
     }
@@ -223,41 +291,83 @@ class ReportManager extends AbstractManager
     /*-------------------------------------------------------------------------------------
     ----------------------------------- PRIVATE FUNCTION ------------------------------------
     -------------------------------------------------------------------------------------*/
+    private function getProfileReport(int $idProfile, int $idUser)
+    {
+        if ($idUser > 0 && $idProfile > 0) {
+            $q = $this->sql(
+                'SELECT ' . static::$REPORT_PROFILE_TABLE_CHAMPS . ' 
+                FROM ' . static::$REPORT_PROFILE_TABLE_NAME . ' 
+                WHERE idProfile = :idProfile AND idUser = :idUser', 
+                [':idProfile' => $idProfile, ':idUser' => $idUser]
+            );
+
+            $result = $q->fetch();
+            $q->closeCursor();
+
+            return $result;
+        }
+    }
+
     private function getPostReport(int $idPost, int $idUser)
     {
-        if ($idUser > 0) {
+        if ($idUser > 0 && $idPost > 0) {
             $q = $this->sql(
                 'SELECT ' . static::$REPORT_POST_TABLE_CHAMPS . ' 
                 FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
                 WHERE idPost = :idPost AND idUser = :idUser', 
                 [':idPost' => $idPost, ':idUser' => $idUser]
             );
-            return $q->fetch();
+            
+            $result = $q->fetch();
+            $q->closeCursor();
+
+            return $result;
         }
     }
 
     private function getCommentReport(int $idComment, int $idUser)
     {
-        if ($idUser > 0) {
+        if ($idUser > 0 && $idComment > 0) {
             $q = $this->sql(
                 'SELECT ' . static::$REPORT_COMMENT_TABLE_CHAMPS . ' 
                 FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
                 WHERE idComment = :idComment AND idUser = :idUser', 
                 [':idComment' => $idComment, ':idUser' => $idUser]
             );
-            return $q->fetch();
+            
+            $result = $q->fetch();
+            $q->closeCursor();
+
+            return $result;
         }
     }
 
     private function getOtherReport(int $id)
     {
-        $q = $this->sql(
-            'SELECT ' . static::$REPORT_OTHER_TABLE_CHAMPS . ' 
-            FROM ' . static::$REPORT_OTHER_TABLE_NAME . ' 
-            WHERE id = :id', 
-            [':id' => $id]
+        if ($id > 0) {
+            $q = $this->sql(
+                'SELECT ' . static::$REPORT_OTHER_TABLE_CHAMPS . ' 
+                FROM ' . static::$REPORT_OTHER_TABLE_NAME . ' 
+                WHERE id = :id', 
+                [':id' => $id]
+            );
+            
+            $result = $q->fetch();
+            $q->closeCursor();
+    
+            return $result;
+        }
+    }
+
+    private function getProfileReports(string $clauseLimit)
+    {
+        return $this->sql(
+            'SELECT ' . static::$REPORT_PROFILE_TABLE_CHAMPS_WITH_USER . ' 
+            FROM ' . static::$REPORT_PROFILE_TABLE_NAME . ' AS r 
+            LEFT JOIN ' . static::$TABLE_USER_NAME . ' AS u 
+            ON u.id = r.idUser 
+            ' . $clauseLimit
         );
-        return $q->fetch();
     }
 
     private function getPostReports(string $clauseLimit)
@@ -293,6 +403,15 @@ class ReportManager extends AbstractManager
         );
     }
 
+    private function setProfileReport(string $content, int $idElem, int $idUser)
+    {
+        $this->sql(
+            'INSERT INTO ' . static::$REPORT_PROFILE_TABLE_NAME . ' (idProfile, idUser, content, dateReport) 
+            VALUES (:idProfile, :idUser, :content, NOW())', 
+            [':idProfile' => $idElem, ':idUser' => $idUser, ':content' => $content]
+        );
+    }
+
     private function setPostReport(string $content, int $idElem, int $idUser)
     {
         $this->sql(
@@ -320,12 +439,31 @@ class ReportManager extends AbstractManager
         );
     }
 
-    private function deletePostReport(int $idElem, int $idUser)
+    private function deleteProfileReport(int $idElem, int $idUser)
     {
-        $report = $this->getReport('post', $idElem, $idUser);
+        $report = $this->getReport('profile', $idElem, $idUser);
+
         if (!empty($report)) {
             // check img on report content
             $this->deleteImgOnReportContent($report['content']);
+
+            // delete report
+            $this->sql(
+                'DELETE FROM ' . static::$REPORT_PROFILE_TABLE_NAME . ' 
+                WHERE idUser = :idUser AND idProfile = :idProfile', 
+                [':idUser' => $idUser, ':idProfile' => $idElem]
+            );
+        }
+    }
+
+    private function deletePostReport(int $idElem, int $idUser)
+    {
+        $report = $this->getReport('post', $idElem, $idUser);
+
+        if (!empty($report)) {
+            // check img on report content
+            $this->deleteImgOnReportContent($report['content']);
+
             // delete report
             $this->sql(
                 'DELETE FROM ' . static::$REPORT_POST_TABLE_NAME . ' 
@@ -338,9 +476,11 @@ class ReportManager extends AbstractManager
     private function deleteCommentReport(int $idElem, int $idUser)
     {
         $report = $this->getReport('comment', $idElem, $idUser);
+
         if (!empty($report)) {
             // check img on report content
             $this->deleteImgOnReportContent($report['content']);
+
             // delete report
             $this->sql(
                 'DELETE FROM ' . static::$REPORT_COMMENT_TABLE_NAME . ' 
@@ -353,15 +493,36 @@ class ReportManager extends AbstractManager
     private function deleteOtherReport(int $idElem)
     {
         $report = $this->getReport('other', $idElem);
+
         if (!empty($report)) {
             // check img on report content
             $this->deleteImgOnReportContent($report['content']);
+
             // delete report
             $this->sql(
                 'DELETE FROM ' . static::$REPORT_OTHER_TABLE_NAME . ' 
                 WHERE id = :id',
                 [':id' => $idElem]
             );
+        }
+    }
+
+    private function profileReportExists(int $idElem, int $idUser)
+    {
+        if ($idElem > 0 && $idUser > 0) {
+            $req = $this->sql(
+                'SELECT * 
+                FROM ' . static::$REPORT_PROFILE_TABLE_NAME . ' 
+                WHERE idUser = :idUser AND idProfile = :idProfile',
+                [':idUser' => $idUser, ':idProfile' => $idElem]
+            );
+
+            $result = $req->fetch();
+            $req->closeCursor();
+
+            return $result;
+        } else {
+            return false;
         }
     }
 
@@ -374,8 +535,10 @@ class ReportManager extends AbstractManager
                 WHERE idUser = :idUser AND idPost = :idPost',
                 [':idUser' => $idUser, ':idPost' => $idElem]
             );
+
             $result = $req->fetch();
             $req->closeCursor();
+
             return $result;
         } else {
             return false;
@@ -391,8 +554,10 @@ class ReportManager extends AbstractManager
                 WHERE idUser = :idUser AND idComment = :idComment',
                 [':idUser' => $idUser, ':idComment' => $idElem]
             );
+
             $result = $req->fetch();
             $req->closeCursor();
+
             return $result;
         } else {
             return false;
@@ -408,11 +573,32 @@ class ReportManager extends AbstractManager
                 WHERE id = :id',
                 [':id' => $idElem]
             );
+
             $result = $req->fetch();
             $req->closeCursor();
+
             return $result;
         } else {
             return false;
+        }
+    }
+
+    private function getProfileReportCount($idElem = null)
+    {
+        if (!empty($idElem)) {
+            //count for one post
+            return $this->sql(
+                'SELECT COUNT(*) 
+                FROM ' . static::$REPORT_PROFILE_TABLE_NAME . ' 
+                WHERE idProfile = :idProfile', 
+                [':idProfile' => $idElem]
+            );
+        } else {
+            //count all post reports
+            return $this->sql(
+                'SELECT COUNT(*) 
+                FROM ' . static::$REPORT_PROFILE_TABLE_NAME
+            );
         }
     }
 

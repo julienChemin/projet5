@@ -207,10 +207,11 @@ class Backend extends Controller
     public function moderatReports()
     {
         if ($_SESSION['school'] === ALL_SCHOOL) {
-            $arrAcceptedValue = array('post', 'comment');
+            $arrAcceptedValue = array('profile', 'post', 'comment');
             $idElem = null;
+
             if (!empty($_GET['elem']) && in_array($_GET['elem'], $arrAcceptedValue) && !empty($_GET['idElem']) && intval($_GET['idElem']) > 0) {
-                $idElem = $this->getConcernedPostIdFromReport ($_GET['elem'], intval($_GET['idElem']));
+                $idElem = $this->getIdElemForRedirection ($_GET['elem'], intval($_GET['idElem']));
             }
             RenderView::render('template.php', 'backend/moderatReportsView.php', ['idElem' => $idElem, 'option' => ['moderatReports']]);
         } else {
@@ -613,7 +614,7 @@ class Backend extends Controller
 
     public function getCountReports()
     {
-        $arrAcceptedValue = array('post', 'comment', 'other');
+        $arrAcceptedValue = array('profile', 'post', 'comment', 'other');
         if (!empty($_GET['elem']) && in_array($_GET['elem'], $arrAcceptedValue)) {
             $ReportManager = new ReportManager();
             echo json_encode($ReportManager->getCount($_GET['elem']));
@@ -625,7 +626,7 @@ class Backend extends Controller
     public function deleteReport()
     {
         $ReportManager = new ReportManager();
-        $arrAcceptedValue = array('post', 'comment', 'other');
+        $arrAcceptedValue = array('profile', 'post', 'comment', 'other');
         if (!empty($_GET['elem']) && in_array($_GET['elem'], $arrAcceptedValue) 
         && !empty($_GET['idElem']) && intval($_GET['idElem']) > 0 && isset($_GET['idUser'])) {
             $ReportManager->deleteReport($_GET['elem'], $_GET['idElem'], $_GET['idUser']);
@@ -638,7 +639,7 @@ class Backend extends Controller
     public function deleteReportsFromElem()
     {
         $ReportManager = new ReportManager();
-        $arrAcceptedValue = array('post', 'comment');
+        $arrAcceptedValue = array('profile', 'post', 'comment');
         if (!empty($_GET['elem']) && in_array($_GET['elem'], $arrAcceptedValue) && !empty($_GET['idElem']) && intval($_GET['idElem']) > 0) {
             $ReportManager->deleteReportsFromElem($_GET['elem'], $_GET['idElem']);
             echo 'true';
@@ -800,12 +801,17 @@ class Backend extends Controller
     }
 
     /*------------------------------ report view ------------------------------*/
-    private function getConcernedPostIdFromReport(string $elem, int $idElem)
+    private function getIdElemForRedirection(string $elem, int $idElem)
     {
         switch ($elem) {
+            case 'profile':
+                return $idElem;
+            break;
+
             case 'post':
                 return $idElem;
-                break;
+            break;
+
             case 'comment':
                 $CommentsManager = new CommentsManager();
                 if ($comment = $CommentsManager->getOneById($idElem)) {
@@ -813,7 +819,8 @@ class Backend extends Controller
                 } else {
                     $this->incorrectInformation();
                 }
-                break;
+            break;
+
             default :
                 $this->incorrectInformation();
         }

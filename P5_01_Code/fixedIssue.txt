@@ -1,7 +1,6 @@
 new stuff
-    - CGU, RGPD
-    - DMCA entry in faq
-    - need to accept the CGU to create an account
+    - table as_report_profile
+    - feature -> report user profile
 
 fixed issues
-    - style of signUp view
+    -

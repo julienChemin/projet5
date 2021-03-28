@@ -47,28 +47,47 @@
                     <li>Publication</li>
                     <li>À propos</li>
                 </ul>
+
                 <?php
-                if ($authorizedUser) {
-                    ?>
-                    <ul id="blockTabsEditProfile">
-                        <li title="éditer le profil">
-                            <i class="fas fa-pencil-alt iconeEdit"></i>
-                        </li>
-                        <?php
-                        if ($_SESSION['school'] === ALL_SCHOOL) {
-                            if ($data['user']->getIsBan()) {
-                                $class = 'alreadyBan';
-                                $titleForWarnIcone = 'Ce compte est suspendu';
-                            } else {
-                                $class = '';
-                                $titleForWarnIcone = 'ajouter un avertissement à cet utilisateur';
-                            }
+                if (!empty($_SESSION)) {
+                    echo '<ul id="blockTabsEditProfile">';
+                        if ($authorizedUser) {
                             ?>
-                            <li title="<?=$titleForWarnIcone?>">
-                                <a href="indexAdmin.php?action=warnUser&idUser=<?=$data['user']->getId()?>">
-                                    <i class="fas fa-exclamation-triangle iconeEdit <?=$class?>"></i>
+
+                            <li title="éditer le profil">
+                                <i class="fas fa-pencil-alt iconeEdit"></i>
+                            </li>
+
+                            <?php
+                            if ($_SESSION['school'] === ALL_SCHOOL) {
+                                if ($data['user']->getIsBan()) {
+                                    $class = 'alreadyBan';
+                                    $titleForWarnIcone = 'Ce compte est suspendu';
+                                } else {
+                                    $class = '';
+                                    $titleForWarnIcone = 'ajouter un avertissement à cet utilisateur';
+                                }
+                                ?>
+
+                                <li title="<?=$titleForWarnIcone?>">
+                                    <a href="indexAdmin.php?action=warnUser&idUser=<?=$data['user']->getId()?>">
+                                        <i class="fas fa-exclamation-triangle iconeEdit <?=$class?>"></i>
+                                    </a>
+                                </li>
+
+                                <?php
+                            }
+                        }
+
+                        if ($_SESSION['id'] !== $data['user']->getId()) {
+                            ?>
+
+                            <li title="Signaler le profil">
+                                <a href="index.php?action=report&elem=profile&id=<?=$data['user']->getId()?>">
+                                    <i class="far fa-flag iconeEdit"></i>
                                 </a>
                             </li>
+
                             <?php
                         }
                     echo '</ul>';

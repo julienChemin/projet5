@@ -7,10 +7,12 @@
 }
 #moderatReports > nav, #moderatReports > nav > ul{
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
 }
 #moderatReports > nav li{
+    width: 30%;
     border: solid 1px #CF8B3F;
     border-radius: 10px;
     padding: 60px;

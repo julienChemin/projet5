@@ -2,14 +2,26 @@
     <h1 class="fullWidth">Modération des signalements</h1>
     <?php
     if (isset($data['idElem'])) {
-        //reports from one comment / post
+        //reports from one comment / post / profile
         ?>
         <article id="content" class="moderatReportsFromElem">
             <div id="btnDeleteReportsFromElem">
                 <p>Définir ce contenu comme traité</p>
                 <i class="fas fa-check"></i>
             </div>
-            <p><a href="index.php?action=post&id=<?=$data['idElem']?>">Voir le contenu concerné</a></p>
+
+            <?php
+            if ($_GET['elem'] === 'profile') {
+                ?>
+                <p><a href="index.php?action=userProfile&userId=<?=$data['idElem']?>">Voir le profil concerné</a></p>
+                <?php
+            } else {
+                ?>
+                <p><a href="index.php?action=post&id=<?=$data['idElem']?>">Voir le contenu concerné</a></p>
+                <?php
+            }
+            ?>
+
             <table>
                 <thead>
                     <th>Qui a signalé</th>
@@ -27,6 +39,9 @@
         ?>
         <nav class="fullWidth">
             <ul>
+                <li id="btnReportProfile">
+                    Profile signalées
+                </li>   
                 <li id="btnReportPost">
                     Publications signalées
                 </li>

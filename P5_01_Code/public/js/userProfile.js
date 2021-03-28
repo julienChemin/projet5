@@ -63,26 +63,28 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	/*-----------------------------------
 	--------- TOGGLE EDIT MODE ----------
 	----------------------------------*/
-	buttonMenuEdit.addEventListener('click', function(){
-		if (buttonMenuEdit.classList.contains('menuIsOpen')) {
-			toggleClass(buttonMenuEdit, 'menuIsOpen');
-			for (let i=0; i<editableItems.length; i++) {
-				toggleClass(editableItems[i], 'editable');
-				toggleClass(editableItems[i], 'editing');
+	if (buttonMenuEdit !== null) {
+		buttonMenuEdit.addEventListener('click', function(){
+			if (buttonMenuEdit.classList.contains('menuIsOpen')) {
+				toggleClass(buttonMenuEdit, 'menuIsOpen');
+				for (let i=0; i<editableItems.length; i++) {
+					toggleClass(editableItems[i], 'editable');
+					toggleClass(editableItems[i], 'editing');
+				}
+	
+				if (blockMenuEditing.contentDisplay !== "") {
+					blockMenuEditing.contentDisplay.style.display = "none";
+					blockMenuEditing.contentDisplay = "";
+				}
+			} else {
+				toggleClass(buttonMenuEdit, 'menuIsOpen');
+				for (let i=0; i<editableItems.length; i++) {
+					toggleClass(editableItems[i], 'editable');
+					toggleClass(editableItems[i], 'editing');
+				}
 			}
-
-			if (blockMenuEditing.contentDisplay !== "") {
-				blockMenuEditing.contentDisplay.style.display = "none";
-				blockMenuEditing.contentDisplay = "";
-			}
-		} else {
-			toggleClass(buttonMenuEdit, 'menuIsOpen');
-			for (let i=0; i<editableItems.length; i++) {
-				toggleClass(editableItems[i], 'editable');
-				toggleClass(editableItems[i], 'editing');
-			}
-		}
-	});
+		});
+	}
 
 	/*-------------------------------------------------------------------------
  	-------- MENUS EDIT HEADER ( BANNER / PROFILE PICTURE / TEXT) ----------
@@ -96,134 +98,139 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	//MENU EDIT BANNER
 	let formBanner = document.querySelector('#contentMenuEditBanner');
 	let bannerImg = document.querySelector('#banner img');
-	let userId = formBanner.elements.userId.value;
 
 	//input no banner
-	formBanner.elements.noBanner.addEventListener('change', function(e){
-		let url = 'index.php?action=upload&elem=banner&noBanner='+ formBanner.elements.noBanner.checked;
-		formBanner.action = url;
-			
-		if (e.target.checked) {
-			bannerImg.classList.add('hide');
-		} else {
-			bannerImg.classList.remove('hide');
-		}
-	});
+	if (formBanner !== null) {
+		let userId = formBanner.elements.userId.value;
 
-	//submit
-	let noBanner = formBanner.elements.noBanner.checked;
-	formBanner.elements.saveBanner.addEventListener('click', function(e){
-		if (formBanner.elements.dlBanner.value === "") {
-			//banner img don't change
-			e.preventDefault();
-			if (noBanner !== formBanner.elements.noBanner.checked) {
-				//toggle "noBanner" value
-				let url = 'index.php?action=updateProfile&userId='+userId;
-				url += '&elem=profileBanner&value='+bannerImg.src;
-				url += '&noBanner='+formBanner.elements.noBanner.checked;
-
-				//edit actual "noBanner" value
-				noBanner = formBanner.elements.noBanner.checked;
-
-				ajaxGet(url, function(){
-					toggleClass(buttonMenuEdit, 'menuIsOpen');
-				});
+		formBanner.elements.noBanner.addEventListener('change', function(e){
+			let url = 'index.php?action=upload&elem=banner&noBanner='+ formBanner.elements.noBanner.checked;
+			formBanner.action = url;
+				
+			if (e.target.checked) {
+				bannerImg.classList.add('hide');
+			} else {
+				bannerImg.classList.remove('hide');
 			}
-		}
-		toggleModal(blockMenuEditing, modal);
-	});
+		});
+
+		//submit
+		let noBanner = formBanner.elements.noBanner.checked;
+		formBanner.elements.saveBanner.addEventListener('click', function(e){
+			if (formBanner.elements.dlBanner.value === "") {
+				//banner img don't change
+				e.preventDefault();
+				if (noBanner !== formBanner.elements.noBanner.checked) {
+					//toggle "noBanner" value
+					let url = 'index.php?action=updateProfile&userId='+userId;
+					url += '&elem=profileBanner&value='+bannerImg.src;
+					url += '&noBanner='+formBanner.elements.noBanner.checked;
+
+					//edit actual "noBanner" value
+					noBanner = formBanner.elements.noBanner.checked;
+
+					ajaxGet(url, function(){
+						toggleClass(buttonMenuEdit, 'menuIsOpen');
+					});
+				}
+			}
+			toggleModal(blockMenuEditing, modal);
+		});
+	}
 
 	//MENU EDIT PICTURE PROFILE
 	let formProfilePicture = document.querySelector('#contentMenuEditProfilePicture');
 	let blockProfilePicture = document.querySelector('#profile > header > div:first-of-type');
 	let profileImg = document.querySelector('#profile img:first-of-type');
 
-	//input orientation
-	document.getElementById('widePicture').addEventListener('click', function(e){
-		if (!profileImg.classList.contains('widePicture')) {
-			profileImg.classList.add('widePicture');
-			profileImg.classList.remove('highPicture');
-		}
-
-		let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
-			url += '&size=' + formProfilePicture.elements.pictureSize.value;
-			formProfilePicture.action = url;
-	});
-
-	document.getElementById('highPicture').addEventListener('click', function(e){
-		if (!profileImg.classList.contains('highPicture')) {
-			profileImg.classList.add('highPicture');
-			profileImg.classList.remove('widePicture');
-		}
-
-		let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
-			url += '&size=' + formProfilePicture.elements.pictureSize.value;
-			formProfilePicture.action = url;
-	});
-
-	//input size
-	document.getElementById('smallPicture').addEventListener('click', function(e){
-		if (!blockProfilePicture.classList.contains('smallPicture')) {
-			blockProfilePicture.classList.add('smallPicture');
-			blockProfilePicture.classList.remove('mediumPicture');
-			blockProfilePicture.classList.remove('bigPicture');
-		}
-
-		let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
-			url += '&size=' + formProfilePicture.elements.pictureSize.value;
-			formProfilePicture.action = url;
-	});
-
-	document.getElementById('mediumPicture').addEventListener('click', function(e){
-		if (!blockProfilePicture.classList.contains('mediumPicture')) {
-			blockProfilePicture.classList.add('mediumPicture');
-			blockProfilePicture.classList.remove('smallPicture');
-			blockProfilePicture.classList.remove('bigPicture');
-		}
-
-		let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
-			url += '&size=' + formProfilePicture.elements.pictureSize.value;
-			formProfilePicture.action = url;
-	});
-
-	document.getElementById('bigPicture').addEventListener('click', function(e){
-		if (!blockProfilePicture.classList.contains('bigPicture')) {
-			blockProfilePicture.classList.add('bigPicture');
-			blockProfilePicture.classList.remove('smallPicture');
-			blockProfilePicture.classList.remove('mediumPicture');
-		}
-
-		let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
-			url += '&size=' + formProfilePicture.elements.pictureSize.value;
-			formProfilePicture.action = url;
-	});
-
-	//submit
-	let pictureOrientation = formProfilePicture.elements.pictureOrientation.value;
-	let pictureSize = formProfilePicture.elements.pictureSize.value;
-
-	formProfilePicture.elements.saveProfilePicture.addEventListener('click', function(e){
-		if (formProfilePicture.elements.dlPicture.value === "") {
-			// profile picture don't change
-			e.preventDefault();
-			if (pictureOrientation !== formProfilePicture.elements.pictureOrientation.value || pictureSize !== formProfilePicture.elements.pictureSize.value) {
-				// toggle "orientation" and / or "size" value
-				let url = 'index.php?action=updateProfile&userId=' + userId;
-				url += '&elem=profilePicture&value=' + profileImg.src;
-				url += '&orientation=' + formProfilePicture.elements.pictureOrientation.value;
-				url += '&size=' + formProfilePicture.elements.pictureSize.value;
-
-				// edit actual "orientation" and / or "size" value
-				pictureOrientation = formProfilePicture.elements.pictureOrientation.value;
-				pictureSize = formProfilePicture.elements.pictureSize.value;
-
-				ajaxGet(url, function(){
-					toggleClass(buttonMenuEdit, 'menuIsOpen');
-				});
+	if (formProfilePicture !== null) {
+		//input orientation
+		document.getElementById('widePicture').addEventListener('click', function(e){
+			if (!profileImg.classList.contains('widePicture')) {
+				profileImg.classList.add('widePicture');
+				profileImg.classList.remove('highPicture');
 			}
-		}
-		toggleModal(blockMenuEditing, modal);
-	});
+
+			let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+				url += '&size=' + formProfilePicture.elements.pictureSize.value;
+				formProfilePicture.action = url;
+		});
+
+		document.getElementById('highPicture').addEventListener('click', function(e){
+			if (!profileImg.classList.contains('highPicture')) {
+				profileImg.classList.add('highPicture');
+				profileImg.classList.remove('widePicture');
+			}
+
+			let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+				url += '&size=' + formProfilePicture.elements.pictureSize.value;
+				formProfilePicture.action = url;
+		});
+
+		//input size
+		document.getElementById('smallPicture').addEventListener('click', function(e){
+			if (!blockProfilePicture.classList.contains('smallPicture')) {
+				blockProfilePicture.classList.add('smallPicture');
+				blockProfilePicture.classList.remove('mediumPicture');
+				blockProfilePicture.classList.remove('bigPicture');
+			}
+
+			let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+				url += '&size=' + formProfilePicture.elements.pictureSize.value;
+				formProfilePicture.action = url;
+		});
+
+		document.getElementById('mediumPicture').addEventListener('click', function(e){
+			if (!blockProfilePicture.classList.contains('mediumPicture')) {
+				blockProfilePicture.classList.add('mediumPicture');
+				blockProfilePicture.classList.remove('smallPicture');
+				blockProfilePicture.classList.remove('bigPicture');
+			}
+
+			let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+				url += '&size=' + formProfilePicture.elements.pictureSize.value;
+				formProfilePicture.action = url;
+		});
+
+		document.getElementById('bigPicture').addEventListener('click', function(e){
+			if (!blockProfilePicture.classList.contains('bigPicture')) {
+				blockProfilePicture.classList.add('bigPicture');
+				blockProfilePicture.classList.remove('smallPicture');
+				blockProfilePicture.classList.remove('mediumPicture');
+			}
+
+			let url = 'index.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+				url += '&size=' + formProfilePicture.elements.pictureSize.value;
+				formProfilePicture.action = url;
+		});
+
+		//submit
+		let pictureOrientation = formProfilePicture.elements.pictureOrientation.value;
+		let pictureSize = formProfilePicture.elements.pictureSize.value;
+
+		formProfilePicture.elements.saveProfilePicture.addEventListener('click', function(e){
+			if (formProfilePicture.elements.dlPicture.value === "") {
+				// profile picture don't change
+				e.preventDefault();
+				if (pictureOrientation !== formProfilePicture.elements.pictureOrientation.value || pictureSize !== formProfilePicture.elements.pictureSize.value) {
+					// toggle "orientation" and / or "size" value
+					let url = 'index.php?action=updateProfile&userId=' + userId;
+					url += '&elem=profilePicture&value=' + profileImg.src;
+					url += '&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+					url += '&size=' + formProfilePicture.elements.pictureSize.value;
+
+					// edit actual "orientation" and / or "size" value
+					pictureOrientation = formProfilePicture.elements.pictureOrientation.value;
+					pictureSize = formProfilePicture.elements.pictureSize.value;
+
+					ajaxGet(url, function(){
+						toggleClass(buttonMenuEdit, 'menuIsOpen');
+					});
+				}
+			}
+			toggleModal(blockMenuEditing, modal);
+		});
+	}
 
 	//MENU EDIT TEXT
 	let formProfileText = document.querySelector('#contentMenuEditText');
@@ -234,168 +241,170 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	let positionPseudoSelected = '';
 	let positionSchoolNameSelected = '';
 
-	//block position
-	document.getElementById('blockTextTop').addEventListener('click', function(e){
-		if (!profileTextBlock.classList.contains('elemStart')) {
-			if (e.target.nextElementSibling.childNodes[1] !== positionBlockTextSelected) {
-				if (positionBlockTextSelected !== '') {
-					positionBlockTextSelected.style.border = '';
+	if (formProfileText !== null) {
+		//block position
+		document.getElementById('blockTextTop').addEventListener('click', function(e){
+			if (!profileTextBlock.classList.contains('elemStart')) {
+				if (e.target.nextElementSibling.childNodes[1] !== positionBlockTextSelected) {
+					if (positionBlockTextSelected !== '') {
+						positionBlockTextSelected.style.border = '';
+					}
+					e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+					positionBlockTextSelected = e.target.nextElementSibling.childNodes[1];
 				}
-				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
-				positionBlockTextSelected = e.target.nextElementSibling.childNodes[1];
+				profileTextBlock.classList.add('elemStart');
+				profileTextBlock.classList.remove('elemCenter');
+				profileTextBlock.classList.remove('elemEnd');
 			}
-			profileTextBlock.classList.add('elemStart');
-			profileTextBlock.classList.remove('elemCenter');
-			profileTextBlock.classList.remove('elemEnd');
-		}
-	});
+		});
 
-	document.getElementById('blockTextCenter').addEventListener('click', function(e){
-		if (!profileTextBlock.classList.contains('elemCenter')) {
-			if (e.target.nextElementSibling.childNodes[1] !== positionBlockTextSelected) {
-				if (positionBlockTextSelected !== '') {
-					positionBlockTextSelected.style.border = '';
+		document.getElementById('blockTextCenter').addEventListener('click', function(e){
+			if (!profileTextBlock.classList.contains('elemCenter')) {
+				if (e.target.nextElementSibling.childNodes[1] !== positionBlockTextSelected) {
+					if (positionBlockTextSelected !== '') {
+						positionBlockTextSelected.style.border = '';
+					}
+					e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+					positionBlockTextSelected = e.target.nextElementSibling.childNodes[1];
 				}
-				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
-				positionBlockTextSelected = e.target.nextElementSibling.childNodes[1];
+				profileTextBlock.classList.add('elemCenter');
+				profileTextBlock.classList.remove('elemStart');
+				profileTextBlock.classList.remove('elemEnd');
 			}
-			profileTextBlock.classList.add('elemCenter');
-			profileTextBlock.classList.remove('elemStart');
-			profileTextBlock.classList.remove('elemEnd');
-		}
-	});
+		});
 
-	document.getElementById('blockTextBottom').addEventListener('click', function(e){
-		if (!profileTextBlock.classList.contains('elemEnd')) {
-			if (e.target.nextElementSibling.childNodes[1] !== positionBlockTextSelected) {
-				if (positionBlockTextSelected !== '') {
-					positionBlockTextSelected.style.border = '';
+		document.getElementById('blockTextBottom').addEventListener('click', function(e){
+			if (!profileTextBlock.classList.contains('elemEnd')) {
+				if (e.target.nextElementSibling.childNodes[1] !== positionBlockTextSelected) {
+					if (positionBlockTextSelected !== '') {
+						positionBlockTextSelected.style.border = '';
+					}
+					e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+					positionBlockTextSelected = e.target.nextElementSibling.childNodes[1];
 				}
-				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
-				positionBlockTextSelected = e.target.nextElementSibling.childNodes[1];
+				profileTextBlock.classList.add('elemEnd');
+				profileTextBlock.classList.remove('elemStart');
+				profileTextBlock.classList.remove('elemCenter');
 			}
-			profileTextBlock.classList.add('elemEnd');
-			profileTextBlock.classList.remove('elemStart');
-			profileTextBlock.classList.remove('elemCenter');
-		}
-	});
+		});
 
-	//pseudo position
-	document.getElementById('pseudoLeft').addEventListener('click', function(e){
-		if (!profilePseudo.classList.contains('elemStart')) {
-			if (e.target.nextElementSibling.childNodes[1] !== positionPseudoSelected) {
-				if (positionPseudoSelected !== '') {
-					positionPseudoSelected.style.border = '';
+		//pseudo position
+		document.getElementById('pseudoLeft').addEventListener('click', function(e){
+			if (!profilePseudo.classList.contains('elemStart')) {
+				if (e.target.nextElementSibling.childNodes[1] !== positionPseudoSelected) {
+					if (positionPseudoSelected !== '') {
+						positionPseudoSelected.style.border = '';
+					}
+					e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+					positionPseudoSelected = e.target.nextElementSibling.childNodes[1];
 				}
-				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
-				positionPseudoSelected = e.target.nextElementSibling.childNodes[1];
+				profilePseudo.classList.add('elemStart');
+				profilePseudo.classList.remove('elemCenter');
+				profilePseudo.classList.remove('elemEnd');
 			}
-			profilePseudo.classList.add('elemStart');
-			profilePseudo.classList.remove('elemCenter');
-			profilePseudo.classList.remove('elemEnd');
-		}
-	});
+		});
 
-	document.getElementById('pseudoCenter').addEventListener('click', function(e){
-		if (!profilePseudo.classList.contains('elemCenter')) {
-			if (e.target.nextElementSibling.childNodes[1] !== positionPseudoSelected) {
-				if (positionPseudoSelected !== '') {
-					positionPseudoSelected.style.border = '';
+		document.getElementById('pseudoCenter').addEventListener('click', function(e){
+			if (!profilePseudo.classList.contains('elemCenter')) {
+				if (e.target.nextElementSibling.childNodes[1] !== positionPseudoSelected) {
+					if (positionPseudoSelected !== '') {
+						positionPseudoSelected.style.border = '';
+					}
+					e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+					positionPseudoSelected = e.target.nextElementSibling.childNodes[1];
 				}
-				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
-				positionPseudoSelected = e.target.nextElementSibling.childNodes[1];
+				profilePseudo.classList.add('elemCenter');
+				profilePseudo.classList.remove('elemStart');
+				profilePseudo.classList.remove('elemEnd');
 			}
-			profilePseudo.classList.add('elemCenter');
-			profilePseudo.classList.remove('elemStart');
-			profilePseudo.classList.remove('elemEnd');
-		}
-	});
+		});
 
-	document.getElementById('pseudoRight').addEventListener('click', function(e){
-		if (!profilePseudo.classList.contains('elemEnd')) {
-			if (e.target.nextElementSibling.childNodes[1] !== positionPseudoSelected) {
-				if (positionPseudoSelected !== '') {
-					positionPseudoSelected.style.border = '';
+		document.getElementById('pseudoRight').addEventListener('click', function(e){
+			if (!profilePseudo.classList.contains('elemEnd')) {
+				if (e.target.nextElementSibling.childNodes[1] !== positionPseudoSelected) {
+					if (positionPseudoSelected !== '') {
+						positionPseudoSelected.style.border = '';
+					}
+					e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+					positionPseudoSelected = e.target.nextElementSibling.childNodes[1];
 				}
-				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
-				positionPseudoSelected = e.target.nextElementSibling.childNodes[1];
+				profilePseudo.classList.add('elemEnd');
+				profilePseudo.classList.remove('elemStart');
+				profilePseudo.classList.remove('elemCenter');
 			}
-			profilePseudo.classList.add('elemEnd');
-			profilePseudo.classList.remove('elemStart');
-			profilePseudo.classList.remove('elemCenter');
-		}
-	});
+		});
 
-	//school name position
-	document.getElementById('schoolLeft').addEventListener('click', function(e){
-		if (!profileSchool.classList.contains('elemStart')) {
-			if (e.target.nextElementSibling.childNodes[1] !== positionSchoolNameSelected) {
-				if (positionSchoolNameSelected !== '') {
-					positionSchoolNameSelected.style.border = '';
+		//school name position
+		document.getElementById('schoolLeft').addEventListener('click', function(e){
+			if (!profileSchool.classList.contains('elemStart')) {
+				if (e.target.nextElementSibling.childNodes[1] !== positionSchoolNameSelected) {
+					if (positionSchoolNameSelected !== '') {
+						positionSchoolNameSelected.style.border = '';
+					}
+					e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+					positionSchoolNameSelected = e.target.nextElementSibling.childNodes[1];
 				}
-				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
-				positionSchoolNameSelected = e.target.nextElementSibling.childNodes[1];
+				profileSchool.classList.add('elemStart');
+				profileSchool.classList.remove('elemCenter');
+				profileSchool.classList.remove('elemEnd');
 			}
-			profileSchool.classList.add('elemStart');
-			profileSchool.classList.remove('elemCenter');
-			profileSchool.classList.remove('elemEnd');
-		}
-	});
+		});
 
-	document.getElementById('schoolCenter').addEventListener('click', function(e){
-		if (!profileSchool.classList.contains('elemCenter')) {
-			if (e.target.nextElementSibling.childNodes[1] !== positionSchoolNameSelected) {
-				if (positionSchoolNameSelected !== '') {
-					positionSchoolNameSelected.style.border = '';
+		document.getElementById('schoolCenter').addEventListener('click', function(e){
+			if (!profileSchool.classList.contains('elemCenter')) {
+				if (e.target.nextElementSibling.childNodes[1] !== positionSchoolNameSelected) {
+					if (positionSchoolNameSelected !== '') {
+						positionSchoolNameSelected.style.border = '';
+					}
+					e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+					positionSchoolNameSelected = e.target.nextElementSibling.childNodes[1];
 				}
-				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
-				positionSchoolNameSelected = e.target.nextElementSibling.childNodes[1];
+				profileSchool.classList.add('elemCenter');
+				profileSchool.classList.remove('elemStart');
+				profileSchool.classList.remove('elemEnd');
 			}
-			profileSchool.classList.add('elemCenter');
-			profileSchool.classList.remove('elemStart');
-			profileSchool.classList.remove('elemEnd');
-		}
-	});
+		});
 
-	document.getElementById('schoolRight').addEventListener('click', function(e){
-		if (!profileSchool.classList.contains('elemEnd')) {
-			if (e.target.nextElementSibling.childNodes[1] !== positionSchoolNameSelected) {
-				if (positionSchoolNameSelected !== '') {
-					positionSchoolNameSelected.style.border = '';
+		document.getElementById('schoolRight').addEventListener('click', function(e){
+			if (!profileSchool.classList.contains('elemEnd')) {
+				if (e.target.nextElementSibling.childNodes[1] !== positionSchoolNameSelected) {
+					if (positionSchoolNameSelected !== '') {
+						positionSchoolNameSelected.style.border = '';
+					}
+					e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+					positionSchoolNameSelected = e.target.nextElementSibling.childNodes[1];
 				}
-				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
-				positionSchoolNameSelected = e.target.nextElementSibling.childNodes[1];
+				profileSchool.classList.add('elemEnd');
+				profileSchool.classList.remove('elemStart');
+				profileSchool.classList.remove('elemCenter');
 			}
-			profileSchool.classList.add('elemEnd');
-			profileSchool.classList.remove('elemStart');
-			profileSchool.classList.remove('elemCenter');
-		}
-	});
+		});
 
-	//submit
-	let blockPos = formProfileText.elements.blockTextPosition.value;
-	let pseudoPos = formProfileText.elements.pseudoPosition.value;
-	let schoolPos = formProfileText.elements.schoolPosition.value;
+		//submit
+		let blockPos = formProfileText.elements.blockTextPosition.value;
+		let pseudoPos = formProfileText.elements.pseudoPosition.value;
+		let schoolPos = formProfileText.elements.schoolPosition.value;
 
-	formProfileText.elements.saveProfileText.addEventListener('click', function(e){
-		e.preventDefault();
-		if (blockPos !== formProfileText.elements.blockTextPosition.value || pseudoPos !== formProfileText.elements.pseudoPosition.value 
-		|| schoolPos !== formProfileText.elements.schoolPosition.value) {
-			let url = 'index.php?action=updateProfile&userId=' + userId;
-			url += '&elem=profileText&block=' + formProfileText.elements.blockTextPosition.value;
-			url += '&pseudo=' + formProfileText.elements.pseudoPosition.value;
-			url += '&school=' + formProfileText.elements.schoolPosition.value;
+		formProfileText.elements.saveProfileText.addEventListener('click', function(e){
+			e.preventDefault();
+			if (blockPos !== formProfileText.elements.blockTextPosition.value || pseudoPos !== formProfileText.elements.pseudoPosition.value 
+			|| schoolPos !== formProfileText.elements.schoolPosition.value) {
+				let url = 'index.php?action=updateProfile&userId=' + userId;
+				url += '&elem=profileText&block=' + formProfileText.elements.blockTextPosition.value;
+				url += '&pseudo=' + formProfileText.elements.pseudoPosition.value;
+				url += '&school=' + formProfileText.elements.schoolPosition.value;
 
-			blockPos = formProfileText.elements.blockTextPosition.value;
-			pseudoPos = formProfileText.elements.pseudoPosition.value;
-			schoolPos = formProfileText.elements.schoolPosition.value;
-			
-			ajaxGet(url, function(){
-				toggleClass(buttonMenuEdit, 'menuIsOpen');
-			});
-		}
-		toggleModal(blockMenuEditing, modal);
-	});
+				blockPos = formProfileText.elements.blockTextPosition.value;
+				pseudoPos = formProfileText.elements.pseudoPosition.value;
+				schoolPos = formProfileText.elements.schoolPosition.value;
+				
+				ajaxGet(url, function(){
+					toggleClass(buttonMenuEdit, 'menuIsOpen');
+				});
+			}
+			toggleModal(blockMenuEditing, modal);
+		});
+	}
 
 	/*-------------------------------------------
  	-------- MENU EDIT PROFILE CONTENT ----------
@@ -410,6 +419,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	let checkboxAlign = document.getElementById('align');
 	let blockAlign = document.querySelector('#contentMenuEditBlock > div:nth-of-type(2)');
 	let blockToDelete = document.getElementById('blockToDelete');
+
 	//pencil icone (for editing) on tab 'profile'
 	for (let i=0; i<allButtonsEditProfile.length; i++) {
 		allButtonsEditProfile[i].addEventListener('click', function(){
@@ -685,7 +695,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
  	-------- MODAL ----------
 	-----------------------*/
 	//button cancel
-	if (formModal.elements.cancel !== undefined) {
+	if (formModal !== null && formModal.elements.cancel !== undefined) {
 		formModal.elements.cancel.addEventListener('click', function(e){
 			e.preventDefault();
 			if (document.querySelector('#tinyMCEtextarea + .tox-tinymce').style.display === "none") {

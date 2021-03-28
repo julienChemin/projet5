@@ -387,17 +387,24 @@ class Frontend extends Controller
 
     public function report()
     {
-        if (!empty($_SESSION) && !empty($_GET['elem'])) {
+        if (!empty($_SESSION) && !empty($_GET['elem']) && (!empty($_GET['id']) || $_GET['elem'] === 'other')) {
             switch ($_GET['elem']) {
+                case 'profile' :
+                    $this->reportProfile($_GET['id']);
+                break;
+
                 case 'post' :
                     $this->reportPost($_GET['id']);
-                    break;
+                break;
+
                 case 'comment' :
                     $this->reportComment($_GET['id']);
-                    break;
+                break;
+
                 case 'other' :
                     $this->reportOther();
                 break;
+
                 default : 
                     $this->incorrectInformation();
             }
@@ -408,15 +415,19 @@ class Frontend extends Controller
 
     public function setReport()
     {
-        $arrAcceptedElem = array('post', 'comment', 'other');
+        $arrAcceptedElem = array('profile', 'post', 'comment', 'other');
         if (!empty($_SESSION) && !empty($_POST['elem']) && in_array($_POST['elem'], $arrAcceptedElem) 
         && !empty($_POST['tinyMCEtextarea'])) {
             $ReportManager = new ReportManager();
             !empty($_POST['idElem']) ? $idElem = intval($_POST['idElem']) : $idElem = null;
             // do report
             if ($ReportManager->setReport($_POST['elem'], $_POST['tinyMCEtextarea'], $idElem, $_SESSION['id'])) {
-                if (!empty($_POST['idPost']) && intval($_POST['idPost']) > 0) {
-                    header('Location: index.php?action=post&id=' . $_POST['idPost']);
+                if (!empty($_POST['elem']) && !empty($_POST['idElem'])) {
+                    if ($_POST['elem'] === 'profile') {
+                        header('Location: index.php?action=userProfile&userId=' . $_POST['idElem']);
+                    } else if ($_POST['elem'] === 'post' || $_POST['elem'] === 'comment') {
+                        header('Location: index.php?action=post&id=' . $_POST['idElem']);
+                    }
                 } else {
                     $this->redirection('index.php', true);
                 }
@@ -1018,10 +1029,25 @@ class Frontend extends Controller
     }
 
     /*------------------------------ report ------------------------------*/
+    private function reportProfile(int $elemId)
+    {
+        $UserManager = new UserManager();
+        if ($elemId > 0 && $UserManager->exists($elemId)) {
+            $ReportManager = new ReportManager();
+            if (!$ReportManager->reportExists('profile', $elemId, $_SESSION['id'])) {
+                RenderView::render('template.php', 'frontend/reportView.php', ['option' => ['tinyMCE']]);
+            } else {
+                $this->error('Vous avez déja signalé ce contenu');
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
     private function reportPost(int $elemId)
     {
         $PostsManager = new PostsManager();
-        if ($elemId > 0 && $PostsManager->exists($_GET['id'])) {
+        if ($elemId > 0 && $PostsManager->exists($elemId)) {
             $ReportManager = new ReportManager();
             if (!$ReportManager->reportExists('post', $elemId, $_SESSION['id'])) {
                 RenderView::render('template.php', 'frontend/reportView.php', ['option' => ['tinyMCE']]);
@@ -1036,7 +1062,7 @@ class Frontend extends Controller
     private function reportComment(int $elemId)
     {
         $CommentsManager = new CommentsManager();
-        if ($elemId > 0 && $CommentsManager->exists($_GET['id'])) {
+        if ($elemId > 0 && $CommentsManager->exists($elemId)) {
             $ReportManager = new ReportManager();
             if (!$ReportManager->reportExists('comment', $elemId, $_SESSION['id'])) {
                 RenderView::render('template.php', 'frontend/reportView.php', ['option' => ['tinyMCE']]);

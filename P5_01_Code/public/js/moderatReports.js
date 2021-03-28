@@ -1,3 +1,4 @@
+let btnReportProfile = document.getElementById('btnReportProfile');
 let btnReportPost = document.getElementById('btnReportPost');
 let btnReportComment = document.getElementById('btnReportComment');
 let btnReportOther = document.getElementById('btnReportOther');
@@ -71,9 +72,16 @@ function fillContentReport() {
 				let elemI = document.createElement('i');
 				let idElem = 0;
 				let idUser = 0;
-				if (elem === 'post' || elem === 'comment') {
-					//if post or comment, add a link to see the post concerned by the report
-					row['idPost'] !== undefined ? idElem = row['idPost'] : idElem = row['idComment'];
+				if (elem === 'profile' || elem === 'post' || elem === 'comment') {
+					//if profile or post or comment, add a link to see the post concerned by the report
+					if (row['idPost'] !== undefined) {
+						idElem = row['idPost'];
+					} else if (row['idComment'] !== undefined) {
+						idElem = row['idComment'];
+					} else if (row['idProfile'] !== undefined) {
+						idElem = row['idProfile'];
+					}
+
 					idUser = row['idUser'];
 					let elemLinkElem = document.createElement('a');
 					elemLinkElem.href = 'indexAdmin.php?action=moderatReports&elem=' + elem + '&idElem=' + idElem;
@@ -142,6 +150,8 @@ function fillContentReportFromElem(idElem) {
 }
 function animFirstClick()
 {
+	btnReportProfile.style.margin = '5px';
+	btnReportProfile.style.padding = '10px';
 	btnReportPost.style.margin = '5px';
 	btnReportPost.style.padding = '10px';
 	btnReportComment.style.margin = '5px';
@@ -165,6 +175,36 @@ function toggleBtn(btnToFocus)
 
 if (document.querySelector('.moderatReportsFromElem') === null) {
 	//all reports
+	btnReportProfile.addEventListener('click', function() {
+		if (elem !== 'profile') {
+			//display block content, set focus btn
+			toggleBtn(btnReportProfile);
+			elem = 'profile';
+			pageDisplay.i = 1;
+			//paging
+			paging.innerHTML = "";
+			url = 'indexAdmin.php?action=getCountReports&elem=' + elem;
+			ajaxGet(url, function(response) {
+				if (response.length > 0 && response !== 'false') {
+					elemCount = parseInt(JSON.parse(response));
+					let nbPage = Math.ceil(elemCount / limit);
+					for (let i=1; i < nbPage + 1; i++) {
+						let elemLi = document.createElement('li');
+						elemLi.textContent = i;
+						if (i === 1) {
+							pageDisplay.elem = elemLi;
+							elemLi.style.color = '#CF8B3F';
+						}
+						addEventPaging(elemLi, i);
+						paging.appendChild(elemLi);
+					}
+				}
+			});
+			//fill content
+			fillContentReport();
+		}
+	});
+
 	btnReportPost.addEventListener('click', function() {
 		if (elem !== 'post') {
 			//display block content, set focus btn
@@ -259,7 +299,7 @@ if (document.querySelector('.moderatReportsFromElem') === null) {
 	let textBtnDelete = document.querySelector('#btnDeleteReportsFromElem > p');
 	let btnConfirmDeleteAll = document.querySelector('#btnDeleteReportsFromElem > i');
 	let arrUrlVar = [];
-	//reports from one comment / post
+	//reports from one comment / post / profile
 	window.addEventListener('load', function() {
 		let url = window.location.search.split('&');
 		for (let i=1; i<url.length; i++) {
