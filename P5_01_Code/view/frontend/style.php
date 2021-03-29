@@ -3,53 +3,73 @@ if (isset($_GET['action'])) {
     switch ($_GET['action']) {
         case 'signUp' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/signInSignUp.css">';
-            break;
+        break;
+        
         case 'signIn' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/signInSignUp.css">';
-            break;
+        break;
+        
         case 'resetPassword' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/signInSignUp.css">';
-            break;
+        break;
+        
         case 'settings' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/settings.css">';
-            break;
+        break;
+        
         case 'search' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/search.css">';
-            break;
+        break;
+        
         case 'advancedSearch' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/search.css">';
-            break;
+        break;
+        
         case 'listTags' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/search.css">';
-            break;
+        break;
+        
         case 'listSchools' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/search.css">';
-            break;
+        break;
+        
         case 'userProfile' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/profile.css">';
-            break;
+        break;
+        
         case 'schoolProfile' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/profile.css">';
-            break;
+        break;
+        
         case 'report' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/report.css">';
-            break;
+        break;
+        
         case 'post' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/postAndFolder.css">';
             echo '<link rel="stylesheet" type="text/css" href="public/css/profile.css">';
-            break;
+        break;
+        
         case 'addPost' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/addPost.css">';
-            break;
+        break;
+        
         case 'faq' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/faq.css">';
-            break;
+        break;
+        
         case 'cgu' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/cgu.css">';
-            break;
+        break;
+        
     }
 } else {
-    //"action" undefined
-    echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/home.css">';
+    if (SITE_MAINTENANCE) {
+        //site is in maintenance
+        echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/maintenance.css">';
+    } else {
+        //"action" undefined
+        echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/home.css">';
+    }
 }
 ?>

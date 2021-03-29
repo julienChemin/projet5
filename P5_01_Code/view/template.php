@@ -28,13 +28,17 @@
         <link href="https://fonts.googleapis.com/css?family=Asap|Slabo+27px&display=swap" rel="stylesheet">
     </head>
     <body>
-        <?php 
-        require 'navbar.php';
+        <?php
+        if (!SITE_MAINTENANCE) {
+            require 'navbar.php';
+        }
 
         echo '<main>' . $content . '</main>';
 
-        require 'footer.php';
-        require 'jScript.php';
+        if (!SITE_MAINTENANCE) {
+            require 'footer.php';
+            require 'jScript.php';
+        }
         ?>
     </body>
 </html>

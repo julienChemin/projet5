@@ -26,11 +26,13 @@ const MODERATOR = 'moderator';
 const STUDENT = 'student';
 const USER = 'user';
 
+const SITE_MAINTENANCE = false;
+
 /*---------------------------------*/
 try {
     $Backend = new Backend();
     $Backend->verifyInformation();
-    if (isset($_GET['action'])) {
+    if (isset($_GET['action']) && !SITE_MAINTENANCE) {
         switch ($_GET['action']) {
             case 'disconnect' :
                 $Backend->disconnect();
@@ -142,8 +144,13 @@ try {
                 throw new Exception('L\'action renseignée est inexistante.');
         }
     } else {
-        //"action" undefined
-        $Backend->home();
+        if (SITE_MAINTENANCE) {
+            //site is in maintenance
+            header('Location: index.php');
+        } else {
+            //"action" undefined
+            $Backend->home();
+        }
     }
 } catch (Exception $e) {
     $Backend->error($e->getMessage());

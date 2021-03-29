@@ -30,11 +30,15 @@ const MODERATOR = 'moderator';
 const STUDENT = 'student';
 const USER = 'user';
 
+const SITE_MAINTENANCE = false;
+const DURATION_MAINTENANCE = 'Moins de X minutes';
+const REASON_MAINTENANCE = "R.A.S";
+
 /*---------------------------------*/
 try {
     $Frontend = new Frontend();
     $Frontend->verifyInformation();
-    if (isset($_GET['action'])) {
+    if (isset($_GET['action']) && !SITE_MAINTENANCE) {
         switch ($_GET['action']) {
             case 'disconnect' :
                 $Frontend->disconnect();
@@ -149,8 +153,13 @@ try {
                 throw new Exception('L\'action renseignée est inexistante.');
         }
     } else {
-        //"action" undefined
-        $Frontend->home();
+        if (SITE_MAINTENANCE) {
+            //site is in maintenance
+            $Frontend->maintenance();
+        } else {
+            //"action" undefined
+            $Frontend->home();
+        }
     }
 } catch (Exception $e) {
     $Frontend->error($e->getMessage());

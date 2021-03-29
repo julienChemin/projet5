@@ -44,6 +44,10 @@ class Backend extends Controller
         }
     }
 
+    public function maintenance() {
+        RenderView::render('template.php', 'maintenanceView.php');
+    }
+
     public function home()
     {
         $message = null;

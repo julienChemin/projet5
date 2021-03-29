@@ -38,6 +38,10 @@ class Frontend extends Controller
         }
     }
 
+    public function maintenance() {
+        RenderView::render('template.php', 'frontend/maintenanceView.php');
+    }
+
     public function home()
     {
         //check url

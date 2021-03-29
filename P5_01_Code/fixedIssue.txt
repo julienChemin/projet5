@@ -1,6 +1,5 @@
 new stuff
-    - webmaster can edit schools/users banner / profile picture
-    - webmaster can delete profile content
+    - page de maintenance
 
 fixed issues
-    - webmaster can see private post (issue with last postManager chang)
+    - 
