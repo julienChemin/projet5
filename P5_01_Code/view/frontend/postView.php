@@ -168,7 +168,7 @@ $user = $data['user'];
                                     ?>
                                 </p>
                                 <?php
-                                if (empty($_SESSION['id']) || intval($_SESSION['id']) !== $comment->getIdAuthor()) {
+                                if (!empty($_SESSION['id']) && intval($_SESSION['id']) !== $comment->getIdAuthor()) {
                                     echo '<a href="index.php?action=report&elem=comment&id=' . $comment->getId() . '&idPost=' . $post->getId() . '" title="Signaler le commentaire" class="reportComment"><i class="far fa-flag"></i></a>';
                                 }
                                 ?>

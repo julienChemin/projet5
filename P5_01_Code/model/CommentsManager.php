@@ -45,7 +45,7 @@ class CommentsManager extends AbstractManager
             $this->sql(
                 'INSERT INTO ' . static::$TABLE_NAME . ' (idPost, content, idAuthor, datePublication) 
 				VALUES (:idPost, :content, :idAuthor, NOW())', 
-                [':idPost' => $POST['idPost'], ':content' => $POST['commentContent'], ':idAuthor' => $user->getId()]
+                [':idPost' => $POST['idPost'], ':content' => trim($POST['commentContent']), ':idAuthor' => $user->getId()]
             );
             return true;
         } else {

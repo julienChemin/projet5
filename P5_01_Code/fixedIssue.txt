@@ -1,5 +1,6 @@
 new stuff
-    - page de maintenance
+    - 
 
 fixed issues
-    - 
+    - prevent spam in comment and post description ... kind of..
+    - only logged user can report comments

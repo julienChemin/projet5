@@ -4,8 +4,8 @@ $isActive = $isLoggedUser && $_SESSION['isActive'] ? true : false;
 $isStudent = $isLoggedUser && $_SESSION['school'] !== NO_SCHOOL ? true : false;
 $isModerator = $isLoggedUser && $_SESSION['grade'] === MODERATOR ? true : false;
 $isAdmin = $isLoggedUser && $_SESSION['grade'] === ADMIN ? true : false;
-
 ?>
+
 <section id="blockFaq" class="container">
     <h1>Foire aux questions</h1>
     <div id="summary">
