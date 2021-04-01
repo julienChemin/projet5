@@ -138,7 +138,7 @@
                         ?>
                     </div>
                 </div>
-                <div id="tabPublication" class="editable">
+                <div id="tabPublication" class="editable noHeight">
                     <?php
                     if ($authorizedUser && $data['user']->getIsActive()) {
                         echo '<a href="index.php?action=addPost"><i class="far fa-plus-square iconeEdit"></i></a>';
@@ -146,7 +146,7 @@
                     ?>
                     <div></div>
                 </div>
-                <div id="tabAbout" class="editable">
+                <div id="tabAbout" class="editable noHeight">
                     <?php
                     if ($authorizedUser && $data['user']->getIsActive()) {
                         echo '<i class="far fa-plus-square iconeEdit"></i>';

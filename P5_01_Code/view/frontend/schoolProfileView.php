@@ -38,7 +38,7 @@
                 </ul>
             </nav>
             <div id="slideTab">
-                <div id="tabProfile">
+                <div id="tabProfile" class="noHeight">
                     <div>
                         <?php
                         if (!empty($data['profileContent'])) {
@@ -61,7 +61,7 @@
                         ?>
                     </div>
                 </div>
-                <div id="tabNews">
+                <div id="tabNews" class="noHeight">
                     <div>
                         <?php
                         if (!empty($data['profileContent'])) {
@@ -84,19 +84,19 @@
                         ?>
                     </div>
                 </div>
-                <div id="tabPublication">
+                <div id="tabPublication" class="noHeight">
                     <div></div>
                 </div>
                 <?php
                 if (!empty($_SESSION) && (($data['school']->getName() === $_SESSION['school'] && $data['userIsActive']) || $_SESSION['school'] === ALL_SCHOOL)) {
                     ?>
-                    <div id="tabPrivatePublication">
+                    <div id="tabPrivatePublication" class="noHeight">
                         <div></div>
                     </div>
                     <?php
                 }
                 ?>
-                <div id="tabAbout">
+                <div id="tabAbout" class="noHeight">
                     <div>
                         <?php
                         if (!empty($data['profileContent'])) {

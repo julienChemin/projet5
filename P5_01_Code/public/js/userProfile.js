@@ -16,7 +16,7 @@ let modal = document.getElementById('modal');
 let slideTab = document.getElementById('slideTab');
 let slides = document.querySelectorAll('#slideTab > div');
 let allButtonsTab = document.querySelectorAll('#blockTabs > li');
-let focusButton = {elem :allButtonsTab[0]};
+let focusElem = { buttonTab: allButtonsTab[0], slide: slides[0] };
 
 
 /*------------------------
@@ -25,10 +25,13 @@ let focusButton = {elem :allButtonsTab[0]};
 for (let i=0; i<allButtonsTab.length; i++) {
 	allButtonsTab[i].addEventListener('click', function(){
 		if (!allButtonsTab[i].classList.contains('buttonIsFocus')) {
-			toggleClass(focusButton.elem, 'buttonIsFocus');
+			toggleClass(focusElem.buttonTab, 'buttonIsFocus');
+			toggleClass(slides[i], "noHeight");
 			slideTo(-(i*100), slides);
 			toggleClass(allButtonsTab[i], 'buttonIsFocus');
-			focusButton.elem = allButtonsTab[i];
+			toggleClass(focusElem.slide, "noHeight");
+			focusElem.buttonTab = allButtonsTab[i];
+			focusElem.slide = slides[i];
 		}
 	});
 }

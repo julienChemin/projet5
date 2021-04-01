@@ -113,7 +113,10 @@ figure img{
     color: #CF8B3F!important;
 }
 .hide{
-    display: none;
+    display: none!important;
+}
+.noHeight{
+    height: 0px!important;
 }
 #tinyMCEtextarea + div{
     min-height: 65vh;

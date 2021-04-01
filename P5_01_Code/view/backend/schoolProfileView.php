@@ -38,7 +38,7 @@
                 </ul>
             </nav>
             <div id="slideTab">
-                <div id="tabProfile" class="editable">
+                <div id="tabProfile" class="editable noHeight">
                     <i class="far fa-plus-square iconeEdit"></i>
                     <div>
                         <?php
@@ -74,7 +74,7 @@
                         ?>
                     </div>
                 </div>
-                <div id="tabNews" class="editable">
+                <div id="tabNews" class="editable noHeight">
                     <i class="far fa-plus-square iconeEdit"></i>
                     <div>
                         <?php
@@ -110,15 +110,15 @@
                         ?>
                     </div>
                 </div>
-                <div id="tabPublication" class="editable">
+                <div id="tabPublication" class="editable noHeight">
                     <a href="indexAdmin.php?action=addSchoolPost"><i class="far fa-plus-square iconeEdit"></i></a>
                     <div></div>
                 </div>
-                <div id="tabPrivatePublication" class="editable">
+                <div id="tabPrivatePublication" class="editable noHeight">
                     <a href="indexAdmin.php?action=addSchoolPost"><i class="far fa-plus-square iconeEdit"></i></a>
                     <div></div>
                 </div>
-                <div id="tabAbout" class="editable">
+                <div id="tabAbout" class="editable noHeight">
                     <i class="far fa-plus-square iconeEdit"></i>
                     <div>
                         <?php
