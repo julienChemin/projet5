@@ -1,16 +1,24 @@
 <section id="blockProfile">
     <!-- editing menus -->
     <div id="blockMenuEditingTop"></div>
-    <?php $data['school']->getNoBanner() ? $backgroundImgAttribut = '' : $backgroundImgAttribut = "background-image: url('" . $data['school']->getProfileBanner() . "')"?>
-    <div id="banner" class="editable"  style="<?=$backgroundImgAttribut?>">
+    <?php
+        if ($data['school']->getNoBanner()) {
+            $backgroundImgAttribut = '';
+            $classNoBanner = "noBanner";
+        } else {
+            $backgroundImgAttribut = "background-image: url('" . $data['school']->getProfileBanner() . "')";
+            $classNoBanner = "";
+        }
+    ?>
+    <div id="banner" class="editable <?=$classNoBanner?>"  style="<?=$backgroundImgAttribut?>">
         <i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la bannière"></i>
     </div>
     <div id="colorFade"></div>
-    
+
     <article id="profile" class="container">
         <header>
-            <div class="<?=$data['school']->getProfilePictureSize()?> editable">
-                <img src="<?=$data['school']->getProfilePicture()?>" alt="Photo de profil" class="<?=$data['school']->getProfilePictureOrientation()?>">
+            <?php $data['school']->getProfilePicture() === 'public/images/question-mark.png' ? $PictureSrc = $data["school"]->getLogo() : $PictureSrc = $data["school"]->getProfilePicture()?>
+            <div id="profilePicture" class="editable <?=$data['school']->getProfilePictureSize()?>" style="background-image: url('<?=$PictureSrc?>')">
                 <i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la photo de profil"></i>
             </div>
             <div class="<?=$data['school']->getProfileTextBlock()?> editable">
@@ -178,25 +186,12 @@
         </p>
     </form>
     <form id="contentMenuEditProfilePicture" class="contentMenuEdit menuEditHeader" method="POST" 
-            action="indexAdmin.php?action=upload&elem=picture&orientation=<?=$data['school']->getProfilePictureOrientation()?>&size=<?=$data['school']->getProfilePictureSize()?>&school=<?=$data['school']->getName()?>"
+            action="indexAdmin.php?action=upload&elem=picture&size=<?=$data['school']->getProfilePictureSize()?>&school=<?=$data['school']->getName()?>"
             enctype="multipart/form-data">
         <p>
             <label for="dlPicture">Télécharger une image (max : 5Mo): </label>
             <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
             <input type="file" name="dlPicture" id="dlPicture" accept="image/*">
-        </p>
-        <hr>
-        <p>
-            <span>
-                <input type="radio" name="pictureOrientation" id="widePicture" 
-                value="widePicture" <?=$data['school']->getProfilePictureOrientation() === 'widePicture' ? 'checked' : 'unchecked'?>>
-                <label for="widePicture">Image large</label>
-            </span>
-            <span>
-                <input type="radio" name="pictureOrientation" id="highPicture" 
-                value="highPicture" <?=$data['school']->getProfilePictureOrientation() === 'highPicture' ? 'checked' : 'unchecked'?>>
-                <label for="highPicture">Image haute</label>
-            </span>
         </p>
         <hr>
         <p>

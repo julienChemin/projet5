@@ -1,5 +1,7 @@
 new stuff
-    - 
+    - delete feature "orientation" on profile picture
+    - profile picture are now all square size
+    - responsive profile user / school
 
 fixed issues
     - 

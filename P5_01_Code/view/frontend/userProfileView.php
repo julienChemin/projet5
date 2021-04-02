@@ -6,10 +6,17 @@
         $authorizedUser = false;
     }
     $data['user']->getSchool() === NO_SCHOOL ? $visibility = 'hide' : $visibility = '';
+
+    if ($data['user']->getNoBanner()) {
+        $backgroundImgAttribut = '';
+        $classNoBanner = "noBanner";
+    } else {
+        $backgroundImgAttribut = "background-image: url('" . $data['user']->getProfileBanner() . "')";
+        $classNoBanner = "";
+    }
     ?>
 
-    <?php $data['user']->getNoBanner() ? $backgroundImgAttribut = '' : $backgroundImgAttribut = "background-image: url('" . $data['user']->getProfileBanner() . "')"?>
-    <div id="banner" class="editable" style="<?=$backgroundImgAttribut?>">
+    <div id="banner" class="editable <?=$classNoBanner?>" style="<?=$backgroundImgAttribut?>">
         <?php if ($authorizedUser) {
             echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la bannière"></i>';
         }
@@ -19,8 +26,7 @@
 
     <article id="profile" class="container">
         <header>
-            <div class="<?=$data['user']->getProfilePictureSize()?> editable">
-                <img src="<?=$data['user']->getProfilePicture()?>" alt="Photo de profil" class="<?=$data['user']->getProfilePictureOrientation()?>">
+            <div id="profilePicture" class="editable <?=$data['user']->getProfilePictureSize()?>" style="background-image: url('<?=$data['user']->getProfilePicture()?>')">
                 <?php
                 if ($authorizedUser) {
                     echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la photo de profil"></i>';
@@ -221,25 +227,12 @@ if ($authorizedUser) {
         </form>
         <!-- Profile picture -->
         <form id="contentMenuEditProfilePicture" class="contentMenuEdit menuEditHeader" method="POST" 
-        action="index.php?action=upload&elem=picture&orientation=<?=$data['user']->getProfilePictureOrientation()?>&size=<?=$data['user']->getProfilePictureSize()?>&userId=<?=$data['user']->getId()?>" 
+        action="index.php?action=upload&elem=picture&size=<?=$data['user']->getProfilePictureSize()?>&userId=<?=$data['user']->getId()?>" 
         enctype="multipart/form-data">
             <p>
                 <label for="dlPicture">Télécharger une image (max : 5Mo): </label>
                 <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
                 <input type="file" name="dlPicture" id="dlPicture" accept="image/*">
-            </p>
-            <hr>
-            <p>
-                <span>
-                    <input type="radio" name="pictureOrientation" id="widePicture" 
-                    value="widePicture" <?=$data['user']->getProfilePictureOrientation() === 'widePicture' ? 'checked' : 'unchecked'?>>
-                    <label for="widePicture">Image large</label>
-                </span>
-                <span>
-                    <input type="radio" name="pictureOrientation" id="highPicture" 
-                    value="highPicture" <?=$data['user']->getProfilePictureOrientation() === 'highPicture' ? 'checked' : 'unchecked'?>>
-                    <label for="highPicture">Image haute</label>
-                </span>
             </p>
             <hr>
             <p>

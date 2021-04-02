@@ -1,16 +1,20 @@
 <section id="blockProfile">
-    <?php $data['school']->getNoBanner() ? $backgroundImgAttribut = '' : $backgroundImgAttribut = "background-image: url('" . $data['school']->getProfileBanner() . "')"?>
-    <div id="banner" style="<?=$backgroundImgAttribut?>"></div>
+    <?php
+        if ($data['school']->getNoBanner()) {
+            $backgroundImgAttribut = '';
+            $classNoBanner = "noBanner";
+        } else {
+            $backgroundImgAttribut = "background-image: url('" . $data['school']->getProfileBanner() . "')";
+            $classNoBanner = "";
+        }
+    ?>
+    <div id="banner" class="<?=$classNoBanner?>" style="<?=$backgroundImgAttribut?>"></div>
     <div id="colorFade"></div>
 
     <article id="profile" class="container">
         <header>
-            <div class="<?=$data['school']->getProfilePictureSize()?>">
-                <?php
-                $data['school']->getProfilePicture() === 'public/images/question-mark.png' ? $PictureSrc = $data["school"]->getLogo() : $PictureSrc = $data["school"]->getProfilePicture();
-                echo '<img src="' . $PictureSrc . '" alt="Photo de profil" class="' . $data["school"]->getProfilePictureOrientation() . '">';
-                ?>
-            </div>
+            <?php $data['school']->getProfilePicture() === 'public/images/question-mark.png' ? $PictureSrc = $data["school"]->getLogo() : $PictureSrc = $data["school"]->getProfilePicture()?>
+            <div id="profilePicture" class="<?=$data['school']->getProfilePictureSize()?>" style="background-image: url('<?=$PictureSrc?>')"></div>
             <div class="<?=$data['school']->getProfileTextBlock()?>">
                 <span class="<?=$data['school']->getProfileTextSchool()?>"><?=$data['school']->getName()?></span>
             </div>

@@ -720,16 +720,14 @@ class Frontend extends Controller
     private function uploadProfilePicture(array $GET, User $user, string $finalPath)
     {
         $UserManager = new UserManager();
-        $validOrientationValue = array('highPicture', 'widePicture');
         $validSizeValue = array('smallPicture', 'mediumPicture', 'bigPicture');
 
-        if ($user && !empty($GET['orientation']) && in_array($GET['orientation'], $validOrientationValue)
-        && !empty($GET['size']) && in_array($GET['size'], $validSizeValue)) {
+        if ($user && !empty($GET['size']) && in_array($GET['size'], $validSizeValue)) {
             if (strpos('images/question-mark.png', $user->getProfilePicture()) === false) {
                 $this->deleteFile($user->getProfilePicture());
             }
 
-            $infos = $finalPath . ' ' . $GET['orientation'] . ' ' . $GET['size'];
+            $infos = $finalPath . ' ' . $GET['size'];
             $UserManager->updateById($user->getId(), 'profilePictureInfo', $infos);
         } else {
 			$this->incorrectInformation();
@@ -753,11 +751,11 @@ class Frontend extends Controller
 
     private function updateProfilePicture(User $user, UserManager $UserManager)
     {
-        if (isset($_GET['orientation'], $_GET['size'], $_GET['value'])) {
+        if (isset($_GET['size'], $_GET['value'])) {
             if (strpos($_GET['value'], $user->getProfilePicture()) === false && strpos('images/question-mark.png', $user->getProfilePicture()) === false) {
                 $this->deleteFile($user->getProfilePicture());
             }
-            $infos = $_GET['value'] . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
+            $infos = $_GET['value'] . ' ' . $_GET['size'];
             $UserManager->updateById($_GET['userId'], 'profilePictureInfo', $infos);
         } else {
 			$this->incorrectInformation();

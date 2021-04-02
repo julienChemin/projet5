@@ -1,12 +1,16 @@
 #banner{
     width: 100%;
-    height: 60vh;
+    height: 65vh;
     max-height: 600px;
     overflow: hidden;
     position: relative;
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
+    background-position: center;
+}
+.noBanner{
+    height: 30vh!important;
 }
 #colorFade{
     position: relative;
@@ -17,7 +21,7 @@
 }
 #profile{
     position: relative;
-    top: -150px;
+    top: -35vh;
 }
 #profile .inactiveSchool{
     padding: 5px 0;
@@ -39,40 +43,36 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    flex: auto;
     position: relative;
-    padding: 30px;
-    width: 100%;
+    padding: 0 30px;
 }
 #profile > header span, #profile > header a{
     font-size: 1.5em;
-    margin-top: 20px;
+    margin: 5px;
     color: white;
 }
 #profile > header span{
     font-size: 2em;
 }
-.widePicture{
-    width: 100%;
-    max-height: 100%;
-}
-.highPicture{
-    max-width: 100%;
-    height: 100%;
+#profilePicture{
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }
 .smallPicture{
-    min-width: 170px;
-    width: 170px;
-    max-height: 170px;
+    width: 100px;
+    height: 100px;
+    margin-top: 200px;
 }
 .mediumPicture{
-    min-width: 300px;
-    width: 300px;
-    max-height: 300px;
+    width: 200px;
+    height: 200px;
+    margin-top: 100px;
 }
 .bigPicture{
-    min-width: 500px;
-    width: 500px;
-    max-height: 500px;
+    width: 300px;
+    height: 300px;
 }
 .elemStart{
     align-self: flex-start;
@@ -264,8 +264,8 @@ a[class="iconeEdit"]{
 }
 
 /*------------ menu edit picture profile ------------*/
-#contentMenuEditProfilePicture hr:nth-of-type(1) + p{
-    text-align: left;
+#contentMenuEditProfilePicture p:nth-of-type(2) span:nth-of-type(1){
+    margin-bottom: 10px;
 }
 
 /*------------ menu edit text ------------*/
@@ -477,20 +477,25 @@ a:hover > .previewTitle, div:hover > .previewTitle{
 ====================================================================================================================================*/
 
 @media all and (min-width:992px) and (max-width:1200px){
+    #banner{
+        height: 60vh;
+    }
+    .noBanner{
+        height: 25vh!important;
+    }
     .smallPicture{
-        min-width: 170px;
-        width: 170px;
-        max-height: 170px;
+        width: 90px;
+        height: 90px;
+        margin-top: 190px;
     }
     .mediumPicture{
-        min-width: 300px;
-        width: 300px;
-        max-height: 300px;
+        width: 180px;
+        height: 180px;
+        margin-top: 80px;
     }
     .bigPicture{
-        min-width: 400px;
-        width: 400px;
-        max-height: 400px;
+        width: 270px;
+        height: 270px;
     }
     .thumbnailFolder{
         max-width: 80%;
@@ -514,20 +519,25 @@ a:hover > .previewTitle, div:hover > .previewTitle{
 ====================================================================================================================================*/
 
 @media all and (min-width:768px) and (max-width:992px){
+    #banner{
+        height: 50vh;
+    }
+    .noBanner{
+        height: 25vh!important;
+    }
     .smallPicture{
-        min-width: 150px;
-        width: 150px;
-        max-height: 150px;
+        width: 80px;
+        height: 80px;
+        margin-top: 180px;
     }
     .mediumPicture{
-        min-width: 200px;
-        width: 200px;
-        max-height: 200px;
+        width: 170px;
+        height: 170px;
+        margin-top: 70px;
     }
     .bigPicture{
-        min-width: 300px;
-        width: 300px;
-        max-height: 300px;
+        width: 250px;
+        height: 250px;
     }
     .blockContentProfile, .blockContentNews, .blockContentAbout{
         border-radius: 10px;
@@ -561,20 +571,25 @@ a:hover > .previewTitle, div:hover > .previewTitle{
 ====================================================================================================================================*/
 
 @media all and (min-width:600px) and (max-width:768px){
+    #banner{
+        height: 40vh;
+    }
+    .noBanner{
+        height: 25vh!important;
+    }
     .smallPicture{
-        min-width: 120px;
-        width: 120px;
-        max-height: 120px;
+        width: 70px;
+        height: 70px;
+        margin-top: 170px;
     }
     .mediumPicture{
-        min-width: 150px;
-        width: 150px;
-        max-height: 150px;
+        width: 160px;
+        height: 160px;
+        margin-top: 60px;
     }
     .bigPicture{
-        min-width: 200px;
-        width: 200px;
-        max-height: 200px;
+        width: 230px;
+        height: 230px;
     }
     .blockContentProfile, .blockContentNews, .blockContentAbout{
         border-radius: 10px;
@@ -608,20 +623,25 @@ a:hover > .previewTitle, div:hover > .previewTitle{
 ====================================================================================================================================*/
 
 @media all and (max-width:600px){
+    #banner{
+        height: 30vh;
+    }
+    .noBanner{
+        height: 25vh!important;
+    }
     .smallPicture{
-        min-width: 100px;
-        width: 100px;
-        max-height: 100px;
+        width: 60px;
+        height: 60px;
+        margin-top: 160px;
     }
     .mediumPicture{
-        min-width: 120px;
-        width: 120px;
-        max-height: 120px;
+        width: 90px;
+        height: 90px;
+        margin-top: 90px;
     }
     .bigPicture{
-        min-width: 150px;
         width: 150px;
-        max-height: 150px;
+        height: 150px;
     }
     .blockContentProfile, .blockContentNews, .blockContentAbout{
         border-radius: 10px;

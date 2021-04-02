@@ -1,4 +1,4 @@
-function getBackgroundImgPath(elem) {
+function getImgPath(elem) {
 	let backgroundValue = elem.style.backgroundImage;
 	let regex = /url\(['"`](.+)['"`]\)/;
 	let result;
@@ -103,7 +103,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	let formBanner = document.querySelector('#contentMenuEditBanner');
 	let school = formBanner.elements.school.value;
 	let banner = document.querySelector('#banner');
-	let bannerImgPath = getBackgroundImgPath(banner);
+	let bannerImgPath = getImgPath(banner);
 	let newBannerImgPath = "";
 
 	//input no banner
@@ -114,9 +114,11 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 		if (e.target.checked) {
 			banner.style.backgroundImage = "";
 			newBannerImgPath = "";
+			banner.classList.add("noBanner");
 		} else {
 			banner.style.backgroundImage = "url('" + bannerImgPath + "')";
 			newBannerImgPath = "url('" + bannerImgPath + "')";
+			banner.classList.remove("noBanner");
 		}
 	});
 
@@ -135,6 +137,12 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 				//edit actual "noBanner" value
 				noBanner = formBanner.elements.noBanner.checked;
 
+				if (formBanner.elements.noBanner.checked) {
+					banner.classList.add("noBanner");
+				} else {
+					banner.classList.remove("noBanner");
+				}
+
 				ajaxGet(url, function(){
 					toggleClass(buttonMenuEdit, 'menuIsOpen');
 				});
@@ -145,33 +153,8 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 	//MENU EDIT PICTURE PROFILE
 	let formProfilePicture = document.querySelector('#contentMenuEditProfilePicture');
-	let blockProfilePicture = document.querySelector('#profile > header > div:first-of-type');
-	let profileImg = document.querySelector('#profile img:first-of-type');
-
-	//input orientation
-	document.getElementById('widePicture').addEventListener('click', function(e){
-		if (!profileImg.classList.contains('widePicture')) {
-			profileImg.classList.add('widePicture');
-			profileImg.classList.remove('highPicture');
-		}
-
-		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
-			url += '&size=' + formProfilePicture.elements.pictureSize.value;
-			url += '&school=' + school;
-			formProfilePicture.action = url;
-	});
-
-	document.getElementById('highPicture').addEventListener('click', function(e){
-		if (!profileImg.classList.contains('highPicture')) {
-			profileImg.classList.add('highPicture');
-			profileImg.classList.remove('widePicture');
-		}
-
-		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
-			url += '&size=' + formProfilePicture.elements.pictureSize.value;
-			url += '&school=' + school;
-			formProfilePicture.action = url;
-	});
+	let blockProfilePicture = document.querySelector('#profilePicture');
+	let profileImgPath = getImgPath(blockProfilePicture);
 
 	//input size
 	document.getElementById('smallPicture').addEventListener('click', function(e){
@@ -181,7 +164,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			blockProfilePicture.classList.remove('bigPicture');
 		}
 
-		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+		let url = 'indexAdmin.php?action=upload&elem=picture';
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
 			url += '&school=' + school;
 			formProfilePicture.action = url;
@@ -194,7 +177,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			blockProfilePicture.classList.remove('bigPicture');
 		}
 
-		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+		let url = 'indexAdmin.php?action=upload&elem=picture';
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
 			url += '&school=' + school;
 			formProfilePicture.action = url;
@@ -207,29 +190,26 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			blockProfilePicture.classList.remove('mediumPicture');
 		}
 
-		let url = 'indexAdmin.php?action=upload&elem=picture&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+		let url = 'indexAdmin.php?action=upload&elem=picture';
 			url += '&size=' + formProfilePicture.elements.pictureSize.value;
 			url += '&school=' + school;
 			formProfilePicture.action = url;
 	});
 
 	//submit
-	let pictureOrientation = formProfilePicture.elements.pictureOrientation.value;
 	let pictureSize = formProfilePicture.elements.pictureSize.value;
 
 	formProfilePicture.elements.saveProfilePicture.addEventListener('click', function(e){
 		if (formProfilePicture.elements.dlPicture.value === "") {
 			// profile picture don't change
 			e.preventDefault();
-			if (pictureOrientation !== formProfilePicture.elements.pictureOrientation.value || pictureSize !== formProfilePicture.elements.pictureSize.value) {
-				// toggle "orientation" and / or "size" value
+			if (pictureSize !== formProfilePicture.elements.pictureSize.value) {
+				// toggle "size" value
 				let url = 'indexAdmin.php?action=updateProfile&school=' + school;
-				url += '&elem=profilePicture&value=' + profileImg.src;
-				url += '&orientation=' + formProfilePicture.elements.pictureOrientation.value;
+				url += '&elem=profilePicture&value=' + profileImgPath;
 				url += '&size=' + formProfilePicture.elements.pictureSize.value;
 
-				// edit actual "orientation" and / or "size" value
-				pictureOrientation = formProfilePicture.elements.pictureOrientation.value;
+				// edit actual "size" value
 				pictureSize = formProfilePicture.elements.pictureSize.value;
 
 				ajaxGet(url, function(){

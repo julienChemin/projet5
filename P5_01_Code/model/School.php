@@ -22,7 +22,6 @@ class School
         $noBanner,
         $profilePictureInfo = null,
         $profilePicture,
-        $profilePictureOrientation,
         $profilePictureSize,
         $profileTextInfo = null,
         $profileTextBlock,
@@ -149,11 +148,6 @@ class School
     public function getProfilePicture()
     {
         return $this->profilePicture;
-    }
-
-    public function getProfilePictureOrientation()
-    {
-        return $this->profilePictureOrientation;
     }
 
     public function getProfilePictureSize()
@@ -319,7 +313,6 @@ class School
     {
         if ($profilePictureInfo === null) {
             $this->setProfilePicture('public/images/question-mark.png');
-            $this->setProfilePictureOrientation('widePicture');
             $this->setProfilePictureSize('smallPicture');
         } elseif (is_string($profilePictureInfo) && strlen($profilePictureInfo) > 0) {
             $infos = explode(' ', $profilePictureInfo);
@@ -328,8 +321,7 @@ class School
                 $infos[0] = $url[count($url) - 4] . '/' . $url[count($url) - 3] . '/' . $url[count($url) - 2] . '/' . $url[count($url) - 1];
             }
             $this->setProfilePicture($infos[0]);
-            $this->setProfilePictureOrientation($infos[1]);
-            $this->setProfilePictureSize($infos[2]);
+            $this->setProfilePictureSize($infos[1]);
         }
         return $this;
     }
@@ -338,14 +330,6 @@ class School
     {
         if (strlen($profilePicture) > 0) {
             $this->profilePicture = $profilePicture;
-        }
-        return $this;
-    }
-
-    public function setProfilePictureOrientation(string $profilePictureOrientation)
-    {
-        if (strlen($profilePictureOrientation) > 0) {
-            $this->profilePictureOrientation = $profilePictureOrientation;
         }
         return $this;
     }

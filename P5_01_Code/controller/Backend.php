@@ -737,7 +737,7 @@ class Backend extends Controller
     private function uploadBanner(array $GET, School $school, string $finalPath)
     {
         $validBannerValue = array('true', 'false');
-        if (!empty($GET['noBanner']) && in_array($GET['noBanner'], $validBannerValue)) {
+        if ($school && !empty($GET['noBanner']) && in_array($GET['noBanner'], $validBannerValue)) {
             $SchoolManager = new SchoolManager();
             $this->deleteFile($school->getProfileBanner());
             $infos = $finalPath . ' ' . $GET['noBanner'];
@@ -749,13 +749,11 @@ class Backend extends Controller
 
     private function uploadProfilePicture(array $GET, School $school, string $finalPath)
     {
-        $validOrientationValue = array('highPicture', 'widePicture');
         $validSizeValue = array('smallPicture', 'mediumPicture', 'bigPicture');
-        if (!empty($GET['orientation']) && in_array($GET['orientation'], $validOrientationValue)
-        && !empty($GET['size']) && in_array($GET['size'], $validSizeValue)) {
+        if ($school && !empty($GET['size']) && in_array($GET['size'], $validSizeValue)) {
             $SchoolManager = new SchoolManager();
             $this->deleteFile($school->getProfilePicture());
-            $infos = $finalPath . ' ' . $GET['orientation'] . ' ' . $GET['size'];
+            $infos = $finalPath . ' ' . $GET['size'];
             $SchoolManager->updateByName($school->getName(), 'profilePictureInfo', $infos);
         } else {
             $this->incorrectInformation();
@@ -779,11 +777,11 @@ class Backend extends Controller
 
     private function updateProfilePicture(School $school, SchoolManager $SchoolManager)
     {
-        if (isset($_GET['orientation'], $_GET['size'], $_GET['value'])) {
+        if (isset($_GET['size'], $_GET['value'])) {
             if (strpos($_GET['value'], $school->getProfilePicture()) === false) {
                 $this->deleteFile($school->getProfilePicture());
             }
-            $infos = $_GET['value'] . ' ' . $_GET['orientation'] . ' ' . $_GET['size'];
+            $infos = $_GET['value'] . ' ' . $_GET['size'];
             $SchoolManager->updateByName($_GET['school'], 'profilePictureInfo', $infos);
         } else {
 			$this->incorrectInformation();
