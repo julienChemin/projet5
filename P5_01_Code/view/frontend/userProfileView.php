@@ -8,16 +8,15 @@
     $data['user']->getSchool() === NO_SCHOOL ? $visibility = 'hide' : $visibility = '';
     ?>
 
-    <div id="banner" class="editable">
-        <?php
-        $data['user']->getNoBanner() ? $classForBanner = 'hide' : $classForBanner = "";
-        echo '<img class="' . $classForBanner . '" src="' . $data['user']->getProfileBanner() . '" alt="bannière">';
-        if ($authorizedUser) {
+    <?php $data['user']->getNoBanner() ? $backgroundImgAttribut = '' : $backgroundImgAttribut = "background-image: url('" . $data['user']->getProfileBanner() . "')"?>
+    <div id="banner" class="editable" style="<?=$backgroundImgAttribut?>">
+        <?php if ($authorizedUser) {
             echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la bannière"></i>';
         }
         ?>
     </div>
     <div id="colorFade"></div>
+
     <article id="profile" class="container">
         <header>
             <div class="<?=$data['user']->getProfilePictureSize()?> editable">

@@ -769,6 +769,7 @@ class Backend extends Controller
             if (strpos($_GET['value'], $school->getProfileBanner()) === false) {
                 $this->deleteFile($school->getProfileBanner());
             }
+            
             $infos = $_GET['value'] . ' ' . $_GET['noBanner'];
             $SchoolManager->updateByName($_GET['school'], 'profileBannerInfo', $infos);
         } else {

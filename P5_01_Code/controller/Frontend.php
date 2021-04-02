@@ -743,6 +743,7 @@ class Frontend extends Controller
             if (strpos($_GET['value'], $user->getProfileBanner()) === false) {
                 $this->deleteFile($user->getProfileBanner());
             }
+
             $infos = $_GET['value'] . ' ' . $_GET['noBanner'];
             $UserManager->updateById($_GET['userId'], 'profileBannerInfo', $infos);
         } else {

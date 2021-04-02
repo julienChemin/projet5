@@ -1,10 +1,12 @@
 #banner{
     width: 100%;
-    min-height: 200px;
+    height: 60vh;
+    max-height: 600px;
+    overflow: hidden;
     position: relative;
-}
-#banner img{
-    width: 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
 }
 #colorFade{
     position: relative;

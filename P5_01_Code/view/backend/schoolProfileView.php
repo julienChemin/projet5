@@ -1,16 +1,12 @@
 <section id="blockProfile">
     <!-- editing menus -->
-    <div id="blockMenuEditingTop">
-        
-    </div>
-    <div id="banner" class="editable">
-        <?php
-        $data['school']->getNoBanner() ? $classForBanner = 'hide' : $classForBanner = "";
-        echo '<img class="' . $classForBanner . '" src="' . $data['school']->getProfileBanner() . '" alt="Bannière">';
-        echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la bannière"></i>';
-        ?>
+    <div id="blockMenuEditingTop"></div>
+    <?php $data['school']->getNoBanner() ? $backgroundImgAttribut = '' : $backgroundImgAttribut = "background-image: url('" . $data['school']->getProfileBanner() . "')"?>
+    <div id="banner" class="editable"  style="<?=$backgroundImgAttribut?>">
+        <i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la bannière"></i>
     </div>
     <div id="colorFade"></div>
+    
     <article id="profile" class="container">
         <header>
             <div class="<?=$data['school']->getProfilePictureSize()?> editable">

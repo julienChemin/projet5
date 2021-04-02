@@ -2,4 +2,4 @@ new stuff
     - 
 
 fixed issues
-    - fixed the empty space at the bottom of user profile  when changing tabs (profil / publication / about / news)
+    - 

@@ -281,9 +281,9 @@ abstract class Controller
     }
 
     /*------------------------------ file stuff ------------------------------*/
-    protected function deleteFile(string $filePath)
+    protected function deleteFile($filePath)
     {
-        if (strlen($filePath) > 0 && file_exists($filePath) && strpos($filePath, 'question-mark') === false) {                              
+        if (!empty($filePath) && strlen($filePath) > 0 && file_exists($filePath) && strpos($filePath, 'question-mark') === false) {                              
             unlink($filePath);
         }
         return $this;

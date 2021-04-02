@@ -1,3 +1,15 @@
+function getBackgroundImgPath(elem) {
+	let backgroundValue = elem.style.backgroundImage;
+	let regex = /url\(['"`](.+)['"`]\)/;
+	let result;
+	
+	if (result = regex.exec(backgroundValue)) {
+		return result[1];
+	}
+	
+	return null;
+}
+
 function toggleClass(elem, classToToggle) {
 	if (elem.classList.contains(classToToggle)) {
 		elem.classList.remove(classToToggle);
@@ -100,8 +112,11 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 
 	//MENU EDIT BANNER
 	let formBanner = document.querySelector('#contentMenuEditBanner');
-	let bannerImg = document.querySelector('#banner img');
 	let userId = formBanner.elements.userId.value;
+	let banner = document.querySelector('#banner');
+	let bannerImgPath = getBackgroundImgPath(banner);
+	let newBannerImgPath = "";
+	
 
 	//input no banner
 	if (formBanner !== null) {
@@ -110,9 +125,11 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 			formBanner.action = url;
 				
 			if (e.target.checked) {
-				bannerImg.classList.add('hide');
+				banner.style.backgroundImage = "";
+				newBannerImgPath = "";
 			} else {
-				bannerImg.classList.remove('hide');
+				banner.style.backgroundImage = "url('" + bannerImgPath + "')";
+				newBannerImgPath = "url('" + bannerImgPath + "')";
 			}
 		});
 
@@ -125,7 +142,7 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 				if (noBanner !== formBanner.elements.noBanner.checked) {
 					//toggle "noBanner" value
 					let url = 'index.php?action=updateProfile&userId='+userId;
-					url += '&elem=profileBanner&value='+bannerImg.src;
+					url += '&elem=profileBanner&value='+newBannerImgPath;
 					url += '&noBanner='+formBanner.elements.noBanner.checked;
 
 					//edit actual "noBanner" value

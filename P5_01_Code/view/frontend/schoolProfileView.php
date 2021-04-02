@@ -1,11 +1,8 @@
 <section id="blockProfile">
-    <div id="banner">
-        <?php
-        $data['school']->getNoBanner() ? $classForBanner = 'hide' : $classForBanner = "";
-        echo '<img class="' . $classForBanner . '" src="' . $data['school']->getProfileBanner() . '" alt="bannière">';
-        ?>
-    </div>
+    <?php $data['school']->getNoBanner() ? $backgroundImgAttribut = '' : $backgroundImgAttribut = "background-image: url('" . $data['school']->getProfileBanner() . "')"?>
+    <div id="banner" style="<?=$backgroundImgAttribut?>"></div>
     <div id="colorFade"></div>
+
     <article id="profile" class="container">
         <header>
             <div class="<?=$data['school']->getProfilePictureSize()?>">
