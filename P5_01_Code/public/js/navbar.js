@@ -5,6 +5,7 @@ if (document.getElementById('pseudo')) {
     let marginPseudo = parseInt(getComputedStyle(pseudo).marginLeft);
     let icone = document.querySelector('#pseudo i');
     let rect = icone.getBoundingClientRect();
+    let menuHeaderIsOpen = false;
 
     window.addEventListener(
         "load", function () {
@@ -22,12 +23,12 @@ if (document.getElementById('pseudo')) {
 
     pseudo.addEventListener(
         "click", function () {
-            if (icone.classList.contains('fa-sort-down')) {
-                icone.classList.replace('fa-sort-down', 'fa-sort-up');
+            if (!menuHeaderIsOpen) {
+                menuHeaderIsOpen = true;
                 contentMenuNavbar.style.top = '0px';
                 menuNavbar.style.height = 'auto';
             } else {
-                icone.classList.replace('fa-sort-up', 'fa-sort-down');
+                menuHeaderIsOpen = false;
                 contentMenuNavbar.style.top = '-300px';
                 setTimeout(function () {
                     menuNavbar.style.height = '0px';

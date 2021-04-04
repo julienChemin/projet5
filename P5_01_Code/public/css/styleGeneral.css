@@ -46,9 +46,6 @@ a{
     color: #CF8B3F;
     font-family: 'Asap', sans-serif;
 }
-i{
-    font-size: 1.2em;
-}
 strong{
     font-weight: normal;
 }
@@ -291,19 +288,15 @@ figure img{
 }
 
 /*---------- posts and folders ----------*/
-.iconeVideo{
+.iconeVideo, .iconeFolder{
     z-index: 500;
     position: absolute;
-    top: 10px;
-    left: 10px;
+    bottom: 10px;
+    right: 10px;
     opacity: 0.7;
     width: 45px;
     transition: 0.3s ease;
     -webkit-transition: 0.3s ease;
-}
-figure:hover .iconeVideo{
-    opacity: 1;
-    width: 30%;
 }
 
 /* ------------------------------------------------------- */
@@ -630,7 +623,7 @@ footer ul{
         height: 200px;
     }
     i{
-        font-size: 1.1em;
+        font-size: 0.9em;
     }
     .container{
         max-width: 768px;
@@ -654,6 +647,9 @@ footer ul{
     #navbar i {
         font-size: 1em;
     }
+    #navbar li {
+        margin: 0 10px;
+    }
 
     /*------------- FOOTER -------------*/
     #about li{
@@ -672,6 +668,9 @@ footer ul{
     }
     figure{
         height: 150px;
+    }
+    i{
+        font-size: 0.9em;
     }
     .container{
         max-width: 600px;
@@ -699,7 +698,7 @@ footer ul{
         margin: 0;
     }
     #navbar li {
-        margin: 0 10px;
+        margin: 0 5px;
     }
     #navbar i {
         font-size: 0.9em;
@@ -745,6 +744,9 @@ footer ul{
     figure{
         height: 110px;
     }
+    i{
+        font-size: 0.8em;
+    }
     .container{
         max-width: 90%;
     }
@@ -759,6 +761,9 @@ footer ul{
     }
     .blockSchool > div:first-child > div{
         height: 110px;
+    }
+    .iconeVideo, .iconeFolder{
+        width: 25px;
     }
 
     /*---------- modal ----------*/
@@ -788,10 +793,14 @@ footer ul{
         margin: 0;
     }
     #navbar li {
-        margin: 5px 10px;
+        margin: 5px 5px;
+        font-size: 1em;
     }
     #navbar i {
-        font-size: 1em;
+        font-size: 0.8em;
+    }
+    #navbar #pseudo i[class="fas fa-bars"]{
+        margin-left: 0;
     }
     #navbar #pseudo{
         font-size: 1em;
@@ -802,11 +811,12 @@ footer ul{
         width: 100%;
     }
     #menuNavbar ul{
-        font-size: 1em;
+        font-size: 0.8em;
     }
     #menuNavbar li{
         text-align: center;
         margin: 10px 0;
+
     }
 
     /* ------------------------ FOOTER ------------------------ */

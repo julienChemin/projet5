@@ -14,8 +14,8 @@
                     <hr class="hrNavbar">
 
                     <li id="pseudo">
-                        <?=$_SESSION['pseudo']?>
-                        <i class="fas fa-sort-down"></i>
+                        <span class="hideUnder600Width"><?=$_SESSION['fullName']?></span>
+                        <i class="fas fa-bars"></i>
                     </li>
                     <hr class="hrNavbar">
 

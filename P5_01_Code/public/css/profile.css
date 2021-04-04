@@ -389,7 +389,8 @@ a[class="iconeEdit"]{
     justify-content: flex-start;
 }
 .post, .folder{
-    width: 33.3%;
+    width: 300px;
+    height: 300px;
     transition: background 0.5s ease;
     -webkit-transition: background 0.5s ease;
 }
@@ -418,9 +419,9 @@ a[class="iconeEdit"]{
     transition: 0.2s linear;
     -webkit-transition: 0.2s linear;
 }
-.post:hover figure, .folder:hover figure{
+.post:hover, .folder:hover{
     background-color: #222224;
-    border-radius: 15px;
+    border-radius: 5px;
 }
 #tabPublication .post > figure > a, #tabPrivatePublication .post > figure > a{
     display: flex;
@@ -512,6 +513,12 @@ a:hover > .previewTitle, div:hover > .previewTitle{
     #blockProfile + #modal form{
         padding: 2px 5px;
     }
+
+    /*post / folder*/
+    .post, .folder{
+        width: 33.3%;
+        height: auto;
+    }
 }
 
 /*====================================================================================================================================
@@ -564,6 +571,12 @@ a:hover > .previewTitle, div:hover > .previewTitle{
     #blockProfile + #modal form{
         padding: 2px 5px;
     }
+
+    /*post / folder*/
+    .post, .folder{
+        width: 33.3%;
+        height: auto;
+    }
 }
 
 /*====================================================================================================================================
@@ -615,6 +628,12 @@ a:hover > .previewTitle, div:hover > .previewTitle{
     }
     #blockProfile + #modal form{
         padding: 2px 5px;
+    }
+
+    /*post / folder*/
+    .post, .folder{
+        width: 33.3%;
+        height: auto;
     }
 }
 
@@ -698,8 +717,12 @@ a:hover > .previewTitle, div:hover > .previewTitle{
     }
 
     /*post / folder*/
-    .post:hover figure, .folder:hover figure {
-        border-radius: 5px;
+    .post, .folder{
+        width: 125px;
+        height: 125px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     /* modal form tiny mce*/

@@ -10,8 +10,8 @@ $userIsAuthor = $data['userInfo']['userIsAuthor'];
 $userIsAdmin = $data['userInfo']['userIsAdmin'];
 $userIsModerator = $data['userInfo']['userIsModerator'];
 ?>
-<section id="viewFolder" class="container">
-    <article class="fullWidth">
+<section id="viewFolder">
+    <article>
         <div id="blockDescription" class="fullWidth">
             <?php
             if (!empty($post->getTitle())) {
@@ -23,17 +23,50 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
             echo '<span>Publié le ' . $post->getDatePublication() . ' </span>';
             ?>
         </div>
+
         <section>
-            <div></div>
+            <div class="container"></div>
         </section>
-        <hr>
+
+        <div id="optionList" class="fullWidth">
+            <nav class="container">
+                <ul>
+                    <?php
+                    if (!empty($user)) {
+                        echo '<li id="heart">';
+                            echo '<i class="far fa-heart" idpost="' . $post->getId() . '"></i>';
+                            echo '<span>' . $post->getNbLike() . '</span>';
+                        echo '</li>';
+                    }
+                    ?>
+                </ul>
+
+                <ul>
+                    <?php
+                    if (!empty($user) && $user->getIsActive() && ($userIsAuthor 
+                    || ($post->getPostType() === 'schoolPost' && $post->getIsPrivate() && $userSchool && $post->getIdSchool() === $userSchool->getId() 
+                    && ($userIsAdmin || $userIsModerator || empty($post->getListAuthorizedGroups()) || in_array($user->getSchoolGroup(), $post->getListAuthorizedGroups()))))) {
+                        echo '<li id="postOnFolder"><a href="' . $urlAddPostOnFolder . '"><i class="fas fa-folder-plus"></i></a></li>';
+                    }
+
+                    if (!empty($user) && ($userIsAuthor || $_SESSION['school'] === ALL_SCHOOL || ($post->getPostType() === 'schoolPost' && $post->getIdSchool() === $_SESSION['idSchool'] && $userIsAdmin))) {
+                        echo '<li id="deletePost" title="Supprimer la publication"><i class="far fa-trash-alt"></i></li>';
+                        echo '<a href="index.php?action=deletePost&id=' . $post->getId() . '" id="confirmDeletePost" title="Supprimer la publication">Supprimer définitivement la publication ?</i></a>';
+                    } elseif (!empty($user)) {
+                        echo '<li title="Signaler"><a href="index.php?action=report&elem=post&id=' . $post->getId() . '"><i class="far fa-flag"></i></a></li>';
+                    }
+                    ?>
+                </ul>
+            </nav>
+        </div>
     </article>
+
     <?php
     if (!empty($post->getOnFolder())) {
-        echo '<div class="postIsOnFolder">Cette publication fait parti d\'un dossier - <a href="index.php?action=post&id=' . $post->getOnFolder() . '">consulter</a></div>';
+        echo '<div class="postIsOnFolder container">Cette publication fait parti d\'un dossier - <a href="index.php?action=post&id=' . $post->getOnFolder() . '">consulter</a></div>';
     }
     ?>
-    <section id="commentsAndRelatedPosts">
+    <section id="commentsAndRelatedPosts" class="container">
         <div id="blockComments">
             <form id="addComment">
                 <?php
@@ -96,30 +129,8 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                 ?>
             </div>
         </div>
+        
         <aside>
-            <div id="optionList">
-                <nav>
-                    <ul>
-                        <?php
-                        if (!empty($user)) {
-                            echo '<li id="heart"><i class="far fa-heart" idpost="' . $post->getId() . '"></i></li>';
-                        }
-                        echo '<li id="nbLike"><span><span>' . $post->getNbLike() . '</span><i class="fas fa-heart"></i></span></li>';
-                        if (!empty($user) && $user->getIsActive() && ($userIsAuthor 
-                        || ($post->getPostType() === 'schoolPost' && $post->getIsPrivate() && $userSchool && $post->getIdSchool() === $userSchool->getId() 
-                        && ($userIsAdmin || $userIsModerator || empty($post->getListAuthorizedGroups()) || in_array($user->getSchoolGroup(), $post->getListAuthorizedGroups()))))) {
-                            echo '<li id="postOnFolder"><a href="' . $urlAddPostOnFolder . '"><i class="fas fa-folder-plus"></i></a></li>';
-                        }
-                        if (!empty($user) && ($userIsAuthor || $_SESSION['school'] === ALL_SCHOOL || ($post->getPostType() === 'schoolPost' && $post->getIdSchool() === $_SESSION['idSchool'] && $userIsAdmin))) {
-                            echo '<li id="deletePost" title="Supprimer la publication"><i class="far fa-trash-alt"></i></li>';
-                            echo '<a href="index.php?action=deletePost&id=' . $post->getId() . '" id="confirmDeletePost" title="Supprimer la publication">Supprimer définitivement la publication ?</i></a>';
-                        } elseif (!empty($user)) {
-                            echo '<li title="Signaler"><a href="index.php?action=report&elem=post&id=' . $post->getId() . '"><i class="far fa-flag"></i></a></li>';
-                        }
-                        ?>
-                    </ul>
-                </nav>
-            </div>
             <div id="authorProfile">
                 <?php
                 if ($author !== null) {
@@ -181,8 +192,8 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                         if ($post['fileType'] === 'folder' && $post['filePath'] !== 'public/images/folder.png') {
                             echo '<figure title="' . $post['title'] . '" class="postOnAside">';
                             echo '<a title="' . $post['title'] . '" href="index.php?action=post&id=' . $post['id'] . '">';
-                            echo '<img class="thumbnailFolder" src="' . $post['filePath'] . '" alt="Aperçu de la publication">';
-                            echo '<img src="public/images/folder.png" alt="Publication de type dossier">';
+                            echo '<img src="' . $post['filePath'] . '" alt="Aperçu de la publication">';
+                            echo '<img class="iconeFolder" src="public/images/folder.png" alt="Publication de type dossier">';
                             echo '</a></figure>';
                         } else {
                             echo '<figure title="' . $post['title'] . '" class="postOnAside">';
@@ -194,7 +205,7 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                             echo '</a></figure>';
                         }
                     }
-                    echo '</div><hr>';
+                    echo '</div>';
                 }
                 if (!empty($asidePosts['public'])) {
                     //display public post of this user/school
@@ -221,8 +232,8 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                         if ($post['fileType'] === 'folder' && $post['filePath'] !== 'public/images/folder.png') {
                             echo '<figure title="' . $post['title'] . '" class="postOnAside">';
                             echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
-                            echo '<img class="thumbnailFolder" src="' . $post['filePath'] . '" alt="Aperçu de la publication">';
-                            echo '<img src="public/images/folder.png" alt="Publication de type dossier">';
+                            echo '<img src="' . $post['filePath'] . '" alt="Aperçu de la publication">';
+                            echo '<img class="iconeFolder" src="public/images/folder.png" alt="Publication de type dossier">';
                             echo '</a></figure>';
                         } else {
                             echo '<figure title="' . $post['title'] . '" class="postOnAside">';
@@ -234,7 +245,7 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                             echo '</a></figure>';
                         }
                     }
-                    echo '</div><hr>';
+                    echo '</div>';
                 }
                 if (!empty($asidePosts['lastPosted'])) {
                     //display most recent post
@@ -260,8 +271,8 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                         if ($post->getFileType() === 'folder' && $post->getFilePath() !== 'public/images/folder.png') {
                             echo '<figure title="' . $post->getTitle() . '" class="postOnAside">';
                             echo '<a href="index.php?action=post&id=' . $post->getId() . '">';
-                            echo '<img class="thumbnailFolder" src="' . $post->getFilePath() . '" alt="Aperçu de la publication">';
-                            echo '<img src="public/images/folder.png" alt="Publication de type dossier">';
+                            echo '<img src="' . $post->getFilePath() . '" alt="Aperçu de la publication">';
+                            echo '<img class="iconeFolder" src="public/images/folder.png" alt="Publication de type dossier">';
                             echo '</a></figure>';
                         } else {
                             echo '<figure title="' . $post->getTitle() . '" class="postOnAside">';
@@ -273,7 +284,7 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                             echo '</a></figure>';
                         }
                     }
-                    echo '</div><hr>';
+                    echo '</div>';
                 }
                 ?>
             </div>

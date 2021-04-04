@@ -78,12 +78,12 @@ function setFolderPost(post, blockContent, onFolderView = false) {
 	divItem.classList.add('fullWidth');
 	let elemFigure = document.createElement('figure');
 	let elemDiv = document.createElement('div');
-	let elemImg = document.createElement('img');
-	elemImg.src = 'public/images/folder.png';
-	elemImg.alt = 'Publication de type dossier';
+	let elemIconeFolder = document.createElement('img');
+	elemIconeFolder.src = 'public/images/folder.png';
+	elemIconeFolder.alt = 'Publication de type dossier';
 	if (post['filePath'] !== null) {
+		elemIconeFolder.classList.add('iconeFolder');
 		let elemThumbnail = document.createElement('img');
-		elemThumbnail.classList.add('thumbnailFolder');
 		elemThumbnail.src = post['filePath'];
 		if (post['title'] !== null) {
 			elemThumbnail.alt = post['title'];
@@ -95,8 +95,9 @@ function setFolderPost(post, blockContent, onFolderView = false) {
 	}
 	let elemSpan = document.createElement('span');
 	elemSpan.classList.add('previewTitle');
+	elemSpan.classList.add('hideUnder600Width');
 	elemSpan.textContent = post['title'];
-	elemDiv.appendChild(elemImg);
+	elemDiv.appendChild(elemIconeFolder);
 	elemDiv.appendChild(elemSpan);
 	elemFigure.appendChild(elemDiv);
 	divItem.appendChild(elemFigure);

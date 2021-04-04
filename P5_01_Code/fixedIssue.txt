@@ -1,5 +1,5 @@
 new stuff
-    - 
+    - new style for folder view. Yeah !
 
 fixed issues
     - 

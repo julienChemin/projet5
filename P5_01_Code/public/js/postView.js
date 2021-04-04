@@ -118,14 +118,12 @@ if (btnDeletePost !== null) {
         'click', function () {
             btnConfirmDeletePost.style.display = "inline";
             btnDeletePost.style.display = "none";
-            btnLike.style.display = "none";
             if (btnPostOnFolder !== null) {
                 btnPostOnFolder.style.display = "none";
             }
             setTimeout(function () {
                 btnConfirmDeletePost.style.display = "none";
                 btnDeletePost.style.display = "inline";
-                btnLike.style.display = "inline";
                 if (btnPostOnFolder !== null) {
                     btnPostOnFolder.style.display = "inline";
                 }
@@ -137,14 +135,14 @@ if (btnDeletePost !== null) {
 //like/unlike the post
 if (btnLike !== null) {
     let idPost = btnLike.getAttribute('idPost');
-    let blockNbLike = document.querySelector('#nbLike > span > span');
+    let blockNbLike = document.querySelector('#heart > span');
     let nbLike = parseInt(blockNbLike.textContent);
     let urlAlreadyLike = 'index.php?action=userAlreadyLikePost&idPost=' + idPost;
     let urlToggleLike = 'index.php?action=toggleLikePost&idPost=' + idPost;
 
     function likePost()
     {
-        btnLike.style.transform = 'scale(0.3)';
+        btnLike.style.transform = 'scale(0.5)';
         setTimeout(function () {
             btnLike.classList.remove('far');
             btnLike.classList.add('fas');
@@ -166,7 +164,7 @@ if (btnLike !== null) {
     }
     function unlikePost()
     {
-        btnLike.style.transform = 'scale(0.3)';
+        btnLike.style.transform = 'scale(0.5)';
         setTimeout(function () {
             btnLike.classList.remove('fas');
             btnLike.classList.add('far');
