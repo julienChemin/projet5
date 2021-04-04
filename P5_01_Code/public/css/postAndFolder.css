@@ -61,13 +61,12 @@
     justify-content: center;
 }
 #authorProfile > a{
-    max-width: 90%;
-    max-height: 70%;
-}
-#authorProfile img{
-    max-width: 100%;
-    max-height: 100%;
+    width: 200px;
+    height: 200px;
     overflow: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 /*option list*/
 #optionList{
@@ -236,16 +235,13 @@ i[class="fas fa-download"]{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 15%;
-    height: 150px;
-    border-top: solid 1px white;
-    border-bottom: solid 1px white;
-    border-radius: 10px;
+    width: 130px;
+    height: 130px;
+    border-radius: 5px;
     overflow: hidden;
-}
-.comment > a > img{
-    max-width: 90%;
-    max-height: 90%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 .comment > div{
     width: 80%;
@@ -365,10 +361,13 @@ i[class="fas fa-download"]{
     align-self: flex-start;
 }
 #viewFolder #authorProfile > a{
-    width: 50%;
-    height: 80%;
-    display: flex;
-    justify-content: center;
+    width: 150px;
+    height: 150px;
+    border-radius: 5px;
+    overflow: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 #viewFolder #authorProfile > div{
     width: 80%;
@@ -500,7 +499,8 @@ i[class="fas fa-download"]{
 
     /*comment*/
     .comment > a{
-        height: 110px;
+        height: 100px;
+        width: 100px;
     }
 }
 
@@ -598,8 +598,8 @@ i[class="fas fa-download"]{
         flex-direction: column;
     }
     .comment > a{
-        width: 20%;
-        height: 110px;
+        width: 80px;
+        height: 80px;
     }
     .comment > div{
         width: 95%;
@@ -725,8 +725,8 @@ i[class="fas fa-download"]{
         flex-direction: column;
     }
     .comment > a{
-        width: 20%;
-        height: 120px;
+        width: 60px;
+        height: 60px;
     }
     .comment > div{
         width: 95%;
@@ -854,8 +854,8 @@ i[class="fas fa-download"]{
         flex-direction: column;
     }
     .comment > a{
-        width: 25%;
-        height: 100px;
+        width: 60px;
+        height: 60px;
     }
     .comment > div{
         width: 95%;

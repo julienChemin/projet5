@@ -20,8 +20,7 @@ $user = $data['user'];
                     }
                     ?>
 
-                    <a href="index.php?action=userProfile&userId=<?=$author->getId()?>">
-                        <img src="<?=$author->getProfilePicture()?>" alt="Photo de profil">
+                    <a href="index.php?action=userProfile&userId=<?=$author->getId()?>" style="background-image: url('<?=$author->getProfilePicture()?>');">
                     </a>
                     <div>
                         <a href="index.php?action=userProfile&userId=<?=$author->getId()?>" style="color:<?=$authorColor?>;">
@@ -149,9 +148,7 @@ $user = $data['user'];
                         ?>
 
                         <div class="comment fullWidth">
-                            <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>" style="border-top-color:<?=$userColor?>; border-bottom-color:<?=$userColor?>;">
-                                <img src="<?=$comment->getProfilePictureAuthor()?>" alt="Photo de profil">
-                            </a>
+                            <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>" style="background-image: url('<?=$comment->getProfilePictureAuthor()?>');"></a>
                             <div>
                                 <a href="index.php?action=userProfile&userId=<?=$comment->getIdAuthor()?>" style="color:<?=$userColor?>;">
                                     <?=$comment->getFirstNameAuthor()?> <?=$comment->getLastNameAuthor()?>
