@@ -9,24 +9,20 @@
 }
 #viewPost > article, #viewFolder > article{
     display: flex;
+    flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    margin: 10px 0;
-}
-#viewPost > article{
-    height: 80vh;
 }
 #viewPost > article > section, #viewFolder > article > section{
     height: 100%;
 }
-#viewPost > article > section:first-of-type, #viewFolder > article > section:first-of-type{
+#viewPost > article > section{
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
-}
-#viewPost > article > section:first-of-type{
-    flex-direction: column;
-    width: 23%;
+    min-width: 100%;
+    height: 80vh;
+    background-color: #161617;
 }
 #viewPost hr, #viewFolder hr{
     margin: 30px 0;
@@ -38,9 +34,6 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    width: 100%;
-    height: 78%;
-    background-color: #161617;
     border-radius: 15px;
     word-wrap: break-word;
 }
@@ -49,8 +42,7 @@
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    width: 100%;
-    height: 20%;
+    width: 95%;
 }
 #authorProfile a{
     text-align: center;
@@ -63,6 +55,7 @@
 #authorProfile > a{
     width: 200px;
     height: 200px;
+    border-radius: 5px;
     overflow: hidden;
     background-size: cover;
     background-repeat: no-repeat;
@@ -110,28 +103,28 @@
     -webkit-transition: 0.2s ease-out;
     margin-right: 10px;
 }
-#confirmDeletePost{
-    display: none;
-    color: red;
+#viewPost > article:nth-of-type(1) > section:nth-of-type(1){
+    padding-top: 15px;
 }
-#viewPost > article > section:nth-of-type(2){
+#viewPost > article:nth-of-type(1) > section:nth-of-type(1) div{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 73%;
+    height: 100%;
+    width: 100%;
 }
-#viewPost > article > section:nth-of-type(2) > a{
+#viewPost > article:nth-of-type(1) > section:nth-of-type(1) div > a{
     display: flex;
     justify-content: center;
     align-items: center;
-    max-width: 90%;
-    height: 90%;
+    width: 95%;
+    height: 95%;
 }
-#viewPost > article > section:nth-of-type(2) .fileImage{
+#viewPost > article:nth-of-type(1) > section:nth-of-type(1) div > a > img{
     max-width: 100%;
     max-height: 100%;
 }
-#viewPost > article > section:nth-of-type(2) .fileCompressed{
+#viewPost > article:nth-of-type(1) > section:nth-of-type(1) div > a > .fileCompressed{
     max-width: 60%;
     max-height: 60%;
 }
@@ -139,14 +132,13 @@ i[class="fas fa-download"]{
     font-size: 3em;
 }
 .postIsOnFolder{
-    width: 60%;
-    margin: 10px auto;
-    text-align: center;
+    margin: 10px 5% 10px auto;
+    text-align: right;
     background-color: #161617;
     border: solid 1px #CF8B3F;
     border-radius: 10px;
     font-size: 1.2em;
-    padding: 5px;
+    padding: 5px 15px;
 }
 #warningMsg{
     text-align: right;
@@ -175,6 +167,7 @@ i[class="fas fa-download"]{
     justify-content: center;
     align-items: center;
     margin: 30px 0;
+    background-color: #161617;
 }
 #listTags h2{
     color: #CF8B3F;
@@ -329,21 +322,9 @@ i[class="fas fa-download"]{
     max-width: 90%;
     border-radius: 5px;
 }
-.postOnAside .thumbnailFolder{
-    border-radius: 5px;
-    bottom: 22%;
-    max-height: 45%;
-    max-width: 85%;
-}
-.postOnAside .thumbnailFolder + img{
-    height: auto;
-}
 /* ------------------------------------------------------------ */
 /* ------------------------- FOLDER VIEW ---------------------- */
 /* ------------------------------------------------------------ */
-#viewFolder > article{
-    flex-direction: column;
-}
 #viewFolder > article > section{
     display: flex;
     justify-content: center;
@@ -362,33 +343,12 @@ i[class="fas fa-download"]{
     width: 95%;
     margin: 70px auto 0 auto;
 }
-#viewFolder #authorProfile{
-    background-color: transparent;
-    align-self: flex-start;
-}
-#viewFolder #authorProfile > a{
-    width: 200px;
-    height: 200px;
-    border-radius: 5px;
-    overflow: hidden;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-#viewFolder #authorProfile > div{
-    width: 80%;
-    height: 80%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-}
-#viewFolder #authorProfile > div > a{
+#authorProfile > div > a{
     text-align: center;
     word-break: break-word;
     margin-top: 10px;
 }
-#viewFolder #commentsAndRelatedPosts > aside{
+#commentsAndRelatedPosts > aside{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -397,18 +357,62 @@ i[class="fas fa-download"]{
     width: 28%;
     margin-top: 25px;
 }
-#viewFolder #relatedPosts{
+#relatedPosts{
     width: 100%;
 }
-#viewFolder #confirmDeletePost{
-    text-align: center;
-}
-#viewFolder #blockDescription{
+#blockDescription{
     margin: 25px auto 15px auto;
     max-width: 90%;
+    display: flex;
+}
+#blockDescription #authorProfile{
+    width: 500px;
+    align-self: center;
+}
+#blockDescription #authorProfile + div{/*folder description*/
+    flex: auto;
+    align-self: center;
+}
+#blockDescription #authorProfile + div > h1{
+    text-align: center;
+}
+.folderDatePublication{
+    text-align: right;
+}
+.publicationDescription{
+    background-color: #161617;
+    padding: 5px;
+    border-radius: 5px;
 }
 #viewFolder .post > figure > a{
     position: relative;
+}
+
+/******************/
+/*******MODAL******/
+/******************/
+#modal #confirmDeletePost{
+    display: none;
+    width: 300px;
+    height: auto;
+    text-align: center;
+    padding: 25px 50px;
+}
+#modal #confirmDeletePost > div{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin-top: 15px;
+}
+#modal #confirmDeletePost > div a{
+    padding: 5px;
+    background-color: #222224;
+    color: #CF8B3F;
+    font-weight: bolder;
+    font-size: 1em;
+    border: solid 2px #CF8B3F;
+    border-radius: 10px;
 }
 
 /*====================================================================================================================================
@@ -420,75 +424,20 @@ i[class="fas fa-download"]{
         width: auto;
     }
     /*post view - list option and post*/
-    #viewPost > article{
-        flex-direction: column;
-        height: auto;
-        order: 1;
+    #blockDescription #authorProfile{
+        width: 30%;
     }
-    #viewPost > article > section:nth-child(1){
-        width: 100%;
-        order: 2;
-        margin-top: 15px;
+    #authorProfile > a{
+        width: 160px;
+        height: 160px;
     }
-    #viewPost #authorProfile{
-        width: 100%;
-        height: 80%;
-        margin-bottom: 10px;
-        flex-direction: row;
-    }
-    #viewPost #authorProfile > a{
-        max-width: 60%;
-        max-height: 90%;
-        padding: 5px;
-    }
-    #viewPost #authorProfile > div{
-        width: 50%;
-        height: auto;
-    }
-    #viewPost #optionList{
-        width: 50%;
-        height: auto;
-        margin-bottom: 25px;
-        align-self: flex-start;
-    }
-    #viewPost #blockDescription{
-        order: 2;
-        margin-top: 15px;
-    }
-    #viewPost #blockDescription h1{
-        margin-top: 0;
-    }
-    #viewPost #listTags{
-        order: 4;
-        margin-top: 0;
-    }
-    #viewPost #listTags h2{
-        margin-top: 0;
-    }
-    #viewPost #listTags + hr{
-        order: 3;
-    }
-    #viewPost #commentsAndRelatedPosts{
-        order: 5;
-    }
-    #viewPost > article > section:nth-child(2){
-        width: 100%;
-        height: 400px;
-        margin-top: 20px;
-    }
-    /*msg 'post is on folder'*/
-    #viewPost .postIsOnFolder{
-        width: 100%;
+    #viewPost > article:nth-of-type(1) > section:nth-of-type(1){
+        height: 500px;
     }
     /*post on aside*/
     .postOnAside{
         height: 80px;
         width: 32%;
-    }
-    .postOnAside .thumbnailFolder{
-        bottom: 25%;
-        max-height: 40%;
-        max-width: 75%;
     }
     #relatedPosts h1{
         font-size: 1.2em;
@@ -498,15 +447,6 @@ i[class="fas fa-download"]{
     .comment > a{
         height: 100px;
         width: 100px;
-    }
-    /* FOLDER VIEW*/
-    /*block related posts and comments on folder view*/
-    #viewFolder > article > section > div{
-        justify-content: flex-start;
-    }
-    #viewFolder #authorProfile > a{
-        width: 160px;
-        height: 160px;
     }
 }
 
@@ -518,73 +458,14 @@ i[class="fas fa-download"]{
     #commentsAndRelatedPosts{
         width: auto;
     }
-    /*post view - list option and post*/
-    #viewPost > article{
-        flex-direction: column;
-        height: auto;
-        order: 1;
+    #authorProfile > a{
+        width: 140px;
+        height: 140px;
     }
-    #viewPost > article > section:nth-child(1){
-        width: 100%;
-        order: 2;
-        margin-top: 15px;
-    }
-    #viewPost #authorProfile{
-        width: 100%;
-        height: 80%;
-        margin-bottom: 10px;
-        flex-direction: row;
-    }
-    #viewPost #authorProfile > a{
-        max-width: 60%;
-        max-height: 90%;
-        padding: 5px;
-    }
-    #viewPost #authorProfile > div{
-        width: 50%;
-        height: auto;
-    }
-    #viewPost #optionList{
-        width: 50%;
-        height: auto;
-        margin-bottom: 25px;
-        align-self: flex-start;
-    }
-    #viewPost #blockDescription{
-        order: 2;
-        margin-top: 15px;
-    }
-    #viewPost #blockDescription h1{
-        margin-top: 0;
-    }
-    #viewPost #listTags{
-        order: 4;
-        margin-top: 0;
-    }
-    #viewPost #listTags h2{
-        margin-top: 0;
-    }
-    #viewPost #listTags + hr{
-        order: 3;
-    }
-    #viewPost #commentsAndRelatedPosts{
-        order: 5;
-    }
-    #viewPost > article > section:nth-child(2){
-        width: 100%;
+    #viewPost > article:nth-of-type(1) > section:nth-of-type(1){
         height: 400px;
-        margin-top: 20px;
-    }
-    /*msg 'post is on folder'*/
-    #viewPost .postIsOnFolder{
-        width: 100%;
     }
     /*post on aside*/
-    .postOnAside .thumbnailFolder{
-        bottom: 25%;
-        max-height: 40%;
-        max-width: 75%;
-    }
     #relatedPosts h1{
         font-size: 1em;
     }
@@ -593,15 +474,17 @@ i[class="fas fa-download"]{
         height: 100px;
     }
 
+    #blockDescription{
+        flex-direction: column;
+    }
+    #blockDescription #authorProfile{
+        width: 100%;
+    }
+    #blockDescription #authorProfile + div{
+        width: 100%;
+    }
+    
     /* FOLDER VIEW*/
-    #viewFolder #authorProfile > a{
-        width: 140px;
-        height: 140px;
-    }
-    /*block related posts and comments on folder view*/
-    #viewFolder > article > section > div{
-        justify-content: flex-start;
-    }
     #viewFolder #optionList{
         font-size: 0.8em;
     }
@@ -629,82 +512,10 @@ i[class="fas fa-download"]{
         width: auto;
     }
     /*post view - list option and post*/
-    #viewPost > article{
-        flex-direction: column;
-        height: auto;
-        order: 1;
+    #viewPost > article:nth-of-type(1) > section:nth-of-type(1){
+        height: 300px;
     }
-    #viewPost > article > section:nth-child(1){
-        width: 100%;
-        order: 2;
-        margin-top: 15px;
-    }
-    #viewPost #authorProfile{
-        width: 100%;
-        height: 80%;
-        margin-bottom: 10px;
-        flex-direction: row;
-    }
-    #viewPost #authorProfile > a{
-        max-width: 60%;
-        max-height: 90%;
-        padding: 5px;
-    }
-    #viewPost #authorProfile > div{
-        width: 50%;
-        height: auto;
-    }
-    #viewPost #optionList{
-        width: 50%;
-        height: auto;
-        margin-bottom: 25px;
-        align-self: flex-start;
-    }
-    #viewPost #blockDescription{
-        order: 2;
-        margin-top: 15px;
-    }
-    #viewPost #blockDescription h1{
-        margin-top: 0;
-    }
-    #viewPost #listTags{
-        order: 4;
-        margin-top: 0;
-    }
-    #viewPost #listTags h2{
-        margin-top: 0;
-    }
-    #viewPost #listTags + hr{
-        order: 3;
-    }
-    #viewPost #commentsAndRelatedPosts{
-        order: 5;
-    }
-    #viewPost > article > section:nth-child(2){
-        width: 100%;
-        height: 400px;
-        margin-top: 20px;
-    }
-    /*msg 'post is on folder'*/
-    #viewPost .postIsOnFolder{
-        width: 100%;
-    }
-    /*block related posts and comments*/
-    #commentsAndRelatedPosts{
-        flex-direction: column;
-        margin-top: 0;
-    }
-    #blockComments{
-        width: 100%;
-        order: 2;
-    }
-    #commentsAndRelatedPosts > aside{
-        width: 100%;
-        order: 1;
-    }
-
-    /* FOLDER VIEW*/
-    #viewFolder #authorProfile > a{
+    #authorProfile > a{
         width: 120px;
         height: 120px;
     }
@@ -713,11 +524,20 @@ i[class="fas fa-download"]{
     #viewFolder > article > section{
         padding: 10px 0;
     }
-    #viewFolder > article > section > div{
-        justify-content: flex-start;
+    #blockDescription{
+        flex-direction: column;
+    }
+    #blockDescription #authorProfile{
+        width: 100%;
     }
     #viewFolder #authorProfile{
         margin-top: 15px;
+    }
+    #blockDescription #authorProfile + div{
+        width: 100%;
+    }
+    #blockDescription #authorProfile + div h1{
+        font-size: 1em;
     }
     #viewFolder #commentsAndRelatedPosts > aside{
         width: 100%;
@@ -729,12 +549,6 @@ i[class="fas fa-download"]{
     .postOnAside{
         width: 30%;
         height: 180px;
-    }
-    .postOnAside .thumbnailFolder{
-        border-radius: 2px;
-        bottom: 25%;
-        max-height: 40%;
-        max-width: 75%;
     }
     #relatedPosts h1{
         font-size: 1.2em;
@@ -762,70 +576,10 @@ i[class="fas fa-download"]{
     #commentsAndRelatedPosts{
         width: auto;
     }
-    /*post view - list option and post*/
-    #viewPost > article{
-        flex-direction: column;
-        height: auto;
-        order: 1;
+    #viewPost > article:nth-of-type(1) > section:nth-of-type(1){
+        height: 250px;
     }
-    #viewPost > article > section:nth-child(1){
-        width: 100%;
-        order: 2;
-        margin-top: 15px;
-    }
-    #viewPost #authorProfile{
-        width: 100%;
-        height: 80%;
-        margin-bottom: 10px;
-        flex-direction: row;
-    }
-    #viewPost #authorProfile > a{
-        max-width: 60%;
-        max-height: 90%;
-        padding: 5px;
-    }
-    #viewPost #authorProfile > div{
-        width: 50%;
-        height: auto;
-    }
-    #viewPost #optionList{
-        width: 50%;
-        height: auto;
-        margin-bottom: 25px;
-        align-self: flex-start;
-    }
-    #viewPost #blockDescription{
-        order: 2;
-        margin-top: 15px;
-    }
-    #viewPost #blockDescription h1{
-        margin-top: 0;
-    }
-    #viewPost #listTags{
-        order: 4;
-        margin-top: 0;
-    }
-    #viewPost #listTags h2{
-        margin-top: 0;
-    }
-    #viewPost #listTags + hr{
-        order: 3;
-    }
-    #viewPost #commentsAndRelatedPosts{
-        order: 5;
-    }
-    #viewPost > article > section:nth-child(2){
-        width: 100%;
-        height: 400px;
-        margin-top: 20px;
-    }
-    /*msg 'post is on folder'*/
-    #viewPost .postIsOnFolder{
-        width: 100%;
-    }
-
-    /* FOLDER VIEW*/
-    #viewFolder #authorProfile > a{
+    #authorProfile > a{
         width: 100px;
         height: 100px;
     }
@@ -853,8 +607,20 @@ i[class="fas fa-download"]{
         justify-content: space-around;
         margin: 30px auto 0 auto;
     }
+    #blockDescription{
+        flex-direction: column;
+    }
+    #blockDescription #authorProfile{
+        width: 100%;
+    }
     #viewFolder #authorProfile{
         margin-top: 15px;
+    }
+    #blockDescription #authorProfile + div{
+        width: 100%;
+    }
+    #blockDescription h1{
+        font-size: 1em;
     }
     #viewFolder #commentsAndRelatedPosts > aside{
         width: 100%;
@@ -866,12 +632,6 @@ i[class="fas fa-download"]{
     .postOnAside{
         height: 130px;
         width: 130px;
-    }
-    .postOnAside .thumbnailFolder{
-        border-radius: 2px;
-        bottom: 25%;
-        max-height: 40%;
-        max-width: 75%;
     }
     #relatedPosts h1{
         font-size: 1.2em;

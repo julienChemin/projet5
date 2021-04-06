@@ -122,6 +122,7 @@ figure img{
 /*---------- modal ----------*/
 #modal{
     display: none;
+    z-index: 2000;
     justify-content: center;
     align-items: center;
     position: fixed;
@@ -150,6 +151,9 @@ figure img{
 
     transition: 0.15s linear;
     -webkit-transition: 0.15s linear;
+}
+.closeModal{
+    cursor: pointer;
 }
 
 /*---------- tag ----------*/

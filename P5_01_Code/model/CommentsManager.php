@@ -16,7 +16,7 @@ class CommentsManager extends AbstractManager
 
     public static $TABLE_PK = 'id';
 
-    public function getFromPost(int $idPost)
+    public function getFromPost(int $idPost, string $order = 'DESC')
     {
         if ($idPost > 0) {
             $comments = [];
@@ -26,7 +26,7 @@ class CommentsManager extends AbstractManager
                 LEFT JOIN ' . static::$TABLE_USER_NAME . ' AS u 
                 ON u.id = c.idAuthor 
                 WHERE c.idPost = :idPost 
-                ORDER BY c.datePublication', 
+                ORDER BY c.datePublication ' . $order, 
                 [':idPost' => $idPost]
             );
             while ($result = $q->fetch()) {

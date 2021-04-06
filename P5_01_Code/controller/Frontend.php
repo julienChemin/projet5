@@ -652,8 +652,10 @@ class Frontend extends Controller
     public function deleteComment()
     {
         $CommentsManager = new CommentsManager();
+        $PostsManager = new PostsManager();
         if (isset($_GET['id'], $_SESSION['id']) && $comment = $CommentsManager->getOneById($_GET['id'])) {
-            if ($comment->getIdAuthor() === $_SESSION['id'] || $_SESSION['school'] === ALL_SCHOOL) {
+            $post = $PostsManager->getOneById($comment->getIdPost());
+            if ($post && ($post->getIdAuthor() === $_SESSION['id'] || $comment->getIdAuthor() === $_SESSION['id'] || $_SESSION['school'] === ALL_SCHOOL)) {
                 $CommentsManager->delete($comment->getId());
                 echo 'true';
             } else {

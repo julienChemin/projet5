@@ -13,15 +13,53 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
 <section id="viewFolder">
     <article>
         <div id="blockDescription" class="fullWidth">
-            <?php
-            if (!empty($post->getTitle())) {
-                echo '<h1>' . $post->getTitle() . '</h1>';
-            }
-            if (!empty($post->getDescription())) {
-                echo '<div>' . $post->getDescription() . '</div>';
-            }
-            echo '<span>Publié le ' . $post->getDatePublication() . ' </span>';
-            ?>
+            <div id="authorProfile">
+                <?php
+                if ($author !== null) {
+                    if ($author->getIsAdmin() || $author->getIsModerator()) {
+                        $authorColor = '#de522f';
+                    } elseif ($author->getSchool() !== NO_SCHOOL) {
+                        $authorColor = '#CF8B3F';
+                    } else {
+                        $authorColor = '#b0a396';
+                    }
+                    ?>
+
+                    <a href="index.php?action=userProfile&userId=<?=$author->getId()?>" style="background-image: url('<?=$author->getProfilePicture()?>');"></a>
+
+                    <div>
+                        <a href="index.php?action=userProfile&userId=<?=$author->getId()?>" style="color:<?=$authorColor?>;">
+                            <span><?=$author->getFirstName()?> <?=$author->getLastName()?></span>
+                        </a>
+
+                        <?php
+                            if ($author->getSchool() !== NO_SCHOOL) {
+                                ?>
+                                    <a href="index.php?action=schoolProfile&school=<?=$author->getSchool()?>">
+                                        <span><?=$author->getSchool()?></span>
+                                    </a>
+                                <?php
+                            }
+                        ?>
+                    </div>
+                    <?php
+                } else {
+                    echo '<div>L\'auteur de cette publication n\'existe plus</div>';
+                }
+                ?>
+            </div>
+
+            <div>
+                <?php
+                if (!empty($post->getTitle())) {
+                    echo '<h1>' . $post->getTitle() . '</h1>';
+                }
+                if (!empty($post->getDescription())) {
+                    echo '<div class="publicationDescription">' . $post->getDescription() . '</div>';
+                }
+                echo '<p class="folderDatePublication">Publié le ' . $post->getDatePublication() . ' </p>';
+                ?>
+            </div>
         </div>
 
         <section>
@@ -51,7 +89,6 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
 
                     if (!empty($user) && ($userIsAuthor || $_SESSION['school'] === ALL_SCHOOL || ($post->getPostType() === 'schoolPost' && $post->getIdSchool() === $_SESSION['idSchool'] && $userIsAdmin))) {
                         echo '<li id="deletePost" title="Supprimer la publication"><i class="far fa-trash-alt"></i></li>';
-                        echo '<a href="index.php?action=deletePost&id=' . $post->getId() . '" id="confirmDeletePost" title="Supprimer la publication">Supprimer définitivement la publication ?</i></a>';
                     } elseif (!empty($user)) {
                         echo '<li title="Signaler"><a href="index.php?action=report&elem=post&id=' . $post->getId() . '"><i class="far fa-flag"></i></a></li>';
                     }
@@ -109,7 +146,7 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                                 <p>
                                     <?=$comment->getDatePublication()?>
                                     <?php
-                                    if (!empty($_SESSION['id']) && (intval($_SESSION['id']) === $comment->getIdAuthor() || $_SESSION['school'] === ALL_SCHOOL)) {
+                                    if (!empty($_SESSION['id']) && (intval($_SESSION['id']) === $post->getIdAuthor() || intval($_SESSION['id']) === $comment->getIdAuthor() || $_SESSION['school'] === ALL_SCHOOL)) {
                                         echo ' - <span class="deleteComment" idcomment="' . $comment->getId() . '">Supprimer le commentaire</span><span class="confirmDelete">Supprimer définitivement ?</span>';
                                     }
                                     ?>
@@ -131,43 +168,8 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
         </div>
         
         <aside>
-            <div id="authorProfile">
-                <?php
-                if ($author !== null) {
-                    if ($author->getIsAdmin() || $author->getIsModerator()) {
-                        $authorColor = '#de522f';
-                    } elseif ($author->getSchool() !== NO_SCHOOL) {
-                        $authorColor = '#CF8B3F';
-                    } else {
-                        $authorColor = '#b0a396';
-                    }
-                    ?>
-
-                    <a href="index.php?action=userProfile&userId=<?=$author->getId()?>" style="background-image: url('<?=$author->getProfilePicture()?>');"></a>
-
-                    <div>
-                        <a href="index.php?action=userProfile&userId=<?=$author->getId()?>" style="color:<?=$authorColor?>;">
-                            <span><?=$author->getFirstName()?> <?=$author->getLastName()?></span>
-                        </a>
-                        <?php
-                            if ($author->getSchool() !== NO_SCHOOL) {
-                                ?>
-                                    <a href="index.php?action=schoolProfile&school=<?=$author->getSchool()?>">
-                                        <span><?=$author->getSchool()?></span>
-                                    </a>
-                                <?php
-                            }
-                        ?>
-                    </div>
-                    <?php
-                } else {
-                    echo '<div>L\'auteur de cette publication n\'existe plus</div>';
-                }
-                ?>
-            </div>
             <div id="relatedPosts">
                 <?php
-                echo '<hr>';
                 if (!empty($asidePosts['onFolder'])) {
                     //post is on folder, display other post on this folder
                     echo '<h1>Autres publications dans ce dossier</h1>';
@@ -291,3 +293,14 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
         </aside>
     </section>
 </section>
+
+<div id="modal">
+    <div id="confirmDeletePost">
+        <p>Supprimer définitivement le dossier ainsi que tous son contenu ?</p>
+
+        <div>
+            <span class="closeModal">Annuler</span>
+            <a href="index.php?action=deletePost&id=<?=$data['post']->getId()?>"  title="Supprimer la publication">Confirmer</a>
+        </div>
+    </div>
+</div>

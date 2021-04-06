@@ -386,7 +386,7 @@ a[class="iconeEdit"]{
 
 /*------- publication -------*/
 #tabPublication > div:first-of-type, #tabPrivatePublication > div:first-of-type{
-    justify-content: flex-start;
+    justify-content: space-around;
 }
 .post, .folder{
     width: 300px;
@@ -395,6 +395,7 @@ a[class="iconeEdit"]{
     -webkit-transition: background 0.5s ease;
 }
 .folder{
+    position: relative;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -418,6 +419,8 @@ a[class="iconeEdit"]{
 .post figure, .folder figure{
     transition: 0.2s linear;
     -webkit-transition: 0.2s linear;
+    height: 100%;
+    margin: 0;
 }
 .post:hover, .folder:hover{
     background-color: #222224;
@@ -434,20 +437,6 @@ a[class="iconeEdit"]{
     justify-content: center;
     align-items: center;
     position: relative;
-}
-.thumbnailFolder{
-    z-index: 500;
-    position: absolute;
-    bottom: 15%;
-    border-radius: 5px;
-    max-width: 230px;
-    max-height: 55%;
-}
-.folderOpen > .fullWidth .thumbnailFolder{
-    max-width: 300px;
-}
-.folderOpen .thumbnailFolder + img{
-    width: auto;
 }
 .previewTitle{
     z-index: 500;
@@ -498,12 +487,6 @@ a:hover > .previewTitle, div:hover > .previewTitle{
         width: 270px;
         height: 270px;
     }
-    .thumbnailFolder{
-        max-width: 80%;
-    }
-    .folderOpen > .fullWidth .thumbnailFolder {
-        max-width: 250px;
-    }
     #contentMenuEditBlock{
         width: 100%;
     }
@@ -512,12 +495,6 @@ a:hover > .previewTitle, div:hover > .previewTitle{
     }
     #blockProfile + #modal form{
         padding: 2px 5px;
-    }
-
-    /*post / folder*/
-    .post, .folder{
-        width: 33.3%;
-        height: auto;
     }
 }
 
@@ -551,12 +528,6 @@ a:hover > .previewTitle, div:hover > .previewTitle{
         margin: 10px 0;
         padding: 0 5px;
     }
-    .thumbnailFolder{
-        max-width: 80%;
-    }
-    .folderOpen > .fullWidth .thumbnailFolder {
-        max-width: 210px;
-    }
     
     /*------------ menu edit ------------*/
     #contentMenuEditText{
@@ -574,8 +545,8 @@ a:hover > .previewTitle, div:hover > .previewTitle{
 
     /*post / folder*/
     .post, .folder{
-        width: 33.3%;
-        height: auto;
+        width: 250px;
+        height: 250px;
     }
 }
 
@@ -609,12 +580,6 @@ a:hover > .previewTitle, div:hover > .previewTitle{
         margin: 10px 0;
         padding: 0 5px;
     }
-    .thumbnailFolder{
-        max-width: 80%;
-    }
-    .folderOpen > .fullWidth .thumbnailFolder {
-        max-width: 160px;
-    }
 
     /*------------ menu edit ------------*/
     #contentMenuEditText{
@@ -632,8 +597,8 @@ a:hover > .previewTitle, div:hover > .previewTitle{
 
     /*post / folder*/
     .post, .folder{
-        width: 33.3%;
-        height: auto;
+        width: 200px;
+        height: 200px;
     }
 }
 
@@ -669,16 +634,6 @@ a:hover > .previewTitle, div:hover > .previewTitle{
     }
     #blockProfile + #modal form{
         padding: 2px 5px;
-    }
-    .thumbnailFolder{
-        max-width: 80%;
-    }
-    .thumbnailFolder + img{
-        height: 90%;
-        width: 90%;
-    }
-    .folderOpen > .fullWidth .thumbnailFolder {
-        max-width: 110px;
     }
 
     /*------------ menu edit ------------*/

@@ -27,10 +27,8 @@ function addComment(content)
     divComment.classList.add('comment', 'fullWidth');
     let linkPictureProfile = document.createElement('a');
     linkPictureProfile.href = 'index.php?action=userProfile&userId=' + formAddComment.elements.userId.value;
-    let imgPictureProfile = document.createElement('img');
-    imgPictureProfile.src = formAddComment.elements.userPicture.value;
-    imgPictureProfile.alt ='Photo de profil';
-    linkPictureProfile.appendChild(imgPictureProfile);
+    linkPictureProfile.setAttribute('style', "background-image: url('" + formAddComment.elements.userPicture.value + "');")
+
     divComment.appendChild(linkPictureProfile);
     let divContent = document.createElement('div');
     let linkUserName = document.createElement('a');
@@ -107,32 +105,9 @@ for (let i=0;i<arrBtnDeleteComment.length;i++) {
     );
 }
 
-//delete post
-let btnDeletePost = document.getElementById('deletePost');
-let btnConfirmDeletePost = document.getElementById('confirmDeletePost');
-let btnLike = document.querySelector('#heart > i');
-let btnPostOnFolder = document.querySelector('#postOnFolder > a');
-
-if (btnDeletePost !== null) {
-    btnDeletePost.addEventListener(
-        'click', function () {
-            btnConfirmDeletePost.style.display = "inline";
-            btnDeletePost.style.display = "none";
-            if (btnPostOnFolder !== null) {
-                btnPostOnFolder.style.display = "none";
-            }
-            setTimeout(function () {
-                btnConfirmDeletePost.style.display = "none";
-                btnDeletePost.style.display = "inline";
-                if (btnPostOnFolder !== null) {
-                    btnPostOnFolder.style.display = "inline";
-                }
-            }, 2500);
-        }
-    );
-}
-
 //like/unlike the post
+let btnLike = document.querySelector('#heart > i');
+
 if (btnLike !== null) {
     let idPost = btnLike.getAttribute('idPost');
     let blockNbLike = document.querySelector('#heart > span');
@@ -216,4 +191,38 @@ if (btnLike !== null) {
             }, 500);
         }
     );
+}
+
+//////////////////////////////////////
+        // MODAL
+//////////////////////////////////////
+
+const modal = document.getElementById('modal');
+
+if (modal !== null) {
+    const modalContent = document.querySelector('#modal > div');
+    const btnCloseModal = document.querySelectorAll('.closeModal');
+
+    //delete post
+    let btnDeletePost = document.getElementById('deletePost');
+    let blockConfirmDeletePost = document.getElementById('confirmDeletePost');
+
+    if (btnDeletePost !== null) {
+        btnDeletePost.addEventListener(
+            'click', function () {
+                modal.style.display = "flex";
+                blockConfirmDeletePost.style.display = "flex";
+            }
+        );
+    }
+
+    //close modal
+    for (btnClose of btnCloseModal) {
+        btnClose.addEventListener(
+            'click', function() {
+                modal.style.display = "none";
+                blockConfirmDeletePost.style.display = "none";
+            }
+        )
+    }
 }
