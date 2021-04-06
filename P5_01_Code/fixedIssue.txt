@@ -1,7 +1,6 @@
 new stuff
-    - new style for post view. Yeah !
-    - good responsive on folder and post view
-    - modal on folder and post view to display some option (usefull for later options)
+    - 
 
 fixed issues
-    - post author can delete comment on it
+    - folder style on profile
+    - webM access to private folder
