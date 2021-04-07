@@ -607,6 +607,10 @@ footer ul{
     button{
         font-size: 0.8em;
     }
+    /*block school*/
+    .blockSchool{
+        width: 90%;
+    }
 
     /*------------- FOOTER -------------*/
     #about li{
@@ -631,6 +635,9 @@ footer ul{
     }
     .container{
         max-width: 768px;
+    }
+    .blockSchool{
+        width: 90%;
     }
     .blockSchool > div:first-child > div{
         height: 130px;
@@ -685,8 +692,28 @@ footer ul{
     #blockSchools .blockSchool{
         width: 30%;
     }
+    .blockSchool{
+        width: 95%;
+    }
+    .blockSchool > div:first-child{
+        position: relative;
+        flex-wrap: wrap;
+    }
     .blockSchool > div:first-child > div{
+        height: auto;
+    }
+    .blockSchool > div:first-child > div:first-child{
+        width: 100%;
         height: 150px;
+    }
+    .blockSchool > div:first-child > div:nth-of-type(2){
+        flex: auto;
+    }
+    .blockSchool > div:first-child > div:nth-of-type(3){
+        width: auto;
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
     }
 
     /*---------- modal ----------*/
@@ -763,8 +790,28 @@ footer ul{
     #blockSchools .blockSchool{
         width: 30%;
     }
+    .blockSchool{
+        width: 100%;
+    }
+    .blockSchool > div:first-child{
+        position: relative;
+        flex-wrap: wrap;
+    }
     .blockSchool > div:first-child > div{
-        height: 110px;
+        height: auto;
+    }
+    .blockSchool > div:first-child > div:first-child{
+        width: 100%;
+        height: 150px;
+    }
+    .blockSchool > div:first-child > div:nth-of-type(2){
+        flex: auto;
+    }
+    .blockSchool > div:first-child > div:nth-of-type(3){
+        width: auto;
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
     }
     .iconeVideo, .iconeFolder{
         width: 25px;

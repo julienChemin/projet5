@@ -2,5 +2,4 @@ new stuff
     - 
 
 fixed issues
-    - folder style on profile
-    - webM access to private folder
+    - better responsive admin side
