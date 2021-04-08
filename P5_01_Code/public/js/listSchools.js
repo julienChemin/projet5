@@ -50,23 +50,26 @@ function fillUsersSection(users)
 function insertUser(user, block)
 {
     let elemDiv = document.createElement('div');
+
     let elemA = document.createElement('a');
     elemA.href = 'index.php?action=userProfile&userId=' + user['id'];
-    let elemFigure = document.createElement('figure');
-    elemFigure.classList.add('figureProfilePicture');
-    elemFigure.classList.add('fullWidth');
-    let elemDivOnFigure = document.createElement('div');
-    let elemImg = document.createElement('img');
-    elemImg.src = user['profilePicture'];
-    elemImg.alt = 'Photo de profil';
-    elemDivOnFigure.appendChild(elemImg);
-    elemFigure.appendChild(elemDivOnFigure);
-    let elemFigCaption = document.createElement('figcaption');
-    let elemP = document.createElement('p');
-    elemP.textContent = user['firstName'] + ' ' + user['lastName'];
-    elemFigCaption.appendChild(elemP);
-    elemFigure.appendChild(elemFigCaption);
-    elemA.appendChild(elemFigure);
+
+    let elemDivPp = document.createElement('div');
+    elemDivPp.style.backgroundImage = "url('" + user['profilePicture'] + "')";
+    elemDivPp.title = user['firstName'] + ' ' + user['lastName'];
+
+    let elemDivUserFullName = document.createElement('div');
+
+    let elemPFirstName = document.createElement('p');
+    elemPFirstName.textContent = user['firstName'];
+
+    let elemPLastName = document.createElement('p');
+    elemPLastName.textContent = user['lastName'];
+
+    elemDivUserFullName.appendChild(elemPFirstName);
+    elemDivUserFullName.appendChild(elemPLastName);
+    elemA.appendChild(elemDivPp);
+    elemA.appendChild(elemDivUserFullName);
     elemDiv.appendChild(elemA);
     block.appendChild(elemDiv);
 }

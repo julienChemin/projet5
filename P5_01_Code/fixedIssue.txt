@@ -1,5 +1,5 @@
 new stuff
-    - 
+    - new style and responsive on home and listSchools
 
 fixed issues
-    - better responsive admin side
+    - 

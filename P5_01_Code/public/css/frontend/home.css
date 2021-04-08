@@ -4,35 +4,42 @@
 
 /*SLIDERS POSTS*/
 #home{
-    background-color: #161617;
     min-height: 80vh;
 }
 #home .blockStyleOne{
     padding: 20px;
     background-color: #222224;
+    border: none;
+    margin: 0;
 }
 #home .slide{
     flex-wrap: nowrap;
+    min-height: fit-content;
 }
 #home .items{
-    height: 200px;
+    height: 190px;
+    width: 16%;
 }
 .sliderPosts{
     padding: 25px 0;
 }
-.sliderPosts > a{
+.sliderPosts > article{
+    background-color: #161617;
+}
+.sliderPosts > article > h1{
+    margin: 0;
+    padding: 25px;
+    background-color: #222224;
+}
+.sliderPosts article > div{
+    padding: 20px 0;
+}
+.sliderPosts article > div > a{
     display: inline-block;
     width: 100%;
     text-align: right;
 }
-.sliderPosts > h1{
-    margin-top: 0;
-    padding-top: 25px;
-}
-.sliderPosts hr{
-    margin-bottom: 0px;
-}
-.sliderPosts .posts{
+.sliderPosts article .posts{
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -50,7 +57,7 @@
 }
 .slide{
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
     min-width: 90%;
@@ -59,9 +66,10 @@
     padding: 0 5%;
 }
 .items{
-    width: 16.6%;
+    width: 15.5%;
     margin: 10px 0 0 0;
-    border-radius: 15px;
+    border: solid 2px #262627;
+    border-radius: 5px;
     position: relative;
     transition: 0.2s linear;
     -webkit-transition: 0.2s linear;
@@ -113,6 +121,10 @@
         min-height: auto;
         height: auto;
     }
+    #home .items{
+        height: 140px;
+        width: 140px;
+    }
 }
 
 /*====================================================================================================================================
@@ -123,11 +135,10 @@
     #home .slide{
         flex-wrap: wrap;
         justify-content: space-around;
-        height: 350px;
     }
     #home .items{
-        width: 30%;
-        height: 150px;
+        width: 210px;
+        height: 210px;
     }
     .arrow{
         width: 10%;
@@ -142,11 +153,10 @@
     #home .slide{
         flex-wrap: wrap;
         justify-content: space-around;
-        height: 350px;
     }
     #home .items{
-        width: 30%;
-        height: 150px;
+        width: 165px;
+        height: 165px;
     }
     .arrow{
         width: 10%;
@@ -161,11 +171,10 @@
     #home .slide{
         flex-wrap: wrap;
         justify-content: space-around;
-        height: 400px;
     }
     #home .items{
-        width: 40%;
-        height: 130px;
+        width: 60px;
+        height: 60px;
     }
     .arrow{
         width: 12%;
