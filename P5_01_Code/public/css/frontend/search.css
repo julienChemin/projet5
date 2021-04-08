@@ -8,7 +8,7 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    margin: 40px 0;
+    margin: 40px auto;
 }
 #searchView > h2{
     margin-top: 50px;
@@ -182,24 +182,39 @@
     margin-right: 50px;
     height: 80px;
 }
+#searchView > article{
+    background-color: #161617;
+    padding: 30px 0;
+    margin-top: 25px;
+}
 #searchView .tag{
     background-color: #161617;
 }
 /*result for quick search*/
 #resultQuickSearch{
     display: flex;
+    justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
 }
 #resultQuickSearch figure{
     width: 20%;
-    margin: 0 2.5%;
+    height: 300px;
     position: relative;
+    border: solid 2px #262627;
+    border-radius: 5px;
+    transition: 0.2s linear;
+    -webkit-transition: 0.2s linear;
+}
+#resultQuickSearch figure:hover{
+    background-color: #262627;
 }
 #pagingQuickSearch ol{
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    padding: 0;
 }
 #pagingQuickSearch li{
     margin: 20px 5px;
@@ -208,6 +223,10 @@
 .actualPage{
     font-weight: bolder;
     font-size: 1.5em;
+    padding: 5px 10px;
+    border-left: solid 2px #161617;
+    border-right: solid 2px #161617;
+    border-radius: 5px;
 }
 
 /* ----------------------------------------------------------------- */
@@ -294,9 +313,6 @@
 #pagingQuickSearch li{
     cursor: pointer;
     color: #CF8B3F;
-    border: solid 2px #161617;
-    border-radius: 5px;
-    padding: 5px 10px;
 }
 
 /* -------------------------------------------------------------- */
@@ -329,21 +345,21 @@
 #listTagsView{
     padding: 100px 0;
 }
-#listTagsView .blockResultTag{
+#listTagsView h1{
+    margin-left: 10px;
+}
+#listTagsView > section{
     background-color: #161617;
+}
+#listTagsView .blockResultTag{
     padding: 20px 0;
     border-radius: 5px;
 }
 #listTagsView .blockResultTag a{
     width: auto;
 }
-.tagsCategory{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 .tagsCategory h2{
-    padding: 40px 0;
+    padding: 40px 0 10px 0;
 }
 
 /*====================================================================================================================================
@@ -360,6 +376,12 @@
     }
     #formSearchByKeyWord input{
         margin: 10px 0;
+    }
+
+    /*---------- quick search -------------*/
+    #resultQuickSearch figure{
+        width: 210px;
+        height: 210px;
     }
 
     /*------------ searchByKeyWord result ------------*/
@@ -410,8 +432,17 @@
         margin: 10px 0;
         width: 50%;
     }
+    #formSearchByKeyWord input[type='submit']{
+        font-size: 0.9em;
+    }
     #advancedSearch p{
         max-width: 90%;
+    }
+
+    /*---------- quick search -------------*/
+    #resultQuickSearch figure{
+        width: 220px;
+        height: 220px;
     }
 
     /*------------ searchByKeyWord result ------------*/
@@ -466,6 +497,13 @@
         margin: 10px 0;
     }
 
+    /*---------- quick search -------------*/
+    #resultQuickSearch figure{
+        width: 165px;
+        height: 165px;
+        margin: 5px;
+    }
+
     /*------------ searchByKeyWord result ------------*/
     #searchByKeyWord{
         display: flex;
@@ -503,11 +541,6 @@
         font-size: 1.2em;
     }
 
-    /*------------ search sort by ------------*/
-    #resultQuickSearch figure{
-        width: 28%;
-    }
-
     /*------------ advanced search ------------*/
     #advancedSearchView #blockFilterBySchool > div > label{
         width: 28%;
@@ -527,6 +560,7 @@
     #homeSearch > div{
         width: 100%;
         margin-top: 20px;
+        padding: 5px;
         font-size: 1.3em;
     }
     #homeSearch > div h2{
@@ -538,6 +572,13 @@
     #alsoSee p{
         max-width: 90%;
         font-size: 1.2em;
+    }
+
+    /*---------- quick search -------------*/
+    #resultQuickSearch figure{
+        width: 115px;
+        height: 115px;
+        margin: 5px;
     }
 
     /*------------ searchByKeyWord result ------------*/
@@ -569,11 +610,6 @@
     }
     #searchView .tag {
         font-size: 1.2em;
-    }
-
-    /*------------ search sort by ------------*/
-    #resultQuickSearch figure{
-        width: 28%;
     }
 
     /*------------ advanced search ------------*/

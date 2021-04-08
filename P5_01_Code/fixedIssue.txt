@@ -1,5 +1,7 @@
 new stuff
-    - new style and responsive on home and listSchools
+    - css on search home
+    - css on listTags
+    - css search sortBy
 
 fixed issues
     - 
