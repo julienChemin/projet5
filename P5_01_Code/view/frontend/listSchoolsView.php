@@ -1,9 +1,10 @@
-<section id="listSchoolsView" class="container">
+<section id="listSchoolsView">
     <?php
     if (!empty($data['schools'])) {
         echo '<h1>Liste des établissements scolaires présent sur le site</h1>';
         echo '<p>Cliquez sur un établissement pour avoir plus d\'informations</p>';
-        echo '<div id="blockSchools">';
+        echo '<div id="blockSchools" class="container">';
+
         foreach ($data['schools'] as $school) {
             if ($school->getName() !== NO_SCHOOL) {
                 !$school->getIsActive() ? $classIsActive = 'inactiveSchool' : $classIsActive = '';
@@ -25,24 +26,31 @@
             }
         }
         echo '</div>';
+
         ?>
         <div id="schoolInformation">
-            <p id="linkSchoolProfile">
+            <p id="linkSchoolProfile" class="container">
                 <a href="#">Voir le profil de : <span></span></a>
             </p>
+
             <div>
-                <h2>Administrateurs</h2>
-                <div id="adminSection" class="blockResultUser fullWidth">
-                    
-                </div>
-                <h2>Modérateurs</h2>
-                <div id="moderatorSection" class="blockResultUser fullWidth">
-                    
-                </div>
-                <h2>Étudiants</h2>
-                <div id="studentSection" class="blockResultUser fullWidth">
-                    
-                </div>
+                <h2 class="container">Administrateurs</h2>
+
+                <article>
+                    <div id="adminSection" class="blockResultUser fullWidth container"></div>
+                </article>
+
+                <h2 class="container">Modérateurs</h2>
+                
+                <article>
+                    <div id="moderatorSection" class="blockResultUser fullWidth container"></div>
+                </article>
+
+                <h2 class="container">Étudiants</h2>
+
+                <article>
+                    <div id="studentSection" class="blockResultUser fullWidth container"></div>
+                </article>
             </div>
         </div>
         <?php

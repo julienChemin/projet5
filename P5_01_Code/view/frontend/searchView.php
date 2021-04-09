@@ -49,9 +49,10 @@
     } elseif (!empty($_POST['keyWord'])) {
         //result for the search by key word
         ?>
-        <div id="searchByKeyWord">
+        <div id="searchByKeyWord" class="container">
             <h1>Recherche par mots-clés</h1>
 
+            <p>Résultat pour : <?=$_POST['keyWord']?></p>
             <form id="formSearchByKeyWord" method="POST" action="index.php?action=search">
                 <input type="text" name="keyWord" value="<?=$_POST['keyWord']?>">
                 <input type="submit" name="Rechercher">
@@ -64,130 +65,134 @@
                 //school where name contains the key word searched
                 $result = $data['result']['school'];
                 ?>
-                <div>
+                <div class="container">
                     <h2>Établissements</h2>
                 </div>
 
-                <div class="blockResult blockResultSchool fullWidth">
-                    <?php
-                    for($i=0; $i<count($result); $i++) {
-                        if ($result[$i]->getName() !== NO_SCHOOL) {
-                            ?>
-                            <div>
-                                <a href="index.php?action=schoolProfile&school=<?=$result[$i]->getName()?>">
-                                    <figure class="figureProfilePicture fullWidth">
+                <article>
+                    <div id="blockSchools" class="blockResult blockResultSchool fullWidth container">
+                        <?php
+                        for($i=0; $i<count($result); $i++) {
+                            if ($result[$i]->getName() !== NO_SCHOOL) {
+                                ?>
+                                <div class="blockSchool">
+                                    <a href="index.php?action=schoolProfile&school=<?=$result[$i]->getName()?>">
                                         <div>
-                                            <img src="<?=$result[$i]->getLogo()?>" alt="Logo de l'établissement">
+                                            <figure>
+                                                <img src="<?=$result[$i]->getLogo()?>" alt="Logo de l'établissement">
+                                            </figure>
                                         </div>
 
-                                        <figcaption>
-                                            <p><?=$result[$i]->getName()?></p>
-                                        </figcaption>
-                                    </figure>
-                                </a>
-                            </div>
-                            <?php
+                                        <div>
+                                            <?=$result[$i]->getName()?>
+                                        </div>
+                                    </a>
+                                </div>
+                                <?php
+                            }
                         }
-                    }
-                echo '</div>';
+                    echo '</div>';
+                echo '</article>';
             }
 
             if (!empty($data['result']['user'])) {
                 //user where name contains the key word searched
                 $result = $data['result']['user'];
                 ?>
-                <div>
+                <div class="container">
                     <h2>Utilisateurs</h2>
                 </div>
 
-                <div class="blockResult blockResultUser fullWidth">
-                    <?php
-                    for($i=0; $i<count($result); $i++) {
-                        if ($result[$i]->getSchool() !== ALL_SCHOOL) {
-                            ?>
-                            <div>
-                                <a href="index.php?action=userProfile&userId=<?=$result[$i]->getId()?>">
-                                    <figure class="figureProfilePicture fullWidth">
-                                        <div>
-                                            <img src="<?=$result[$i]->getProfilePicture()?>" alt="Photo de profil">
-                                        </div>
+                <article>
+                    <div class="blockResult blockResultUser fullWidth container">
+                        <?php
+                        for($i=0; $i<count($result); $i++) {
+                            if ($result[$i]->getSchool() !== ALL_SCHOOL) {
+                                ?>
+                                <div>
+                                    <a href="index.php?action=userProfile&userId=<?=$result[$i]->getId()?>">
+                                        <div title="<?=$result[$i]->getFirstName()?> <?=$result[$i]->getLastName()?>" style="background-image: url('<?=$result[$i]->getProfilePicture()?>');"></div>
 
-                                        <figcaption>
+                                        <div>
                                             <p><?=$result[$i]->getFirstName()?></p>
                                             <p><?=$result[$i]->getLastName()?></p>
-                                        </figcaption>
-                                    </figure>
-                                </a>
-                            </div>
-                            <?php
+                                        </div>
+                                    </a>
+                                </div>
+                                <?php
+                            }
                         }
-                    }
-                echo '</div>';
+                    echo '</div>';
+                echo '</article>';
             }
             if (!empty($data['result']['post'])) {
                 //post where title contains the key word searched
                 $result = $data['result']['post'];
                 ?>
-                <div>
+                <div class="container">
                     <h2>Publications</h2>
                 </div>
 
-                <div class="blockResult blockResultPost fullWidth">
-                    <?php
-                    for($i=0; $i<count($result); $i++) {
-                        echo '<div>';
-                            echo '<a href="index.php?action=post&id=' . $result[$i]->getId() . '">';
-                                if (empty($result[$i]->getFilePath())) {
-                                    switch ($result[$i]->getFileType()) {
-                                        case 'image' :
-                                            $result[$i]->setFilePath('public/images/fileImage.png');
-                                        break;
+                <article>
+                    <div class="blockResult blockResultPost fullWidth container">
+                        <?php
+                        for($i=0; $i<count($result); $i++) {
+                            echo '<div>';
+                                echo '<a href="index.php?action=post&id=' . $result[$i]->getId() . '">';
+                                    if (empty($result[$i]->getFilePath())) {
+                                        switch ($result[$i]->getFileType()) {
+                                            case 'image' :
+                                                $result[$i]->setFilePath('public/images/fileImage.png');
+                                            break;
 
-                                        case 'video' :
-                                            $result[$i]->setFilePath('public/images/defaultVideoThumbnail.png');
-                                        break;
+                                            case 'video' :
+                                                $result[$i]->setFilePath('public/images/defaultVideoThumbnail.png');
+                                            break;
+                                        }
+                                    } elseif ($result[$i]->getFileType() === 'video') {
+                                        echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
                                     }
-                                } elseif ($result[$i]->getFileType() === 'video') {
-                                    echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
-                                }
 
-                                echo '<figure class="figureProfilePicture fullWidth">';
-                                    echo '<figcaption>';
-                                        echo '<p>' . $result[$i]->getTitle() . '</p>';
-                                    echo '</figcaption>';
+                                    echo '<figure class="figureProfilePicture fullWidth">';
+                                        echo '<figcaption>';
+                                            echo '<p>' . $result[$i]->getTitle() . '</p>';
+                                        echo '</figcaption>';
 
-                                    echo '<div><img src="' . $result[$i]->getFilePath() . '" alt="Aperçu de la publication"></div>';
-                                echo '</figure>';
-                            echo '</a>';
-                        echo '</div>';
-                    }
-                echo '</div>';
+                                        echo '<div><img src="' . $result[$i]->getFilePath() . '" alt="Aperçu de la publication"></div>';
+                                    echo '</figure>';
+                                echo '</a>';
+                            echo '</div>';
+                        }
+                    echo '</div>';
+                echo '</article>';
             }
             if (!empty($data['result']['tag'])) {
                 //tag who contains the key word searched
                 $result = $data['result']['tag'];
                 ?>
-                <div>
+                <div class="container">
                     <h2>Tags</h2>
                 </div>
 
-                <div class="blockResult blockResultTag fullWidth">
-                    <?php
-                    for($i=0; $i<count($result); $i++) {
-                        ?>
-                        <div>
-                            <a href="index.php?action=search&sortBy=tag&tag=<?=$result[$i]['name']?>">
-                                <span class="tag"><?=$result[$i]['name']?></span>
-                                <span>- (<?=$result[$i]['tagCount']?>)</span>
-                            </a>
-                        </div>
+                <article>
+                    <div class="blockResult blockResultTag fullWidth container">
                         <?php
-                    }
-                echo '</div>';
+                        for($i=0; $i<count($result); $i++) {
+                            ?>
+                            <div>
+                                <a href="index.php?action=search&sortBy=tag&tag=<?=$result[$i]['name']?>">
+                                    <span class="tag"><?=$result[$i]['name']?></span>
+                                    <span>- (<?=$result[$i]['tagCount']?>)</span>
+                                </a>
+                            </div>
+                            <?php
+                        }
+                    echo '</div>';
+                echo '</article>';
             }
         } else {
             ?>
-            <p>Aucun résultats n'a été trouvé</p>
+            <p class="container">Aucun résultats n'a été trouvé</p>
             <?php
         }
     } elseif (!empty($_GET['sortBy'])) {

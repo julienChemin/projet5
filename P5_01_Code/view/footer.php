@@ -1,4 +1,5 @@
 <footer>
+	<hr>
 	<section class="container">
 		<div>
 			<article id="linksList">

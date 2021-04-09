@@ -1,7 +1,6 @@
 new stuff
-    - css on search home
-    - css on listTags
-    - css search sortBy
+    - css on search by keyword
+    - css on listSchool
 
 fixed issues
     - 
