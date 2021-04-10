@@ -1,6 +1,6 @@
 new stuff
-    - css on search by keyword
-    - css on listSchool
+    - style on advanced search
+    - lots of fix
 
 fixed issues
     - 

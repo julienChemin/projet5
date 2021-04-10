@@ -175,6 +175,9 @@ figure img{
 #selectedTags{
     display: none;
     width: 50%;
+    background-color: #222224;
+    border-radius: 5px;
+    margin-top: 15px;
 }
 #selectedTags > div{
     display: flex;
@@ -288,8 +291,18 @@ figure img{
 .blockSchool table tr > td:last-child{
     width: 16%;
 }
-.inactiveSchool{
+#moderatSchool .inactiveSchool,
+#moderatUsers .inactiveSchool,
+#moderatAdmin .inactiveSchool{
     background-color : #932C25!important;
+}
+.inactiveSchool:hover{
+    background-color : #932C25!important;
+}
+#moderatSchool .blockSchool > div:first-child > div,
+#moderatUsers .blockSchool > div:first-child > div,
+#moderatAdmin .blockSchool > div:first-child > div{
+    height: 130px;
 }
 
 /*---------- posts and folders ----------*/
@@ -713,6 +726,11 @@ footer ul{
         right: 5px;
         bottom: 5px;
     }
+    #moderatSchool .blockSchool > div:first-child > div,
+    #moderatUsers .blockSchool > div:first-child > div,
+    #moderatAdmin .blockSchool > div:first-child > div{
+        height: 60px;
+    }
 
     /*---------- modal ----------*/
     #modal > div{
@@ -813,6 +831,11 @@ footer ul{
         position: absolute;
         right: 5px;
         bottom: 5px;
+    }
+    #moderatSchool .blockSchool > div:first-child > div,
+    #moderatUsers .blockSchool > div:first-child > div,
+    #moderatAdmin .blockSchool > div:first-child > div{
+        height: 60px;
     }
     .iconeVideo, .iconeFolder{
         width: 25px;

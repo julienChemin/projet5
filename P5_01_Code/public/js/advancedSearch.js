@@ -21,18 +21,23 @@ if (blockFilterAdvancedSearch === null) {
 					if (focusedInputSchoolFilter !== '') {
 						focusedInputSchoolFilter.style.border = 'none';
 						focusedInputSchoolFilter.style.color = 'white';
+						focusedInputSchoolFilter.style.backgroundColor = 'transparent';
 					}
 					input.style.border = 'solid 1px #CF8B3F';
 					input.style.color = '#CF8B3F';
+					input.style.backgroundColor = '#262627';
 					focusedInputSchoolFilter = input;
 				break;
+
 				case 'sortBy' :
 					if (focusedInputSortBy !== '') {
 						focusedInputSortBy.style.border = 'none';
 						focusedInputSortBy.style.color = 'white';
+						focusedInputSortBy.style.backgroundColor = 'transparent';
 					}
 					input.style.border = 'solid 1px #CF8B3F';
 					input.style.color = '#CF8B3F';
+					input.style.backgroundColor = '#262627';
 					focusedInputSortBy = input;
 				break;
 			}

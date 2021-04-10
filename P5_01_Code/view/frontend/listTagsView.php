@@ -15,7 +15,7 @@
                 ?>
                 <div>
                     <a href="index.php?action=search&sortBy=tag&tag=<?=$tag['name']?>">
-                        <span class="tag"><?=$tag['name']?></span>
+                        <p class="tag"><?=$tag['name']?></p>
                         <span>- (<?=$tag['tagCount']?>)</span>
                     </a>
                 </div>

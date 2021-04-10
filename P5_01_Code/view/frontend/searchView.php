@@ -181,7 +181,7 @@
                             ?>
                             <div>
                                 <a href="index.php?action=search&sortBy=tag&tag=<?=$result[$i]['name']?>">
-                                    <span class="tag"><?=$result[$i]['name']?></span>
+                                    <p class="tag"><?=$result[$i]['name']?></p>
                                     <span>- (<?=$result[$i]['tagCount']?>)</span>
                                 </a>
                             </div>
@@ -270,31 +270,33 @@
                         //display all school
                         echo '<h1 class="container">Publications filtrées par établissement</h1>';
 
-                        echo '<div id="blockSchools" class="container">';
-                            foreach ($data['items'] as $school) {
-                                if ($school->getName() !== NO_SCHOOL) {
-                                    !$school->getIsActive() ? $classIsActive = ' inactiveSchool' : $classIsActive = '';
-                                    !$school->getIsActive() ? $title = ' Cet établissement est inactif sur le site' : $title = '';
-                                    ?>
+                        echo '<article>';
+                            echo '<div id="blockSchools" class="container">';
+                                foreach ($data['items'] as $school) {
+                                    if ($school->getName() !== NO_SCHOOL) {
+                                        !$school->getIsActive() ? $classIsActive = ' inactiveSchool' : $classIsActive = '';
+                                        !$school->getIsActive() ? $title = ' Cet établissement est inactif sur le site' : $title = '';
+                                        ?>
 
-                                    <a href="index.php?action=search&sortBy=school&school=<?=$school->getName()?>" class="blockSchool">
-                                        <div class="<?=$classIsActive?>" title="<?=$title?>">
-                                            <div>
-                                                <figure>
-                                                    <img src="<?=$school->getLogo()?>" alt="Logo de l'établissement">
-                                                </figure>
-                                            </div>
+                                        <div class="blockSchool <?=$classIsActive?>">
+                                            <a a href="index.php?action=search&sortBy=school&school=<?=$school->getName()?>" title="<?=$title?>">
+                                                <div>
+                                                    <figure>
+                                                        <img src="<?=$school->getLogo()?>" alt="Logo de l'établissement">
+                                                    </figure>
+                                                </div>
 
-                                            <div>
-                                                <h2><?=$school->getName()?></h2>
-                                            </div>
+                                                <div>
+                                                    <h2><?=$school->getName()?></h2>
+                                                </div>
+                                            </a>
                                         </div>
-                                    </a>
 
-                                    <?php
+                                        <?php
+                                    }
                                 }
-                            }
-                        echo '</div>';
+                            echo '</div>';
+                        echo '</article>';
                     } else {
                         //display posts publish by user affiliated to this school
                         echo '<h1 class="container">Publications filtrées par établissement : ' . $_GET['school'] . '</h1>';

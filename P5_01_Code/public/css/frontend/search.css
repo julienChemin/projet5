@@ -223,7 +223,12 @@
     margin-right: 50px;
     height: 80px;
 }
-#searchView > article{
+.blockResultTag > div a{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#searchView > article, #advancedSearchView > article{
     background-color: #161617;
     padding: 30px 0;
     margin-top: 25px;
@@ -274,20 +279,19 @@
 /* ------------------------ ADVANCED SEARCH ------------------------ */
 /* ----------------------------------------------------------------- */
 #advancedSearchView{
-    padding: 100px 0;
+    padding: 50px 0;
 }
 #advancedSearchView h1{
     padding-bottom: 20px;
 }
 #advancedSearchView h2{
-    padding-top: 20px;
+    padding-left: 10px;
 }
 #advancedSearchView input[type="radio"]{
     display: none;
 }
 #advancedSearchView input[type="radio"] + label{
     border-radius: 5px;
-    background-color: #222224;
     padding: 10px;
     margin: 15px;
     font-size: 1.5em;
@@ -303,15 +307,29 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    text-align: start;
+    background-color: #222224;
 }
 #formAdvancedSearch #blockFilterBySchool i[class~="fa-times"]{
     font-size: 2em;
 }
-#formAdvancedSearch > div{
+#formAdvancedSearch h1{
+    margin: 20px auto 0 5%;
+}
+#formAdvancedSearch section{
+    background-color: #161617;
+    padding: 15px 0;
+}
+#formAdvancedSearch section > div{
     padding: 50px 0;
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
-#formAdvancedSearch > div > div{
+#formAdvancedSearch section > div > div{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -335,6 +353,9 @@
     justify-content: space-around;
     flex-wrap: wrap;
 }
+#formAdvancedSearch input[type='submit']{
+    margin-top: 10px;
+}
 #blockSortBy > div{
     justify-content: space-around;
 }
@@ -346,10 +367,13 @@
     width: 49%;
 }
 #blockFilterAdvancedSearch{
+    display: flex;
+    flex-wrap: wrap;
     margin-bottom: 20px;
 }
 #blockFilterAdvancedSearch .tag{
     cursor: default;
+    width: fit-content;
 }
 #pagingQuickSearch li{
     cursor: pointer;
@@ -403,6 +427,9 @@
 }
 #listTagsView .blockResultTag a{
     width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .tagsCategory h2{
     padding: 40px 0 10px 0;

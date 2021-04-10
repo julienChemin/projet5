@@ -649,7 +649,13 @@ $isAdmin = $isLoggedUser && $_SESSION['grade'] === ADMIN ? true : false;
             </p>
 
             <p>
-                <span><a href="index.php?action=report&elem=other">Cliquez ici pour faire une DMCA</a></span>
+                    <?php
+                    if (!empty($_SESSION['firstName'])) {
+                        echo '<span><a href="index.php?action=report&elem=other">Cliquez ici pour faire une DMCA</a></span>';
+                    } else {
+                        echo '<span>Vous devez être connecté pour faire une DMCA</span>';
+                    }
+                    ?>
             </p>
         </div>
     </article>
