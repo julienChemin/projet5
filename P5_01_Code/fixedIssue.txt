@@ -1,6 +1,6 @@
 new stuff
-    - style on advanced search
-    - lots of fix
+    - compressed file view
+    - info for compressed file
 
 fixed issues
-    - 
+    - some css fix

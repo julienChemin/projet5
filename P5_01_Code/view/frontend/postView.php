@@ -4,10 +4,14 @@ $comments = $data['comments'];
 $asidePosts = $data['asidePosts'];
 $author = $data['author'];
 $user = $data['user'];
+if (!empty($data['fileInfo'])) {
+    $fileInfo = $data['fileInfo'];
+}
+$post->getFileType() === 'compressed' ? $classSection = 'showCompressedFile' : $classSection = '';
 ?>
 <section id="viewPost">
     <article>
-        <section>
+        <section class='<?=$classSection?>'>
             <div class="container">
                 <?php
                     !empty($post->getTitle()) ? $alt = $post->getTitle() : $alt = 'Publication';
@@ -21,7 +25,40 @@ $user = $data['user'];
                         break;
 
                         case 'compressed' :
-                            echo '<a title="Cliquez pour télécharger" href="' . $post->getFilePath() . '"><i class="fas fa-download"><img class="fileCompressed" src="public/images/fileOther.png" alt="' . $alt . '"></i></a>';
+                            ?>
+                            <div class="compressedFile">
+                                <img src="public/images/fileOther.png" alt="<?=$alt?>">
+
+                                <a title="Cliquez pour télécharger" href="<?=$post->getFilePath()?>">
+                                    <i class="fas fa-download"></i>
+                                    <span>Télécharger</span>
+                                </a>
+                            </div>
+
+                            <div class="compressedFileDescription">
+                                <?php
+                                if (empty($fileInfo)) {
+                                    echo "<p>Aucune information n'a pu être récupéré sur cette archive</p>";
+                                } else if (!is_array($fileInfo) && $fileInfo === 'empty') {
+                                    echo "<p>L\'archive est vide</p>";
+                                } else if (!is_array($fileInfo) && $fileInfo === 'cannotReadRar') {
+                                    echo "<p>";
+                                        echo "<h2>La récupération d'information sur les archives de type '.rar' n'est pas disponible pour le moment</h2>";
+                                        echo "<h3>Utilisez des archives '.zip' si vous souhaitez que les informations soit affiché</h3>";
+                                    echo "</p>";
+                                } else if (is_array($fileInfo)) {
+                                    echo "<h2>L'archive contient : </h2>";
+                                    for ($i = 0; $i < count($fileInfo['name']); $i++) {
+                                        echo'<p>';
+                                            echo "<span>" . $fileInfo['name'][$i] . "</span>";
+                                            echo "<br>";
+                                            echo "<span>" . $fileInfo['size'][$i] . "</span>";
+                                        echo'</p>';
+                                    }
+                                }
+                                ?>
+                            </div>
+                            <?php
                         break;
                     }
                 ?>
@@ -57,11 +94,11 @@ $user = $data['user'];
 
         <?php
         if ($post->getFileType() === 'compressed') {
-            echo '<p id="warningMsg">Ne téléchargez un fichier seulement si vous savez d\'où il vient et ce qu\'il contient</p>';
+            echo '<p id="warningMsg">Ne téléchargez un fichier que si vous savez d\'où il vient et ce qu\'il contient</p>';
         }
 
         if (!empty($post->getOnFolder())) {
-            echo '<div class="postIsOnFolder container">Cette publication fait parti d\'un dossier - <a href="index.php?action=post&id=' . $post->getOnFolder() . '">consulter</a></div>';
+            echo '<div class="postIsOnFolder container">Cette publication fait partie d\'un dossier - <a href="index.php?action=post&id=' . $post->getOnFolder() . '">consulter</a></div>';
         }
         ?>
 
@@ -110,6 +147,8 @@ $user = $data['user'];
 
                 if (!empty($post->getDescription())) {
                     echo '<div class="publicationDescription">' . $post->getDescription() . '</div>';
+                } else {
+                    echo '<div class="publicationDescription"><p class="noPostDescription">Il n\'y a pas de description pour cette publication</p></div>';
                 }
 
                 if ($post->getFileType() === 'video') {

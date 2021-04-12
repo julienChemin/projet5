@@ -953,6 +953,15 @@ class Frontend extends Controller
                 ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'userSchool' => $userSchool, 'user' => $user, 'author' => $author, 
                     'userInfo' => $userInfo, 'urlAddPostOnFolder' => $urlAddPostOnFolder, 'option' => ['folderView']]
             );
+        } else if ($post->getFileType() === 'compressed') {
+            // consulting private post (compressed file)
+            $fileInfo = $this->getCompressedFileInfo($post->getFilePath());
+            RenderView::render(
+                'template.php', 'frontend/postView.php', 
+                [
+                    'post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 'fileInfo' => $fileInfo,
+                    'option' => ['postView']]
+            );
         } else {
             // consulting private post
             RenderView::render(
@@ -960,6 +969,54 @@ class Frontend extends Controller
                 ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 'option' => ['postView']]
             );
         }
+    }
+
+    private function getCompressedFileInfo(string $filePath = null)
+    {
+        if (!$filePath) {
+            return null;
+        }
+
+        if (preg_match('/.rar$/', $filePath)) {
+            return $this->getRarInfo($filePath);
+        } else if (preg_match('/.zip$/', $filePath)) {
+            return $this->getZipInfo($filePath);
+        } else {
+            return null;
+        }
+    }
+
+    private function getZipInfo($filePath) {
+        $zipManager = new \ZipArchive();
+        $zipFile = $zipManager->open($filePath);
+
+        if ($zipFile !== true) {
+            return null;
+        }
+
+        $zipCount = $zipManager->count();
+        if ($zipCount < 1) {
+            return 'empty';
+        }
+
+        $zipInfo = ['name' => [], 'size' => []];
+        for ($i = 0; $i < $zipCount; $i++) {
+            $info = $zipManager->statIndex($i);
+            $zipInfo['name'][] = $info['name'];
+            $moValue = round($this->convert_bytes($info['size'], 'o', 'Mo'), 2);
+            if ($moValue > 500) {
+                $zipInfo['size'][] = round($this->convert_bytes($info['size'], 'o', 'Go'), 2) . ' Go';
+            } else {
+                $zipInfo['size'][] = $moValue . ' Mo';
+            }
+        }
+
+        $zipManager->close();
+        return $zipInfo;
+    }
+
+    private function getRarInfo($filePath) {
+        return 'cannotReadRar';
     }
 
     private function publicPost(Post $post, array $comments, array $asidePosts, $user, User $author)

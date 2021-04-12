@@ -22,7 +22,12 @@
     align-items: center;
     min-width: 100%;
     height: 80vh;
+    min-height: 200px;
     background-color: #161617;
+}
+#viewPost .showCompressedFile{
+    height: auto;
+    min-height: 200px;
 }
 #viewPost hr, #viewFolder hr{
     margin: 30px 0;
@@ -124,12 +129,45 @@
     max-width: 100%;
     max-height: 100%;
 }
-#viewPost > article:nth-of-type(1) > section:nth-of-type(1) div > a > .fileCompressed{
-    max-width: 60%;
-    max-height: 60%;
+#viewPost > article:nth-of-type(1) > section:nth-of-type(1) div > .compressedFile{
+    width: 15%;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-self: flex-start;
+}
+#viewPost > article:nth-of-type(1) > section:nth-of-type(1) div > .compressedFile img{
+    max-width: 100%;
+    max-height: 70%;
+}
+#viewPost > article:nth-of-type(1) > section:nth-of-type(1) div > .compressedFile a{
+    width: 100%;
+    height: auto;
+    flex-wrap: wrap;
+}
+#viewPost > article:nth-of-type(1) > section:nth-of-type(1) div > .compressedFileDescription{
+    width: 85%;
+    height: 100%;
+    padding-left: 2%;
+    flex-direction: column;
+}
+.compressedFileDescription > p{
+    width: 100%;
+    border-left: solid 2px #262627;
+    padding-left: 5px;
+    margin-left: 5px;
+}
+.compressedFileDescription > h2{
+    text-align: center;
+    border: none;
+}
+.compressedFileDescription > p > span{
+    word-break: break-all;
 }
 i[class="fas fa-download"]{
-    font-size: 3em;
+    font-size: 1.5em;
+    margin-right: 5px;
 }
 .postIsOnFolder{
     margin: 10px 5% 10px auto;
@@ -151,6 +189,10 @@ i[class="fas fa-download"]{
     text-align: center;
 }
 /*block description*/
+.noPostDescription{
+    width: 100%;
+    text-align: center;
+}
 #blockDescription > h1{
     text-align: center;
 }
@@ -434,10 +476,15 @@ i[class="fas fa-download"]{
     #viewPost > article:nth-of-type(1) > section:nth-of-type(1){
         height: 500px;
     }
+    #viewPost .showCompressedFile{
+        height: auto!important;
+        min-height: 200px;
+    }
     /*post on aside*/
     .postOnAside{
         height: 80px;
-        width: 32%;
+        width: 30%;
+        margin: 3px;
     }
     #relatedPosts h1{
         font-size: 1.2em;
@@ -464,6 +511,10 @@ i[class="fas fa-download"]{
     }
     #viewPost > article:nth-of-type(1) > section:nth-of-type(1){
         height: 400px;
+    }
+    #viewPost .showCompressedFile{
+        height: auto!important;
+        min-height: 200px;
     }
     /*post on aside*/
     #relatedPosts h1{
@@ -519,6 +570,10 @@ i[class="fas fa-download"]{
         width: 120px;
         height: 120px;
     }
+    #viewPost .showCompressedFile{
+        height: auto!important;
+        min-height: 200px;
+    }
 
     /*block related posts and comments on folder view*/
     #viewFolder > article > section{
@@ -547,8 +602,9 @@ i[class="fas fa-download"]{
 
     /*post on aside*/
     .postOnAside{
-        width: 30%;
-        height: 180px;
+        width: 45%;
+        height: 75px;
+        margin: 1px;
     }
     #relatedPosts h1{
         font-size: 1.2em;
@@ -582,6 +638,16 @@ i[class="fas fa-download"]{
     #authorProfile > a{
         width: 100px;
         height: 100px;
+    }
+    #viewPost .showCompressedFile{
+        height: auto!important;
+        min-height: 200px;
+    }
+    #viewPost > article:nth-of-type(1) > section:nth-of-type(1) div > .compressedFile{
+        width: 25%;
+    }
+    #viewPost > article:nth-of-type(1) > section:nth-of-type(1) div > .compressedFileDescription{
+        width: 75%;
     }
 
     /*block related posts and comments*/

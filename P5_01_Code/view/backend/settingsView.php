@@ -7,7 +7,8 @@
     </div>
     <div>
         <h2>Prolongation de l'abonnement</h2>
-        <form id="formExtendContract">
+        <p>Cette section est vide pour l'instant</p>
+        <!-- <form id="formExtendContract">
             <p class="orang">Le nombre de compte ne peut être inférieur au nombre de comptes actif</p>
             <p>
                 <label for="nbAccount">Nombre de compte</label>
@@ -22,14 +23,15 @@
                     <option value="12">12 mois</option>
                 </select> 
             </p>
-        </form>
+        </form> -->
     </div>
     <?php
         if ($data['school']->getIsActive()) {
             ?>
             <div>
                 <h2>Ajout de compte utilisateur</h2>
-                <form id="formAddUsersAccounts">
+                <p>Cette section est vide pour l'instant</p>
+                <!-- <form id="formAddUsersAccounts">
                     <p class="orang">
                         La durée d'activité de ces nouveaux comptes s'ajustera sur la date de fin de contrat de votre établissement.
                         (<a href="index.php?action=faq">Plus d'info</a>)
@@ -38,7 +40,7 @@
                         <label for="nbNewAccount">Nombre de compte à ajouter</label>
                         <input type="text" name="nbNewAccount" id="nbNewAccount">
                     </p>
-                </form>
+                </form> -->
             </div>
             <?php
         }

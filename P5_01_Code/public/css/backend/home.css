@@ -56,6 +56,9 @@
 #homeAdmin .emptySlide{
     justify-content: center;
 }
+.posts{
+    position: relative;
+}
 .itemHomeAdmin{
     display: flex;
     flex-direction: column;
