@@ -1,8 +1,8 @@
 <section id="listSchoolsView">
     <?php
     if (!empty($data['schools'])) {
-        echo '<h1>Liste des établissements scolaires présent sur le site</h1>';
-        echo '<p>Cliquez sur un établissement pour avoir plus d\'informations</p>';
+        echo '<h1 class="container">Liste des établissements scolaires présent sur le site</h1>';
+        echo '<p class="container">Cliquez sur un établissement pour avoir plus d\'informations</p>';
         echo '<div id="blockSchools" class="container">';
 
         foreach ($data['schools'] as $school) {

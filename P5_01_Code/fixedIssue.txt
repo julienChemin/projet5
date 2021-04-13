@@ -1,6 +1,5 @@
 new stuff
-    - compressed file view
-    - info for compressed file
+    - 
 
 fixed issues
-    - some css fix
+    - 
