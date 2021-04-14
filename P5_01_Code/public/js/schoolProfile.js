@@ -224,26 +224,50 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	let formProfileText = document.querySelector('#contentMenuEditText');
 	let profileTextBlock = document.querySelector('#profile > header > div:nth-of-type(2)');
 	let profileSchool = document.querySelector('#profile > header > div:nth-of-type(2) > span:nth-of-type(1)');
+	let positionBlockTextSelected = '';
+	let positionPseudoSelected = '';
+	let positionSchoolNameSelected = '';
 
 	//block position
-	document.getElementById('blockTextTop').addEventListener('click', function(){
+	document.getElementById('blockTextTop').addEventListener('click', function(e){
 		if (!profileTextBlock.classList.contains('elemStart')) {
+			if (e.target.nextElementSibling.childNodes[1] !== positionBlockTextSelected) {
+				if (positionBlockTextSelected !== '') {
+					positionBlockTextSelected.style.border = '';
+				}
+				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+				positionBlockTextSelected = e.target.nextElementSibling.childNodes[1];
+			}
 			profileTextBlock.classList.add('elemStart');
 			profileTextBlock.classList.remove('elemCenter');
 			profileTextBlock.classList.remove('elemEnd');
 		}
 	});
 
-	document.getElementById('blockTextCenter').addEventListener('click', function(){
+	document.getElementById('blockTextCenter').addEventListener('click', function(e){
 		if (!profileTextBlock.classList.contains('elemCenter')) {
+			if (e.target.nextElementSibling.childNodes[1] !== positionBlockTextSelected) {
+				if (positionBlockTextSelected !== '') {
+					positionBlockTextSelected.style.border = '';
+				}
+				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+				positionBlockTextSelected = e.target.nextElementSibling.childNodes[1];
+			}
 			profileTextBlock.classList.add('elemCenter');
 			profileTextBlock.classList.remove('elemStart');
 			profileTextBlock.classList.remove('elemEnd');
 		}
 	});
 
-	document.getElementById('blockTextBottom').addEventListener('click', function(){
+	document.getElementById('blockTextBottom').addEventListener('click', function(e){
 		if (!profileTextBlock.classList.contains('elemEnd')) {
+			if (e.target.nextElementSibling.childNodes[1] !== positionBlockTextSelected) {
+				if (positionBlockTextSelected !== '') {
+					positionBlockTextSelected.style.border = '';
+				}
+				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+				positionBlockTextSelected = e.target.nextElementSibling.childNodes[1];
+			}
 			profileTextBlock.classList.add('elemEnd');
 			profileTextBlock.classList.remove('elemStart');
 			profileTextBlock.classList.remove('elemCenter');
@@ -251,24 +275,45 @@ if (document.getElementById('blockTabsEditProfile') !== null) {
 	});
 
 	//school name position
-	document.getElementById('schoolLeft').addEventListener('click', function(){
+	document.getElementById('schoolLeft').addEventListener('click', function(e){
 		if (!profileSchool.classList.contains('elemStart')) {
+			if (e.target.nextElementSibling.childNodes[1] !== positionSchoolNameSelected) {
+				if (positionSchoolNameSelected !== '') {
+					positionSchoolNameSelected.style.border = '';
+				}
+				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+				positionSchoolNameSelected = e.target.nextElementSibling.childNodes[1];
+			}
 			profileSchool.classList.add('elemStart');
 			profileSchool.classList.remove('elemCenter');
 			profileSchool.classList.remove('elemEnd');
 		}
 	});
 
-	document.getElementById('schoolCenter').addEventListener('click', function(){
+	document.getElementById('schoolCenter').addEventListener('click', function(e){
 		if (!profileSchool.classList.contains('elemCenter')) {
+			if (e.target.nextElementSibling.childNodes[1] !== positionSchoolNameSelected) {
+				if (positionSchoolNameSelected !== '') {
+					positionSchoolNameSelected.style.border = '';
+				}
+				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+				positionSchoolNameSelected = e.target.nextElementSibling.childNodes[1];
+			}
 			profileSchool.classList.add('elemCenter');
 			profileSchool.classList.remove('elemStart');
 			profileSchool.classList.remove('elemEnd');
 		}
 	});
 
-	document.getElementById('schoolRight').addEventListener('click', function(){
+	document.getElementById('schoolRight').addEventListener('click', function(e){
 		if (!profileSchool.classList.contains('elemEnd')) {
+			if (e.target.nextElementSibling.childNodes[1] !== positionSchoolNameSelected) {
+				if (positionSchoolNameSelected !== '') {
+					positionSchoolNameSelected.style.border = '';
+				}
+				e.target.nextElementSibling.childNodes[1].style.border = "solid 1px #CF8B3F";
+				positionSchoolNameSelected = e.target.nextElementSibling.childNodes[1];
+			}
 			profileSchool.classList.add('elemEnd');
 			profileSchool.classList.remove('elemStart');
 			profileSchool.classList.remove('elemCenter');

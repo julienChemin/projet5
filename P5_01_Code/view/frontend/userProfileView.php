@@ -16,35 +16,22 @@
     }
     ?>
 
-    <div id="banner" class="editable <?=$classNoBanner?>" style="<?=$backgroundImgAttribut?>">
-        <?php if ($authorizedUser) {
-            echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la bannière"></i>';
-        }
-        ?>
-    </div>
+    <div id="banner" class="<?=$classNoBanner?>" style="<?=$backgroundImgAttribut?>"></div>
     <div id="colorFade"></div>
 
     <article id="profile" class="container">
         <header>
-            <div id="profilePicture" class="editable <?=$data['user']->getProfilePictureSize()?>" style="background-image: url('<?=$data['user']->getProfilePicture()?>')">
-                <?php
-                if ($authorizedUser) {
-                    echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la photo de profil"></i>';
-                }
-                ?>
-            </div>
-            <div class="<?=$data['user']->getProfileTextBlock()?> editable">
+            <div id="profilePicture" class="<?=$data['user']->getProfilePictureSize()?>" style="background-image: url('<?=$data['user']->getProfilePicture()?>')"></div>
+
+            <div class="<?=$data['user']->getProfileTextBlock()?>">
                 <span class="<?=$data['user']->getProfileTextPseudo()?>"><?=$data['user']->getFirstName()?> <?=$data['user']->getLastName()?></span>
+
                 <a href="index.php?action=schoolProfile&school=<?=$data['user']->getSchool()?>" class="<?=$data['user']->getProfileTextSchool()?> <?=$visibility?>">
                     <?=$data['user']->getSchool()?>
                 </a>
-                <?php
-                if ($authorizedUser) {
-                    echo '<i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la position du texte"></i>';
-                }
-                ?>
             </div>
         </header>
+
         <div>
             <nav>
                 <ul id="blockTabs" class="tabsStyleOne">
@@ -61,6 +48,21 @@
 
                             <li title="éditer le profil">
                                 <i class="fas fa-pencil-alt iconeEdit"></i>
+                            </li>
+
+                            <li class="editable" title="Modifier la bannière">
+                                <i class="far fa-image iconeEdit iconeEditHeader"></i>
+                                <span>Modifier la bannière</span>
+                            </li>
+
+                            <li class="editable" title="Modifier la photo de profil">
+                                <i class="fas fa-portrait iconeEdit iconeEditHeader"></i>
+                                <span>Modifier la photo de profil</span>
+                            </li>
+
+                            <li class="editable" title="Modifier la position du texte">
+                                <i class="fas fa-align-center iconeEdit iconeEditHeader"></i>
+                                <span>Modifier la position du texte</span>
                             </li>
 
                             <?php
@@ -257,68 +259,75 @@ if ($authorizedUser) {
                 </button>
             </p>
         </form>
+
         <!-- Text position -->
         <form id="contentMenuEditText" class="contentMenuEdit menuEditHeader">
+            <p>Alignement vertical du texte</p>
             <div>
                 <input type="radio" name="blockTextPosition" id="blockTextTop"
                 value="elemStart" <?=$data['user']->getProfileTextBlock() === 'elemStart' ? 'checked' : 'unchecked'?>>
                 <label for="blockTextTop">
-                    <img src="public/images/blockTextTop.jpg" title="Texte aligné en haut" alt="Texte aligné en haut">
+                    <p title="Texte aligné en haut" alt="Texte aligné en haut">Haut</p>
                 </label>
 
                 <input type="radio" name="blockTextPosition" id="blockTextCenter"
                 value="elemCenter" <?=$data['user']->getProfileTextBlock() === 'elemCenter' ? 'checked' : 'unchecked'?>>
                 <label for="blockTextCenter">
-                    <img src="public/images/blockTextCenter.jpg" title="Texte centré verticalement" alt="Texte centré verticalement">
+                    <p title="Texte centré verticalement" alt="Texte centré verticalement">Centre</p>
                 </label>
 
                 <input type="radio" name="blockTextPosition" id="blockTextBottom"
                 value="elemEnd" <?=$data['user']->getProfileTextBlock() === 'elemEnd' ? 'checked' : 'unchecked'?>>
                 <label for="blockTextBottom">
-                    <img src="public/images/blockTextBottom.jpg" title="Texte aligné en bas" alt="Texte aligné en bas">
+                    <p title="Texte aligné en bas" alt="Texte aligné en bas">Bas</p>
                 </label>
             </div>
             <hr>
+            
+            <p>Alignement horizontal du nom d'utilisateur</p>
             <div>
                 <input type="radio" name="pseudoPosition" id="pseudoLeft"
                 value="elemStart" <?=$data['user']->getProfileTextPseudo() === 'elemStart' ? 'checked' : 'unchecked'?>>
                 <label for="pseudoLeft">
-                    <img src="public/images/pseudoLeft.jpg" title="Pseudo aligné à gauche" alt="Pseudo aligné à gauche">
+                    <p title="Pseudo aligné à gauche" alt="Pseudo aligné à gauche">Droite</p>
                 </label>
 
                 <input type="radio" name="pseudoPosition" id="pseudoCenter"
                 value="elemCenter" <?=$data['user']->getProfileTextPseudo() === 'elemCenter' ? 'checked' : 'unchecked'?>>
                 <label for="pseudoCenter">
-                    <img src="public/images/pseudoCenter.jpg" title="Pseudo centré" alt="Pseudo centré">
+                    <p title="Pseudo centré" alt="Pseudo centré">Centré</p>
                 </label>
 
                 <input type="radio" name="pseudoPosition" id="pseudoRight"
                 value="elemEnd" <?=$data['user']->getProfileTextPseudo() === 'elemEnd' ? 'checked' : 'unchecked'?>>
                 <label for="pseudoRight">
-                    <img src="public/images/pseudoRight.jpg" title="Pseudo aligné à droite" alt="Pseudo aligné à droite">
+                    <p title="Pseudo aligné à droite" alt="Pseudo aligné à droite">Droite</p>
                 </label>
             </div>
-            <hr class="<?=$visibility?>">
+            <hr>
+            
+            <p>Alignement horizontal du nom de l'établissement</p>
             <div class="<?=$visibility?>">
                 <input type="radio" name="schoolPosition" id="schoolLeft"
                 value="elemStart" <?=$data['user']->getProfileTextSchool() === 'elemStart' ? 'checked' : 'unchecked'?>>
                 <label for="schoolLeft">
-                    <img src="public/images/schoolLeft.jpg" title="École aligné à gauche" alt="École aligné à gauche">
+                    <p title="École aligné à gauche" alt="École aligné à gauche">Gauche</p>
                 </label>
 
                 <input type="radio" name="schoolPosition" id="schoolCenter"
                 value="elemCenter" <?=$data['user']->getProfileTextSchool() === 'elemCenter' ? 'checked' : 'unchecked'?>>
                 <label for="schoolCenter">
-                    <img src="public/images/schoolCenter.jpg" title="École centré" alt="École centré">
+                    <p title="École centré" alt="École centré">Centré</p>
                 </label>
 
                 <input type="radio" name="schoolPosition" id="schoolRight"
                 value="elemEnd" <?=$data['user']->getProfileTextSchool() === 'elemEnd' ? 'checked' : 'unchecked'?>>
                 <label for="schoolRight">
-                    <img src="public/images/schoolRight.jpg" title="École aligné à droite" alt="École aligné à droite">
+                    <p title="École aligné à droite" alt="École aligné à droite">Droite</p>
                 </label>
             </div>
             <hr>
+            
             <div>
                 <button name="saveProfileText" id="saveProfileText">
                     <i class="fas fa-check"></i>
@@ -333,16 +342,13 @@ if ($authorizedUser) {
                 <div>
                     <p>Largeur</p>
                     <div>
-                        <input type="radio" name="blockSize" id="blockSmall"
-                        value="small">
+                        <input type="radio" name="blockSize" id="blockSmall" value="small">
                         <label for="blockSmall">Petit</label>
 
-                        <input type="radio" name="blockSize" id="blockMedium"
-                        value="medium">
+                        <input type="radio" name="blockSize" id="blockMedium" value="medium">
                         <label for="blockMedium">Moyen</label>
                     
-                        <input type="radio" name="blockSize" id="blockBig"
-                        value="big">
+                        <input type="radio" name="blockSize" id="blockBig" value="big">
                         <label for="blockBig">Grand</label>
                     </div>
                 </div>
@@ -385,16 +391,13 @@ if ($authorizedUser) {
                 <div>
                     <p>Alignement</p>
                     <div>
-                        <input type="radio" name="alignSide" id="alignLeft"
-                        value="elemStart">
+                        <input type="radio" name="alignSide" id="alignLeft" value="elemStart">
                         <label for="alignLeft">Gauche</label>
 
-                        <input type="radio" name="alignSide" id="alignCenter"
-                        value="elemCenter">
+                        <input type="radio" name="alignSide" id="alignCenter" value="elemCenter">
                         <label for="alignCenter">Centre</label>
                     
-                        <input type="radio" name="alignSide" id="alignRight"
-                        value="elemEnd">
+                        <input type="radio" name="alignSide" id="alignRight" value="elemEnd">
                         <label for="alignRight">Droite</label>
                     </div>
                 </div>

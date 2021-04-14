@@ -10,22 +10,19 @@
             $classNoBanner = "";
         }
     ?>
-    <div id="banner" class="editable <?=$classNoBanner?>"  style="<?=$backgroundImgAttribut?>">
-        <i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la bannière"></i>
-    </div>
+    <div id="banner" class="<?=$classNoBanner?>"  style="<?=$backgroundImgAttribut?>"></div>
     <div id="colorFade"></div>
 
     <article id="profile" class="container">
         <header>
             <?php $data['school']->getProfilePicture() === 'public/images/question-mark.png' ? $PictureSrc = $data["school"]->getLogo() : $PictureSrc = $data["school"]->getProfilePicture()?>
-            <div id="profilePicture" class="editable <?=$data['school']->getProfilePictureSize()?>" style="background-image: url('<?=$PictureSrc?>')">
-                <i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la photo de profil"></i>
-            </div>
-            <div class="<?=$data['school']->getProfileTextBlock()?> editable">
+            <div id="profilePicture" class="<?=$data['school']->getProfilePictureSize()?>" style="background-image: url('<?=$PictureSrc?>')"></div>
+
+            <div class="<?=$data['school']->getProfileTextBlock()?>">
                 <span class="<?=$data['school']->getProfileTextSchool()?>"><?=$data['school']->getName()?></span>
-                <i class="fas fa-pencil-alt iconeEdit iconeEditHeader" title="Editer la position du texte"></i>
             </div>
         </header>
+
         <div>
             <nav>
                 <ul id="blockTabs" class="tabsStyleOne">
@@ -35,9 +32,25 @@
                     <li>Publication Privée</li>
                     <li>À propos</li>
                 </ul>
+
                 <ul id="blockTabsEditProfile">
                     <li title="éditer le profil">
                         <i class="fas fa-pencil-alt iconeEdit"></i>
+                    </li>
+
+                    <li class="editable" title="Modifier la bannière">
+                        <i class="far fa-image iconeEdit iconeEditHeader"></i>
+                        <span>Modifier la bannière</span>
+                    </li>
+
+                    <li class="editable" title="Modifier la photo de profil">
+                        <i class="fas fa-portrait iconeEdit iconeEditHeader"></i>
+                        <span>Modifier la photo de profil</span>
+                    </li>
+
+                    <li class="editable" title="Modifier la position du texte">
+                        <i class="fas fa-align-center iconeEdit iconeEditHeader"></i>
+                        <span>Modifier la position du texte</span>
                     </li>
                 </ul>
             </nav>
@@ -217,47 +230,52 @@
             </button>
         </p>
     </form>
+    <!-- Text position -->
     <form id="contentMenuEditText" class="contentMenuEdit menuEditHeader">
+        <p>Alignement vertical du texte</p>
         <div>
             <input type="radio" name="blockTextPosition" id="blockTextTop"
             value="elemStart" <?=$data['school']->getProfileTextBlock() === 'elemStart' ? 'checked' : 'unchecked'?>>
             <label for="blockTextTop">
-                <img src="public/images/blockTextTop.jpg" title="Texte aligné en haut" alt="Texte aligné en haut">
+                <p title="Texte aligné en haut" alt="Texte aligné en haut">Haut</p>
             </label>
 
             <input type="radio" name="blockTextPosition" id="blockTextCenter"
             value="elemCenter" <?=$data['school']->getProfileTextBlock() === 'elemCenter' ? 'checked' : 'unchecked'?>>
             <label for="blockTextCenter">
-                <img src="public/images/blockTextCenter.jpg" title="Texte centré verticalement" alt="Texte centré verticalement">
+                <p title="Texte centré verticalement" alt="Texte centré verticalement">Centre</p>
             </label>
         
             <input type="radio" name="blockTextPosition" id="blockTextBottom"
             value="elemEnd" <?=$data['school']->getProfileTextBlock() === 'elemEnd' ? 'checked' : 'unchecked'?>>
             <label for="blockTextBottom">
-                <img src="public/images/blockTextBottom.jpg" title="Texte aligné en bas" alt="Texte aligné en bas">
+                <p title="Texte aligné en bas" alt="Texte aligné en bas">Bas</p>
             </label>
         </div>
         <hr>
+
+        <p>Alignement horizontal du nom de l'établissement</p>
         <div>
             <input type="radio" name="schoolPosition" id="schoolLeft"
             value="elemStart" <?=$data['school']->getProfileTextSchool() === 'elemStart' ? 'checked' : 'unchecked'?>>
             <label for="schoolLeft">
-                <img src="public/images/schoolLeft.jpg" title="École aligné à gauche" alt="École aligné à gauche">
+                <p title="École aligné à gauche" alt="École aligné à gauche">Gauche</p>
             </label>
 
             <input type="radio" name="schoolPosition" id="schoolCenter"
             value="elemCenter" <?=$data['school']->getProfileTextSchool() === 'elemCenter' ? 'checked' : 'unchecked'?>>
             <label for="schoolCenter">
-                <img src="public/images/schoolCenter.jpg" title="École centré" alt="École centré">
+                <p title="École centré" alt="École centré">Centré</p>
             </label>
         
             <input type="radio" name="schoolPosition" id="schoolRight"
             value="elemEnd" <?=$data['school']->getProfileTextSchool() === 'elemEnd' ? 'checked' : 'unchecked'?>>
             <label for="schoolRight">
-                <img src="public/images/schoolRight.jpg" title="École aligné à droite" alt="École aligné à droite">
+                <p title="École aligné à droite" alt="École aligné à droite">Droite</p>
             </label>
         </div>
         <hr>
+        
         <div>
             <button name="saveProfileText" id="saveProfileText">
                 <i class="fas fa-check"></i>
