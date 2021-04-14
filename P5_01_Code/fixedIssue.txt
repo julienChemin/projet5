@@ -2,4 +2,4 @@ new stuff
     - 
 
 fixed issues
-    - 
+    - new link for discord

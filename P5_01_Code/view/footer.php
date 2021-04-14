@@ -15,7 +15,7 @@
 				<h3>En savoir plus</h3>
 
 				<p>
-					Vous pouvez consulter la <a href="index.php?action=faq">F.A.Q</a> , ou rejoindre le <a href="https://discord.gg/uDfwPHH">discord</a> <strong>ArtSchools</strong>
+					Vous pouvez consulter la <a href="index.php?action=faq">F.A.Q</a> , ou rejoindre le <a href="https://discord.gg/SZUF2AMbA3">discord</a> <strong>ArtSchools</strong>
 				</p>
 
 				<?php
@@ -41,7 +41,7 @@
 
 				<ul>
 					<li><a href="mailto:artschoolsfr@gmail.com"><i class="fas fa-envelope-square"></i></a></li>
-					<li><a href="https://discord.gg/uDfwPHH"><i class="fab fa-discord"></i></a></li>
+					<li><a href="https://discord.gg/SZUF2AMbA3"><i class="fab fa-discord"></i></a></li>
 				</ul>
 			</article>
 		</div>

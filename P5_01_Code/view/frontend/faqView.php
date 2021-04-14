@@ -67,7 +67,7 @@ $isAdmin = $isLoggedUser && $_SESSION['grade'] === ADMIN ? true : false;
     <hr>
     <p>
         Si vous ne trouvez pas de réponses dans la F.A.Q, <br>
-        vous pouvez rejoindre le <a href="https://discord.gg/uDfwPHH">discord</a> 
+        vous pouvez rejoindre le <a href="https://discord.gg/SZUF2AMbA3">discord</a> 
         pour poser votre question directement à la communauté ou à l'équipe d'<strong>Art-Schools</strong>
     </p>
     <?php

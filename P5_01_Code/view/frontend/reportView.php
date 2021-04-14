@@ -7,7 +7,7 @@
                 - Vous pouvez joindre jusqu'à 5 captures d'écran pour appuyer votre signalement
             </li>
             <li>
-                - Vous pouvez aussi parler à un modérateur sur le <a href="https://discord.gg/uDfwPHH">discord</a> pour un contact direct
+                - Vous pouvez aussi parler à un modérateur sur le <a href="https://discord.gg/SZUF2AMbA3">discord</a> pour un contact direct
             </li>
         </ul>
     </div>
