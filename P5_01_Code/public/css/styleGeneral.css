@@ -225,6 +225,11 @@ figure img{
     width: 80%;
     margin: 40px 0;
 }
+.blockSchool h2{
+    width: 100%;
+    text-align: center;
+    word-break: break-word;
+}
 .blockSchool > div{
     display: flex;
     justify-content: space-between;
@@ -560,6 +565,9 @@ footer article{
 footer ul{
     list-style: none;
 }
+#linksList a{
+    word-break: break-word;
+}
 #linksList > div{
     display: flex;
     justify-content: space-around;
@@ -571,8 +579,16 @@ footer ul{
     width: 100%;
 }
 #linksList > div li{
-    width: 50%;
+    width: 100%;
     margin-top: 10px;
+    text-align: center;
+}
+#linksList > div li:hover{
+    background-color: #222224;
+    border: solid 1px #CF8B3F;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-radius: 5px;
 }
 #about ul{
     display: flex;
@@ -675,8 +691,19 @@ footer ul{
     }
 
     /*------------- FOOTER -------------*/
+    footer section > div{
+        flex-direction: column;
+    }
+    footer article{
+        width: 100%;
+    }
+    .hrFooter{
+        transform: none;
+        width: 100%;
+        background: linear-gradient(to right, #161617, #FFC652, #161617);
+    }
     #about li{
-        min-width: 60%;
+        min-width: 49%;
         margin: 10px 0;
     }
 }
@@ -758,13 +785,24 @@ footer ul{
     }
 
     /* ------------------------ FOOTER ------------------------ */
+    footer section > div{
+        flex-direction: column;
+    }
+    footer article{
+        width: 100%;
+    }
+    .hrFooter{
+        transform: none;
+        width: 100%;
+        background: linear-gradient(to right, #161617, #FFC652, #161617);
+    }
     #linksList > div li{
         text-align: center;
         width: 100%;
         font-size: 1.2em;
     }
     #about li{
-        min-width: 60%;
+        min-width: 49%;
         margin: 10px 0;
     }
     #contact i {
