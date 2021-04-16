@@ -81,7 +81,7 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
 
                 <ul>
                     <?php
-                    if ($_SESSION['school'] === ALL_SCHOOL || !empty($user) && $user->getIsActive() && ($userIsAuthor 
+                    if ((!empty($_SESSION['school']) && $_SESSION['school'] === ALL_SCHOOL) || !empty($user) && $user->getIsActive() && ($userIsAuthor 
                     || ($post->getPostType() === 'schoolPost' && $post->getIsPrivate() && $userSchool && $post->getIdSchool() === $userSchool->getId() 
                     && ($userIsAdmin || $userIsModerator || empty($post->getListAuthorizedGroups()) || in_array($user->getSchoolGroup(), $post->getListAuthorizedGroups()))))) {
                         echo '<li id="postOnFolder"><a href="' . $urlAddPostOnFolder . '"><i class="fas fa-folder-plus"></i></a></li>';

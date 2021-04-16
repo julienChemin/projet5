@@ -447,8 +447,7 @@ $isAdmin = $isLoggedUser && $_SESSION['grade'] === ADMIN ? true : false;
             <h3>Passer en mode édition</h3>
 
             <p>
-                Sur votre <a href="indexAdmin.php?action=schoolProfile&school=<?=$_SESSION['school'] ?>">profil</a>, 
-                cliquez sur <i class="orang fas fa-pencil-alt"></i>.
+                Sur votre profil, cliquez sur <i class="orang fas fa-pencil-alt"></i>.
             </p>
 
             <p>
