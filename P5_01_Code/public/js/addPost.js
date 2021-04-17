@@ -4,9 +4,12 @@ if (document.getElementById('addSchoolPost') !== null) {
 } else {
     formAddPost = document.querySelector('#addPost > form');
 }
+let firstClickOnAddPostOrAddFolder = true;
+let blockUploadType = document.getElementById('blockUploadType');
 let btnAddFolder = document.getElementById('btnAddFolder');
 let btnAddFile = document.getElementById('btnAddFile');
 let blockAddFile = document.getElementById('blockAddFile');
+let blockFileTypeSelection = document.getElementById('fileTypeSelection');
 let blockTitle = document.getElementById('blockTitle');
 let inputTitle = document.getElementById('title');
 let blockUploadFile = document.getElementById('blockUploadFile');
@@ -33,6 +36,11 @@ window.addEventListener(
 
 btnAddFolder.addEventListener(
     'click', function () {
+        if (firstClickOnAddPostOrAddFolder) {
+            firstClickOnAddPostOrAddFolder = false;
+            blockUploadType.style.height = "100px";
+            blockUploadType.style.borderBottom = "solid 1px #CF8B3F";
+        }
         //display inputs add folder, hide inputs add file
         btnAddFolder.style.backgroundColor = '#222224';
         btnAddFolder.style.border = 'solid 1px #CF8B3F';
@@ -46,13 +54,16 @@ btnAddFolder.addEventListener(
         btnAddFile.style.backgroundColor = '#161617';
         btnAddFile.style.border = 'none';
         blockAddFile.style.display = "none";
+
         if (blockTags !== null) {
             blockTags.style.display = 'none';
         }
+
         if (btnActif.btn !== "") {
             btnActif.btn.style.backgroundColor = '#161617';
             btnActif.btn.style.border = 'none';
         }
+
         blockVideoLink.style.display = "none";
         btnActif.btn = "";
 
@@ -63,9 +74,16 @@ btnAddFolder.addEventListener(
 
 btnAddFile.addEventListener(
     'click', function () {
+        if (firstClickOnAddPostOrAddFolder) {
+            firstClickOnAddPostOrAddFolder = false;
+            blockUploadType.style.height = "100px";
+            blockUploadType.style.borderBottom = "solid 1px #CF8B3F";
+        }
         //display inputs add folder, hide inputs add file
         btnAddFile.style.backgroundColor = '#222224';
         btnAddFile.style.border = 'solid 1px #CF8B3F';
+        blockAddFile.style.height = "300px";
+        blockAddFile.style.borderBottom = "none";
         blockAddFile.style.display = "flex";
 
         btnAddFolder.style.backgroundColor = '#161617';
@@ -190,6 +208,10 @@ let blockTags = document.getElementById('blockTags');
 
 btnImg.addEventListener(
     'click', function () {
+        //scale block fileType
+        blockAddFile.style.height = "100px";
+        blockAddFile.style.borderBottom = "solid 1px #CF8B3F";
+        //display block add image
         blockTitle.style.display  = "flex";
         inputTitle.placeholder = 'Champ non obligatoire';
         blockUploadFile.style.display = 'flex';
@@ -215,6 +237,10 @@ btnImg.addEventListener(
 
 btnVideo.addEventListener(
     'click', function () {
+        //scale block fileType
+        blockAddFile.style.height = "100px";
+        blockAddFile.style.borderBottom = "solid 1px #CF8B3F";
+        //display block add video
         blockTitle.style.display  = "flex";
         inputTitle.placeholder = 'Champ non obligatoire';
         blockUploadFile.style.display = 'flex';
@@ -241,6 +267,10 @@ btnVideo.addEventListener(
 if (btnOther !== null) {
     btnOther.addEventListener(
         'click', function () {
+            //scale block fileType
+            blockAddFile.style.height = "100px";
+            blockAddFile.style.borderBottom = "solid 1px #CF8B3F";
+            //display block add other
             if (formAddPost.elements.isPrivate !== undefined && !formAddPost.elements.isPrivate.checked) {
                 formAddPost.elements.isPrivate.click();
             }
@@ -458,6 +488,7 @@ inputSubmit.addEventListener(
                     setErrorMsg('Le titre ne peut pas comporter plus de 30 caractères');
                 }
             break;
+
             case 'video' :
                 if (inputListTags !== null && inputListTags.value === "") {
                     //tag is only for referenced post
@@ -477,6 +508,7 @@ inputSubmit.addEventListener(
                     setErrorMsg('Le titre ne peut pas comporter plus de 30 caractères');
                 }
             break;
+
             case 'compressed' :
                 if (!inputFile.files.length > 0) {
                     e.preventDefault();
@@ -487,6 +519,7 @@ inputSubmit.addEventListener(
                     setErrorMsg('Vous devez ajouter un titre (30 caractères max.)');
                 }
             break;
+
             case 'folder' :
                 if (formAddPost.elements.title.value === "" || formAddPost.elements.title.value.length > 30) {
                     e.preventDefault();

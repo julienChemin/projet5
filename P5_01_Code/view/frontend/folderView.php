@@ -56,6 +56,8 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                 }
                 if (!empty($post->getDescription())) {
                     echo '<div class="publicationDescription">' . $post->getDescription() . '</div>';
+                } else {
+                    echo '<div class="publicationDescription"><p class="noPostDescription">Il n\'y a pas de description pour ce dossier</p></div>';
                 }
                 echo '<p class="folderDatePublication">Publié le ' . $post->getDatePublication() . ' </p>';
                 ?>

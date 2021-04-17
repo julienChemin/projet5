@@ -417,21 +417,27 @@ class PostsManager extends LikeManager
             $POST['listAuthorizedGroups'] = null;
         }
 
-
-
         switch ($POST['fileTypeValue']) {
             case 'image':
                 return $this->uploadImagePost($POST, $idSchool);
-                break;
+            break;
+
             case 'video':
                 return $this->uploadVideoPost($POST, $idSchool);
-                break;
+            break;
+
             case 'compressed':
                 return $this->uploadOtherPost($POST, $idSchool, $isSchoolPost);
-                break;
+            break;
+
             case 'folder':
                 return $this->uploadFolder($POST, $idSchool);
-                break;
+            break;
+
+            /* case 'grouped':
+                return $this->uploadGroupedPost($POST, $idSchool);//TODO
+            break; */
+
         }
     }
 
