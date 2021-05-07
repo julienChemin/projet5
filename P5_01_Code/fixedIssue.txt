@@ -1,6 +1,5 @@
 new stuff
-    - update addPostView
-    - preparation for grouped post
+    - grouped post !
 
 fixed issues
     - 

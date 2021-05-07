@@ -204,6 +204,8 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                             echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
                             if ($post['fileType'] === 'video' && $post['filePath'] !== 'public/images/defaultVideoThumbnail.png') {
                                 echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
+                            } else if ($post['fileType'] === 'grouped') {
+                                echo '<img class="iconeVideo" src="public/images/file.png" alt="Publication groupé">';
                             }
                             echo '<img src="' . $post['filePath'] . '" alt="Aperçu de la publication">';
                             echo '</a></figure>';
@@ -244,6 +246,8 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                             echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
                             if ($post['fileType'] === 'video' && $post['filePath'] !== 'public/images/defaultVideoThumbnail.png') {
                                 echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
+                            } else if ($post['fileType'] === 'grouped') {
+                                echo '<img class="iconeVideo" src="public/images/file.png" alt="Publication groupé">';
                             }
                             echo '<img src="' . $post['filePath'] . '" alt="Aperçu de la publication">';
                             echo '</a></figure>';
@@ -283,6 +287,8 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                             echo '<a href="index.php?action=post&id=' . $post->getId() . '">';
                             if ($post->getFileType() === 'video' && $post->getFilePath() !== 'public/images/defaultVideoThumbnail.png') {
                                 echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
+                            } else if ($post->getFileType() === 'grouped') {
+                                echo '<img class="iconeVideo" src="public/images/file.png" alt="Publication groupé">';
                             }
                             echo '<img src="' . $post->getFilePath() . '" alt="Aperçu de la publication">';
                             echo '</a></figure>';

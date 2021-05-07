@@ -102,13 +102,16 @@ if (empty($_POST)) {
                         switch ($post->getFileType()) {
                             case 'image' :
                                 $post->setFilePath('public/images/fileImage.png');
-                                break;
+                            break;
+
                             case 'video' :
                                 $post->setFilePath('public/images/defaultVideoThumbnail.png');
-                                break;
+                            break;
                         }
                     } elseif ($post->getFileType() === 'video') {
                         echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
+                    } elseif ($post->getFileType() === 'grouped') {
+                        echo '<img class="iconeVideo" src="public/images/file.png" alt="Publication groupé">';
                     }
                     ?>
                     <a href="index.php?action=post&id=<?=$post->getId()?>">

@@ -392,7 +392,7 @@ class Backend extends Controller
     public function upload()
     {
         if (!empty($_GET['elem'])) {
-            $arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
+            $arrAcceptedExtention = array("jpeg", "jpg", 'jfif', "png", "gif");
             require 'view/upload.php';
 
             $SchoolManager = new SchoolManager();
@@ -477,10 +477,20 @@ class Backend extends Controller
 
         if (isset($_GET['type']) && in_array($_GET['type'], $arrAcceptedValues) && $user = $UserManager->getOneById($_SESSION['id'])) {
             if ($response = $PostsManager->canUploadPost($_GET['type'], $user, $_POST, new TagsManager(), $SchoolManager)) {
-                if ($PostsManager->uploadPost($response, $school->getId(), true)) {
-                    header('Location: indexAdmin.php?action=schoolProfile&school=' . $_SESSION['school']);
+
+                if ($response['fileTypeValue'] === 'grouped') {
+                    $GroupedPostsManager = new GroupedPostsManager();
+                    if ($GroupedPostsManager->uploadPost($response, $school->getId(), true)) {
+                        header('Location: indexAdmin.php?action=schoolProfile&school=' . $_SESSION['school']);
+                    } else {
+                        throw new \Exception("Le fichier n'est pas conforme");
+                    }
                 } else {
-                    throw new \Exception("Le fichier n'est pas conforme");
+                    if ($PostsManager->uploadPost($response, $school->getId(), true)) {
+                        header('Location: indexAdmin.php?action=schoolProfile&school=' . $_SESSION['school']);
+                    } else {
+                        throw new \Exception("Le fichier n'est pas conforme");
+                    }
                 }
             } else {
                 $this->incorrectInformation();

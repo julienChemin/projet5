@@ -608,7 +608,7 @@ class SchoolManager extends AbstractManager
     {
         if ($school = $this->getSchoolByName($POST['schoolName'])) {
             if (!empty($_FILES['uploadLogo'])) {
-                $arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
+                $arrAcceptedExtention = array("jpeg", "jpg", 'jfif', "png", "gif");
                 require 'view/upload.php';
                 if (!empty($final_path)) {
                     $this->deleteFile($school->getLogo());

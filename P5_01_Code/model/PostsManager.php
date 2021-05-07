@@ -252,6 +252,16 @@ class PostsManager extends LikeManager
                 }
             }
         }
+        // delete associated file for grouped post
+        if ($post->getFileType() === 'grouped') {
+            $GroupedPostsManager = new GroupedPostsManager();
+            $groupPosts = $GroupedPostsManager->getGroupedPosts($post->getId());
+            if (count($groupPosts) > 0) {
+                foreach ($groupPosts as $groupPost) {
+                    $this->deleteFile($groupPost->getFilePath());
+                }
+            }
+        }
         $this->delete($post->getId());
         return $this;
     }
@@ -433,11 +443,6 @@ class PostsManager extends LikeManager
             case 'folder':
                 return $this->uploadFolder($POST, $idSchool);
             break;
-
-            /* case 'grouped':
-                return $this->uploadGroupedPost($POST, $idSchool);//TODO
-            break; */
-
         }
     }
 
@@ -823,22 +828,32 @@ class PostsManager extends LikeManager
                 if (empty($_FILES['uploadFile'])) {
                     return false;
                 }
-                break;
+            break;
+
             case 'video':
                 if (empty($arrPOST['videoLink'])) {
                     return false;
                 }
-                break;
+            break;
+
             case 'compressed':
                 if (empty($_FILES['uploadFile']) || empty($arrPOST['title'])) {
                     return false;
                 }
-                break;
+            break;
+
             case 'folder':
                 if (empty($arrPOST['title'])) {
                     return false;
                 }
-                break;
+            break;
+
+            case 'grouped':
+                if (empty($_FILES['uploadFile'])) {
+                    return false;
+                }
+            break;
+
             default :
                 return false;
         }
@@ -959,7 +974,7 @@ class PostsManager extends LikeManager
 
     private function uploadImagePost(array $POST, int $idSchool)
     {
-        $arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
+        $arrAcceptedExtention = array("jpeg", "jpg", 'jfif', "png", "gif");
         require 'view/upload.php';
         if (!empty($final_path)) {
             $this->set(
@@ -987,7 +1002,7 @@ class PostsManager extends LikeManager
     {
         $filePath = null;
         if ($_FILES['uploadFile']['error'] === 0) {
-            $arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
+            $arrAcceptedExtention = array("jpeg", "jpg", 'jfif', "png", "gif");
             require 'view/upload.php';
             if (!empty($final_path)) {
                 $filePath = $final_path;
@@ -1017,7 +1032,7 @@ class PostsManager extends LikeManager
     private function uploadOtherPost(array $POST, int $idSchool, string $isSchoolPost)
     {
         if ($isSchoolPost) {
-            $arrAcceptedExtention = array("zip", "rar");
+            $arrAcceptedExtention = array("zip", "rar", "7zip", '7z');
             require 'view/upload.php';
             if (!empty($final_path)) {
                 $this->set(
@@ -1047,7 +1062,7 @@ class PostsManager extends LikeManager
     {
         $filePath = null;
         if ($_FILES['uploadFile']['error'] === 0) {
-            $arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
+            $arrAcceptedExtention = array("jpeg", "jpg", 'jfif', "png", "gif");
             require 'view/upload.php';
             if (!empty($final_path)) {
                 $filePath = $final_path;

@@ -181,9 +181,9 @@ abstract class AbstractManager extends Database
     }
 
     /*------------------------------ file stuff ------------------------------*/
-    protected function deleteFile(string $filePath)
+    protected function deleteFile(string $filePath = null)
     {
-        if (strlen($filePath) > 0 && file_exists($filePath) && strpos($filePath, 'question-mark') === false) {                              
+        if ($filePath && strlen($filePath) > 0 && file_exists($filePath) && strpos($filePath, 'question-mark') === false) {                              
             unlink($filePath);
         }
         return $this;

@@ -1,6 +1,12 @@
 <?php
 $post = $data['post'];
 $comments = $data['comments'];
+if (!empty($data['groupPosts'])) {
+    $groupPosts = $data['groupPosts'];
+}
+if (!empty($data['groupPostsInfo'])) {
+    $groupPostsInfo = $data['groupPostsInfo'];
+}
 $asidePosts = $data['asidePosts'];
 $author = $data['author'];
 $user = $data['user'];
@@ -9,6 +15,7 @@ if (!empty($data['fileInfo'])) {
 }
 $post->getFileType() === 'compressed' ? $classSection = 'showCompressedFile' : $classSection = '';
 ?>
+
 <section id="viewPost">
     <article>
         <section class='<?=$classSection?>'>
@@ -60,10 +67,92 @@ $post->getFileType() === 'compressed' ? $classSection = 'showCompressedFile' : $
                             </div>
                             <?php
                         break;
+
+                        case 'grouped' :
+                            for ($i = 0; $i < count($groupPosts); $i++) {
+                                if ($i < 1) {
+                                    $isDisplay = "groupedPostDisplay";
+                                } else {
+                                    $isDisplay = "groupedPostHidden";
+                                }
+                                switch ($groupPosts[$i]->getFileType()) {
+                                    case 'image' :
+                                        echo '<a class="' . $isDisplay . '" href="' . $groupPosts[$i]->getFilePath() . '"><img class="fileImage" src="' . $groupPosts[$i]->getFilePath() . '" alt="' . $alt . '"></a>';
+                                    break;
+            
+                                    case 'video' :
+                                        echo '<iframe class="' . $isDisplay . '" width="90%" height="90%" src="https://www.youtube.com/embed/' . $groupPosts[$i]->getUrlVideo() . '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+                                    break;
+            
+                                    case 'compressed' :
+                                        ?>
+                                        <div class="<?=$isDisplay?>">
+                                            <div class="compressedFile">
+                                                <img src="public/images/fileOther.png" alt="<?=$alt?>">
+                
+                                                <a title="Cliquez pour télécharger" href="<?=$groupPosts[$i]->getFilePath()?>">
+                                                    <i class="fas fa-download"></i>
+                                                    <span>Télécharger</span>
+                                                </a>
+                                            </div>
+                
+                                            <div class="compressedFileDescription">
+                                                <?php
+                                                if (empty($groupPostsInfo[$i])) {
+                                                    echo "<p>Aucune information n'a pu être récupéré sur cette archive</p>";
+                                                } else if (!is_array($groupPostsInfo[$i]) && $groupPostsInfo[$i] === 'empty') {
+                                                    echo "<p>L\'archive est vide</p>";
+                                                } else if (!is_array($groupPostsInfo[$i]) && $groupPostsInfo[$i] === 'cannotReadRar') {
+                                                    echo "<p>";
+                                                        echo "<h2>La récupération d'information sur les archives de type '.rar' n'est pas disponible pour le moment</h2>";
+                                                        echo "<h3>Utilisez des archives '.zip' si vous souhaitez que les informations soit affiché</h3>";
+                                                    echo "</p>";
+                                                } else if (is_array($groupPostsInfo[$i])) {
+                                                    echo "<h2>L'archive contient : </h2>";
+                                                    for ($j = 0; $j < count($groupPostsInfo[$i]['name']); $j++) {
+                                                        echo'<p>';
+                                                            echo "<span>" . $groupPostsInfo[$i]['name'][$j] . "</span>";
+                                                            echo "<br>";
+                                                            echo "<span>" . $groupPostsInfo[$i]['size'][$j] . "</span>";
+                                                        echo'</p>';
+                                                    }
+                                                }
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <?php
+                                    break;
+                                }
+                            }
+                        break;
                     }
                 ?>
             </div>
         </section>
+
+        <?php
+        if ($post->getFileType() === 'grouped') {
+            echo'<div id="listGroupPosts">';
+                echo'<div class="container">';
+                for ($i = 0; $i < count($groupPosts); $i++) {
+                    switch ($groupPosts[$i]->getFileType()) {
+                        case 'image' :
+                            echo '<p postType="image"><img class="fileImage" src="' . $groupPosts[$i]->getFilePath() . '"></p>';
+                        break;
+
+                        case 'video' :
+                            echo '<p postType="video"><img class="fileVideo" src="public/images/defaultVideoThumbnail.png"></p>';
+                        break;
+
+                        case 'compressed' :
+                            echo '<p postType="compressed"><img class="fileOther" src="public/images/fileOther.png"></p>';
+                        break;
+                    }
+                }
+                echo'</div>';
+            echo'</div>';
+        }
+        ?>
 
         <aside id="optionList" class="fullWidth">
             <nav class="container">
@@ -273,6 +362,8 @@ $post->getFileType() === 'compressed' ? $classSection = 'showCompressedFile' : $
                             echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
                             if ($post['fileType'] === 'video' && $post['filePath'] !== 'public/images/defaultVideoThumbnail.png') {
                                 echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
+                            } else if ($post['fileType'] === 'grouped') {
+                                echo '<img class="iconeVideo" src="public/images/file.png" alt="Publication groupé">';
                             }
                             echo '<img src="' . $post['filePath'] . '" alt="Publication">';
                             echo '</a></figure>';
@@ -313,6 +404,8 @@ $post->getFileType() === 'compressed' ? $classSection = 'showCompressedFile' : $
                             echo '<a href="index.php?action=post&id=' . $post['id'] . '">';
                             if ($post['fileType'] === 'video' && $post['filePath'] !== 'public/images/defaultVideoThumbnail.png') {
                                 echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
+                            } else if ($post['fileType'] === 'grouped') {
+                                echo '<img class="iconeVideo" src="public/images/file.png" alt="Publication groupé">';
                             }
                             !empty($post['title']) ? $alt = $post['title'] : $alt = 'Publication';
                             echo '<img src="' . $post['filePath'] . '" alt="' . $alt . '">';
@@ -353,6 +446,8 @@ $post->getFileType() === 'compressed' ? $classSection = 'showCompressedFile' : $
                             echo '<a href="index.php?action=post&id=' . $post->getId() . '">';
                             if ($post->getFileType() === 'video' && $post->getFilePath() !== 'public/images/defaultVideoThumbnail.png') {
                                 echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
+                            } else if ($post->getFileType() === 'grouped') {
+                                echo '<img class="iconeVideo" src="public/images/file.png" alt="Publication groupé">';
                             }
                             !empty($post->getTitle()) ? $alt = $post->getTitle() : $alt = 'Publication';
                             echo '<img src="' . $post->getFilePath() . '" alt="' . $alt . '">';
@@ -395,6 +490,8 @@ $post->getFileType() === 'compressed' ? $classSection = 'showCompressedFile' : $
                                     echo '<a href="index.php?action=post&id=' . $post->getId() . '">';
                                     if ($post->getFileType() === 'video' && $post->getFilePath() !== 'public/images/defaultVideoThumbnail.png') {
                                         echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
+                                    } else if ($post->getFileType() === 'grouped') {
+                                        echo '<img class="iconeVideo" src="public/images/file.png" alt="Publication groupé">';
                                     }
                                     !empty($post->getTitle()) ? $alt = $post->getTitle() : $alt = 'Publication';
                                     echo '<img src="' . $post->getFilePath() . '" alt="' . $alt . '">';

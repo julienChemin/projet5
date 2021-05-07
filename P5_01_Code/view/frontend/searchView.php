@@ -151,6 +151,8 @@
                                         }
                                     } elseif ($result[$i]->getFileType() === 'video') {
                                         echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
+                                    } else if ($result[$i]->getFileType() === 'grouped') {
+                                        echo '<img class="iconeVideo" src="public/images/file.png" alt="Publication groupé">';
                                     }
 
                                     echo '<figure class="figureProfilePicture fullWidth">';
@@ -218,6 +220,8 @@
                                         }
                                     } elseif ($post->getFileType() === 'video') {
                                         echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
+                                    } else if ($post->getFileType() === 'grouped') {
+                                        echo '<img class="iconeVideo" src="public/images/file.png" alt="Publication groupé">';
                                     }
                                     ?>
                                     
@@ -251,6 +255,8 @@
                                         }
                                     } elseif ($post->getFileType() === 'video') {
                                         echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
+                                    } else if ($post->getFileType() === 'grouped') {
+                                        echo '<img class="iconeVideo" src="public/images/file.png" alt="Publication groupé">';
                                     }
                                     ?>
 
@@ -317,6 +323,8 @@
                                             }
                                         } elseif ($post->getFileType() === 'video') {
                                             echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
+                                        } else if ($post->getFileType() === 'grouped') {
+                                            echo '<img class="iconeVideo" src="public/images/file.png" alt="Publication groupé">';
                                         }
                                         ?>
 
@@ -351,6 +359,8 @@
                                         }
                                     } elseif ($post->getFileType() === 'video') {
                                         echo '<img class="iconeVideo" src="public/images/defaultVideoThumbnail.png" alt="Publication de type vidéo">';
+                                    } else if ($post->getFileType() === 'grouped') {
+                                        echo '<img class="iconeVideo" src="public/images/file.png" alt="Publication groupé">';
                                     }
                                     ?>
 

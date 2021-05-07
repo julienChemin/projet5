@@ -165,6 +165,42 @@
 .compressedFileDescription > p > span{
     word-break: break-all;
 }
+.groupedPostDisplay{
+    display: flex!important;
+}
+.groupedPostHidden{
+    display: none!important;
+}
+#listGroupPosts{
+    width: 100%;
+    background-color: #161617;
+}
+#listGroupPosts > div{
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-wrap: wrap;
+}
+#listGroupPosts > div > p{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90px;
+    width: 90px;
+    cursor: pointer;
+    margin: 5px;
+    border-radius: 5px;
+    border: solid 1px #262627;
+}
+.displayedThumbnail{
+    border-color: #CF8B3F!important;
+}
+#listGroupPosts > div > p > img{
+    max-width: 95%;
+    max-height: 95%;
+}
 i[class="fas fa-download"]{
     font-size: 1.5em;
     margin-right: 5px;
@@ -358,6 +394,11 @@ i[class="fas fa-download"]{
 }
 .postOnAside:hover{
     background-color: #222224;
+}
+.postOnAside > a{
+    border: solid 1px #262627;
+    border-radius: 5px;
+    height: 95%;
 }
 .postOnAside > img{
     max-height: 90%;
@@ -575,6 +616,13 @@ i[class="fas fa-download"]{
         min-height: 200px;
     }
 
+    /*associated post for grouped post*/
+    #listGroupPosts > div > p{
+        height: 70px;
+        width: 70px;
+        border-radius: 3px;
+    }
+
     /*block related posts and comments on folder view*/
     #viewFolder > article > section{
         padding: 10px 0;
@@ -650,6 +698,13 @@ i[class="fas fa-download"]{
         width: 75%;
     }
 
+    /*associated post for grouped post*/
+    #listGroupPosts > div > p{
+        height: 60px;
+        width: 60px;
+        border-radius: 3px;
+    }
+
     /*block related posts and comments*/
     #commentsAndRelatedPosts{
         flex-direction: column;
@@ -696,8 +751,8 @@ i[class="fas fa-download"]{
 
     /*post on aside*/
     .postOnAside{
-        height: 130px;
-        width: 130px;
+        height: 60px;
+        width: 60px;
     }
     #relatedPosts h1{
         font-size: 1.2em;

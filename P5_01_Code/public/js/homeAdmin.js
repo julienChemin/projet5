@@ -46,6 +46,31 @@ function createItemVideo(post, divSlide){
 	divSlide.appendChild(divItem);
 }
 
+function createItemGrouped(post, divSlide){
+	let divItem = document.createElement('div');
+	divItem.classList.add('items');
+	let elemFigure = document.createElement('figure');
+	let elemA = document.createElement('a');
+	elemA.href = 'index.php?action=post&id=' + post['id'];
+	let elemIcone = document.createElement('img');
+	elemIcone.src = 'public/images/file.png';
+	elemIcone.alt = 'Publication groupé';
+	elemIcone.classList.add('iconeFolder');
+	let elemImg = document.createElement('img');
+	elemImg.src = post['filePath'];
+	if (post['title'] !== null) {
+		elemImg.alt = post['title'];
+		elemImg.setAttribute('title', post['title']);
+	} else {
+		elemImg.alt = 'Aperçu de la publication';
+	}
+	elemA.appendChild(elemIcone);
+	elemA.appendChild(elemImg);
+	elemFigure.appendChild(elemA);
+	divItem.appendChild(elemFigure);
+	divSlide.appendChild(divItem);
+}
+
 function createSlide(posts){
 	let divSlide = document.createElement('div');
 	divSlide.classList.add('slide');
@@ -54,8 +79,13 @@ function createSlide(posts){
 			case 'image' :
 				createItemImage(post, divSlide);
 			break;
+
 			case 'video' :
 				createItemVideo(post, divSlide);
+			break;
+
+			case 'grouped' :
+				createItemGrouped(post, divSlide);
 			break;
 		}
 	});

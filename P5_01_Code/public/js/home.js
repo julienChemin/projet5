@@ -42,6 +42,29 @@ function createItemVideo(post, divSlide){
 	divSlide.appendChild(elemFigure);
 }
 
+function createItemGrouped(post, divSlide){
+	let elemFigure = document.createElement('figure');
+	elemFigure.classList.add('items');
+	let elemA = document.createElement('a');
+	elemA.href = 'index.php?action=post&id=' + post['id'];
+	let elemIcone = document.createElement('img');
+	elemIcone.src = 'public/images/file.png';
+	elemIcone.alt = 'Publication groupé';
+	elemIcone.classList.add('iconeFolder');
+	let elemImg = document.createElement('img');
+	elemImg.src = post['filePath'];
+	if (post['title'] !== null) {
+		elemImg.alt = post['title'];
+		elemImg.setAttribute('title', post['title']);
+	} else {
+		elemImg.alt = 'Aperçu de la publication';
+	}
+	elemA.appendChild(elemIcone);
+	elemA.appendChild(elemImg);
+	elemFigure.appendChild(elemA);
+	divSlide.appendChild(elemFigure);
+}
+
 function createSlide(posts, blockSlider){
 	let divSlide = document.createElement('div');
 	divSlide.classList.add('slide');
@@ -50,8 +73,13 @@ function createSlide(posts, blockSlider){
 			case 'image' :
 				createItemImage(post, divSlide);
 			break;
+
 			case 'video' :
 				createItemVideo(post, divSlide);
+			break;
+
+			case 'grouped' :
+				createItemGrouped(post, divSlide);
 			break;
 		}
 	});

@@ -266,7 +266,7 @@ class Frontend extends Controller
     public function upload()
     {
         if (!empty($_GET['elem'])) {
-            $arrAcceptedExtention = array("jpeg", "jpg", "png", "gif");
+            $arrAcceptedExtention = array("jpeg", "jpg", 'jfif', "png", "gif");
             require 'view/upload.php';
 
             $UserManager = new UserManager();
@@ -305,15 +305,21 @@ class Frontend extends Controller
         $CommentsManager = new CommentsManager();
         !empty($_SESSION) ? $user = $UserManager->getOneById($_SESSION['id']) : $user = null;
         if (!empty($_GET['id']) && $post = $PostsManager->getOneById($_GET['id'])) {
-            //getting comments from this post
+            // get associated posts
+            $groupPosts = [];
+            if ($post->getFileType() === 'grouped') {
+                $GroupedPostsManager = new GroupedPostsManager();
+                $groupPosts = $GroupedPostsManager->getGroupedPosts($post->getId());
+            }
+            // get comments from this post
             $comments = $CommentsManager->getFromPost($_GET['id']);
             if ($PostsManager->userCanSeePost($user, $post)) {
                 $asidePosts = $PostsManager->getAsidePosts($post, new TagsManager());
                 $UserManager->exists($post->getIdAuthor()) ? $author = $UserManager->getOneById($post->getIdAuthor()) : $author = null;
                 if ($post->getIsPrivate()) {
-                    $this->privatePost($post, $comments, $asidePosts, $user, $author);
+                    $this->privatePost($post, $comments, $groupPosts, $asidePosts, $user, $author);
                 } else {
-                    $this->publicPost($post, $comments, $asidePosts, $user, $author);
+                    $this->publicPost($post, $comments, $groupPosts, $asidePosts, $user, $author);
                 }
             } else {
                 $this->accessDenied();
@@ -935,7 +941,7 @@ class Frontend extends Controller
     }
 
     /*------------------------------ post view ------------------------------*/
-    private function privatePost(Post $post, array $comments, array $asidePosts, User $user, User $author)
+    private function privatePost(Post $post, array $comments, array $groupPosts, array $asidePosts, User $user, User $author)
     {
         if ($post->getFileType() === 'folder') {
             // consulting private folder
@@ -950,8 +956,10 @@ class Frontend extends Controller
 
             RenderView::render(
                 'template.php', 'frontend/folderView.php', 
-                ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'userSchool' => $userSchool, 'user' => $user, 'author' => $author, 
-                    'userInfo' => $userInfo, 'urlAddPostOnFolder' => $urlAddPostOnFolder, 'option' => ['folderView']]
+                [
+                    'post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'userSchool' => $userSchool, 'user' => $user, 'author' => $author, 
+                    'userInfo' => $userInfo, 'urlAddPostOnFolder' => $urlAddPostOnFolder, 'option' => ['folderView']
+                ]
             );
         } else if ($post->getFileType() === 'compressed') {
             // consulting private post (compressed file)
@@ -960,13 +968,29 @@ class Frontend extends Controller
                 'template.php', 'frontend/postView.php', 
                 [
                     'post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 'fileInfo' => $fileInfo,
-                    'option' => ['postView']]
+                    'option' => ['postView']
+                ]
             );
         } else {
+            // getting compressed file info for grouped post
+            $groupPostsInfo = [];
+            if ($post->getFileType() === 'grouped' && count($groupPosts) > 0) {
+                foreach ($groupPosts as $groupPost) {
+                    if ($groupPost->getFileType() === "compressed") {
+                        $groupPostsInfo[] = $this->getCompressedFileInfo($groupPost->getFilePath());
+                    } else {
+                        $groupPostsInfo[] = null;
+                    }
+                }
+            }
+
             // consulting private post
             RenderView::render(
                 'template.php', 'frontend/postView.php', 
-                ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 'option' => ['postView']]
+                [
+                    'post' => $post, 'comments' => $comments, 'groupPosts' => $groupPosts, 'groupPostsInfo' => $groupPostsInfo, 
+                    'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 'option' => ['postView']
+                ]
             );
         }
     }
@@ -1019,7 +1043,7 @@ class Frontend extends Controller
         return 'cannotReadRar';
     }
 
-    private function publicPost(Post $post, array $comments, array $asidePosts, $user, User $author)
+    private function publicPost(Post $post, array $comments, array $groupPosts, array $asidePosts, $user, User $author)
     {
         if ($post->getFileType() === 'folder') {
             // consulting public folder
@@ -1041,7 +1065,7 @@ class Frontend extends Controller
             //consulting public post
             RenderView::render(
                 'template.php', 'frontend/postView.php', 
-                ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 
+                ['post' => $post, 'comments' => $comments, 'groupPosts' => $groupPosts, 'asidePosts' => $asidePosts, 
                 'user' => $user, 'author' => $author, 'option' => ['postView']]);
         }
     }
@@ -1092,13 +1116,25 @@ class Frontend extends Controller
             $response['authorizedGroups'] = null;
         }
 
-        if ($PostsManager->uploadPost($response, $idSchool, $schoolPost)) {
-            if (!empty($response['listTags'])) {
-                $TagsManager->checkForNewTag($response['listTags'], $PostsManager->getLastInsertId());
+        if ($response['fileTypeValue'] === 'grouped') {
+            $GroupedPostsManager = new GroupedPostsManager();
+            if ($idNewPost = $GroupedPostsManager->uploadPost($response, $idSchool, $schoolPost)) {
+                if (!empty($response['listTags'])) {
+                    $TagsManager->checkForNewTag($response['listTags'], $idNewPost);
+                }
+                header('Location: index.php?action=' . $action);
+            } else {
+                throw new \Exception("Le fichier n'est pas conforme");
             }
-            header('Location: index.php?action=' . $action);
         } else {
-            throw new \Exception("Le fichier n'est pas conforme");
+            if ($PostsManager->uploadPost($response, $idSchool, $schoolPost)) {
+                if (!empty($response['listTags'])) {
+                    $TagsManager->checkForNewTag($response['listTags'], $PostsManager->getLastInsertId());
+                }
+                header('Location: index.php?action=' . $action);
+            } else {
+                throw new \Exception("Le fichier n'est pas conforme");
+            }
         }
     }
 

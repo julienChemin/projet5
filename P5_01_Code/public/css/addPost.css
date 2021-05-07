@@ -25,7 +25,7 @@
 #addSchoolPost figcaption, #addPost figcaption{
     font-weight: bold;
 }
-#blockUploadType{
+#blockUploadType, #blockUploadGroupedFile{
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -34,7 +34,49 @@
     height: 300px;
     padding: 5px;
 }
-#blockUploadType img{
+#blockUploadGroupedFile{
+    display: none;
+    flex-wrap: wrap;
+    height: auto;
+    margin-top: 15px!important;
+}
+#groupedFileTypeSelection{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    height: 200px;
+    width: 100%;
+}
+#groupedFileTypeSelection > span {
+    width: 100%;
+}
+#groupedFileTypeSelection figure{
+    max-height: 80%;
+    max-width: 30%;
+    width: auto;
+    flex: auto;
+}
+#groupedFileTypeSelection figure input{
+    display: none;
+}
+#groupedFileTypeSelection figure label{
+    height: 100%;
+    cursor: pointer;
+}
+.newGroupedFile{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.previewBadLinkWarning {
+    color: #de522f;
+    text-decoration: underline;
+}
+#blockUploadType img, #blockUploadGroupedFile img{
     max-height: 80%;
 }
 #btnAddFolder, #btnAddFile{
@@ -52,7 +94,7 @@
 #blockAddFile{
     display: none;
     width: 100%;
-    height: 300px;
+    height: 200px;
     border-radius: 5px;
     padding: 5px;
 }
@@ -136,14 +178,21 @@
     font-size: 1.5em;
     margin-right: 35px;
 }
-#blockTitle, #blockVideoLink{
+#blockTitle{
     width: 100%;
     display: none;
     justify-content: center;
     align-items: center;
 }
+#blockVideoLink{
+    width: 100%;
+    display: none;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+}
 #blockTitle input, #blockVideoLink input{
-    width: 80%;
+    width: 60%;
 }
 #blockUploadFile{
     display: none;
@@ -159,7 +208,7 @@
     align-items: center;
     padding: 15px;
 }
-#blockUploadFile > div > div{
+#blockUploadFile > div > div, .newGroupedFileImg > div{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -178,13 +227,20 @@
     width: 40%;
     min-height: 100px;
 }
-#blockUploadFile #preview{
+#blockUploadFile div .preview, .preview{
     display: none;
     justify-content: center;
     align-items: center;
     height: 300px;
 }
-#blockUploadFile #preview img{
+.previewVideo{
+    margin-top: 10px;
+    min-width: 50%;
+    max-width: 50%;
+    min-height: 350px;
+    max-height: 100%;
+}
+.preview img{
     max-width: 90%;
     max-height: 90%;
 }
@@ -209,6 +265,9 @@
     font-size: 1.3em;
     text-align: left;
 }
+#blockTags hr{
+    align-self: center;
+}
 #tags{
     /*input text for tags*/
     transition: 0.15s linear;
@@ -227,6 +286,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
     width: 50%;
 }
 #selectedTags > div, #recommendedTags > div{
@@ -253,11 +313,19 @@
 ====================================================================================================================================*/
 
 @media all and (min-width:992px) and (max-width:1200px){
+    #blockVideoLink{
+        flex-direction: column;
+    }
+    .previewVideo{
+        min-width: 70%;
+        max-width: 90%;
+        max-height: 100%;
+    }
     #blockUploadFile > div{
         flex-direction: column;
         padding: 15px;
     }
-    #blockUploadFile > div > div, #blockUploadFile div > figure{
+    #blockUploadFile > div > div, #blockUploadFile div > figure, .newGroupedFileImg > div, .newGroupedFileImg > figure{
         width: 100%;
     }
 }
@@ -280,7 +348,7 @@
         flex-direction: column;
         padding: 15px;
     }
-    #blockUploadFile > div > div, #blockUploadFile div > figure{
+    #blockUploadFile > div > div, #blockUploadFile div > figure, .newGroupedFileImg > div, .newGroupedFileImg > figure{
         width: 100%;
     }
     #blockTags > p{
@@ -291,6 +359,15 @@
     }
     #blockAddTags > div:first-of-type, #selectedTags{
         width: 100%;
+    }
+    #blockVideoLink{
+        flex-direction: column;
+    }
+    .previewVideo{
+        min-width: 70%;
+        max-width: 90%;
+        min-height: 250px;
+        max-height: 100%;
     }
 }
 
@@ -312,7 +389,7 @@
         flex-direction: column;
         padding: 15px;
     }
-    #blockUploadFile > div > div, #blockUploadFile div > figure{
+    #blockUploadFile > div > div, #blockUploadFile div > figure, .newGroupedFileImg > div, .newGroupedFileImg > figure{
         width: 100%;
     }
     #blockTags > p{
@@ -323,6 +400,15 @@
     }
     #blockAddTags > div:first-of-type, #selectedTags{
         width: 100%;
+    }
+    #blockVideoLink{
+        flex-direction: column;
+    }
+    .previewVideo{
+        min-width: 80%;
+        max-width: 90%;
+        min-height: 200px;
+        max-height: 100%;
     }
 }
 
@@ -350,7 +436,7 @@
         flex-direction: column;
         padding: 15px;
     }
-    #blockUploadFile > div > div, #blockUploadFile div > figure{
+    #blockUploadFile > div > div, #blockUploadFile div > figure, .newGroupedFileImg > div, .newGroupedFileImg > figure{
         width: 100%;
     }
     #blockTags > p{
@@ -361,5 +447,14 @@
     }
     #blockAddTags > div:first-of-type, #selectedTags{
         width: 100%;
+    }
+    #blockVideoLink{
+        flex-direction: column;
+    }
+    .previewVideo{
+        min-width: 90%;
+        max-width: 90%;
+        min-height: 150px;
+        max-height: 100%;
     }
 }

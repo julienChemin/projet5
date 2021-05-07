@@ -6,24 +6,33 @@ function fillProfile(sortedPosts) {
 		setPosts(sortedPosts['private'], tabPrivatePosts);
 	}
 }
+
 function setPosts(posts, blockContent) {
 	posts.forEach(post =>{
 		switch (post['fileType']) {
 			case 'image' :
 				setImagePost(post, blockContent);
 			break;
+
 			case 'video' :
 				setVideoPost(post, blockContent);
 			break;
+
 			case 'folder' :
 				setFolderPost(post, blockContent);
 			break;
+
 			case 'compressed' :
 				setCompressedPost(post, blockContent);
+			break;
+
+			case 'grouped' :
+				setGroupedPost(post, blockContent);
 			break;
 		}
 	});
 }
+
 function setImagePost(post, blockContent) {
 	let divItem = document.createElement('div');
 	divItem.classList.add('post');
@@ -43,6 +52,7 @@ function setImagePost(post, blockContent) {
 	divItem.appendChild(elemFigure);
 	blockContent.appendChild(divItem);
 }
+
 function setVideoPost(post, blockContent) {
 	let divItem = document.createElement('div');
 	divItem.classList.add('post');
@@ -70,6 +80,7 @@ function setVideoPost(post, blockContent) {
 	divItem.appendChild(elemFigure);
 	blockContent.appendChild(divItem);
 }
+
 function setFolderPost(post, blockContent, onFolderView = false) {
 	//create folder
 	let divFolder = document.createElement('div');
@@ -100,12 +111,10 @@ function setFolderPost(post, blockContent, onFolderView = false) {
 	elemA.appendChild(elemSpan);
 	elemFigure.appendChild(elemA);
 	divFolder.appendChild(elemFigure);
-	/* if (!onFolderView) {
-		fillFolder(post['id'], divFolder);
-	} */
 	
 	blockContent.appendChild(divFolder);
 }
+
 function fillFolder(postId, elemFolder, onFolderView = false) {
 	if (sortedPosts['folder'][postId] !== undefined && sortedPosts['folder'][postId].length > 0) {
 		sortedPosts['folder'][postId].forEach(post =>{
@@ -113,14 +122,21 @@ function fillFolder(postId, elemFolder, onFolderView = false) {
 				case 'image' :
 					setImagePost(post, elemFolder);
 				break;
+
 				case 'video' :
 					setVideoPost(post, elemFolder);
 				break;
+
 				case 'folder' :
 					setFolderPost(post, elemFolder, onFolderView);
 				break;
+
 				case 'compressed' :
 					setCompressedPost(post, elemFolder);
+				break;
+
+				case 'grouped' :
+					setGroupedPost(post, elemFolder);
 				break;
 			}
 		});
@@ -129,6 +145,7 @@ function fillFolder(postId, elemFolder, onFolderView = false) {
 		elemFolder.innerHTML = '<p class="emptyFolder">Ce dossier est vide pour le moment</p>';
 	}
 }
+
 function setCompressedPost(post, blockContent) {
 	let divItem = document.createElement('div');
 	divItem.classList.add('post');
@@ -143,6 +160,31 @@ function setCompressedPost(post, blockContent) {
 	elemSpan.textContent = post['title'];
 	elemA.appendChild(elemImg);
 	elemA.appendChild(elemSpan);
+	elemFigure.appendChild(elemA);
+	divItem.appendChild(elemFigure);
+	blockContent.appendChild(divItem);
+}
+
+function setGroupedPost(post, blockContent) {
+	let divItem = document.createElement('div');
+	divItem.classList.add('post');
+	let elemFigure = document.createElement('figure');
+	let elemA = document.createElement('a');
+	elemA.href = 'index.php?action=post&id=' + post['id'];
+	let elemIcone = document.createElement('img');
+	elemIcone.src = 'public/images/file.png';
+	elemIcone.alt = 'Publication groupé';
+	elemIcone.classList.add('iconeFolder');
+	let elemImg = document.createElement('img');
+	elemImg.src = post['filePath'];
+	if (post['title'] !== null) {
+		elemImg.alt = post['title'];
+		elemImg.setAttribute('title', post['title']);
+	} else {
+		elemImg.alt = 'Aperçu de la publication';
+	}
+	elemA.appendChild(elemIcone);
+	elemA.appendChild(elemImg);
 	elemFigure.appendChild(elemA);
 	divItem.appendChild(elemFigure);
 	blockContent.appendChild(divItem);

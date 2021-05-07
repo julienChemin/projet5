@@ -192,6 +192,46 @@ if (btnLike !== null) {
         }
     );
 }
+//////////////////////////////////////
+        // GROUPED POSTS
+//////////////////////////////////////
+
+let elemPosts = document.querySelectorAll('#viewPost > article > section > .container > *');
+let elemThumbnail = document.querySelectorAll('#listGroupPosts > .container > p');
+let blockDisplayedContent = document.querySelector('#viewPost > article > section');
+
+if (elemThumbnail !== null && elemThumbnail.length > 0) {
+    let displayedElem = elemPosts[0];
+    let displayedThumbnail = elemThumbnail[0];
+    displayedThumbnail.classList.add('displayedThumbnail');
+
+    function displayElem(elem, thumbnail) {
+        if (displayedThumbnail !== thumbnail) {
+            displayedElem.classList.remove('groupedPostDisplay');
+            displayedElem.classList.add('groupedPostHidden');
+            elem.classList.remove('groupedPostHidden');
+            elem.classList.add('groupedPostDisplay');
+            displayedElem = elem;
+            if (thumbnail.getAttribute('postType') === 'compressed' && !blockDisplayedContent.classList.contains('showCompressedFile')) {
+                blockDisplayedContent.classList.add('showCompressedFile');
+            } else if (thumbnail.getAttribute('postType') !== 'compressed' && blockDisplayedContent.classList.contains('showCompressedFile')) {
+                blockDisplayedContent.classList.remove('showCompressedFile');
+            }
+        
+            displayedThumbnail.classList.remove('displayedThumbnail');
+            thumbnail.classList.add('displayedThumbnail');
+            displayedThumbnail = thumbnail;
+        }
+    }
+
+    for (let i = 0; i < elemThumbnail.length; i++) {
+        elemThumbnail[i].addEventListener(
+            'click', function() {
+                displayElem(elemPosts[i], elemThumbnail[i]);
+            }
+        );
+    }
+}
 
 //////////////////////////////////////
         // MODAL

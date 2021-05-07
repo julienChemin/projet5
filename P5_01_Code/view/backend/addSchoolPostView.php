@@ -4,6 +4,8 @@
     <form method="POST" action="indexAdmin.php?action=uploadSchoolPost&type=onSchoolProfile" enctype="multipart/form-data">
         <input type="hidden" name="fileTypeValue" value="">
         <input type="hidden" name="folder" value="">
+        <input type="hidden" name="fileCountOnGrouped" value="0">
+        <input type="hidden" name="listTypeGroupedFile" value="">
         <input type="hidden" name="listAuthorizedGroups" value="">
 
         <div id="blockIsPrivate" class="fullWidth">
@@ -66,6 +68,14 @@
                 </figure>
 
                 <figure>
+                    <input type="radio" name="fileType" id="typeGrouped" value="grouped">
+                    <label for="typeGrouped">
+                        <figcaption>Groupe de fichier</figcaption>
+                        <img src="public/images/schoolFile.png" title="Publier plusieurs fichier" alt="Publier plusieurs fichier">
+                    </label>
+                </figure>
+
+                <figure>
                     <input type="radio" name="fileType" id="typeOther" value="other">
                     <label for="typeOther">
                         <figcaption>Autres</figcaption>
@@ -90,18 +100,53 @@
                 <div>
                     <label for="uploadFile">(max : 5Mo)</label>
                     <input type="hidden" name="MAX_FILE_SIZE" value="6000000">
-                    <input type="file" name="uploadFile" id="uploadFile" accept="image/*">
+                    <input type="file" name="uploadFile" id="uploadFile" accept=".jpeg, .jpg, .jfif, .png, .gif">
                 </div>
 
-                <figure id="preview">
+                <figure id="preview" class="preview emptyPreview">
                     <img src="" title="preview" alt ="Aperçu">
                 </figure>
             </div>
         </div>
 
         <div id="blockVideoLink">
-            <h2>Adresse de la vidéo youtube</h2>
-            <input type="text" name="videoLink" id="videoLink">
+            <div>
+                <h2>Adresse de la vidéo youtube</h2>
+                <input type="text" name="videoLink" id="videoLink">
+            </div>
+        </div>
+
+        <div id="blockUploadGroupedFile">
+            <hr>
+            <div id="groupedFileTypeSelection">
+                <span>
+                    Cliquez sur l'icone correspondant pour ajouter un élément à la publication
+                </span>
+
+                <figure>
+                    <input type="radio" name="groupedFileType" id="groupedTypeImage" value="image">
+                    <label for="groupedTypeImage">
+                        <figcaption>Images</figcaption>
+                        <img src="public/images/fileImage.png" title="Publier une image" alt="Publier une image">
+                    </label>
+                </figure>
+
+                <figure>
+                    <input type="radio" name="groupedFileType" id="groupedTypeVideo" value="video">
+                    <label for="groupedTypeVideo">
+                        <figcaption>Vidéos</figcaption>
+                        <img src="public/images/fileVideo.png" title="Publier une vidéo" alt="Publier une vidéo">
+                    </label>
+                </figure>
+
+                <figure>
+                    <input type="radio" name="groupedFileType" id="groupedTypeOther" value="compressed">
+                    <label for="groupedTypeOther">
+                        <figcaption>Autres</figcaption>
+                        <img src="public/images/fileOther.png" title="Publier un fichier zip / rar" alt="Publier un fichier zip / rar">
+                    </label>
+                </figure>
+            </div>
         </div>
 
         <div id="blockSubmit">
