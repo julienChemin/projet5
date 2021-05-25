@@ -42,6 +42,11 @@ if (isset($_GET['action'])) {
             echo '<link rel="stylesheet" type="text/css" href="public/css/addPost.css">';
         break;
         
+        case 'manageForum' :
+            echo '<link rel="stylesheet" type="text/css" href="public/css/profile.css">';
+            echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/forum.css">';
+            echo '<link rel="stylesheet" type="text/css" href="public/css/backend/manageForum.css">';
+        break;
     }
 } else {
     //"action" undefined

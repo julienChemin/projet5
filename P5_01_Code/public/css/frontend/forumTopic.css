@@ -1,0 +1,83 @@
+#forumTopic > h1{
+    text-align: center;
+}
+#forumTopic .linkHomeForum{
+    text-align: right;
+}
+#forumTopic .linkHomeForum > a{
+    background-color: #161617;
+    border: solid 1px #CF8B3F;
+    border-radius: 5px;
+    padding: 3px 5px;
+}
+#mainTopic{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+#authorDescription{
+    width: 20%;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 15px;
+    word-wrap: break-word;
+}
+#authorDescription > div{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 95%;
+}
+#authorDescription a{
+    text-align: center;
+    word-break: break-word;
+    font-size: 1.2em;
+    margin: 0 5px;
+    display: flex;
+    justify-content: center;
+}
+#authorDescription > a{
+    width: 200px;
+    height: 200px;
+    border-radius: 5px;
+    overflow: hidden;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+#mainTopicContent{
+    width: 80%;
+    flex: auto;
+    background-color: #161617;
+    border-radius: 5px;
+    padding: 0 5px;
+}
+
+/* block participants */
+#blockParticipants{
+    background-color: #161617;
+    border-radius: 5px;
+    padding: 0 5px;
+}
+#blockParticipants h2{
+    text-align: center;
+}
+#blockParticipants > div{
+    width: 50px;
+    height: 50px;
+    background-repeat: no-repeat;
+    background-attachment: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}

@@ -346,7 +346,7 @@ form > div{
     flex-direction: column;
 }
 input{
-    padding: 5px;
+    padding: 5px 2px;
     margin-left: 10px;
     border-radius: 5px;
     border: solid 2px #161617;
@@ -358,7 +358,7 @@ input:focus{
 textarea{
     width: 70%;
     height: 100px;
-    padding: 5px;
+    padding: 5px 2px;
     border: solid 2px #161617;
     border-radius: 10px;
     resize: none;

@@ -39,6 +39,13 @@
                     </li>
                     <hr>
 
+                    <li title="Voir les forums">
+                        <a href="index.php?action=forum&school=allSchool">
+                            Voir les forums<i class="fas fa-door-open"></i>
+                        </a>
+                    </li>
+                    <hr>
+
                     <li title="Vers l'interface d'administration">
                         <a href="indexAdmin.php">
                             Vers l'interface d'administration<i class="fas fa-cogs"></i>

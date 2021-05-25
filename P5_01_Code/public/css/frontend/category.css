@@ -1,0 +1,51 @@
+#category > h1{
+    text-align: center;
+    position: relative;
+    top: -50px;
+}
+#category h1{
+    margin-bottom: 15px;
+}
+#category i[class~="fa-door-open"]{
+    margin-right: 5px;
+}
+.categoryDescription{
+    margin-left: 20px;
+    max-width: 94%;
+}
+.usefullLink{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.linkHomeForum, .manageForumLink{
+    padding: 5px;
+    margin: 0 5px;
+}
+#blockAddNewTopic{
+    margin: 15px auto;
+}
+.addNewTopic{
+    border: solid 1px #CF8B3F;
+    border-radius: 5px;
+    padding: 4px 5px;
+    background-color: #262627;
+    color: #CF8B3F;
+    cursor: pointer;
+}
+.addNewTopic i{
+    margin-right: 5px;
+}
+#topics{
+    background-color: #161617;
+    padding: 10px 0;
+}
+#topics .blockStyleOne{
+    margin-bottom: 25px;
+    flex-direction: row;
+}
+#topics .blockStyleOne a{
+    margin: 0 3px;
+}

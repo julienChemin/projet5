@@ -208,9 +208,13 @@ abstract class Controller
         throw new \Exception("Ce lien a expiré ou la page n'existe pas");
     }
 
-    protected function incorrectInformation()
+    protected function incorrectInformation(string $reason = null)
     {
-        throw new \Exception("Les informations renseignées sont incorrectes");
+        if ($reason) {
+            throw new \Exception($reason);
+        } else {
+            throw new \Exception("Les informations renseignées sont incorrectes");
+        }
     }
 
     /*------------------------------ contract info ------------------------------*/

@@ -500,6 +500,87 @@ class Backend extends Controller
         }
     }
 
+    public function manageForum()
+    {
+        if (!empty($_SESSION['school']) && !empty($_GET['school']) && $_SESSION['school'] !== NO_SCHOOL 
+        && ($_SESSION['school'] === ALL_SCHOOL || $_SESSION['school'] === $_GET['school']))
+        {
+            $SchoolManager = new SchoolManager();
+            $school = $SchoolManager->getSchoolByName($_GET['school']);
+
+            if ($_GET['school'] === ALL_SCHOOL && $_SESSION['school'] === ALL_SCHOOL) {
+                RenderView::render('template.php', 'frontend/forumViewWebM.php', ['schools' => $school]);
+            } else {
+                if ($school && $school->getIsActive()) {
+                    $UserManager = new UserManager();
+                    $user = $UserManager->getOneById($_SESSION['id']);
+
+                    if ($user && $user->getIsActive()) {
+                        if ($user->getIsAdmin() || $user->getIsModerator()) {
+                            $ForumCategoryManager = new ForumCategoryManager();
+                            $forumInfo = $ForumCategoryManager->getCategories($school->getId(), $user, true, true, false);
+    
+                            RenderView::render(
+                                'template.php', 'backend/manageForumView.php', 
+                                [
+                                    'option' => ['manageForum'], 
+                                    'user' => $user, 'school' => $school, 'listSchoolGroups' => $school->getListSchoolGroups(), 'forumInfo' => $forumInfo
+                                ]);
+                        } else {
+                            $this->accessDenied();
+                        }
+                    } else {
+                        $this->incorrectInformation("Le forum n'est pas accessible car l'abonnement de votre compte utilisateur est désactivé");
+                    }
+                } else {
+                    $this->incorrectInformation("Le forum n'est pas accessible car l'abonnement de l'établissement scolaire est désactivé");
+                }
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
+    public function deleteCategory()
+    {
+        if (!empty($_GET['idCategory']) && !empty($_SESSION['id'])) {
+            $SchoolManager = new SchoolManager();
+            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+            $UserManager = new UserManager();
+            $user = $UserManager->getOneById($_SESSION['id']);
+            $ForumCategoryManager = new ForumCategoryManager();
+            $categoryInfo = $ForumCategoryManager->getCategory(intval($_GET['idCategory']), $user);
+
+            if ($categoryInfo && !empty($categoryInfo['category']) && $_SESSION['grade'] === "admin" 
+            && ($_SESSION['school'] === ALL_SCHOOL || $school->getId() === $categoryInfo['category']->getIdSchool()))
+            {
+                $ForumCategoryManager->deleteCategory($categoryInfo);
+                header('Location: indexAdmin.php?action=manageForum&school=' . $_SESSION['school']);
+            } else {
+                $this->accessDenied();
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
+    public function editCategory()
+    {
+        if (!empty($_POST['idCategory']) && !empty($_SESSION['id']) && !empty($_POST['title']) && $this->checkForScriptInsertion($_POST)) {
+            $SchoolManager = new SchoolManager();
+            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+            $UserManager = new UserManager();
+            $user = $UserManager->getOneById($_SESSION['id']);
+            $ForumCategoryManager = new ForumCategoryManager();
+            $category = $ForumCategoryManager->getCategory(intval($_POST['idCategory']), $user, false);
+
+            if (!empty($category) && ($_SESSION['school'] === ALL_SCHOOL || $school->getId() === $category->getIdSchool())) {
+                $ForumCategoryManager->updateCategory($_POST['idCategory'], $_POST['title'], $_POST['content']);
+                header('Location: indexAdmin.php?action=manageForum&school=' . $_SESSION['school']);
+            }
+        }
+    }
+
     /*-------------------------------------------------------------------------------------
     ----------------------------------- FUNCTION AJAX ------------------------------------
     -------------------------------------------------------------------------------------*/
@@ -711,6 +792,43 @@ class Backend extends Controller
             } else {
                 echo 'false';
             }
+        } else {
+            echo 'false';
+        }
+    }
+
+    public function setNewCategory()
+    {
+        if (!empty($_SESSION['school']) && !empty($_POST['schoolName']) && !empty($_POST['newCategoryName']) && $this->checkForScriptInsertion($_POST)
+        && ($_SESSION['school'] === $_POST['schoolName'] || $_SESSION['school'] === ALL_SCHOOL))
+        {
+            $SchoolManager = new SchoolManager();
+            $ForumCategoryManager = new ForumCategoryManager();
+            $authorizedGroupsToSee = $ForumCategoryManager->getAuthorizedGroupsFromFormForCategory($_POST['authorizedGroupsToSee'],$_POST['listAuthorizedGroupsToSee']);
+            $authorizedGroupsToPost = $ForumCategoryManager->getAuthorizedGroupsFromFormForCategory($_POST['authorizedGroupsToPost'], $_POST['listAuthorizedGroupsToPost']);
+            
+            if ($school = $SchoolManager->getSchoolByName($_POST['schoolName'])) {
+                echo $ForumCategoryManager->setCategory($school->getId(), $_POST['newCategoryName'], $_POST['newCategoryDescription'], $authorizedGroupsToSee, $authorizedGroupsToPost);
+            } else {
+                echo 'false';
+            }
+        } else {
+            echo 'false';
+        }
+    }
+
+    public function changCategoryOrder()
+    {
+        $acceptedValue = ['up', 'down'];
+
+        if (!empty($_GET['schoolName']) && !empty($_GET['value']) && in_array($_GET['value'], $acceptedValue) && !empty($_GET['currentOrder'])
+        && ($_GET['schoolName'] === $_SESSION['school'] || $_SESSION['school'] === ALL_SCHOOL)) 
+        {
+            $SchoolManager = new SchoolManager();
+            $school = $SchoolManager->getSchoolByName($_GET['schoolName']);
+            $ForumCategoryManager = new ForumCategoryManager();
+
+            echo $ForumCategoryManager->changCategoryOrder($_GET['value'], $school->getId(), intval($_GET['currentOrder']));
         } else {
             echo 'false';
         }

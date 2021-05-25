@@ -1,0 +1,66 @@
+#forum > h1{
+    text-align: center;
+    position: relative;
+    top: -50px;
+}
+#forum h1{
+    margin-bottom: 15px;
+}
+.manageForumLink{
+    padding: 5px;
+    margin-bottom: 10px;
+}
+#forumCategories{
+    background-color: #161617;
+    padding: 10px 0;
+}
+#forumCategories > h1{
+    padding-top: 10px;
+}
+#forumCategories .blockStyleOne{
+    margin-bottom: 25px;
+    flex-direction: row;
+}
+#forumCategories .blockStyleOne a{
+    margin: 0 3px;
+}
+.forumCategory{
+    padding: 5px;
+    margin: 15px auto;
+    width: 100%;
+}
+.forumCategory header{
+    background-color: #262627;
+    border-radius: 5px;
+    padding: 5px;
+}
+.forumCategory h2{
+    margin-top: 0;
+}
+.categoryDescription{
+    margin-left: 20px;
+    max-width: 94%;
+}
+.topic{
+    display: block;
+    width: 100%;
+    color: white;
+    border-radius: 3px;
+    padding: 1px;
+    margin-top: 3px;
+}
+.topic:hover{
+    border: solid 1px #262627;
+    color: #CF8B3F;
+}
+#forum .topic{
+    margin-left: 20px;
+}
+.topic h3{
+    margin:3px 0 0 3px;
+    font-weight: normal;
+}
+.topic p{
+    text-align: right;
+    margin: 0 3px 3px 0;
+}

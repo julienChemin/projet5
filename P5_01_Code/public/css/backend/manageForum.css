@@ -1,0 +1,231 @@
+#manageForum > h1{
+    text-align: center;
+    position: relative;
+    top: -50px;
+}
+#manageForum h1{
+    margin-bottom: 15px;
+}
+#manageForum i[class~="fa-door-open"]{
+    margin-right: 5px;
+}
+/* add new category */
+#addNewCategory{
+    padding: 5px;
+    margin: 10px auto 40px auto;
+    border: solid 1px #CF8B3F;
+    border-radius: 5px;
+}
+#addNewCategory .categoryDescription{
+    margin-left: 0;
+}
+#addNewCategory .iconeEdit{
+    margin: 0 10px;
+    padding: 6px;
+}
+#addForumCategory{
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 5px;
+    border: none;
+}
+#addForumCategory > p{
+    width: 100%;
+}
+#addForumCategory > div:last-child{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+#addForumCategory > div > span{
+    cursor: pointer;
+    margin-right: 15px;
+}
+#addForumCategory input[type="text"]{
+    width: 60%;
+    margin-left: 0;
+}
+#addForumCategory input[type="button"]{
+    margin: 5px 0;
+}
+#addNewCategoryCheck{
+    display: none;
+}
+#addNewCategoryCheck i{
+    color: yellowgreen;
+}
+
+/*add category -> groups selection*/
+#blockGroupsSelection{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+}
+#selectionGroupsToSee, #selectionGroupsToPost{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 40%;
+    height: 100%;
+    padding: 5px;
+    margin: 10px 0;
+    border: solid 1px #222224;
+    border-radius: 5px;
+}
+#selectionGroupsToSee label, #selectionGroupsToPost label{
+    margin-right: 5px;
+}
+#blockAuthorizedGroupsToSee, #blockAuthorizedGroupsToPost{
+    display: none;
+    width: 100%;
+    padding-top: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.authorizedGroup{
+    color: #CF8B3F;
+    border: solid 2px #CF8B3F;
+    border-radius: 10px;
+    padding: 4px 6px;
+    margin: 5px;
+}
+.authorizedGroup i{
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+/* delete category */
+
+#modal #confirmDeleteCategory{
+    display: none;
+    width: 90%;
+    max-width: 900px;
+    padding: 15px;
+}
+#modal #confirmDeleteCategory > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#modal #confirmDeleteCategory a{
+    padding: 5px;
+    margin-left: 10px;
+    background-color: #222224;
+    color: #CF8B3F;
+    font-weight: bolder;
+    font-size: 1em;
+    border: solid 2px #CF8B3F;
+    border-radius: 10px;
+}
+#closeModalDelete{
+    margin-right: 30px;
+}
+
+/* edit category */
+
+#modal #confirmEditCategory{
+    display: none;
+    width: 90%;
+    max-width: 900px;
+    height: auto;
+    padding: 10px;
+}
+#modal #confirmEditCategory form{
+    width: 100%;
+    border: none;
+    padding: 10px;
+}
+#modal #confirmEditCategory > div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#modal #confirmEditCategory #blockTitle{
+    width: 90%;
+}
+#confirmEditCategory #blockTitle input{
+    margin-left: 0;
+    width: 100%;
+}
+#modal #confirmEditCategory #blockContent{
+    width: 90%;
+}
+#confirmEditCategory #blockContent textarea{
+    width: 100%;
+}
+#modal #confirmEditCategory a{
+    padding: 5px;
+    margin-left: 10px;
+    background-color: #222224;
+    color: #CF8B3F;
+    font-weight: bolder;
+    font-size: 1em;
+    border: solid 2px #CF8B3F;
+    border-radius: 10px;
+}
+#closeModalEdit{
+    margin-right: 30px;
+}
+
+/* category */
+#manageForum #forumCategories > h1{
+    text-align: left;
+    width: 100%;
+}
+#manageForum #forumCategories{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+#manageForum .forumCategory header{
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+}
+#manageForum .forumCategory header > div:nth-of-type(2){
+    width: -webkit-fill-available;
+    width: -moz-available;
+}
+.changCategoryOrder{
+    width: 50px;
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-right: 5px;
+}
+.changCategoryOrder i{
+    width: 100%;
+    height: 40%;
+    background-color: #161617;
+    border-radius: 3px;
+    text-align: center;
+    cursor: pointer;
+}
+.changCategoryOrder i:hover{
+    border: solid 1px #CF8B3F;
+}
+.deleteCategory{
+    width: 80px;
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+.deleteCategory i{
+    height: 35%;
+    width: 45%;
+    color: #CF8B3F;
+    text-align: center;
+    cursor: pointer;
+}

@@ -97,6 +97,14 @@
                     </li>
                     <hr>
 
+                    <li title="Voir le forum">
+                        <a href="index.php?action=forum&school=<?=$_SESSION['school']?>">
+                            Forum<i class="fas fa-door-open"></i>
+                        </a>
+                    </li>
+
+                    <hr>
+
                     <li>
                         <a href="index.php">
                             Vers le site ArtSchools<i class="fas fa-home"></i>

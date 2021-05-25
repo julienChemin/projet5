@@ -36,112 +36,166 @@ try {
         switch ($_GET['action']) {
             case 'disconnect' :
                 $Backend->disconnect();
-                break;
+            break;
+
             case 'addSchool' :
                 $Backend->addSchool();
-                break;
+            break;
+
             case 'settings' :
                 $Backend->settings();
-                break;
+            break;
+
             case 'moderatSchool' :
                 $Backend->moderatSchool();
-                break;
+            break;
+
             case 'editSchool' :
                 $Backend->editSchool();
-                break;
+            break;
+
             case 'moderatWebsite' :
                 $Backend->moderatWebsite();
-                break;
+            break;
+
             case 'checkContract' :
                 $Backend->checkContract();
-                break;
+            break;
+
             case 'checkWarnings' :
                 $Backend->checkWarnings();
-                break;
+            break;
+
             case 'checkBanishments' :
                 $Backend->checkBanishments();
-                break;
+            break;
+
             case 'checkUnusedImg' :
                 $Backend->checkUnusedImg();
-                break;
+            break;
+
             case 'warnUser' :
                 $Backend->warnUser();
-                break;
+            break;
+
             case 'addWarning' :
                 $Backend->addWarning();
-                break;
+            break;
+
             case 'moderatAdmin' :
                 $Backend->moderatAdmin();
-                break;
+            break;
+
             case 'moderatUsers' :
                 $Backend->moderatUsers();
-                break;
+            break;
+
             case 'moderatReports' :
                 $Backend->moderatReports();
-                break;
+            break;
+
             case 'getReports' :
                 $Backend->getReports();
-                break;
+            break;
+
             case 'getReportsFromElem' :
                 $Backend->getReportsFromElem();
-                break;
+            break;
+
             case 'getCountReports' :
                 $Backend->getCountReports();
-                break;
+            break;
+
             case 'deleteReport' :
                 $Backend->deleteReport();
-                break;
+            break;
+
             case 'deleteReportsFromElem' :
                 $Backend->deleteReportsFromElem();
-                break;
+            break;
+
             case 'createGroup' :
                 $Backend->createGroup();
-                break;
+            break;
+
             case 'getGroup' :
                 $Backend->getGroup();
-                break;
+            break;
+
             case 'setGroup' :
                 $Backend->setGroup();
-                break;
+            break;
+
+            case 'setNewCategory' :
+                $Backend->setNewCategory();
+            break;
+
+            case 'changCategoryOrder' :
+                $Backend->changCategoryOrder();
+            break;
+
             case 'deleteGroup' :
                 $Backend->deleteGroup();
-                break;
+            break;
+
             case 'editGrade' :
                 $Backend->editGrade();
-                break;
+            break;
+
             case 'toggleUserIsActive' :
                 $Backend->toggleUserIsActive();
-                break;
+            break;
+
             case 'delete' :
                 $Backend->delete();
-                break;
+            break;
+
             case 'leaveSchool' :
                 $Backend->leaveSchool();
-                break;
+            break;
+
             case 'schoolProfile' :
                 $Backend->schoolProfile();
-                break;
+            break;
+
             case 'updateProfile' :
                 $Backend->updateProfile();
-                break;
+            break;
+
             case 'upload' :
                 $Backend->upload();
-                break;
+            break;
+
             case 'schoolHistory' :
                 $Backend->schoolHistory();
-                break;
+            break;
+
             case 'getSchoolHistory' :
                 $Backend->getSchoolHistory();
-                break;
+            break;
+
             case 'addSchoolPost' :
                 $Backend->addSchoolPost();
-                break;
+            break;
+
             case 'uploadSchoolPost' :
                 $Backend->tryUploadSchoolPost();
-                break;
+            break;
+
+            case 'manageForum' :
+                $Backend->manageForum();
+            break;
+
+            case 'deleteCategory' :
+                $Backend->deleteCategory();
+            break;
+
+            case 'editCategory' :
+                $Backend->editCategory();
+            break;
+
             default :
-                //"action" value is unknow
-                throw new Exception('L\'action renseignée est inexistante.');
+                $Backend->home();
         }
     } else {
         if (SITE_MAINTENANCE) {

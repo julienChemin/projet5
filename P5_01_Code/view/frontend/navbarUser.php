@@ -88,6 +88,13 @@
                                 Profil de mon établissement<i class="fas fa-school"></i>
                             </a>
                         </li>
+                        <hr>
+
+                        <li title="Voir le forum">
+                            <a href="index.php?action=forum&school=<?=$_SESSION['school']?>">
+                                Forum<i class="fas fa-door-open"></i>
+                            </a>
+                        </li>
                         <?php
                     }
                     ?>

@@ -468,6 +468,248 @@ class Frontend extends Controller
         RenderView::render('template.php', 'cguView.php');
     }
 
+    public function forum()
+    {
+        if (!empty($_SESSION['school']) && !empty($_GET['school']) && $_SESSION['school'] !== NO_SCHOOL 
+        && ($_SESSION['school'] === ALL_SCHOOL || $_SESSION['school'] === $_GET['school']))
+        {
+            $SchoolManager = new SchoolManager();
+            $school = $SchoolManager->getSchoolByName($_GET['school']);
+
+            if ($_GET['school'] === ALL_SCHOOL && $_SESSION['school'] === ALL_SCHOOL) {
+                RenderView::render('template.php', 'frontend/forumViewWebM.php', ['schools' => $school]);
+            } else {
+                if ($school && $school->getIsActive()) {
+                    $UserManager = new UserManager();
+                    $user = $UserManager->getOneById($_SESSION['id']);
+
+                    if ($user && $user->getIsActive()) {
+                        $ForumCategoryManager = new ForumCategoryManager();
+                        $forumInfo = $ForumCategoryManager->getCategories($school->getId(), $user, true);
+
+                        RenderView::render(
+                            'template.php', 'frontend/forumView.php',
+                            [
+                                'user' => $user, 'school' => $school, 'forumInfo' => $forumInfo,
+                                'option' => ['tinyMCE', 'forumTopic']
+                            ]
+                        );
+                    } else {
+                        if ($user && !$user->getIsActive()) {
+                            $this->incorrectInformation("Le forum ne vous est pas accessible car l'abonnement de votre compte n'est pas actif");
+                        } else {
+                            $this->incorrectInformation();
+                        }
+                    }
+                } else {
+                    if ($school && !$school->getIsActive()) {
+                        $this->incorrectInformation("Le forum n'est pas accessible car l'abonnement de l'établissement scolaire est désactivé");
+                    } else {
+                        $this->incorrectInformation();
+                    }
+                }
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
+    public function category()
+    {
+        if (!empty($_SESSION['school']) && $_SESSION['school'] !== NO_SCHOOL 
+        && !empty($_GET['categoryId']))
+        {
+            $SchoolManager = new SchoolManager();
+            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+
+            if ($school && $school->getIsActive()) {
+                $UserManager = new UserManager();
+                $user = $UserManager->getOneById($_SESSION['id']);
+
+                if ($user && $user->getIsActive()) {
+                    $ForumCategoryManager = new ForumCategoryManager();
+                    $categoryInfo = $ForumCategoryManager->getCategory($_GET['categoryId'], $user, true);
+
+                    if (!empty($categoryInfo['category']) && ($school->getId() === $categoryInfo['category']->getIdSchool() || $_SESSION['school'] === ALL_SCHOOL)
+                    && $ForumCategoryManager->canAccessForumElem($user, $categoryInfo['category']->getAuthorizedGroupsToSee()))
+                    {
+                        $canCreateTopic = $ForumCategoryManager->userCanCreateTopic($user, $categoryInfo['category']->getAuthorizedGroupsToPost());
+
+                        RenderView::render('template.php', 'frontend/categoryView.php',
+                            [
+                                'user' => $user, 'school' => $school, 'categoryInfo' => $categoryInfo, 
+                                'canCreateTopic' => $canCreateTopic
+                            ]
+                        );
+                    } else {
+                        $this->accessDenied();
+                    }
+                } else {
+                    if ($user && !$user->getIsActive()) {
+                        $this->incorrectInformation("Le forum ne vous est pas accessible car l'abonnement de votre compte n'est pas actif");
+                    } else {
+                        $this->incorrectInformation();
+                    }
+                }
+            } else {
+                if ($school && !$school->getIsActive()) {
+                    $this->incorrectInformation("Le forum n'est pas accessible car l'abonnement de l'établissement scolaire est désactivé");
+                } else {
+                    $this->incorrectInformation();
+                }
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
+    public function forumTopic()
+    {
+        if (!empty($_SESSION['school']) && $_SESSION['school'] !== NO_SCHOOL 
+        && !empty($_GET['topicId']))
+        {
+            $SchoolManager = new SchoolManager();
+            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+
+            if ($school && $school->getIsActive()) {
+                $UserManager = new UserManager();
+                $user = $UserManager->getOneById($_SESSION['id']);
+
+                if ($user && $user->getIsActive()) {
+                    $ForumCategoryManager = new ForumCategoryManager();
+                    $topicInfo = $ForumCategoryManager->getTopic($_GET['topicId'], true);
+
+                    if (!empty($topicInfo['topic']) && ($school->getId() === $topicInfo['topic']->getIdSchool() || $_SESSION['school'] === ALL_SCHOOL)
+                    && $ForumCategoryManager->canAccessForumElem($user, $topicInfo['topic']->getAuthorizedGroupsToSee()))
+                    {
+                        $topicAuthor = $UserManager->getOneById($topicInfo['topic']->getIdAuthor());
+
+                        RenderView::render('template.php', 'frontend/topicView.php',
+                            [
+                                'user' => $user, 'school' => $school, 'topicInfo' => $topicInfo, 'topicAuthor' => $topicAuthor
+                            ]
+                        );
+                    } else {
+                        $this->accessDenied();
+                    }
+                } else {
+                    if ($user && !$user->getIsActive()) {
+                        $this->incorrectInformation("Le forum ne vous est pas accessible car l'abonnement de votre compte n'est pas actif");
+                    } else {
+                        $this->incorrectInformation();
+                    }
+                }
+            } else {
+                if ($school && !$school->getIsActive()) {
+                    $this->incorrectInformation("Le forum n'est pas accessible car l'abonnement de l'établissement scolaire est désactivé");
+                } else {
+                    $this->incorrectInformation();
+                }
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
+    public function createTopic()
+    {
+        if (!empty($_SESSION['school']) && $_SESSION['school'] !== NO_SCHOOL 
+        && !empty($_GET['categoryId']))
+        {
+            $SchoolManager = new SchoolManager();
+            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+
+            if ($school && $school->getIsActive()) {
+                $UserManager = new UserManager();
+                $user = $UserManager->getOneById($_SESSION['id']);
+
+                if ($user && $user->getIsActive()) {
+                    $ForumCategoryManager = new ForumCategoryManager();
+                    $category = $ForumCategoryManager->getCategory($_GET['categoryId'], $user, false);
+
+                    if (!empty($category) && $school->getId() === $category->getIdSchool() 
+                    && $ForumCategoryManager->userCanCreateTopic($user, $category->getAuthorizedGroupsToPost())) 
+                    {
+                        $listGroupsToSee = null;
+                        $listGroupsToPost = null;
+
+                        if ($user->getIsAdmin() || $user->getIsModerator()) {
+                            $listGroupsToSee = $ForumCategoryManager->getAuthorizedGroupsForNewTopic($category, 'see', $school->getListSchoolGroups());
+                            $listGroupsToPost = $ForumCategoryManager->getAuthorizedGroupsForNewTopic($category, 'post', $school->getListSchoolGroups());
+                        }
+
+                        RenderView::render('template.php', 'frontend/createTopicView.php',
+                            [
+                                'user' => $user, 'school' => $school, 'category' => $category, 'listGroupsToSee' => $listGroupsToSee, 'listGroupsToPost' => $listGroupsToPost, 
+                                'option' => ['tinyMCE', 'createTopic']
+                            ]
+                        );
+                    } else {
+                        $this->incorrectInformation();
+                    }
+                } else {
+                    if ($user && !$user->getIsActive()) {
+                        $this->incorrectInformation("Le forum ne vous est pas accessible car l'abonnement de votre compte n'est pas actif");
+                    } else {
+                        $this->incorrectInformation();
+                    }
+                }
+            } else {
+                if ($school && !$school->getIsActive()) {
+                    $this->incorrectInformation("Le forum n'est pas accessible car l'abonnement de l'établissement scolaire est désactivé");
+                } else {
+                    $this->incorrectInformation();
+                }
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
+    public function addTopic()
+    {
+        if (!empty($_SESSION['school']) && $_SESSION['school'] !== NO_SCHOOL 
+        && !empty($_GET['categoryId']) && !empty(trim($_POST['title'])) && !empty(trim($_POST['tinyMCEtextarea']))
+        && $this->checkForScriptInsertion($_POST))
+        {
+            $SchoolManager = new SchoolManager();
+            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+
+            if ($school && $school->getIsActive()) {
+                $UserManager = new UserManager();
+                $user = $UserManager->getOneById($_SESSION['id']);
+
+                if ($user && $user->getIsActive()) {
+                    $ForumCategoryManager = new ForumCategoryManager();
+                    $category = $ForumCategoryManager->getCategory($_GET['categoryId'], $user, false);
+
+                    if (!empty($category) && ($school->getId() === $category->getIdSchool() || $_SESSION['school'] === ALL_SCHOOL) 
+                    && $ForumCategoryManager->userCanCreateTopic($user, $category->getAuthorizedGroupsToPost()))
+                    {
+                        $ForumCategoryManager->setTopic($_POST, $user, $school, $category);
+                        header('Location: index.php?action=category&categoryId=' . $category->getId());
+                    } else {
+                        $this->incorrectInformation();
+                    }
+                } else {
+                    if ($user && !$user->getIsActive()) {
+                        $this->incorrectInformation("Le forum ne vous est pas accessible car l'abonnement de votre compte n'est pas actif");
+                    } else {
+                        $this->incorrectInformation();
+                    }
+                }
+            } else {
+                if ($school && !$school->getIsActive()) {
+                    $this->incorrectInformation("Le forum n'est pas accessible car l'abonnement de l'établissement scolaire est désactivé");
+                } else {
+                    $this->incorrectInformation();
+                }
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
     /*-------------------------------------------------------------------------------------
     ----------------------------------- FUNCTION AJAX ------------------------------------
     -------------------------------------------------------------------------------------*/

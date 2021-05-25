@@ -1,0 +1,139 @@
+#createTopic > h1{
+    margin-bottom: 15px;
+}
+#createTopic form{
+    margin-bottom: 15px;
+}
+#createTopic form > div{
+    width: auto;
+    max-width: 1400px;
+}
+#createTopic form #blockTinyMce{
+    width: 80%;
+}
+#createTopic #blockGroupsSelection{
+    margin: 15px auto;
+}
+#createTopic #blockSubmit{
+    width: 200px;
+}
+#createTopic #blockTitle input{
+    margin-left: 0;
+}
+
+/*add topic -> groups selection*/
+#blockGroupsSelection{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+}
+#selectionGroupsToSee, #selectionGroupsToPost{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 40%;
+    height: 100%;
+    padding: 5px;
+    margin: 10px 0;
+    border: solid 1px #222224;
+    border-radius: 5px;
+}
+#selectionGroupsToSee label, #selectionGroupsToPost label{
+    margin-right: 5px;
+}
+#blockAuthorizedGroupsToSee, #blockAuthorizedGroupsToPost{
+    display: none;
+    width: 100%;
+    padding-top: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.authorizedGroup{
+    color: #CF8B3F;
+    border: solid 2px #CF8B3F;
+    border-radius: 10px;
+    padding: 4px 6px;
+    margin: 5px;
+}
+.authorizedGroup i{
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px){
+    #blockGroupsSelection{
+        flex-wrap: wrap;
+    }
+    #selectionGroupsToSee, #selectionGroupsToPost{
+        width: 100%;
+    }
+    #selectionGroupsToSee > div:first-of-type, #selectionGroupsToPost > div:first-of-type{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    #selectionGroupsToSee > div:first-of-type > *, #selectionGroupsToPost > div:first-of-type > *{
+        margin-bottom: 5px;
+    }
+    #createTopic #blockSubmit{
+        width: 150px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px){
+    #blockGroupsSelection{
+        flex-wrap: wrap;
+    }
+    #selectionGroupsToSee, #selectionGroupsToPost{
+        width: 100%;
+    }
+    #selectionGroupsToSee > div:first-of-type, #selectionGroupsToPost > div:first-of-type{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    #selectionGroupsToSee > div:first-of-type > *, #selectionGroupsToPost > div:first-of-type > *{
+        margin-bottom: 5px;
+    }
+    #createTopic #blockSubmit{
+        width: 150px;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px){
+    #blockGroupsSelection{
+        flex-wrap: wrap;
+    }
+    #selectionGroupsToSee, #selectionGroupsToPost{
+        width: 100%;
+    }
+    #selectionGroupsToSee > div:first-of-type, #selectionGroupsToPost > div:first-of-type{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    #selectionGroupsToSee > div:first-of-type > *, #selectionGroupsToPost > div:first-of-type > *{
+        margin-bottom: 5px;
+    }
+    #createTopic #blockSubmit{
+        width: 100px;
+    }
+}

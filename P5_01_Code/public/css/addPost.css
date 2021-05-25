@@ -162,6 +162,7 @@
 }
 .authorizedGroup i{
     margin-left: 5px;
+    cursor: pointer;
 }
 #blockIsPrivate > div > div{
     display: flex;

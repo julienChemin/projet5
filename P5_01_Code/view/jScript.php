@@ -9,81 +9,116 @@ if (isset($data['option'])) {
                 } else {
                     echo '<script src="public/js/homeAdmin.js"></script>';
                 }
-                break;
+            break;
+
             case 'advancedSearch' :
                 echo '<script src="public/js/advancedSearch.js"></script>';
-                break;
+            break;
+
             case 'listSchools' :
                 echo '<script src="public/js/listSchools.js"></script>';
-                break;
+            break;
+
             case 'buttonToggleSchool' :
                 echo '<script src="public/js/buttonToggleSchool.js"></script>';
-                break;
+            break;
+
             case 'forgetPassword' :
                 echo '<script src="public/js/forgetPassword.js"></script>';
-                break;
+            break;
+
             case 'addSchool' :
                 echo '<script src="public/js/addSchool.js"></script>';
-                break;
+            break;
+
             case 'moderatSchool' :
                 echo '<script src="public/js/moderatSchool.js"></script>';
-                break;
+            break;
+
             case 'warnUser' :
                 echo '<script src="public/js/warnUser.js"></script>';
-                break;
+            break;
+
             case 'moderatWebsite' :
                 echo '<script src="public/js/moderatWebsite.js"></script>';
-                break;
+            break;
+
             case 'moderatAdmin' :
                 echo '<script src="public/js/moderatAdmin.js"></script>';
-                break;
+            break;
+
             case 'moderatUsers' :
                 echo '<script src="public/js/moderatUsers.js"></script>';
-                break;
+            break;
+
             case 'moderatReports' :
                 echo '<script src="public/js/moderatReports.js"></script>';
-                break;
+            break;
+
             case 'schoolHistory' :
                 echo '<script src="public/js/schoolHistory.js"></script>';
-                break;
+            break;
+
             case 'signUp' :
                 echo '<script src="public/js/signUp.js"></script>';
-                break;
+            break;
+
             case 'signIn' :
                 echo '<script src="public/js/signIn.js"></script>';
-                break;
+            break;
+
             case 'userProfile' :
                 echo '<script src="public/js/fillProfileWithPosts.js"></script>';
                 echo '<script src="public/js/userProfile.js"></script>';
-                break;
+            break;
+
             case 'schoolProfile' :
                 echo '<script src="public/js/fillProfileWithPosts.js"></script>';
                 echo '<script src="public/js/schoolProfile.js"></script>';
-                break;
+            break;
+
             case 'tinyMCE' :
                 require 'gitignore/key.php';
                 echo '<script src="https://cdn.tiny.cloud/1/' . $tinyMCEapiKey . '/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>';
                 echo '<script src="public/js/tinyMCEinit.js"></script>';
-                break;
+            break;
+
             case 'addPost' :
                 echo '<script src="public/js/addPost.js"></script>';
-                break;
+            break;
+
             case 'postView' :
                 echo '<script src="public/js/postView.js"></script>';
-                break;
+            break;
+
             case 'folderView' :
                 echo '<script src="public/js/postView.js"></script>';
                 echo '<script src="public/js/fillProfileWithPosts.js"></script>';
-                break;
+            break;
+
             case 'faq' :
                 echo '<script src="public/js/faq.js"></script>';
-                break;
+            break;
+
             case 'settings' :
                 echo '<script src="public/js/settings.js"></script>';
-                break;
+            break;
+
+            case 'manageForum' :
+                echo '<script src="public/js/manageForum.js"></script>';
+            break;
+
+            case 'createTopic' :
+                echo '<script src="public/js/createTopic.js"></script>';
+            break;
+
+            case 'forumTopic' :
+                echo '<script src="public/js/forumTopic.js"></script>';
+            break;
+
             default :
                 throw new Exception('L\'option indiqué n\'existe pas.');
-                break;
+            break;
         }
     }
 }
