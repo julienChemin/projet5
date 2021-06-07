@@ -121,6 +121,81 @@ abstract class AbstractManager extends Database
         return $arrFilePath;
     }
 
+    public function moveImgAndUpdateContent(string $content = null, string $destination = 'public/images/dl', int $maxFile = 5)
+    {
+        if (!empty($content)) {
+            $tempFolder = 'public/images/temp';
+            // get filepaths from img entries
+            $imgEntries = $this->checkForImgEntries($content);
+            $filePaths = $this->extractFilePath($imgEntries);
+            // delete extra entries in content and associated files
+            $content = $this->deleteExtraImgEntries($content, $this->extractFileName($imgEntries), $maxFile);
+            $filePaths = $this->deleteExtraFiles($filePaths, $maxFile);
+            // move uploaded img from $tempFolder to $destination folder
+            $success = true;
+            $arrSuccess = [];
+            if (count($filePaths) > 0) {
+                foreach ($filePaths as $filePath) {
+                    if (strpos($filePath, $tempFolder) !== false) {
+                        // img is on the temp folder -> move to $destination
+                        if ($this->moveFile($filePath, $destination) !== 1) {
+                            $success = false;
+                            $arrSuccess[] = false;
+                        } else {
+                            $arrSuccess[] = true;
+                        }
+                    } else {
+                        // img is not in the temp folder
+                        // set $arrSuccess[] to false -> because if $success === false, we don't have to str_replace to delete this img, 
+                        $arrSuccess[] = false;
+                    }
+                }
+            }
+            if ($success) {
+                // update file path on content
+                $newFilePaths = str_replace($tempFolder, $destination, $filePaths);
+                $content = str_replace($filePaths, $newFilePaths, $content);
+            } else {
+                // delete all uploaded img
+                for ($i = 0; $i < count($filePaths); $i++) {
+                    if ($arrSuccess[$i]) {
+                        $newFilePath = str_replace($tempFolder, $destination, $filePaths[$i]);
+                        $this->deleteFile($newFilePath);
+                    } else {
+                        $this->deleteFile($filePaths[$i]);
+                    }
+                }
+                return false;
+            }
+        }
+        return $content;
+    }
+
+    public function deleteImgDoublon(string $content = null)
+    {
+        if (!empty($content)) {
+            $arrUniqueElem = [];
+            $pattern = [];
+            $imgEntries = $this->checkForImgEntries($content);
+            $fileNames = $this->extractFileName($imgEntries);
+            if (count($imgEntries) > 0) {
+                for ($i = 0; $i < count($imgEntries); $i++) {
+                    if (!in_array($imgEntries[$i], $arrUniqueElem)) {
+                        // not a doublon
+                        $arrUniqueElem[] = $imgEntries[$i];
+                    } else {
+                        // doublon
+                        $pattern[] = '#\<img[^\>]*' . $fileNames[$i] . '[^\<]*\>#';
+                    }
+                }
+                if (count($pattern) > 0) {
+                    $content = preg_replace($pattern, '', $content, 1);
+                }
+            }
+        }
+        return $content;
+    }
+
     /*-------------------------------------------------------------------------------------
     ----------------------------------- PROTECTED FUNCTION ------------------------------------
     -------------------------------------------------------------------------------------*/
@@ -219,31 +294,6 @@ abstract class AbstractManager extends Database
         return $content;
     }
 
-    protected function deleteImgDoublon(string $content = null)
-    {
-        if (!empty($content)) {
-            $arrUniqueElem = [];
-            $pattern = [];
-            $imgEntries = $this->checkForImgEntries($content);
-            $fileNames = $this->extractFileName($imgEntries);
-            if (count($imgEntries) > 0) {
-                for ($i = 0; $i < count($imgEntries); $i++) {
-                    if (!in_array($imgEntries[$i], $arrUniqueElem)) {
-                        // not a doublon
-                        $arrUniqueElem[] = $imgEntries[$i];
-                    } else {
-                        // doublon
-                        $pattern[] = '#\<img[^\>]*' . $fileNames[$i] . '[^\<]*\>#';
-                    }
-                }
-                if (count($pattern) > 0) {
-                    $content = preg_replace($pattern, '', $content, 1);
-                }
-            }
-        }
-        return $content;
-    }
-
     protected function moveFile(string $filePath, string $destination = "public/images/dl")
     {
         if (!file_exists($filePath)) {
@@ -271,55 +321,5 @@ abstract class AbstractManager extends Database
             }
         }
         return $imgEntries;
-    }
-    
-    protected function moveImgAndUpdateContent(string $content = null, string $destination = 'public/images/dl', int $maxFile = 5)
-    {
-        if (!empty($content)) {
-            $tempFolder = 'public/images/temp';
-            // get filepaths from img entries
-            $imgEntries = $this->checkForImgEntries($content);
-            $filePaths = $this->extractFilePath($imgEntries);
-            // delete extra entries in content and associated files
-            $content = $this->deleteExtraImgEntries($content, $this->extractFileName($imgEntries), $maxFile);
-            $filePaths = $this->deleteExtraFiles($filePaths, $maxFile);
-            // move uploaded img from $tempFolder to $destination folder
-            $success = true;
-            $arrSuccess = [];
-            if (count($filePaths) > 0) {
-                foreach ($filePaths as $filePath) {
-                    if (strpos($filePath, $tempFolder) !== false) {
-                        // img is on the temp folder -> move to $destination
-                        if ($this->moveFile($filePath, $destination) !== 1) {
-                            $success = false;
-                            $arrSuccess[] = false;
-                        } else {
-                            $arrSuccess[] = true;
-                        }
-                    } else {
-                        // img is not in the temp folder
-                        // set $arrSuccess[] to false -> because if $success === false, we don't have to str_replace to delete this img, 
-                        $arrSuccess[] = false;
-                    }
-                }
-            }
-            if ($success) {
-                // update file path on content
-                $newFilePaths = str_replace($tempFolder, $destination, $filePaths);
-                $content = str_replace($filePaths, $newFilePaths, $content);
-            } else {
-                // delete all uploaded img
-                for ($i = 0; $i < count($filePaths); $i++) {
-                    if ($arrSuccess[$i]) {
-                        $newFilePath = str_replace($tempFolder, $destination, $filePaths[$i]);
-                        $this->deleteFile($newFilePath);
-                    } else {
-                        $this->deleteFile($filePaths[$i]);
-                    }
-                }
-                return false;
-            }
-        }
-        return $content;
     }
 }

@@ -74,8 +74,11 @@ class Backend extends Controller
                 if ($canAddSchool['succes']) {
                     //add school and school administrator
                     $message = $SchoolManager->addSchool($_POST, $UserManager, new HistoryManager());
+                    $ForumCategoryManager = new ForumCategoryManager();
                     $ContractManager = new ContractManager('school', $SchoolManager);
+                    $user = $UserManager->getOneById($_SESSION['id']);
                     $school = $SchoolManager->getSchoolByName($_POST['schoolName']);
+                    $ForumCategoryManager->setupForumForNewSchool($user, $school);
                     if (intval($_POST['schoolDuration']) > 0) {
                         $ContractManager->extendContract($school, intval($_POST['schoolDuration']));
                     } else {
@@ -511,7 +514,7 @@ class Backend extends Controller
             if ($_GET['school'] === ALL_SCHOOL && $_SESSION['school'] === ALL_SCHOOL) {
                 RenderView::render('template.php', 'frontend/forumViewWebM.php', ['schools' => $school]);
             } else {
-                if ($school && $school->getIsActive()) {
+                if ($school && ($school->getIsActive() || $_SESSION['school'] === ALL_SCHOOL)) {
                     $UserManager = new UserManager();
                     $user = $UserManager->getOneById($_SESSION['id']);
 
@@ -554,8 +557,12 @@ class Backend extends Controller
             if ($categoryInfo && !empty($categoryInfo['category']) && $_SESSION['grade'] === "admin" 
             && ($_SESSION['school'] === ALL_SCHOOL || $school->getId() === $categoryInfo['category']->getIdSchool()))
             {
-                $ForumCategoryManager->deleteCategory($categoryInfo);
-                header('Location: indexAdmin.php?action=manageForum&school=' . $_SESSION['school']);
+                if ($_SESSION['school'] === ALL_SCHOOL) {
+                    $school = $SchoolManager->getOneById($categoryInfo['category']->getIdSchool());
+                }
+
+                $ForumCategoryManager->deleteCategory($categoryInfo, $categoryInfo['category']->getIdSchool());
+                header('Location: indexAdmin.php?action=manageForum&school=' . $school->getName());
             } else {
                 $this->accessDenied();
             }
@@ -575,8 +582,15 @@ class Backend extends Controller
             $category = $ForumCategoryManager->getCategory(intval($_POST['idCategory']), $user, false);
 
             if (!empty($category) && ($_SESSION['school'] === ALL_SCHOOL || $school->getId() === $category->getIdSchool())) {
-                $ForumCategoryManager->updateCategory($_POST['idCategory'], $_POST['title'], $_POST['content']);
-                header('Location: indexAdmin.php?action=manageForum&school=' . $_SESSION['school']);
+                if ($_SESSION['school'] === ALL_SCHOOL) {
+                    $school = $SchoolManager->getOneById($category->getIdSchool());
+                }
+
+                $authorizedGroupsToSee = $ForumCategoryManager->getAuthorizedGroupsFromFormForCategory($_POST['editedAuthorizedGroupsToSee'],$_POST['listEditedAuthorizedGroupsToSee']);
+                $authorizedGroupsToPost = $ForumCategoryManager->getAuthorizedGroupsFromFormForCategory($_POST['editedAuthorizedGroupsToPost'], $_POST['listEditedAuthorizedGroupsToPost']);
+
+                $ForumCategoryManager->updateCategory($_POST['idCategory'], $_POST['title'], $_POST['content'], $authorizedGroupsToSee, $authorizedGroupsToPost);
+                header('Location: indexAdmin.php?action=manageForum&school=' . $school->getName());
             }
         }
     }
@@ -829,6 +843,27 @@ class Backend extends Controller
             $ForumCategoryManager = new ForumCategoryManager();
 
             echo $ForumCategoryManager->changCategoryOrder($_GET['value'], $school->getId(), intval($_GET['currentOrder']));
+        } else {
+            echo 'false';
+        }
+    }
+
+    public function changTopicOrder()
+    {
+        ['user' => $user, 'school' => $school] = $this->accessTheForum();
+        $acceptedValue = ['up', 'down'];
+
+        if ($user && $school && !empty($_GET['idCategory']) && !empty($_GET['value']) 
+        && in_array($_GET['value'], $acceptedValue) && !empty($_GET['currentOrder'])) 
+        {
+            $ForumCategoryManager = new ForumCategoryManager();
+            $category = $ForumCategoryManager->getCategory($_GET['idCategory'], $user, false);
+
+            if ($category && ($category->getIdSchool() === $school->getId() || $_SESSION['school'] === ALL_SCHOOL)) {
+                echo $ForumCategoryManager->changTopicOrder($_GET['value'], $category->getId(), intval($_GET['currentOrder']));
+            } else {
+                echo 'false';
+            }
         } else {
             echo 'false';
         }

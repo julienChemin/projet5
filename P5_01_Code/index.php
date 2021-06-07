@@ -192,6 +192,10 @@ try {
                 $Frontend->category();
             break;
 
+            case 'forumTopic' :
+                $Frontend->forumTopic();
+            break;
+
             case 'createTopic' :
                 $Frontend->createTopic();
             break;
@@ -200,8 +204,40 @@ try {
                 $Frontend->addTopic();
             break;
 
-            case 'forumTopic' :
-                $Frontend->forumTopic();
+            case 'deleteTopic' :
+                $Frontend->deleteTopic();
+            break;
+
+            case 'editTopic' :
+                $Frontend->editTopic();
+            break;
+
+            case 'updateTopic' :
+                $Frontend->updateTopic();
+            break;
+
+            case 'addReply' :
+                $Frontend->addReply();
+            break;
+
+            case 'deleteReply' :
+                $Frontend->deleteReply();
+            break;
+
+            case 'editReply' :
+                $Frontend->editReply();
+            break;
+
+            case 'updateReply' :
+                $Frontend->updateReply();
+            break;
+
+            case 'toggleTopicIsClose' :
+                $Frontend->toggleTopicIsClose();
+            break;
+
+            case 'toggleTopicIsPinned' :
+                $Frontend->toggleTopicIsPinned();
             break;
 
             default :

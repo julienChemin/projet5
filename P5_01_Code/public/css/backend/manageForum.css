@@ -60,14 +60,14 @@
 }
 
 /*add category -> groups selection*/
-#blockGroupsSelection{
+#blockGroupsSelection, #blockEditedGroupsSelection{
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-around;
     align-items: center;
 }
-#selectionGroupsToSee, #selectionGroupsToPost{
+#selectionGroupsToSee, #selectionGroupsToPost, #selectionEditedGroupsToSee, #selectionEditedGroupsToPost{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -79,11 +79,17 @@
     border: solid 1px #222224;
     border-radius: 5px;
 }
-#selectionGroupsToSee label, #selectionGroupsToPost label{
-    margin-right: 5px;
+#selectionGroupsToSee > div:first-of-type, #selectionGroupsToPost > div:first-of-type, 
+#selectionEditedGroupsToSee > div:first-of-type, #selectionEditedGroupsToPost > div:first-of-type{
+    display: flex;
+    flex-direction: column;
 }
-#blockAuthorizedGroupsToSee, #blockAuthorizedGroupsToPost{
+#selectionGroupsToSee label, #selectionGroupsToPost label, #selectionEditedGroupsToSee label, #selectionEditedGroupsToPost label{
+    margin-bottom: 5px;
+}
+#blockAuthorizedGroupsToSee, #blockAuthorizedGroupsToPost, #blockEditedAuthorizedGroupsToSee, #blockEditedAuthorizedGroupsToPost{
     display: none;
+    flex-wrap: wrap;
     width: 100%;
     padding-top: 10px;
     justify-content: center;
@@ -133,7 +139,7 @@
 #modal #confirmEditCategory{
     display: none;
     width: 90%;
-    max-width: 900px;
+    max-width: 1200px;
     height: auto;
     padding: 10px;
 }
@@ -228,4 +234,85 @@
     color: #CF8B3F;
     text-align: center;
     cursor: pointer;
+}
+
+/* topic */
+#manageForum .topics{
+    display: flex;
+    flex-direction: column;
+}
+#manageForum .topics > div{
+    display: flex;
+    margin-left: 20px;
+}
+#manageForum .topics > div > div{
+    display: flex;
+    width: 25px;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    margin-right: 5px;
+}
+#manageForum .topics > div > div i{
+    margin: 3px 0;
+    background-color: #262627;
+    border-radius: 5px;
+    padding: 2px 5px;
+    cursor: pointer;
+}
+#manageForum .topics > div > div i:hover{
+    border: solid 1px #CF8B3F;
+}
+#manageForum .topics .topic{
+    margin-left: 0;
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px) {
+    #addForumCategory input[type="text"]{
+        width: 80%;
+    }
+    #addForumCategory textarea{
+        width: 75%;
+    }
+
+    /*add category -> groups selection*/
+    #blockGroupsSelection, #blockEditedGroupsSelection{
+        flex-direction: column;
+    }
+    #selectionGroupsToSee, #selectionGroupsToPost, #selectionEditedGroupsToSee, #selectionEditedGroupsToPost{
+        width: 90%;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px) {
+    #manageForum form > div{
+        width: 100%;
+    }
+    #addForumCategory input[type="text"]{
+        width: 90%;
+    }
+    #addForumCategory textarea{
+        width: 80%;
+    }
+
+    /*add category -> groups selection*/
+    #blockGroupsSelection, #blockEditedGroupsSelection{
+        flex-direction: column;
+    }
+    #selectionGroupsToSee, #selectionGroupsToPost, #selectionEditedGroupsToSee, #selectionEditedGroupsToPost{
+        width: 90%;
+    }
+
+    /*topics*/
+    #manageForum .topics > div{
+        margin-left: 0;
+    }
 }

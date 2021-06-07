@@ -336,6 +336,47 @@ abstract class Controller
         return ($val);
     }
 
+    /*--- forum ---*/
+    protected function accessTheForum()
+    {
+        $result = ['school' => null, 'user' => null];
+
+        if (!empty($_SESSION['school']) && $_SESSION['school'] !== NO_SCHOOL) {
+            $SchoolManager = new SchoolManager();
+            $school = $SchoolManager->getSchoolByName($_SESSION['school']);
+            $UserManager = new UserManager();
+            $user = $UserManager->getOneById($_SESSION['id']);
+
+            if ($school) {
+                if ($_SESSION['school'] === ALL_SCHOOL || $school->getIsActive()) {
+                    $result['school'] = $school;
+                } else {
+                    $result['school'] = false;
+                }
+            }
+
+            if ($user) {
+                if ($user->getIsActive()) {
+                    $result['user'] = $user;
+                } else {
+                    $result['user'] = false;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    protected function cannotAccessForum($user, $school) {
+        if ($school === false) {
+            $this->incorrectInformation("Le forum n'est pas accessible car l'abonnement de l'établissement scolaire est désactivé");
+        } else if ($user === false) {
+            $this->incorrectInformation("Le forum ne vous est pas accessible car l'abonnement de votre compte n'est pas actif");
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
     /*--- other ---*/
     protected function checkForScriptInsertion(array $arr)
     {

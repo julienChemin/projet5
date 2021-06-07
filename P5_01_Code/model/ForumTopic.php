@@ -15,7 +15,8 @@ class ForumTopic
         $listAuthorizedGroupsToSee,
         $listAuthorizedGroupsToPost,
         $isPinned,
-        $pinOrder;
+        $pinOrder,
+        $isClose;
 
     public function __construct(array $data = null)
     {
@@ -126,6 +127,11 @@ class ForumTopic
         return $this->pinOrder;
     }
 
+    public function getIsClose()
+    {
+        return $this->isClose;
+    }
+
     //SETTERS
     public function setId(int $id)
     {
@@ -210,8 +216,12 @@ class ForumTopic
     public function setListAuthorizedGroupsToSee($list)
     {
         if ($list !== null) {
-            $listAuthorizedGroups = explode(',', $list);
-            $this->listAuthorizedGroups = array_slice($listAuthorizedGroups, 1);
+            if ($list === 'none') {
+                $this->listAuthorizedGroupsToSee = 'none';
+            } else {
+                $listAuthorizedGroups = explode(',', $list);
+                $this->listAuthorizedGroupsToSee = array_slice($listAuthorizedGroups, 1);
+            }
         }
         return $this;
     }
@@ -219,8 +229,12 @@ class ForumTopic
     public function setListAuthorizedGroupsToPost($list)
     {
         if ($list !== null) {
-            $listAuthorizedGroups = explode(',', $list);
-            $this->listAuthorizedGroups = array_slice($listAuthorizedGroups, 1);
+            if ($list === 'none') {
+                $this->listAuthorizedGroupsToPost = 'none';
+            } else {
+                $listAuthorizedGroups = explode(',', $list);
+                $this->listAuthorizedGroupsToPost = array_slice($listAuthorizedGroups, 1);
+            }
         }
         return $this;
     }
@@ -236,6 +250,12 @@ class ForumTopic
         if ($pinOrder && $pinOrder > 0) {
             $this->pinOrder = $pinOrder;
         }
+        return $this;
+    }
+
+    public function setIsClose(bool $isClose)
+    {
+        $this->isClose = $isClose;
         return $this;
     }
 }

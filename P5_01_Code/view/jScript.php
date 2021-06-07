@@ -116,6 +116,10 @@ if (isset($data['option'])) {
                 echo '<script src="public/js/forumTopic.js"></script>';
             break;
 
+            case 'editTopic' :
+                echo '<script src="public/js/createTopic.js"></script>';
+            break;
+
             default :
                 throw new Exception('L\'option indiqué n\'existe pas.');
             break;

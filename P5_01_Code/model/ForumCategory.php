@@ -139,8 +139,12 @@ class ForumCategory
     public function setListAuthorizedGroupsToSee($list)
     {
         if ($list !== null) {
-            $listAuthorizedGroups = explode(',', $list);
-            $this->listAuthorizedGroupsToSee = array_slice($listAuthorizedGroups, 1);
+            if ($list === 'none') {
+                $this->listAuthorizedGroupsToSee = 'none';
+            } else {
+                $listAuthorizedGroups = explode(',', $list);
+                $this->listAuthorizedGroupsToSee = array_slice($listAuthorizedGroups, 1);
+            }
         }
         return $this;
     }
@@ -148,8 +152,12 @@ class ForumCategory
     public function setListAuthorizedGroupsToPost($list)
     {
         if ($list !== null) {
-            $listAuthorizedGroups = explode(',', $list);
-            $this->listAuthorizedGroupsToPost = array_slice($listAuthorizedGroups, 1);
+            if ($list === 'none') {
+                $this->listAuthorizedGroupsToPost = 'none';
+            } else {
+                $listAuthorizedGroups = explode(',', $list);
+                $this->listAuthorizedGroupsToPost = array_slice($listAuthorizedGroups, 1);
+            }
         }
         return $this;
     }

@@ -20,9 +20,9 @@ $listSchoolGroups = $data['listSchoolGroups'];
 
     <h1>Forum <?=$data['school']->getName()?></h1>
 
-    <p class="container">
+    <p class="container manageForumLink">
         <a href="index.php?action=forum&school=<?=$data['school']->getName()?>">
-            <i class="fas fa-door-open"></i>Retourner sur le forum
+            <i class="fas fa-door-open"></i>Accueil du forum
         </a>
     </p>
 
@@ -119,7 +119,7 @@ $listSchoolGroups = $data['listSchoolGroups'];
                         </div>
 
                         <div>
-                            <h2><?=$categories[$i]->getName()?></h2>
+                            <h2><a href="index.php?action=category&categoryId=<?=$categories[$i]->getId()?>"><?=$categories[$i]->getName()?></a></h2>
 
                             <?php
                             if ($categories[$i]->getDescription() !== null) {
@@ -143,12 +143,20 @@ $listSchoolGroups = $data['listSchoolGroups'];
                     <div class="topics">
                         <?php
                         if ($pinnedTopics[$categories[$i]->getName()] && count($pinnedTopics[$categories[$i]->getName()]) > 0) {
-                            foreach ($pinnedTopics[$categories[$i]->getName()] as $topic) {
+                            for ($j = 0; $j < count($pinnedTopics[$categories[$i]->getName()]); $j++) {
+                                $topic = $pinnedTopics[$categories[$i]->getName()][$j];
                                 ?>
-                                <a href="index.php?action=forumTopic&topicId=<?=$topic->getId()?>" class="topic">
-                                    <h3><?=$topic->getName()?></h3>
-                                    <p><?=$topic->getAuthor()?>, <?=$topic->getDatePublication()?></p>
-                                </a>
+                                <div style="order: <?=$j+1?>;">
+                                    <div class="changeTopicOrder" idCategory="<?=$categories[$i]->getId()?>">
+                                        <i class="fas fa-chevron-up"></i>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+
+                                    <a href="index.php?action=forumTopic&topicId=<?=$topic->getId()?>" class="topic pin">
+                                        <h3><i class="fas fa-thumbtack"></i><?=$topic->getTitle()?></h3>
+                                        <p><?=$topic->getAuthorName()?>, <?=$topic->getDatePublication()?></p>
+                                    </a>
+                                </div>
                                 <?php
                             }
                         } else {
@@ -188,6 +196,8 @@ $listSchoolGroups = $data['listSchoolGroups'];
     <div id="confirmEditCategory">
         <form id="formEditCategory" method="POST" action="indexAdmin.php?action=editCategory" enctype="multipart/form-data">
             <input type="hidden" name="idCategory" value="">
+            <input type="hidden" name="listEditedAuthorizedGroupsToSee" value="">
+            <input type="hidden" name="listEditedAuthorizedGroupsToPost" value="">
 
             <div id="blockTitle">
                 <h2>Ajoutez un titre</h2>
@@ -197,6 +207,56 @@ $listSchoolGroups = $data['listSchoolGroups'];
             <div id="blockContent">
                 <h2>Ajoutez une description</h2>
                 <textarea name="content" id="content"></textarea>
+            </div>
+
+            <p>Par défaut, tous les groupes peuvent voir et poster dans une catégorie</p>
+
+            <div id="blockEditedGroupsSelection" class="fullWidth">
+                <div id="selectionEditedGroupsToSee">
+                    <div>
+                        <label for="editedAuthorizedGroupsToSee">Qui peut voir la catégorie : </label>
+
+                        <select name="editedAuthorizedGroupsToSee" id="editedAuthorizedGroupsToSee">
+                            <option value="groups" selected></option>
+                            <option value="all">Tous les Groupes</option>
+                            <option value="none">Admins / Modérateurs</option>
+                            <?php
+                            if (!empty($listSchoolGroups) && count($listSchoolGroups) > 0) {
+                                foreach ($listSchoolGroups as $group) {
+                                    echo '<option value="' . $group . '">' . $group . '</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <div id="blockEditedAuthorizedGroupsToSee">
+
+                    </div>
+                </div>
+
+                <div id="selectionEditedGroupsToPost">
+                    <div>
+                        <label for="editedAuthorizedGroupsToPost">Qui peut créer un sujet dans la catégorie : </label>
+
+                        <select name="editedAuthorizedGroupsToPost" id="editedAuthorizedGroupsToPost">
+                            <option value="groups" selected></option>
+                            <option value="all">Tous les Groupes</option>
+                            <option value="none">Admins / Modérateurs</option>
+                            <?php
+                            if (!empty($listSchoolGroups) && count($listSchoolGroups) > 0) {
+                                foreach ($listSchoolGroups as $group) {
+                                    echo '<option value="' . $group . '">' . $group . '</option>';
+                                }
+                            }
+                            ?>
+                        </select>
+                    </div>
+
+                    <div id="blockEditedAuthorizedGroupsToPost">
+
+                    </div>
+                </div>
             </div>
         </form>
 

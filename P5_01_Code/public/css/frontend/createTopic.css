@@ -5,7 +5,7 @@
     margin-bottom: 15px;
 }
 #createTopic form > div{
-    width: auto;
+    width: 80%;
     max-width: 1400px;
 }
 #createTopic form #blockTinyMce{
@@ -16,6 +16,7 @@
 }
 #createTopic #blockSubmit{
     width: 200px;
+    margin-top: 10px;
 }
 #createTopic #blockTitle input{
     margin-left: 0;

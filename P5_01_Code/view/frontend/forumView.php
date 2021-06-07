@@ -23,15 +23,26 @@ $nonePinnedTopics = $data['forumInfo']['nonePinnedTopics'];
     if ($data['user']->getIsAdmin() || $data['user']->getIsModerator()) {
         echo '<p class="manageForumLink container"><a href="indexAdmin.php?action=manageForum&school=' . $data['school']->getName() . '"><i class="fas fa-pencil-alt"></i>   Gérer le forum</a></p>';
     }
-    ?>
+    
+    if ($categories && count($categories) > 0) {
+        echo '<h2 class="container">Accès rapide</h2>';
 
+        echo '<div id="categoryFastAccess" class="container">';
+        foreach ($categories as $category) {
+            $anchor = "anchorCategory" . $category->getId();
+            echo '<p><a href="#' . $anchor . '">' . $category->getName() . '</a></p>';
+        }
+        echo'</div>';
+    }
+    ?>
     <article id="forumCategories">
         <?php
         if ($categories && count($categories) > 0) {
             // display categories
             foreach ($categories as $category) {
+                $anchor = "anchorCategory" . $category->getId();
                 ?>
-                <section class="forumCategory container">
+                <section id="<?=$anchor?>" class="forumCategory container">
                     <header>
                         <h2>
                             <a href="index.php?action=category&categoryId=<?=$category->getId()?>"><?=$category->getName()?></a>
@@ -49,7 +60,7 @@ $nonePinnedTopics = $data['forumInfo']['nonePinnedTopics'];
                         if (!empty($pinnedTopics[$category->getName()]) && count($pinnedTopics[$category->getName()]) > 0) {
                             foreach ($pinnedTopics[$category->getName()] as $topic) {
                                 ?>
-                                <a href="index.php?action=forumTopic&topicId=<?=$topic->getId()?>" class="topic">
+                                <a href="index.php?action=forumTopic&topicId=<?=$topic->getId()?>" class="topic pin">
                                     <h3><i class="fas fa-thumbtack"></i><?=$topic->getTitle()?></h3>
                                     <p><?=$topic->getAuthorName()?>, <?=$topic->getDatePublication()?></p>
                                 </a>
@@ -66,6 +77,8 @@ $nonePinnedTopics = $data['forumInfo']['nonePinnedTopics'];
                                 </a>
                                 <?php
                             }
+
+                            echo "<p><a href='index.php?action=category&categoryId=" . $category->getId() . "'>Voir tous les sujets dans la categorie : " . $category->getName() . "</a></p>";
                         } else if (empty($pinnedTopics[$category->getName()]) || (!empty($pinnedTopics[$category->getName()]) && count($pinnedTopics[$category->getName()])) > 0) {
                             // 0 topic to display
                             ?>

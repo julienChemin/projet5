@@ -134,6 +134,10 @@ try {
                 $Backend->changCategoryOrder();
             break;
 
+            case 'changTopicOrder' :
+                $Backend->changTopicOrder();
+            break;
+
             case 'deleteGroup' :
                 $Backend->deleteGroup();
             break;

@@ -109,20 +109,34 @@ function addElemCategory(name, idCategory, description = null) {
     blockCategories.append(elemContainer);
 }
 
-function addGroupToAuthorizedList(group, type)
+function addGroupToAuthorizedList(group, type, onEditForm = false)
 {
     let blockAuthorizedGroups, listAuthorizedGroups, listGroup, idSelector;
 
-    if (type === 'see') {
-        blockAuthorizedGroups = blockAuthorizedGroupsToSee;
-        listAuthorizedGroups = elemListToSee;
-        listGroup = formAddCategory.elements.authorizedGroupsToSee;
-        idSelector = "#authorizedGroupsToSee";
-    } else if (type === 'post') {
-        blockAuthorizedGroups = blockAuthorizedGroupsToPost;
-        listAuthorizedGroups = elemListToPost;
-        listGroup = formAddCategory.elements.authorizedGroupsToPost;
-        idSelector = "#authorizedGroupsToPost";
+    if (onEditForm) {
+        if (type === 'see') {
+            blockAuthorizedGroups = blockEditedAuthorizedGroupsToSee;
+            listAuthorizedGroups = elemEditedListToSee;
+            listGroup = formEditCategory.elements.editedAuthorizedGroupsToSee;
+            idSelector = "#editedAuthorizedGroupsToSee";
+        } else if (type === 'post') {
+            blockAuthorizedGroups = blockEditedAuthorizedGroupsToPost;
+            listAuthorizedGroups = elemEditedListToPost;
+            listGroup = formEditCategory.elements.editedAuthorizedGroupsToPost;
+            idSelector = "#editedAuthorizedGroupsToPost";
+        }
+    } else {
+        if (type === 'see') {
+            blockAuthorizedGroups = blockAuthorizedGroupsToSee;
+            listAuthorizedGroups = elemListToSee;
+            listGroup = formAddCategory.elements.authorizedGroupsToSee;
+            idSelector = "#authorizedGroupsToSee";
+        } else if (type === 'post') {
+            blockAuthorizedGroups = blockAuthorizedGroupsToPost;
+            listAuthorizedGroups = elemListToPost;
+            listGroup = formAddCategory.elements.authorizedGroupsToPost;
+            idSelector = "#authorizedGroupsToPost";
+        }
     }
 
     //add elem to list authorized group
@@ -242,7 +256,6 @@ formAddCategory.elements.authorizedGroupsToPost.addEventListener(
 /********************** */
 
 const schoolName = document.getElementById('manageForum').getAttribute('schoolName');
-const categories = document.querySelectorAll('.forumCategory');
 
 let arrayBtnOrderUp = document.querySelectorAll('.changCategoryOrder i[class~="fa-chevron-down"]');
 let arrayBtnOrderDown = document.querySelectorAll('.changCategoryOrder i[class~="fa-chevron-up"]');
@@ -304,6 +317,72 @@ if (arrayBtnOrderDown.length > 0) {
     });
 }
 
+/************************ */
+/** chang topic order */
+/********************** */
+
+let arrayBtnTopicOrderUp = document.querySelectorAll('.changeTopicOrder i[class~="fa-chevron-down"]');
+let arrayBtnTopicOrderDown = document.querySelectorAll('.changeTopicOrder i[class~="fa-chevron-up"]');
+let pinOrder = "";
+let previousTopic = "";
+let currentTopic = "";
+let nextTopic = "";
+let urlChangTopicOrder = "";
+
+function addEventTopicUp(elem) {
+    elem.addEventListener(
+        'click', function(e) {
+            pinOrder = e.target.parentNode.parentNode.style.order;
+            idCategory = e.target.parentNode.getAttribute('idCategory');
+            currentTopic = document.querySelector('.topics > div[style="order: ' + pinOrder + ';"]');
+            nextTopic = document.querySelector('.topics > div[style="order: ' + (parseInt(pinOrder)+1) + ';"]');
+            urlChangTopicOrder = 'indexAdmin.php?action=changTopicOrder&value=up&idCategory=' + idCategory + '&currentOrder=' + pinOrder;
+
+            if (currentTopic !== null && nextTopic !== null) {
+                ajaxGet(urlChangTopicOrder, function(response) {
+                    if (response.length > 0 && response !== 'false') {
+                        currentTopic.style.order = (parseInt(pinOrder)+1);
+                        nextTopic.style.order = pinOrder;
+                    }
+                });
+            }
+        }
+    );
+}
+
+function addEventTopicDown(elem) {
+    elem.addEventListener(
+        'click', function(e) {
+            pinOrder = e.target.parentNode.parentNode.style.order;
+            idCategory = e.target.parentNode.getAttribute('idCategory');
+            currentTopic = document.querySelector('.topics > div[style="order: ' + pinOrder + ';"]');
+            previousTopic = document.querySelector('.topics > div[style="order: ' + (parseInt(pinOrder)-1) + ';"]');
+            urlChangTopicOrder = 'indexAdmin.php?action=changTopicOrder&value=down&idCategory=' + idCategory + '&currentOrder=' + pinOrder;
+
+            if (currentTopic !== null && previousTopic !== null) {
+                ajaxGet(urlChangTopicOrder, function(response) {
+                    if (response.length > 0 && response !== 'false') {
+                        currentTopic.style.order = (parseInt(pinOrder)-1);
+                        previousTopic.style.order = pinOrder;
+                    }
+                });
+            }
+        }
+    );
+}
+
+if (arrayBtnTopicOrderUp.length > 0) {
+    arrayBtnTopicOrderUp.forEach(btn => {
+        addEventTopicUp(btn);
+    });
+}
+
+if (arrayBtnTopicOrderDown.length > 0) {
+    arrayBtnTopicOrderDown.forEach(btn => {
+        addEventTopicDown(btn);
+    });
+}
+
 /******************* */
 /** delete category */
 /*******************/
@@ -343,9 +422,12 @@ if (btnCancelDeleteCategory !== null) {
 /***************** */
 /** edit category */
 /*****************/
-
-const arrayBtnEditCategory = document.querySelectorAll('.deleteCategory i[class~="fa-pencil-alt"]');
 const formEditCategory = document.getElementById('formEditCategory');
+const elemEditedListToSee = formEditCategory.elements.listEditedAuthorizedGroupsToSee;
+const elemEditedListToPost = formEditCategory.elements.listEditedAuthorizedGroupsToPost;
+const blockEditedAuthorizedGroupsToSee = document.getElementById('blockEditedAuthorizedGroupsToSee');
+const blockEditedAuthorizedGroupsToPost = document.getElementById('blockEditedAuthorizedGroupsToPost');
+const arrayBtnEditCategory = document.querySelectorAll('.deleteCategory i[class~="fa-pencil-alt"]');
 const blockConfirmEdit = document.getElementById('confirmEditCategory');
 const btnCancelEditCategory = document.getElementById('closeModalEdit');
 const btnConfirmEditCategory = document.getElementById('btnConfirmEdit');
@@ -381,6 +463,35 @@ if (arrayBtnEditCategory !== null && arrayBtnEditCategory.length > 0) {
         addEventEditCategory(btn);
     });
 }
+
+/* select groups */
+formEditCategory.elements.editedAuthorizedGroupsToSee.addEventListener(
+    'change', function(e) {
+        if (e.target.value === "all" || e.target.value === "none") {
+            blockEditedAuthorizedGroupsToSee.style.display = 'none';
+        } else if (e.target.value === "groups") {
+            blockEditedAuthorizedGroupsToSee.style.display = 'flex';
+        } else {
+            blockEditedAuthorizedGroupsToSee.style.display = 'flex';
+            addGroupToAuthorizedList(e.target.value, 'see', true);
+        }
+    }
+);
+
+formEditCategory.elements.editedAuthorizedGroupsToPost.addEventListener(
+    'change', function(e) {
+        if (e.target.value === "all" || e.target.value === "none") {
+            blockEditedAuthorizedGroupsToPost.style.display = 'none';
+        } else if (e.target.value === "groups") {
+            blockEditedAuthorizedGroupsToPost.style.display = 'flex';
+        } else {
+            blockEditedAuthorizedGroupsToPost.style.display = 'flex';
+            addGroupToAuthorizedList(e.target.value, 'post', true);
+        }
+    }
+);
+
+/* cancel / submit */
 
 btnCancelEditCategory.addEventListener(
     'click', function() {

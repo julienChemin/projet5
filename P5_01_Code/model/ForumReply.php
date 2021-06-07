@@ -11,6 +11,8 @@ class ForumReply
         $pseudoAuthor,
         $firstNameAuthor,
         $lastNameAuthor,
+        $authorIsAdmin,
+        $authorIsModerator,
         $content,
         $datePublication;
 
@@ -83,6 +85,16 @@ class ForumReply
         return $this->lastNameAuthor;
     }
 
+    public function getAuthorIsAdmin()
+    {
+        return $this->authorIsAdmin;
+    }
+
+    public function getAuthorIsModerator()
+    {
+        return $this->authorIsModerator;
+    }
+
     public function getContent()
     {
         return $this->content;
@@ -144,7 +156,7 @@ class ForumReply
                 $url = explode('/', $infos[0]);
                 $infos[0] = $url[count($url) - 4] . '/' . $url[count($url) - 3] . '/' . $url[count($url) - 2] . '/' . $url[count($url) - 1];
             }
-            $this->setProfilePictureAuthor($infos[0]);
+            $this->profilePictureAuthor = ($infos[0]);
         }
         return $this;
     }
@@ -170,6 +182,18 @@ class ForumReply
         if (strlen($lastNameAuthor) > 0) {
             $this->lastNameAuthor = $lastNameAuthor;
         }
+        return $this;
+    }
+
+    public function setAuthorIsAdmin(bool $authorIsAdmin)
+    {
+        $this->authorIsAdmin = $authorIsAdmin;
+        return $this;
+    }
+
+    public function setAuthorIsModerator(bool $authorIsModerator)
+    {
+        $this->authorIsModerator = $authorIsModerator;
         return $this;
     }
 

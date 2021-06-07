@@ -73,15 +73,28 @@ if (isset($_GET['action'])) {
             echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/category.css">';
         break;
 
+        case 'forumTopic' :
+            echo '<link rel="stylesheet" type="text/css" href="public/css/profile.css">';
+            echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/forumTopic.css">';
+        break;
+
         case 'createTopic' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/profile.css">';
             echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/createTopic.css">';
         break;
 
-        case 'forumTopic' :
+        case 'editTopic' :
             echo '<link rel="stylesheet" type="text/css" href="public/css/profile.css">';
-            echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/forumTopic.css">';
+            echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/createTopic.css">';
         break;
+
+        case 'editReply' :
+            echo '<link rel="stylesheet" type="text/css" href="public/css/profile.css">';
+            echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/createTopic.css">';
+        break;
+
+        default :
+            echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/home.css">';
     }
 } else {
     if (SITE_MAINTENANCE) {

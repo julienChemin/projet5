@@ -82,31 +82,35 @@ function addGroupToAuthorizedList(group, type)
 }
 
 /* select groups */
-formAddTopic.elements.authorizedGroupsToSee.addEventListener(
-    'change', function(e) {
-        if (e.target.value === "all" || e.target.value === "none") {
-            blockAuthorizedGroupsToSee.style.display = 'none';
-        } else if (e.target.value === "groups") {
-            blockAuthorizedGroupsToSee.style.display = 'flex';
-        } else {
-            blockAuthorizedGroupsToSee.style.display = 'flex';
-            addGroupToAuthorizedList(e.target.value, 'see');
+if (formAddTopic.elements.authorizedGroupsToSee) {
+    formAddTopic.elements.authorizedGroupsToSee.addEventListener(
+        'change', function(e) {
+            if (e.target.value === "all" || e.target.value === "none") {
+                blockAuthorizedGroupsToSee.style.display = 'none';
+            } else if (e.target.value === "groups") {
+                blockAuthorizedGroupsToSee.style.display = 'flex';
+            } else {
+                blockAuthorizedGroupsToSee.style.display = 'flex';
+                addGroupToAuthorizedList(e.target.value, 'see');
+            }
         }
-    }
-);
+    );
+}
 
-formAddTopic.elements.authorizedGroupsToPost.addEventListener(
-    'change', function(e) {
-        if (e.target.value === "all" || e.target.value === "none") {
-            blockAuthorizedGroupsToPost.style.display = 'none';
-        } else if (e.target.value === "groups") {
-            blockAuthorizedGroupsToPost.style.display = 'flex';
-        } else {
-            blockAuthorizedGroupsToPost.style.display = 'flex';
-            addGroupToAuthorizedList(e.target.value, 'post');
+if (formAddTopic.elements.authorizedGroupsToPost) {
+    formAddTopic.elements.authorizedGroupsToPost.addEventListener(
+        'change', function(e) {
+            if (e.target.value === "all" || e.target.value === "none") {
+                blockAuthorizedGroupsToPost.style.display = 'none';
+            } else if (e.target.value === "groups") {
+                blockAuthorizedGroupsToPost.style.display = 'flex';
+            } else {
+                blockAuthorizedGroupsToPost.style.display = 'flex';
+                addGroupToAuthorizedList(e.target.value, 'post');
+            }
         }
-    }
-);
+    );
+}
 
 /****************************************************************************************/
 /****************************************************************************************/

@@ -10,11 +10,11 @@ class ForumCategoryManager extends ForumTopicManager
 
     public static $CATEGORY_TABLE_CHAMPS = 'id, idSchool, name, description, authorizedGroupsToSee, authorizedGroupsToPost, categoryOrder';
 
-    public function getCategory(int $idCategory = 0, $user = null, bool $withTopic = true)
+    public function getCategory(int $idCategory = 0, $user = null, bool $withTopic = true, $amountTopic = 0, $offset = 0)
     {
         if ($idCategory > 0 && $user) {
             if ($withTopic) {
-                return $this->getCategoryWithTopic($idCategory, $user);
+                return $this->getCategoryWithTopic($idCategory, $user, $amountTopic, $offset);
             } else {
                 return $this->getCategoryWithoutTopic($idCategory);
             }
@@ -23,11 +23,11 @@ class ForumCategoryManager extends ForumTopicManager
         }
     }
 
-    public function getCategories(int $idSchool, $user, bool $withTopic = true, bool $pinnedTopics = true, bool $nonePinnedTopics = true)
+    public function getCategories(int $idSchool, $user, bool $withTopic = true, bool $pinnedTopics = true, bool $nonePinnedTopics = true, $amountTopic = 0, $offset = 0)
     {
         if ($idSchool > 0) {
             if ($withTopic) {
-                return $this->getCategoriesWithTopic($idSchool, $user, $pinnedTopics, $nonePinnedTopics);
+                return $this->getCategoriesWithTopic($idSchool, $user, $pinnedTopics, $nonePinnedTopics, $amountTopic, $offset);
             } else {
                 return $this->getCategoriesWithoutTopic($idSchool, $user);
             }
@@ -51,14 +51,15 @@ class ForumCategoryManager extends ForumTopicManager
         return $this->getLastInsertId();
     }
 
-    public function updateCategory(int $idCategory, string $title, string $content = "")
+    public function updateCategory(int $idCategory, string $title, string $content = "", $authorizedGroupsToSee, $authorizedGroupsToPost)
     {
         if (!empty($idCategory) && $idCategory > 0 && !empty($title)) {
             $this->sql(
                 'UPDATE ' . static::$CATEGORY_TABLE_NAME . ' 
-                SET name = :name, description = :description 
+                SET name = :name, description = :description, authorizedGroupsToSee = :authorizedGroupsToSee, authorizedGroupsToPost = :authorizedGroupsToPost 
                 WHERE id = :idCategory', 
-                [':idCategory' => $idCategory, ':name' => $title, ':description' => $content]
+                [':idCategory' => $idCategory, ':name' => $title, ':description' => $content, 
+                ':authorizedGroupsToSee' => $authorizedGroupsToSee, ':authorizedGroupsToPost' => $authorizedGroupsToPost]
             );
         }
     }
@@ -79,7 +80,7 @@ class ForumCategoryManager extends ForumTopicManager
         }
     }
 
-    public function deleteCategory(array $categoryInfo)
+    public function deleteCategory(array $categoryInfo, int $idSchool)
     {
         // delete topics on this category
         if (count($categoryInfo['pinnedTopics']) > 0) {
@@ -111,6 +112,27 @@ class ForumCategoryManager extends ForumTopicManager
         }
     }
 
+    public function setupForumForNewSchool(User $user, School $school)
+    {
+        $idNewCategory = $this->setCategory($school->getId(), "Bienvenue sur votre forum !", "", "none", "none");
+        $category = $this->getCategory($idNewCategory, $user, false);
+
+        $this->setTopic(
+            [
+                'title' => 'Cliquez moi pour commencer', 
+                'authorizedGroupsToSee' => null, 
+                'listAuthorizedGroupsToSee' => null, 
+                'authorizedGroupsToPost' => null, 
+                'listAuthorizedGroupsToPost' => null
+            ], 
+            '<p>Pour commencer avec le forum, il vous suffit d\'aller dans "gérer le forum" et de créer les catégories dont vous avez besoin. 
+            Vous pourrez ensuite ouvrir des sujets de discution</p>
+            <p>Si vous avez la moindre question ou si vous souhaitez plus d\'information sur les options du forum, je vous invite à regarder la <a href="index.php?action=faq#forum">F.A.Q</a> pour tout savoir sur comment gérer le forum.</p>
+            ', 
+            $user, $school, $category
+        );
+    }
+
     /*-------------------------------------------------------------------------------------
     ----------------------------------- PRIVATE FUNCTION ------------------------------------
     -------------------------------------------------------------------------------------*/
@@ -130,13 +152,13 @@ class ForumCategoryManager extends ForumTopicManager
         return $result;
     }
 
-    private function getCategoryWithTopic(int $idCategory, $user)
+    private function getCategoryWithTopic(int $idCategory, $user, $amountTopic = 0, $offset = 0)
     {
         $result = ['category' => null, 'pinnedTopics' => null, 'nonePinnedTopics' => null];
 
         $result['category'] = $this->getCategoryWithoutTopic($idCategory);
         $result['pinnedTopics'] = $this->getTopics($idCategory, $user, true);
-        $result['nonePinnedTopics'] = $this->getTopics($idCategory, $user, false);
+        $result['nonePinnedTopics'] = $this->getTopics($idCategory, $user, false, $amountTopic, $offset);
 
         return $result;
     }
@@ -159,7 +181,7 @@ class ForumCategoryManager extends ForumTopicManager
         return $result;
     }
 
-    private function getCategoriesWithTopic(int $idSchool, $user, bool $pinnedTopics = true, bool $nonePinnedTopics = true)
+    private function getCategoriesWithTopic(int $idSchool, $user, bool $pinnedTopics = true, bool $nonePinnedTopics = true, $amountTopic = 0, $offset = 0)
     {
         $result = ['categories' => null, 'pinnedTopics' => [], 'nonePinnedTopics' => []];
 
@@ -173,7 +195,7 @@ class ForumCategoryManager extends ForumTopicManager
                     }
 
                     if ($nonePinnedTopics) {
-                        $result['nonePinnedTopics'][$category->getName()] = $this->getTopics($category->getId(), $user, false);
+                        $result['nonePinnedTopics'][$category->getName()] = $this->getTopics($category->getId(), $user, false, $amountTopic, $offset);
                     }
                 }
             }
@@ -280,7 +302,7 @@ class ForumCategoryManager extends ForumTopicManager
 
     private function categoryOrderDecrement(int $idCategory = null, int $order = null)
     {
-        if ($idCategory && $idCategory > 0 && $order && $order > 0) {
+        if ($idCategory && $idCategory > 0 && $order && $order > 1) {
             $this->sql(
                 'UPDATE ' . static::$CATEGORY_TABLE_NAME . ' 
                 SET categoryOrder = :order 

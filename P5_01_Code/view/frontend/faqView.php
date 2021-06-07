@@ -29,6 +29,7 @@ $isAdmin = $isLoggedUser && $_SESSION['grade'] === ADMIN ? true : false;
                 <li><a href="#howToModeratUsers">- Consulter la liste des élèves</a></li>
                 <li><a href="#howToSchoolPost">- Publication de l'établissement</a></li>
                 <li><a href="#howToSchoolProfile">- Profil de l'établissement</a></li>
+                <li><a href="#howToManageForum">- Forum de l'établissement</a></li>
             </ul>
 
             <h2 class="summaryCategory lastCategorySummary">Administration - Questions fréquentes<i class="fas fa-sort-down"></i></h2>
@@ -292,6 +293,42 @@ $isAdmin = $isLoggedUser && $_SESSION['grade'] === ADMIN ? true : false;
                     <br>
                     La gestion de ces onglets fonctionne de la même manière que pour les <a href="index.php?action=faq#howToCustomProfile">profils utilisateurs</a>.
                 </p>
+            </div>
+        </article>
+
+        <!-- howToManageForum -->
+        <hr>
+        <article>
+            <h2 id="howToManageForum">Forum de l'établissement</h2>
+
+            <div>
+                <p>
+                    La gestion du forum ce fait sur la page de <a href="indexAdmin.php?action=manageForum&school=<?=$_SESSION['school'] ?>">gestion du forum</a>.
+                    <br>
+                    Vous pouvez y créer et supprimer des catégories, et organiser les catégories et sujets épinglés.
+                </p>
+
+                <ul>
+                    <span>Création de catégorie</span>
+
+                    <li>
+                        <p>
+                            Lors de l'ajout d'une nouvelle catégorie, vous pourrez choisir quels groupes peuvent voir la catégorie et lesquels peuvent ouvrir un sujet dans cette catégorie.
+                            <br>
+                            <span>Par défaut, tout le monde peut voir la catégorie</span>
+                        </p>
+                    </li>
+
+                    <span>Organisation des catégories et sujets épinglés</span>
+                    
+                    <li>
+                        <p>
+                            Il vous suffit de cliquer sur les flèches pour changer l'ordre d'affichage des catégories et des sujets épinglés.
+                            <br>
+                            <span>Supprimer une catégorie supprimera aussi tous les sujets qui y ont été ouvert. Cette action est irréversible.</span>
+                        </p>
+                    </li>
+                </ul>
             </div>
         </article>
 

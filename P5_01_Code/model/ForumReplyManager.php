@@ -7,7 +7,8 @@ class ForumReplyManager extends AbstractManager
     public static $REPLY_OBJECT_TYPE = 'Chemin\ArtSchools\Model\ForumReply';
     public static $REPLY_TABLE_NAME = 'as_forum_reply';
     public static $REPLY_TABLE_CHAMPS = 'r.id, r.idSchool, r.idTopic, r.idAuthor, u.profilePictureInfo AS profilePictureInfoAuthor, 
-        u.pseudo AS pseudoAuthor, u.firstName AS firstNameAuthor, u.lastName AS lastNameAuthor, r.content, DATE_FORMAT(r.datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication';
+        u.pseudo AS pseudoAuthor, u.firstName AS firstNameAuthor, u.lastName AS lastNameAuthor, 
+        u.isAdmin AS authorIsAdmin, u.isModerator AS authorIsModerator, r.content, DATE_FORMAT(r.datePublication, "%d/%m/%Y à %H:%i.%s") AS datePublication';
     public static $TABLE_PK = 'id';
 
     public function getReply(int $idReply)
@@ -18,7 +19,7 @@ class ForumReplyManager extends AbstractManager
                 FROM ' . static::$REPLY_TABLE_NAME . ' AS r 
                 LEFT JOIN as_user AS u 
                 ON u.id = r.idAuthor 
-                WHERE id = :id', 
+                WHERE r.id = :id', 
                 [':id' => $idReply]
             );
             $result = $q->fetchObject(static::$REPLY_OBJECT_TYPE);
@@ -30,7 +31,7 @@ class ForumReplyManager extends AbstractManager
         }
     }
 
-    public function getReplies(int $idTopic)
+    public function getReplies(int $idTopic, $clauseLimit = "")
     {
         if ($idTopic > 0) {
             $q = $this->sql(
@@ -38,7 +39,8 @@ class ForumReplyManager extends AbstractManager
                 FROM ' . static::$REPLY_TABLE_NAME . ' AS r 
                 LEFT JOIN as_user AS u 
                 ON u.id = r.idAuthor 
-                WHERE idTopic = :idTopic', 
+                WHERE r.idTopic = :idTopic' 
+                . $clauseLimit, 
                 [':idTopic' => $idTopic]
             );
             $result = $q->fetchAll(\PDO::FETCH_CLASS, static::$REPLY_OBJECT_TYPE);
@@ -50,18 +52,28 @@ class ForumReplyManager extends AbstractManager
         }
     }
 
-    public function setReply(array $POST, user $user)
+    public function setReply(string $content, user $user, School $school, ForumTopic $topic)
     {
-        if ($this->checkForScriptInsertion($POST)) {
-            $this->sql(
-                'INSERT INTO ' . static::$REPLY_TABLE_NAME . ' (idSchool, idTopic, idAuthor, content, datePublication) 
-				VALUES (:idSchool, :idTopic, :idAuthor, :content, NOW())', 
-                [':idSchool' => $POST['idSchool'], ':idTopic' => $POST['idTopic'], ':idAuthor' => $user->getId(), ':content' => trim($POST['content'])]
-            );
-            return true;
-        } else {
-            return false;
-        }
+        $this->sql(
+            'INSERT INTO ' . static::$REPLY_TABLE_NAME . ' (idSchool, idTopic, idAuthor, content, datePublication) 
+            VALUES (:idSchool, :idTopic, :idAuthor, :content, NOW())', 
+            [
+                ':idSchool' => $school->getId(), ':idTopic' => $topic->getId(), 
+                ':idAuthor' => $user->getId(), ':content' => $content
+            ]
+        );
+    }
+
+    public function updateReply($content, $idReply)
+    {
+        $this->sql(
+            'UPDATE ' . static::$REPLY_TABLE_NAME . ' 
+            SET content = :content 
+            WHERE id = :idReply', 
+            [
+                ':idReply' => $idReply, ':content' => $content
+            ]
+        );
     }
 
     public function deleteReply(object $reply)
@@ -82,5 +94,33 @@ class ForumReplyManager extends AbstractManager
             WHERE ' . static::$TABLE_PK . ' = :id', 
             [':id' => $reply->getId()]
         );
+    }
+
+    public function getCountReply(int $idTopic = null)
+    {
+        if ($idTopic) {
+            $q = $this->sql(
+                'SELECT COUNT(*) 
+                FROM ' . static::$REPLY_TABLE_NAME . ' 
+                WHERE idTopic = :idTopic', 
+                [':idTopic' => $idTopic]
+            );
+            
+            $result = $q->fetch();
+            $q->closeCursor();
+
+            return intval($result[0]);
+        } else {
+            return 0;
+        }
+    }
+
+    public function checkUpdatedElemContent($oldImgEntries = [], $newImgEntries = [])
+    {
+        for ($i = 0; $i < count($oldImgEntries); $i++) {
+            if (!in_array($oldImgEntries[$i], $newImgEntries)) {
+                $this->deleteFile($oldImgEntries[$i]);
+            }
+        }
     }
 }
