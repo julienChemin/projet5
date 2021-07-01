@@ -93,6 +93,15 @@ if (isset($_GET['action'])) {
             echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/createTopic.css">';
         break;
 
+        case 'cv' :
+            echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/cv.css">';
+        break;
+
+        case 'editCv' :
+            echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/cv.css">';
+            echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/editCv.css">';
+        break;
+
         default :
             echo '<link rel="stylesheet" type="text/css" href="public/css/frontend/home.css">';
     }

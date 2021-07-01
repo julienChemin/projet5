@@ -152,6 +152,10 @@ try {
                 $Frontend->deleteComment();
             break;
 
+            case 'getCommentsFromPosts' :
+                $Frontend->getCommentsFromPosts();
+            break;
+
             case 'deletePost' :
                 $Frontend->deletePost();
             break;
@@ -230,6 +234,22 @@ try {
 
             case 'updateReply' :
                 $Frontend->updateReply();
+            break;
+
+            case 'cv' :
+                $Frontend->cv();
+            break;
+
+            case 'editCv' :
+                $Frontend->editCv();
+            break;
+
+            case 'portfolio' :
+                $Frontend->portfolio();
+            break;
+
+            case 'editPortfolio' :
+                $Frontend->editPortfolio();
             break;
 
             case 'toggleTopicIsClose' :

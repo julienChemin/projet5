@@ -1,5 +1,4 @@
 <footer>
-	<hr>
 	<section class="container">
 		<div>
 			<article id="linksList">
@@ -37,7 +36,7 @@
 			<hr class="hrFooter">
 
 			<article id="contact">
-				<h3>Contact</h3>
+				<h3>Contact ArtSchools</h3>
 
 				<ul>
 					<li><a href="mailto:artschoolsfr@gmail.com"><i class="fas fa-envelope-square"></i></a></li>

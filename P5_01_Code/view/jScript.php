@@ -120,6 +120,10 @@ if (isset($data['option'])) {
                 echo '<script src="public/js/createTopic.js"></script>';
             break;
 
+            case 'editCv' :
+                echo '<script src="public/js/editCv.js"></script>';
+            break;
+
             default :
                 throw new Exception('L\'option indiqué n\'existe pas.');
             break;

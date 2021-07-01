@@ -4,6 +4,7 @@ let btnAddComment = document.getElementById('submitComment');
 let arrBtnDeleteComment = document.querySelectorAll('.deleteComment');
 let arrBtnConfirmDelete = document.querySelectorAll('.confirmDelete');
 let blockComments = document.querySelector('#addComment + div');
+const regexNumberUnderQuote = /^\"([0-9]+)\"$/i;
 
 function nl2br(str, is_xhtml)
 {
@@ -21,41 +22,130 @@ function nl2br(str, is_xhtml)
     return (str + '').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1' + breakTag + '$2');
 }
 
-function addComment(content)
+function addComment(content, idComment)
 {
     let divComment = document.createElement('div');
     divComment.classList.add('comment', 'fullWidth');
     let linkPictureProfile = document.createElement('a');
     linkPictureProfile.href = 'index.php?action=userProfile&userId=' + formAddComment.elements.userId.value;
-    linkPictureProfile.setAttribute('style', "background-image: url('" + formAddComment.elements.userPicture.value + "');")
+    linkPictureProfile.setAttribute('style', "background-image: url('" + formAddComment.elements.userPicture.value + "');");
 
     divComment.appendChild(linkPictureProfile);
     let divContent = document.createElement('div');
+
     let linkUserName = document.createElement('a');
     linkUserName.href = 'index.php?action=userProfile&userId=' + formAddComment.elements.userId.value;
     linkUserName.textContent = formAddComment.elements.userName.value;
+    linkUserName.style.color = formAddComment.elements.userColor.value;
     divContent.appendChild(linkUserName);
+
     let pContent = document.createElement('p');
     pContent.innerHTML = nl2br(content);
     divContent.appendChild(pContent);
+
     let pDatePublication = document.createElement('p');
-    pDatePublication.textContent = 'a l\'instant';
+    pDatePublication.textContent = 'a l\'instant - ';
+
+    let spanDelete = document.createElement('span');
+    spanDelete.classList.add('deleteComment');
+    spanDelete.setAttribute('idComment', idComment);
+    spanDelete.textContent = "Supprimer le commentaire";
+
+    let spanConfirmDelete = document.createElement('span');
+    spanConfirmDelete.classList.add('confirmDelete');
+    spanConfirmDelete.textContent = "Supprimer définitivement ?";
+    addEventDeleteComment(spanDelete, spanConfirmDelete);
+
+    pDatePublication.appendChild(spanDelete);
+    pDatePublication.appendChild(spanConfirmDelete);
     divContent.appendChild(pDatePublication);
     divComment.appendChild(divContent);
     blockComments.insertBefore(divComment, blockComments.childNodes[0]);
 }
+
+function displayComment(comment)
+{
+    let userColor = comment['authorIsAdmin'] ||comment['authorIsModerator'] ? "#de522f" : "#CF8B3F";
+
+    let divComment = document.createElement('div');
+    divComment.classList.add('comment', 'fullWidth');
+    let linkPictureProfile = document.createElement('a');
+    linkPictureProfile.href = 'index.php?action=userProfile&userId=' + comment['idAuthor'];
+    linkPictureProfile.setAttribute('style', "background-image: url('" + comment['profilePictureAuthor'] + "');");
+
+    divComment.appendChild(linkPictureProfile);
+    let divContent = document.createElement('div');
+
+    let linkUserName = document.createElement('a');
+    linkUserName.href = 'index.php?action=userProfile&userId=' + comment['idAuthor'];
+    linkUserName.textContent = comment['firstNameAuthor'] + " " + comment['lastNameAuthor'];
+    linkUserName.style.color = userColor;
+    divContent.appendChild(linkUserName);
+
+    let pContent = document.createElement('p');
+    pContent.innerHTML = nl2br(comment['content']);
+    divContent.appendChild(pContent);
+
+    let pDatePublication = document.createElement('p');
+    pDatePublication.textContent = comment['datePublication'] + " - ";
+
+    let spanDelete = document.createElement('span');
+    spanDelete.classList.add('deleteComment');
+    spanDelete.setAttribute('idComment', comment['id']);
+    spanDelete.textContent = "Supprimer le commentaire";
+
+    let spanConfirmDelete = document.createElement('span');
+    spanConfirmDelete.classList.add('confirmDelete');
+    spanConfirmDelete.textContent = "Supprimer définitivement ?";
+    addEventDeleteComment(spanDelete, spanConfirmDelete);
+
+    pDatePublication.appendChild(spanDelete);
+    pDatePublication.appendChild(spanConfirmDelete);
+    divContent.appendChild(pDatePublication);
+    divComment.appendChild(divContent);
+    blockComments.insertBefore(divComment, blockShowMoreComments);
+}
+
+function addEventDeleteComment(btnDelete, btnConfirm) {
+    btnDelete.addEventListener(
+        'click', function () {
+            btnConfirm.style.display = "inline";
+            btnDelete.style.display = "none";
+            setTimeout(function () {
+                btnConfirm.style.display = "none";
+                btnDelete.style.display = "inline";
+            }, 2500);
+        }
+    );
+
+    let idComment = btnDelete.getAttribute('idcomment');
+    let url = 'index.php?action=deleteComment&id=' + idComment;
+    btnConfirm.addEventListener(
+        'click', function () {
+            ajaxGet(url, function (response) {
+                if (response !== 'false') {
+                    let nodeToRemove = btnConfirm.parentNode.parentNode.parentNode;
+                    blockComments.removeChild(nodeToRemove);
+                }
+            });
+        }
+    );
+}
+
 //add comment
 if (btnAddComment !== null) {
     btnAddComment.addEventListener(
         'click', function (e) {
             e.preventDefault();
+
             if (formAddComment.elements.commentContent.value !== "") {
                 let url = 'index.php?action=setComment';
                 let data = new FormData(formAddComment);
                 ajaxPost(url, data, function (response) {
-                    if (response.length > 0 && response !== "false") {
+                    if (response.length > 0 && response !== "false" && regexNumberUnderQuote.test(response)) {
                         //add comment to flux
-                        addComment(formAddComment.elements.commentContent.value);
+                        idComment = regexNumberUnderQuote.exec(response)[1];
+                        addComment(formAddComment.elements.commentContent.value, idComment);
                         formAddComment.elements.commentContent.value = "";
                         spanMsgComment.style.display = "inline";
                         spanMsgComment.textContent = "Votre commentaire a bien été ajouté";
@@ -78,27 +168,37 @@ if (btnAddComment !== null) {
     );
 }
 
-//delete comment
+//event delete comment
 for (let i=0;i<arrBtnDeleteComment.length;i++) {
-    arrBtnDeleteComment[i].addEventListener(
-        'click', function () {
-            arrBtnConfirmDelete[i].style.display = "inline";
-            arrBtnDeleteComment[i].style.display = "none";
-            setTimeout(function () {
-                arrBtnConfirmDelete[i].style.display = "none";
-                arrBtnDeleteComment[i].style.display = "inline";
-            }, 2500);
-        }
-    );
+    addEventDeleteComment(arrBtnDeleteComment[i], arrBtnConfirmDelete[i]);
+}
 
-    let idComment = arrBtnDeleteComment[i].getAttribute('idcomment');
-    let url = 'index.php?action=deleteComment&id=' + idComment;
-    arrBtnConfirmDelete[i].addEventListener(
-        'click', function () {
-            ajaxGet(url, function (response) {
-                if (response !== 'false') {
-                    let nodeToRemove = arrBtnConfirmDelete[i].parentNode.parentNode.parentNode;
-                    blockComments.removeChild(nodeToRemove);
+// button show more comments
+const blockShowMoreComments = document.getElementById('showMoreComments');
+const btnShowMoreComments = document.querySelector('#showMoreComments > span');
+
+if (blockShowMoreComments !== null) {
+    const idElem = blockShowMoreComments.getAttribute('idElem');
+    const limitComments = parseInt(blockShowMoreComments.getAttribute('limitComments'));
+    const totalComments = parseInt(blockShowMoreComments.getAttribute('totalComments'));
+    let offsetComments = limitComments;
+
+
+    btnShowMoreComments.addEventListener(
+        'click', function() {
+            urlGetMoreComments = 'index.php?action=getCommentsFromPosts&idElem=' + idElem + '&limit=' + limitComments + '&offset=' + offsetComments;
+            ajaxGet(urlGetMoreComments, function(response) {
+                if (response.length > 0 && response !== 'false') {
+                    response = JSON.parse(response);
+                    response.forEach(comment => {
+                        displayComment(comment);
+                    });
+
+                    offsetComments += limitComments;
+
+                    if (offsetComments >= totalComments) {
+                        blockShowMoreComments.style.display = "none";
+                    }
                 }
             });
         }

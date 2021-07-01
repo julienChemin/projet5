@@ -552,6 +552,7 @@ footer{
     min-height: 20vh;
     background-color: #161617;
     padding: 20px 0px;
+    border-top: solid 1px #262627;
 }
 footer section{
     width: 85%

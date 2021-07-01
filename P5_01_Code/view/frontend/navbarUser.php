@@ -95,6 +95,19 @@
                                 Forum<i class="fas fa-door-open"></i>
                             </a>
                         </li>
+
+                        <hr>
+                        <li title="Voir mon CV">
+                            <a href="index.php?action=cv&userId=<?=$_SESSION['id']?>">
+                                CV<i class="fas fa-portrait"></i>
+                            </a>
+                        </li>
+
+                        <li title="Voir mon portfolio">
+                            <a href="index.php?action=portfolio&userId=<?=$_SESSION['id']?>">
+                                Portfolio<i class="fas fa-th"></i>
+                            </a>
+                        </li>
                         <?php
                     }
                     ?>

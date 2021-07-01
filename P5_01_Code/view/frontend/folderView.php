@@ -110,7 +110,15 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
             <form id="addComment">
                 <?php
                 if (!empty($user)) {
+                    if ($user->getIsAdmin() || $user->getIsModerator()) {
+                        $userColor = '#de522f';
+                    } elseif ($user->getSchool() !== NO_SCHOOL) {
+                        $userColor = '#CF8B3F';
+                    } else {
+                        $userColor = '#b0a396';
+                    }
                     ?>
+                    <input type="hidden" name="userColor" value="<?=$userColor?>">
                     <input type="hidden" name="userId" value="<?=$user->getId()?>">
                     <input type="hidden" name="userName" value="<?=$user->getFirstName()?> <?=$user->getLastName()?>">
                     <input type="hidden" name="userPicture" value="<?=$user->getProfilePicture()?>">
@@ -160,6 +168,14 @@ $userIsModerator = $data['userInfo']['userIsModerator'];
                                 ?>
                             </div>
                         </div>
+                        <?php
+                    }
+
+                    if ($data['totalComments'] > $data['limitComments']) {
+                        ?>
+                        <p id="showMoreComments" class="fullWidth" idElem="<?=$post->getId()?>" limitComments="<?=$data['limitComments']?>" totalComments="<?=$data['totalComments']?>">
+                            <span>Afficher plus de commentaires</span>
+                        </p>
                         <?php
                     }
                 } else {

@@ -312,14 +312,16 @@ class Frontend extends Controller
                 $groupPosts = $GroupedPostsManager->getGroupedPosts($post->getId());
             }
             // get comments from this post
-            $comments = $CommentsManager->getFromPost($_GET['id']);
+            $amountDisplayedComments = 10;
+            $totalComments = $CommentsManager->getCountComments($_GET['id']);
+            $comments = $CommentsManager->getFromPost($_GET['id'], $amountDisplayedComments);
             if ($PostsManager->userCanSeePost($user, $post)) {
                 $asidePosts = $PostsManager->getAsidePosts($post, new TagsManager());
                 $UserManager->exists($post->getIdAuthor()) ? $author = $UserManager->getOneById($post->getIdAuthor()) : $author = null;
                 if ($post->getIsPrivate()) {
-                    $this->privatePost($post, $comments, $groupPosts, $asidePosts, $user, $author);
+                    $this->privatePost($post, $comments, $groupPosts, $asidePosts, $user, $author, $amountDisplayedComments, $totalComments);
                 } else {
-                    $this->publicPost($post, $comments, $groupPosts, $asidePosts, $user, $author);
+                    $this->publicPost($post, $comments, $groupPosts, $asidePosts, $user, $author, $amountDisplayedComments, $totalComments);
                 }
             } else {
                 $this->accessDenied();
@@ -918,6 +920,89 @@ class Frontend extends Controller
         }
     }
 
+    public function cv()
+    {
+        $UserManager = new UserManager();
+
+        if (!empty($_GET['userId']) && $cvOwner = $UserManager->getOneById($_GET['userId'])) {
+            $SchoolManager = new SchoolManager();
+            $cvOwnerSchool = $SchoolManager->getSchoolByName($cvOwner->getSchool());
+
+            if (!$cvOwner->getIsAdmin() && !$cvOwner->getIsModerator() && $cvOwner->getIsActive() 
+            && $cvOwnerSchool->getName() !== NO_SCHOOL && $cvOwnerSchool->getIsActive()) {
+                $CvManager = new CvManager();
+                if (!$CvManager->userHaveCv($cvOwner->getId())) {
+                    $CvManager->setupDefaultCv($cvOwner);
+                }
+
+                //get cv info
+                $cvInfo = $CvManager->getCv($cvOwner->getId());
+                
+                RenderView::render('template.php', 'frontend/cvView.php',
+                    [
+                        'cvOwner' => $cvOwner, 'cvOwnerSchool' => $cvOwnerSchool, 'cvInfo' => $cvInfo
+                    ]
+                );
+            } else {
+                $this->incorrectInformation();
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
+    public function editCv()
+    {
+        $UserManager = new UserManager();
+
+        if (!empty($_SESSION['id'])) {
+            if (!empty($_GET['userId']) && $_SESSION['school'] === ALL_SCHOOL) {
+                // webM access to user cv
+                $cvOwner = $UserManager->getOneById($_GET['userId']);
+            } else {
+                $cvOwner = $UserManager->getOneById($_SESSION['id']);
+            }
+
+            if (!$cvOwner->getIsAdmin() && !$cvOwner->getIsModerator() && $cvOwner->getIsActive()) {
+                $SchoolManager = new SchoolManager();
+                $cvOwnerSchool = $SchoolManager->getSchoolByName($cvOwner->getSchool());
+
+                if ($cvOwnerSchool->getName() !== NO_SCHOOL && $cvOwnerSchool->getIsActive()) {
+                    $CvManager = new CvManager();
+                    if (!$CvManager->userHaveCv($cvOwner->getId())) {
+                        $CvManager->setupDefaultCv($cvOwner);
+                    }
+
+                    //get cv info
+                    $cvInfo = $CvManager->getCv($cvOwner->getId());
+
+                    RenderView::render('template.php', 'frontend/editCvView.php',
+                        [
+                            'cvOwner' => $cvOwner, 'cvOwnerSchool' => $cvOwnerSchool, 'cvInfo' => $cvInfo, 
+                            'option' => ['editCv']
+                        ]
+                    );
+                } else {
+                    $this->incorrectInformation();
+                }
+            } else {
+                $this->incorrectInformation();
+            }
+        } else {
+            $this->incorrectInformation();
+        }
+    }
+
+    public function portfolio()
+    {
+        
+    }
+
+    public function editPortfolio()
+    {
+        
+    }
+
     /*-------------------------------------------------------------------------------------
     ----------------------------------- FUNCTION AJAX ------------------------------------
     -------------------------------------------------------------------------------------*/
@@ -1109,7 +1194,7 @@ class Frontend extends Controller
     {
         $CommentsManager = new CommentsManager();
         $PostsManager = new PostsManager();
-        if (isset($_GET['id'], $_SESSION['id']) && $comment = $CommentsManager->getOneById($_GET['id'])) {
+        if (isset($_GET['id'], $_SESSION['id']) && $comment = $CommentsManager->getOneById(intval($_GET['id']))) {
             $post = $PostsManager->getOneById($comment->getIdPost());
             if ($post && ($post->getIdAuthor() === $_SESSION['id'] || $comment->getIdAuthor() === $_SESSION['id'] || $_SESSION['school'] === ALL_SCHOOL)) {
                 $CommentsManager->delete($comment->getId());
@@ -1119,6 +1204,17 @@ class Frontend extends Controller
             }
         } else {
 			echo 'false';
+        }
+    }
+
+    public function getCommentsFromPosts()
+    {
+        $CommentsManager = new CommentsManager();
+        if (!empty($_GET['idElem']) && !empty($_GET['limit']) && !empty($_GET['offset'])) {
+            $result = $CommentsManager->toArray($CommentsManager->getFromPost($_GET['idElem'], $_GET['limit'], $_GET['offset']));
+            echo json_encode($result);
+        } else {
+            echo 'false';
         }
     }
 
@@ -1433,7 +1529,7 @@ class Frontend extends Controller
     }
 
     /*------------------------------ post view ------------------------------*/
-    private function privatePost(Post $post, array $comments, array $groupPosts, array $asidePosts, User $user, User $author)
+    private function privatePost(Post $post, array $comments, array $groupPosts, array $asidePosts, User $user, User $author, int $amountDisplayedComments, int $totalComments)
     {
         if ($post->getFileType() === 'folder') {
             // consulting private folder
@@ -1450,7 +1546,8 @@ class Frontend extends Controller
                 'template.php', 'frontend/folderView.php', 
                 [
                     'post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'userSchool' => $userSchool, 'user' => $user, 'author' => $author, 
-                    'userInfo' => $userInfo, 'urlAddPostOnFolder' => $urlAddPostOnFolder, 'option' => ['folderView']
+                    'userInfo' => $userInfo, 'urlAddPostOnFolder' => $urlAddPostOnFolder, 'option' => ['folderView'], 
+                    'limitComments' => $amountDisplayedComments, 'totalComments' => $totalComments
                 ]
             );
         } else if ($post->getFileType() === 'compressed') {
@@ -1459,7 +1556,8 @@ class Frontend extends Controller
             RenderView::render(
                 'template.php', 'frontend/postView.php', 
                 [
-                    'post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 'fileInfo' => $fileInfo,
+                    'post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 'fileInfo' => $fileInfo, 
+                    'limitComments' => $amountDisplayedComments, 'totalComments' => $totalComments, 
                     'option' => ['postView']
                 ]
             );
@@ -1481,7 +1579,8 @@ class Frontend extends Controller
                 'template.php', 'frontend/postView.php', 
                 [
                     'post' => $post, 'comments' => $comments, 'groupPosts' => $groupPosts, 'groupPostsInfo' => $groupPostsInfo, 
-                    'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 'option' => ['postView']
+                    'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 'option' => ['postView'], 
+                    'limitComments' => $amountDisplayedComments, 'totalComments' => $totalComments
                 ]
             );
         }
@@ -1535,7 +1634,7 @@ class Frontend extends Controller
         return 'cannotReadRar';
     }
 
-    private function publicPost(Post $post, array $comments, array $groupPosts, array $asidePosts, $user, User $author)
+    private function publicPost(Post $post, array $comments, array $groupPosts, array $asidePosts, $user, User $author, int $amountDisplayedComments, int $totalComments)
     {
         if ($post->getFileType() === 'folder') {
             // consulting public folder
@@ -1550,15 +1649,24 @@ class Frontend extends Controller
 
             RenderView::render(
                 'template.php', 'frontend/folderView.php', 
-                ['post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'userSchool' => $userSchool, 'user' => $user, 'author' => $author, 
-                    'userInfo' => $userInfo, 'urlAddPostOnFolder' => $urlAddPostOnFolder, 'option' => ['folderView']]
+                [
+                    'post' => $post, 'comments' => $comments, 'asidePosts' => $asidePosts, 'userSchool' => $userSchool, 'user' => $user, 
+                    'author' => $author, 'userInfo' => $userInfo, 'urlAddPostOnFolder' => $urlAddPostOnFolder, 
+                    'limitComments' => $amountDisplayedComments, 'totalComments' => $totalComments, 
+                    'option' => ['folderView']
+                ]
             );
         } else {
             //consulting public post
             RenderView::render(
                 'template.php', 'frontend/postView.php', 
-                ['post' => $post, 'comments' => $comments, 'groupPosts' => $groupPosts, 'asidePosts' => $asidePosts, 
-                'user' => $user, 'author' => $author, 'option' => ['postView']]);
+                [
+                    'post' => $post, 'comments' => $comments, 'groupPosts' => $groupPosts, 
+                    'asidePosts' => $asidePosts, 'user' => $user, 'author' => $author, 
+                    'limitComments' => $amountDisplayedComments, 'totalComments' => $totalComments, 
+                    'option' => ['postView']
+                ]
+            );
         }
     }
 

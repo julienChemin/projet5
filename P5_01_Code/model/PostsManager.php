@@ -565,21 +565,23 @@ class PostsManager extends LikeManager
 
     private function objectPostToArray(Post $post)
     {
-        $arr = ['id' => $post->getId(),
-        'idAuthor' => $post->getIdAuthor(), 
-        'idSchool' => $post->getIdSchool(), 
-        'title' => $post->getTitle(), 
-        'filePath' => $post->getFilePath(), 
-        'urlVideo' => $post->getUrlVideo(), 
-        'description' => $post->getDescription(), 
-        'datePublication' => $post->getDatePublication(), 
-        'isPrivate' => $post->getIsPrivate(), 
-        'authorizedGroups' => $post->getAuthorizedGroups(), 
-        'listAuthorizedGroups' => $post->getListAuthorizedGroups(), 
-        'postType' => $post->getPostType(), 
-        'fileType' => $post->getFileType(), 
-        'onFolder' => $post->getOnFolder(),
-        'listTags' => $post->getListTags()];
+        $arr = [
+            'id' => $post->getId(),
+            'idAuthor' => $post->getIdAuthor(), 
+            'idSchool' => $post->getIdSchool(), 
+            'title' => $post->getTitle(), 
+            'filePath' => $post->getFilePath(), 
+            'urlVideo' => $post->getUrlVideo(), 
+            'description' => $post->getDescription(), 
+            'datePublication' => $post->getDatePublication(), 
+            'isPrivate' => $post->getIsPrivate(), 
+            'authorizedGroups' => $post->getAuthorizedGroups(), 
+            'listAuthorizedGroups' => $post->getListAuthorizedGroups(), 
+            'postType' => $post->getPostType(), 
+            'fileType' => $post->getFileType(), 
+            'onFolder' => $post->getOnFolder(),
+            'listTags' => $post->getListTags()
+        ];
         return $arr;
     }
 

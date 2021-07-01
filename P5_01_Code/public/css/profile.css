@@ -415,7 +415,7 @@ a[class="iconeEdit"]{
     justify-content: flex-start;
     align-items: center;
     flex-wrap: wrap;
-    border-radius: 10px;
+    border-radius: 3px;
 }
 .folder > .post, .folder > .folder{
     width: 0%;
