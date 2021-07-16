@@ -6,18 +6,23 @@ $cvInfo = $data['cvInfo'];
 
 <article id="cv" class="defaultCv">
     <?php
-    $classesNavbar = $cvInfo['info']->getDisplayNavbar() ? "" : "hide ";
-
-    echo '<nav id="navbarCv" class="' . $classesNavbar . ' hideUnder600Width">';
+    echo '<nav id="navbarCv">';
         echo '<ul class="container">';
-        foreach ($cvInfo['sections'] as $section) {
-            $classesSection = $section->getLinkInNavbar() ? "" : "hide";
-
-            echo '<li class="' . $classesSection . '"><a href="#' . $section->getName() . '">' . $section->getName() . '</a></li>';
+        if ($cvInfo['sections'] && count($cvInfo['sections']) > 0) {
+            foreach ($cvInfo['sections'] as $section) {
+                $classesSection = $section->getLinkInNavbar() ? "" : "hide";
+    
+                echo '<li class="' . $classesSection . '"><a href="#' . $section->getName() . '">' . $section->getName() . '</a></li>';
+            }
         }
         echo '</ul>';
 
-        echo '<span class="container"><a href="index.php?action=editCv">Cliquez ici pour éditer votre CV</a></span>';
+        if (!empty($_SESSION['id']) && ($_SESSION['id'] == $cvOwner->getId() || $_SESSION['school'] === ALL_SCHOOL)) {
+            $infoLink = $_SESSION['school'] === ALL_SCHOOL ? "&idUser=" . $cvOwner->getId() : "";
+            echo '<span class="container"><a href="index.php?action=editCv' . $infoLink . '">';
+            echo '<i class="fas fa-pencil-alt"></i>';
+            echo '   Cliquez ici pour éditer votre CV</a></span>';
+        }
     echo '</nav>';
 
     if ($cvInfo['sections'] && count($cvInfo['sections']) > 0) {
@@ -33,8 +38,8 @@ $cvInfo = $data['cvInfo'];
             }
             ?>
 
-            <<?=$sectionType?> id="<?=$section->getName()?>" style="<?=$section->getSectionStyle()?>">
-                <div class="container <?=$section->getSectionClasses()?>">
+            <<?=$sectionType?> id="anchor<?=$section->getName()?>" class="cvSection" style="<?=$section->getSectionStyle()?>">
+                <div class="container <?=$section->getSectionClasses()?>" style="min-height:<?=$section->getHeightValue()?>;">
                     <?php
                     if ($cvInfo['blocks'][$section->getId()] && count($cvInfo['blocks'][$section->getId()]) > 0) {
                         foreach ($cvInfo['blocks'][$section->getId()] as $block) {

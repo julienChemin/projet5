@@ -5,7 +5,6 @@ class Cv
     private $id, 
         $idUser, 
         $isOnline, 
-        $displayNavbar,  
         $shortLink;
 
     public function __construct(array $data = null)
@@ -41,11 +40,6 @@ class Cv
         return boolval($this->isOnline);
     }
 
-    public function getDisplayNavbar()
-    {
-        return boolval($this->displayNavbar);
-    }
-
     public function getShortLink()
     {
         return $this->shortLink;
@@ -71,12 +65,6 @@ class Cv
     public function setIsOnline(bool $isOnline)
     {
         $this->isOnline = $isOnline;
-        return $this;
-    }
-
-    public function setDisplayNavbar(bool $displayNavbar)
-    {
-        $this->displayNavbar = $displayNavbar;
         return $this;
     }
 

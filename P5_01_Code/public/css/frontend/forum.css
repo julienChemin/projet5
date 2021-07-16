@@ -6,6 +6,16 @@
 #forum h1{
     margin-bottom: 15px;
 }
+#forum #blockSchools > a{
+    height: 250px;
+}
+#forum #blockSchools > a > div > div:first-of-type{
+    height: 75%;
+}
+#forum #blockSchools > a > div > div:nth-of-type(2){
+    height: 25%;
+    overflow: hidden;
+}
 .manageForumLink{
     padding: 5px;
     margin-bottom: 10px;

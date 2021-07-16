@@ -6,7 +6,7 @@ class CvManager extends CvSectionManager
 {
     public static $CV_OBJECT_TYPE = 'Chemin\ArtSchools\Model\Cv';
     public static $CV_TABLE_NAME = 'as_cv';
-    public static $CV_TABLE_CHAMPS = 'id, idUser, isOnline, displayNavbar, shortLink';
+    public static $CV_TABLE_CHAMPS = 'id, idUser, isOnline, shortLink';
 
     public function getCv(int $idUser = 0)
     {
@@ -24,9 +24,24 @@ class CvManager extends CvSectionManager
         }
     }
 
+    public function getCvInfo(int $idUser)
+    {
+        $q = $this->sql(
+            'SELECT ' . static::$CV_TABLE_CHAMPS . ' 
+            FROM ' . static::$CV_TABLE_NAME . ' 
+            WHERE idUser = :idUser', 
+            [':idUser' => $idUser]
+        );
+
+        $result = $q->fetchObject(static::$CV_OBJECT_TYPE);
+        $q->closeCursor();
+
+        return $result;
+    }
+
     public function updateCv(int $idUser, string $elem = null, $value, bool $isBool = false)
     {
-        if ($elem && str_contains(static::$CV_TABLE_CHAMPS, $elem)) {
+        if ($elem && strpos(static::$CV_TABLE_CHAMPS, $elem) !== false) {
             if ($isBool) {
                 $this->sql(
                     'UPDATE ' . static::$CV_TABLE_NAME . ' 
@@ -72,8 +87,8 @@ class CvManager extends CvSectionManager
         $idNewHeader = $this->setSection($user->getId(), 'en-tête', true, '90vh', 'center', 'between', $user->getProfileBanner());
 
         $headerContent = '<h1>' . $user->getLastName() . ' ' . $user->getFirstName() . '</h1>
-            <p>Personnalisez votre CV en ouvrant <span style="color:#CF8B3F">le menu <i class="fas fa-pencil-alt"></i> à droite</span></p>
-            <p>N\'oubliez pas de définir une adresse dans vos <a href="index.php?action=settings">paramètres</a>, sinon votre CV ne sera pas visible.</p>';
+            <p>Personnalisez votre CV en ouvrant <span style="color:#CF8B3F">le menu <i class="fas fa-pencil-alt"></i> dans la barre de navigation en haut</span></p>
+            <p>N\'oubliez pas de définir une adresse dans vos <a href="index.php?action=settings">paramètres</a>, sinon votre CV ne sera pas visible</p>';
         $this->setBlock($idNewHeader, $user->getId(), $headerContent, 'medium', '22, 22, 23', 0.8, null, null, 5);
 
         // section 1
@@ -145,21 +160,6 @@ class CvManager extends CvSectionManager
         );
 
         return $this->getLastInsertId();
-    }
-
-    private function getCvInfo(int $idUser)
-    {
-        $q = $this->sql(
-            'SELECT ' . static::$CV_TABLE_CHAMPS . ' 
-            FROM ' . static::$CV_TABLE_NAME . ' 
-            WHERE idUser = :idUser', 
-            [':idUser' => $idUser]
-        );
-
-        $result = $q->fetchObject(static::$CV_OBJECT_TYPE);
-        $q->closeCursor();
-
-        return $result;
     }
 
     private function deleteCvInfo(int $idUser)

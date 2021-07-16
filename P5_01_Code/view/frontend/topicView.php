@@ -23,12 +23,18 @@ $user = $data['user'];
     <div class="container usefullLink">
         <p class="linkHomeForum hideUnder600Width">
             <a href="index.php?action=forum&school=<?=$data['school']->getName()?>">
-                <i class="fas fa-door-open"></i>Accueil du forum
+                <i class="fas fa-door-open"></i>    Accueil du forum
             </a>
 
-            <a href="indexAdmin.php?action=manageForum&school=<?=$data['school']->getName()?>">
-                <i class="fas fa-pencil-alt"></i>   Gérer le forum
-            </a>
+            <?php
+            if ($user->getIsAdmin() || $user->getIsModerator()) {
+                ?>
+                <a href="indexAdmin.php?action=manageForum&school=<?=$data['school']->getName()?>">
+                    <i class="fas fa-pencil-alt"></i>    Gérer le forum
+                </a>
+                <?php
+            }
+            ?>
         </p>
     </div>
 

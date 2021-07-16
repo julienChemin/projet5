@@ -543,7 +543,7 @@ tr:nth-child(2n + 1){
 /* --------------------------------------------------------- */
 /* ------------------------ FOOTER ------------------------ */
 /* ------------------------------------------------------- */
-footer{
+main + footer{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -554,23 +554,23 @@ footer{
     padding: 20px 0px;
     border-top: solid 1px #262627;
 }
-footer section{
+main + footer section{
     width: 85%
 }
-footer section > div{
+main + footer section > div{
     display: flex;
     justify-content: center;
     align-items: flex-start;
     width: 100%;
 }
-footer article{
+main + footer article{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
     width: 30%;
 }
-footer ul{
+main + footer ul{
     list-style: none;
 }
 #linksList a{
@@ -699,10 +699,10 @@ footer ul{
     }
 
     /*------------- FOOTER -------------*/
-    footer section > div{
+    main + footer section > div{
         flex-direction: column;
     }
-    footer article{
+    main + footer article{
         width: 100%;
     }
     .hrFooter{
@@ -793,10 +793,10 @@ footer ul{
     }
 
     /* ------------------------ FOOTER ------------------------ */
-    footer section > div{
+    main + footer section > div{
         flex-direction: column;
     }
-    footer article{
+    main + footer article{
         width: 100%;
     }
     .hrFooter{
@@ -941,13 +941,13 @@ footer ul{
     }
 
     /* ------------------------ FOOTER ------------------------ */
-    footer section > div{
+    main + footer section > div{
         flex-direction: column;
     }
-    footer article{
+    main + footer article{
         width: 100%;
     }
-    footer h3{
+    main + footer h3{
         font-size: 1.3em;
     }
     .hrFooter{
@@ -961,7 +961,7 @@ footer ul{
         font-size: 1.2em;
         margin-top: 5px;
     }
-    footer article:nth-of-type(2) > p{
+    main + footer article:nth-of-type(2) > p{
         font-size: 1.3em;
     }
     #contact h3 {

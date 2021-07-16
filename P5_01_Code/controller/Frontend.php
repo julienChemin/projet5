@@ -7,9 +7,11 @@ class Frontend extends Controller
     public static $SIDE = 'frontend';
     public static $INDEX = 'index.php';
 
-    /*-------------------------------------------------------------------------------------
+    /*--------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------
     ----------------------------------- FUNCTION PUBLIC ------------------------------------
-    -------------------------------------------------------------------------------------*/
+    ----------------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------------*/
 
     public function verifyInformation()
     {
@@ -940,7 +942,8 @@ class Frontend extends Controller
                 
                 RenderView::render('template.php', 'frontend/cvView.php',
                     [
-                        'cvOwner' => $cvOwner, 'cvOwnerSchool' => $cvOwnerSchool, 'cvInfo' => $cvInfo
+                        'cvOwner' => $cvOwner, 'cvOwnerSchool' => $cvOwnerSchool, 
+                        'cvInfo' => $cvInfo
                     ]
                 );
             } else {
@@ -993,18 +996,38 @@ class Frontend extends Controller
         }
     }
 
-    public function portfolio()
+    public function DeleteSection()
+    {
+        if (!empty($_SESSION['id']) && !empty($_GET['ownerId']) && !empty($_GET['sectionId']) 
+        && ($_SESSION['id'] == $_GET['ownerId'] || $_SESSION['school'] === ALL_SCHOOL)) {
+            $CvManager = new CvManager();
+            $section = $CvManager->getSection($_GET['sectionId'], false);
+
+            if ($section && $section->getIdAuthor() == $_GET['ownerId']) {
+                $CvManager->deleteSection($section);
+                header('Location: index.php?action=editCv&userId=' . $section->getIdAuthor());
+            } else {
+                $this->accessDenied();
+            }
+        } else {
+            $this->accessDenied();
+        }
+    }
+
+    public function portfolio()//TODO
     {
         
     }
 
-    public function editPortfolio()
+    public function editPortfolio()//TODO
     {
         
     }
 
     /*-------------------------------------------------------------------------------------
-    ----------------------------------- FUNCTION AJAX ------------------------------------
+    ---------------------------------------------------------------------------------------
+    ----------------------------------- FUNCTION AJAX -------------------------------------
+    ---------------------------------------------------------------------------------------
     -------------------------------------------------------------------------------------*/
     public function getTags()
     {
@@ -1294,8 +1317,118 @@ class Frontend extends Controller
         }
     }
 
+    public function updateCv()
+    {
+        if (!$this->checkForScriptInsertion($_POST) || empty($_POST['sectionId'])) {
+            echo 'false';
+            return;
+        }
+
+        $UserManager = new UserManager();
+        $user = $UserManager->getOneById($_SESSION['id']);
+        if (!$user || !$user->getIsActive()) {
+            echo 'false';
+            return;
+        }
+
+        $CvManager = new CvManager();
+        $cvSection = $CvManager->getSection($_POST['sectionId'], false);
+        if ($user->getId() !== $cvSection->getIdAuthor() && $_SESSION['school'] !== ALL_SCHOOL) {
+            echo 'false';
+            return;
+        }
+
+        if (!$CvManager->updateWholeSection($cvSection, $_POST)) {
+            echo 'false';
+            return;
+        }
+
+        echo 'true';
+    }
+
+    public function addNewSection()
+    {
+        if (!empty($_SESSION['id']) && !empty($_GET['ownerId']) 
+        && ($_SESSION['id'] == $_GET['ownerId'] || $_SESSION['school'] === ALL_SCHOOL)) {
+            $CvManager = new CvManager();
+            $order = $CvManager->getCountSections(intval($_GET['ownerId']));
+
+            if ($order < 15) {
+                $idNewSection = $CvManager->setSection(
+                    intval($_GET['ownerId']), 'section ' . (intval($order) + 1), true
+                );
+    
+                if ($order && $idNewSection) {
+                    echo json_encode(['order' => $order, 'idSection' => $idNewSection]);
+                } else {
+                    echo 'false';
+                }
+            } else {
+                echo 'false';
+            }
+        } else {
+            echo 'false';
+        }
+    }
+
+    public function changeSectionOrder()
+    {
+        $acceptedValue = ['up', 'down'];
+
+        if (!empty($_SESSION['id']) && !empty($_GET['ownerId']) && !empty($_GET['value']) 
+        && in_array($_GET['value'], $acceptedValue) && !empty($_GET['currentOrder'])
+        && ($_SESSION['id'] == $_GET['ownerId'] || $_SESSION['school'] === ALL_SCHOOL)) {
+            $CvManager = new CvManager();
+
+            echo $CvManager->changeSectionOrder($_GET['value'], intval($_SESSION['id']), intval($_GET['currentOrder']));
+        } else {
+            echo 'false';
+        }
+    }
+
+    public function updateCvBlock()//TODO
+    {
+        if (!$this->checkForScriptInsertion($_POST) || empty($_GET['elem']) || empty($_POST['elemValue']) || empty($_POST['elemId'])) {
+            echo 'false';
+            return;
+        }
+
+        $UserManager = new UserManager();
+        $user = $UserManager->getOneById($_SESSION['id']);
+
+        if (!$user || !$user->getIsActive()) {
+            echo 'false';
+            return;
+        }
+
+        $CvManager = new CvManager();
+        $cvBlock = $CvManager->getBlock($_POST['elemId']);
+
+        if ($user->getId() !== $cvBlock->getIdAuthor() && $_SESSION['school'] !== ALL_SCHOOL) {
+            echo 'false';
+            return;
+        }
+
+        if (!empty($_POST['isBool']) && $_POST['isBool'] === 'true') {
+            $isBool = true;
+            $elemValue = $_POST['elemValue'] === 'true' ? true : false;
+        } else {
+            $isBool = false;
+            $elemValue = $_POST['elemValue'];
+        }
+
+        if (!$CvManager->updateBlock($cvBlock->getId(), $_GET['elem'], $elemValue, $isBool)) {
+            echo 'false';
+            return;
+        }
+
+        echo 'true';
+    }
+
     /*-------------------------------------------------------------------------------------
-    ----------------------------------- FUNCTION PRIVATE ------------------------------------
+    ---------------------------------------------------------------------------------------
+    ----------------------------------- FUNCTION PRIVATE ----------------------------------
+    ---------------------------------------------------------------------------------------
     -------------------------------------------------------------------------------------*/
 
     /*------------------------------ images upload ------------------------------*/

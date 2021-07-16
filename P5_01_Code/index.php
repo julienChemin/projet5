@@ -244,6 +244,10 @@ try {
                 $Frontend->editCv();
             break;
 
+            case 'deleteSection' :
+                $Frontend->deleteSection();
+            break;
+
             case 'portfolio' :
                 $Frontend->portfolio();
             break;
@@ -258,6 +262,22 @@ try {
 
             case 'toggleTopicIsPinned' :
                 $Frontend->toggleTopicIsPinned();
+            break;
+
+            case 'updateCv' :
+                $Frontend->updateCv();
+            break;
+
+            case 'addNewSection' :
+                $Frontend->addNewSection();
+            break;
+
+            case 'changeSectionOrder' :
+                $Frontend->changeSectionOrder();
+            break;
+
+            case 'updateCvBlock' :
+                $Frontend->updateCvBlock();
             break;
 
             default :

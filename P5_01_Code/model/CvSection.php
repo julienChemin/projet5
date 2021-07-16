@@ -194,15 +194,15 @@ class CvSection
             $sectionStyle = 'order: ' . $sectionOrder . ';';
 
             if ($this->getBackgroundCover() !== null) {
-                $sectionStyle .= ' background-image: url(' . $this->getBackgroundCover() . ');';
+                $sectionStyle .= 'background-image: url(' . $this->getBackgroundCover() . ');';
             }
 
             if ($this->getHeightValue() !== null) {
-                $sectionStyle .= ' height: ' . $this->getHeightValue() . ';';
+                $sectionStyle .= 'min-height: ' . $this->getHeightValue() . ';';
             }
 
             if ($this->getBackgroundFixed()) {
-                $sectionStyle .= ' background-attachment: fixed;';
+                $sectionStyle .= 'background-attachment: fixed;';
             }
 
             $this->sectionStyle = $sectionStyle;

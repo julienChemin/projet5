@@ -10,6 +10,21 @@ class CvBlockManager extends AbstractManager
         blockBackgroundColor, blockOpacity, blockBorderWidth, blockBorderColor, blockBorderRadius';
     public static $TABLE_PK = 'id';
 
+    public function getBlock(int $idBlock)
+    {
+        $q = $this->sql(
+            'SELECT ' . static::$BLOCK_TABLE_CHAMPS . ' 
+            FROM ' . static::$BLOCK_TABLE_NAME . ' 
+            WHERE id = :idBlock', 
+            [':idBlock' => $idBlock]
+        );
+
+        $result = $q->fetchObject(static::$BLOCK_OBJECT_TYPE);
+        $q->closeCursor();
+
+        return $result;
+    }
+
     public function getBlocks(int $idSection)
     {
         if ($idSection > 0) {
@@ -59,7 +74,7 @@ class CvBlockManager extends AbstractManager
 
     public function updateBlock(int $idBlock, string $elem = null, $value, bool $isBool = false)
     {
-        if ($elem && str_contains(static::$BLOCK_TABLE_CHAMPS, $elem)) {
+        if ($elem && strpos(static::$BLOCK_TABLE_CHAMPS, $elem) !== false) {
             if ($isBool) {
                 $this->sql(
                     'UPDATE ' . static::$BLOCK_TABLE_NAME . ' 

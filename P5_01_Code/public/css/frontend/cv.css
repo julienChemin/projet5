@@ -1,3 +1,9 @@
+.green{
+    color: green;
+}
+.red{
+    color: red;
+}
 .horizontalAlignLeft{
     justify-content: flex-start;
 }
@@ -13,13 +19,13 @@
 .horizontalAlignRight{
     justify-content: flex-end;
 }
-.verticalAlignLeft{
+.verticalAlignTop{
     align-items: flex-start;
 }
 .verticalAlignCenter{
     align-items: center;
 }
-.verticalAlignRight{
+.verticalAlignBottom{
     align-items: flex-end;
 }
 .blockSmall{
@@ -42,6 +48,9 @@
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column;
+}
+#cv #menuEditNavbar, #cv #navbarCv{
+    padding: 0;
 }
 
 /* navbar cv */
@@ -83,10 +92,14 @@
 #cv > *, #editCv > *{
     width: 100%;
     min-height: min-content;
-    padding: 0 0 10px 0;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
+    overflow: hidden;
+}
+#cv .cvSection, #editCv .cvSection{
+    min-height: 5vh;
+    height: auto;
 }
 #cv > * > div, #editCv > * > div{
     width: 100%;
@@ -106,4 +119,49 @@
 }
 .cvBlock ul li{
     list-style-type: none;
+}
+
+/*====================================================================================================================================
+                                                            medium device
+====================================================================================================================================*/
+
+@media all and (min-width:768px) and (max-width:992px) {
+    #navbarCv{
+        font-size: 0.8em;
+    }
+}
+
+/*====================================================================================================================================
+                                                            small device
+====================================================================================================================================*/
+
+@media all and (min-width:600px) and (max-width:768px) {
+    #navbarCv{
+        font-size: 0.7em;
+    }
+}
+
+/*====================================================================================================================================
+                                                            smartphone
+====================================================================================================================================*/
+
+@media all and (max-width:600px) {
+    .blockSmall{
+        min-width: 45%;
+        max-width: 45%;
+    }
+    .blockMedium{
+        min-width: 70%;
+        max-width: 70%;
+    }
+    .blockLarge{
+        min-width: 90%;
+        max-width: 90%;
+    }
+    #navbarCv{
+        font-size: 0.7em;
+    }
+    #navbarCv > ul li{
+        margin: 3px 6px;
+    }
 }

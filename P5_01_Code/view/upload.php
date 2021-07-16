@@ -2,8 +2,12 @@
 
 reset($_FILES);
 $temp = current($_FILES);
-$imageFolder = "public/images/dl/";
-$relative_path = "public/images/dl/";
+
+if (!isset($imageFolder)) {
+    $imageFolder = "public/images/dl/";
+    $relative_path = "public/images/dl/";
+}
+
 $maxFileSize = 6000000;
 $fileSize = $temp['size'];
 
@@ -21,7 +25,11 @@ if (is_uploaded_file($temp['tmp_name']) && $fileSize < $maxFileSize) {
     $final_path = $relative_path . $fileName;
     move_uploaded_file($temp['tmp_name'], $filetowrite);
   
-    echo json_encode(array('location' => $final_path));
-} else {
+    if (!isset($ajax)) {
+        echo json_encode(array('location' => $final_path));
+    }
+} else if (!isset($ajax)) {
     header("HTTP/1.1 500 Server Error");
+} else {
+    return false;
 }

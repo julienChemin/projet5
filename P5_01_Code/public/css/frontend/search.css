@@ -395,6 +395,19 @@
     background-color: #161617;
     padding: 15px 0;
 }
+#listSchoolsView #blockSchools > div{
+    height: 250px;
+}
+#listSchoolsView #blockSchools > div > div > div:first-of-type{
+    height: 75%;
+}
+#listSchoolsView #blockSchools > div > div > div:nth-of-type(2){
+    height: 25%;
+    overflow: hidden;
+}
+#listSchoolsView #blockSchools > div > div > div:nth-of-type(2) > h2{
+    margin: 10px auto;
+}
 #schoolInformation{
     display: none;
 }

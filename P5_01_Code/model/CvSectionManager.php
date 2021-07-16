@@ -58,7 +58,7 @@ class CvSectionManager extends CvBlockManager
 
     public function updateSection(int $idSection, string $elem = null, $value, bool $isBool = false)
     {
-        if ($elem && str_contains(static::$SECTION_TABLE_CHAMPS, $elem)) {
+        if ($elem && strpos(static::$SECTION_TABLE_CHAMPS, $elem) !== false) {
             if ($isBool) {
                 $this->sql(
                     'UPDATE ' . static::$SECTION_TABLE_NAME . ' 
@@ -81,7 +81,85 @@ class CvSectionManager extends CvBlockManager
         }
     }
 
-    public function changSectionOrder(string $direction, int $idUser, int $currentOrder)
+    public function updateWholeSection(CvSection $section, array $values)
+    {
+        // update name
+        if (!empty($values['name']) && !empty(trim($values['name']))) {
+            if (!$this->updateSection($section->getId(), 'name', trim($values['name']))) {
+                return false;
+            }
+        }
+
+        // update bool linkInNavbar
+        if (!empty($values['linkInNavbar'])) {
+            $value = $values['linkInNavbar'] === 'true' ? true : false;
+            if (!$this->updateSection($section->getId(), 'linkInNavbar', $value, true)) {
+                return false;
+            }
+        }
+
+        // update background cover
+        if (isset($values['displayCover']) && $values['displayCover'] === 'false') {
+            if ($section->getbackgroundCover() !== null && strpos($section->getBackgroundCover(), 'images/cv/') !== false) {
+                $this->deleteFile($this->extractFilePath([$section->getbackgroundCover()])[0]);
+            }
+
+            if (!$this->updateSection($section->getId(), 'backgroundCover', null)) {
+                return false;
+            }
+        } else if (!empty($values['backgroundCover'])) {
+            if ($section->getbackgroundCover() !== null && strpos($section->getBackgroundCover(), 'images/cv/') !== false) {
+                $this->deleteFile($this->extractFilePath([$section->getbackgroundCover()])[0]);
+            }
+
+            $imageFolder = "public/images/cv/";
+            $relative_path = "public/images/cv/";
+            $ajax = true;
+            $arrAcceptedExtention = array("jpeg", "jpg", 'jfif', "png", "gif");
+            require 'view/upload.php';
+
+            if (empty($final_path) || !$this->updateSection($section->getId(), 'backgroundCover', $final_path)) {
+                return false;
+            }
+        }
+
+        // update bool backgroundFixed
+        if (!empty($values['backgroundFixed'])) {
+            $value = $values['backgroundFixed'] === 'true' ? true : false;
+            if (!$this->updateSection($section->getId(), 'backgroundFixed', $value, true)) {
+                return false;
+            }
+        }
+
+        // update height value
+        if (!empty($values['heightAuto']) && $values['heightAuto'] === 'true') {
+            if (!$this->updateSection($section->getId(), 'heightValue', null)) {
+                return false;
+            }
+        } else if (!empty($values['heightValue'])) {
+            if (!$this->updateSection($section->getId(), 'heightValue', $values['heightValue'])) {
+                return false;
+            }
+        }
+
+        // update horizontalAlign
+        if (!empty($values['horizontalAlign'])) {
+            if (!$this->updateSection($section->getId(), 'horizontalAlign', $values['horizontalAlign'])) {
+                return false;
+            }
+        }
+
+        // update verticalAlign
+        if (!empty($values['verticalAlign'])) {
+            if (!$this->updateSection($section->getId(), 'verticalAlign', $values['verticalAlign'])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function changeSectionOrder(string $direction, int $idUser, int $currentOrder)
     {
         switch ($direction) {
             case 'up':
@@ -97,7 +175,7 @@ class CvSectionManager extends CvBlockManager
         }
     }
 
-    public function deleteSection(CvSection $section, bool $deleteEntireCv = false)
+    public function deleteSection(CvSection $section, bool $deletingEntireCv = false)
     {
         // delete blocks on this section
         $blocks = $this->getBlocks($section->getId());
@@ -109,9 +187,9 @@ class CvSectionManager extends CvBlockManager
         }
 
         // delete image cover
-        if ($section->getBackgroundCover() !== null 
-        && !str_contains($section->getBackgroundCover(), 'images/dl/') && !str_contains($section->getBackgroundCover(), 'images/default_cv_banner')) {
-            $this->deleteFile($section->getBackgroundCover());
+        if ($section->getBackgroundCover() !== null && strpos($section->getBackgroundCover(), 'images/cv/') !== false) {
+            $filePath = $this->extractFilePath([$section->getBackgroundCover()])[0];
+            $this->deleteFile($filePath);
         }
 
         // delete section
@@ -121,7 +199,7 @@ class CvSectionManager extends CvBlockManager
             [':id' => $section->getId()]
         );
 
-        if (!$deleteEntireCv) {
+        if (!$deletingEntireCv) {
             // re-order section
             $sectionsAbove = $this->getSectionsAboveOrderX($section->getIdAuthor(), $section->getSectionOrder());
 
@@ -130,6 +208,27 @@ class CvSectionManager extends CvBlockManager
                     $this->sectionOrderDecrement($section->getId(), $section->getSectionOrder());
                 }
             }
+        }
+    }
+
+    public function getCountSections(int $idUser = null, bool $onlyWithLinkInNavbar = false)
+    {
+        if ($idUser) {
+            $clauseLinkInNavbar = $onlyWithLinkInNavbar ? " AND linkInNavbar = 1" : "";
+
+            $q = $this->sql(
+                'SELECT COUNT(*) 
+                FROM ' . static::$SECTION_TABLE_NAME . ' 
+                WHERE idAuthor = :idUser' . $clauseLinkInNavbar, 
+                [':idUser' => $idUser]
+            );
+
+            $result = $q->fetch();
+            $q->closeCursor();
+
+            return intval($result[0]);
+        } else {
+            return 0;
         }
     }
 
@@ -207,25 +306,6 @@ class CvSectionManager extends CvBlockManager
             $q->closeCursor();
     
             return $result;
-        }
-    }
-
-    protected function getCountSections(int $idUser = null)
-    {
-        if ($idUser) {
-            $q = $this->sql(
-                'SELECT COUNT(*) 
-                FROM ' . static::$SECTION_TABLE_NAME . ' 
-                WHERE idAuthor = :idUser', 
-                [':idUser' => $idUser]
-            );
-
-            $result = $q->fetch();
-            $q->closeCursor();
-
-            return intval($result[0]);
-        } else {
-            return 0;
         }
     }
 
