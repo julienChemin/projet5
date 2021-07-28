@@ -39,6 +39,21 @@ class CvManager extends CvSectionManager
         return $result;
     }
 
+    public function getCvInfoByShortLink(string $shortLink)
+    {
+        $q = $this->sql(
+            'SELECT ' . static::$CV_TABLE_CHAMPS . ' 
+            FROM ' . static::$CV_TABLE_NAME . ' 
+            WHERE shortLink = :shortLink', 
+            [':shortLink' => $shortLink]
+        );
+
+        $result = $q->fetchObject(static::$CV_OBJECT_TYPE);
+        $q->closeCursor();
+
+        return $result;
+    }
+
     public function updateCv(int $idUser, string $elem = null, $value, bool $isBool = false)
     {
         if ($elem && strpos(static::$CV_TABLE_CHAMPS, $elem) !== false) {
@@ -107,7 +122,7 @@ class CvManager extends CvSectionManager
             <p>Tu peux contrôler les éléments ou voir à travers les murs ? C\'est le moment d\'en parler !</p>';
         $this->setBlock($idSectionAbout, $user->getId(), $sectionAboutContentThree, 'small', '22, 22, 23', 1, 1, '38, 38, 39', 5);
 
-        $sectionAboutContentFour = '<div style="text-align:center;"></div><p>Tu peux décrire ton parcours scolaire</p><p>Si tu as déjà eu des expériences professionnelles parles-en !</p>
+        $sectionAboutContentFour = '<div style="text-align:center;"><p>Tu peux décrire ton parcours scolaire</p><p>Si tu as déjà eu des expériences professionnelles parles-en !</p>
             <p>N\'hésite pas à imager tout ça, mais ne soit pas dans l\'excès, un CV doit être claire, lisible, et les informations importantes doivent être mise en avant</p></div>';
         $this->setBlock($idSectionAbout, $user->getId(), $sectionAboutContentFour, 'large');
 
@@ -144,6 +159,15 @@ class CvManager extends CvSectionManager
             return true;
         } else {
             return false;
+        }
+    }
+
+    public function checkUpdatedElemContent($oldImgEntries = [], $newImgEntries = [])
+    {
+        for ($i = 0; $i < count($oldImgEntries); $i++) {
+            if (!in_array($oldImgEntries[$i], $newImgEntries)) {
+                $this->deleteFile($oldImgEntries[$i]);
+            }
         }
     }
 

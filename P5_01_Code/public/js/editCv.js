@@ -12,6 +12,29 @@ function ucFirst(string) {
     return string[0].toUpperCase() + string.substring(1);
 }
 
+// Source for functions hexToRgb and rgbToHex : 
+// https://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb
+function hexToRgb(hex) {
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    let shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+
+    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+        return r + r + g + g + b + b;
+    });
+  
+    let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+
 function nodeListToArray(nodeList) {
     let result = [];
     if (nodeList && nodeList.length > 0) {
@@ -22,12 +45,14 @@ function nodeListToArray(nodeList) {
     return result;
 }
 
+const ownerId = document.getElementById('editCv').getAttribute('ownerId');
 const blockSection = document.getElementById('editCv');
 let sections = nodeListToArray(document.querySelectorAll('.cvSection'));
+const blocks = nodeListToArray(document.querySelectorAll('.cvBlock'));
 const menuEditCv = document.getElementById('menuEditCv');
 const blockTabs = document.getElementById('tabsEditCv');
 const blockTabsContent = document.getElementById('contentTabsEditCv');
-const ownerId = document.getElementById('editCv').getAttribute('ownerId');
+const blocksTabsBlock = nodeListToArray(document.querySelectorAll('.tabEditBlock'));
 
 // menu edit cv - size and placement
 let navHeight = parseInt(document.getElementById('navbar').getBoundingClientRect().height);
@@ -66,6 +91,7 @@ const btnToggleMenu = document.getElementById('buttonToggleMenuEditCv');
 let tabs = nodeListToArray(document.querySelectorAll('.tabEditCv'));
 let tabsAreOpen = false;
 let focusedTab = null;
+let displayedBlockTabBlocks = null;
 
 let tabsContent = nodeListToArray(document.querySelectorAll('.contentTabEditCv'));
 let displayedTabContent = null;
@@ -74,8 +100,25 @@ function toggleTabs() {
     if (tabsAreOpen) {
         blockTabs.classList.add('hide');
         tabsAreOpen = false;
+
+        if (displayedTabContent !== null) {
+            displayedTabContent.classList.add('hide');
+            displayedTabContent = null;
+        }
+
+        if (displayedBlockTabBlocks) {
+            displayedBlockTabBlocks.style.display = 'none';
+            displayedBlockTabBlocks = null;
+        }
+
+        if (focusedTabBlock !== null) {
+            focusedTabBlock.classList.remove('focusedTab');
+            focusedTabBlock = null;
+        }
+
         if (focusedTab !== null) {
-            toggleTabSelection(focusedTab);
+            focusedTab.classList.remove('focusedTab');
+            focusedTab = null;
         }
     } else {
         blockTabs.classList.remove('hide');
@@ -94,20 +137,51 @@ function toggleTabContent(tabContent) {
 }
 
 function toggleTabSelection (tab, index = null) {
+    // click on tab section -> remove tabBlock focus
+    if (focusedTabBlock !== null) {
+        focusedTabBlock.classList.remove('focusedTab');
+        focusedTabBlock = null;
+    }
+
     if (!focusedTab) {
+        // set the focus on tab
         tab.classList.add('focusedTab');
         focusedTab = tab;
+        // display tabs for blocks of section focused
+        blocksTabsBlock[index].style.display = 'flex';
+        displayedBlockTabBlocks = blocksTabsBlock[index];
+        // display content tab edit section
         toggleTabContent(tabsContent[index]);
         displayedTabContent = tabsContent[index];
     } else if (tab === focusedTab) {
-        tab.classList.remove('focusedTab');
-        focusedTab = null;
-        toggleTabContent(displayedTabContent);
-        displayedTabContent = null;
+        if (displayedTabContent === tabsContent[index]) {
+            // unset the focus on tab
+            tab.classList.remove('focusedTab');
+            focusedTab = null;
+            // hide tabs for blocks of section previously focused
+            displayedBlockTabBlocks.style.display = 'none';
+            displayedBlockTabBlocks = null;
+            // hide content tab edit section
+            toggleTabContent(displayedTabContent);
+            displayedTabContent = null;
+        } else {
+            toggleTabContent(displayedTabContent);
+            toggleTabContent(tabsContent[index]);
+            displayedTabContent = tabsContent[index];
+        }
     } else {
+        // unset previous focus, set new
         focusedTab.classList.remove('focusedTab');
         tab.classList.add('focusedTab');
         focusedTab = tab;
+        // hide previous tabs for blocks, display new
+        if (displayedBlockTabBlocks !== null) {
+            displayedBlockTabBlocks.style.display = 'none';
+        }
+        
+        blocksTabsBlock[index].style.display = 'flex';
+        displayedBlockTabBlocks = blocksTabsBlock[index];
+        // hide previous content tab, display new
         toggleTabContent(displayedTabContent);
         toggleTabContent(tabsContent[index]);
         displayedTabContent = tabsContent[index];
@@ -161,19 +235,20 @@ function addEventOrderUp(input) {
         'click', function(e) {
             e.stopPropagation();
             let currentOrder = parseInt(e.target.parentNode.parentNode.style.order);
-            let currentSection = document.querySelector('#editCv .cvSection[style*="order: ' + currentOrder + ';"]');
-            let nextSection = document.querySelector('#editCv .cvSection[style*="order: ' + (currentOrder+1) + ';"]');
+            let parsedCurrentOrder = currentOrder/100;
+            let currentSection = document.querySelector('#editCv .cvSection[style*="order: ' + parsedCurrentOrder + ';"]');
+            let nextSection = document.querySelector('#editCv .cvSection[style*="order: ' + (parsedCurrentOrder+1) + ';"]');
             let currentTab = document.querySelector('#editCv .tabEditCv[style*="order: ' + currentOrder + ';"]');
-            let nextTab = document.querySelector('#editCv .tabEditCv[style*="order: ' + (currentOrder+1) + ';"]');
-
+            let nextTab = document.querySelector('#editCv .tabEditCv[style*="order: ' + (currentOrder+100) + ';"]');
+console.log(currentOrder, currentSection,  currentTab,  nextSection,  nextTab);
             if (currentSection !== null && currentTab !== null && nextSection !== null && nextTab !== null) {
-                let url = "index.php?action=changeSectionOrder&value=up&currentOrder=" + currentOrder + "&ownerId=" + ownerId;
+                let url = "index.php?action=changeSectionOrder&value=up&currentOrder=" + parsedCurrentOrder + "&ownerId=" + ownerId;
 
                 ajaxGet(url, function(response) {
-                    if (response.length > 0 && response !== "false") {
-                        currentSection.style.order = currentOrder + 1;
-                        nextSection.style.order = currentOrder;
-                        currentTab.style.order = currentOrder + 1;
+                    if (response.length > 0 && response === "true") {
+                        currentSection.style.order = parsedCurrentOrder + 1;
+                        nextSection.style.order = parsedCurrentOrder;
+                        currentTab.style.order = currentOrder + 100;
                         nextTab.style.order = currentOrder;
                     }
                 });
@@ -187,19 +262,20 @@ function addEventOrderDown(input) {
         'click', function(e) {
             e.stopPropagation();
             let currentOrder = parseInt(e.target.parentNode.parentNode.style.order);
-            let currentSection = document.querySelector('#editCv .cvSection[style*="order: ' + currentOrder + ';"]');
-            let previousSection = document.querySelector('#editCv .cvSection[style*="order: ' + (currentOrder-1) + ';"]');
-            let currentTab = document.querySelector('#editCv .tabEditCv[style*="order: ' + currentOrder + ';"]');
-            let previousTab = document.querySelector('#editCv .tabEditCv[style*="order: ' + (currentOrder-1) + ';"]');
+            let parsedCurrentOrder = currentOrder/100;
+            let currentSection = document.querySelector('#editCv .cvSection[style*="order: ' + parsedCurrentOrder + '"]');
+            let previousSection = document.querySelector('#editCv .cvSection[style*="order: ' + (parsedCurrentOrder-1) + '"]');
+            let currentTab = document.querySelector('#editCv .tabEditCv[style*="order: ' + currentOrder + '"]');
+            let previousTab = document.querySelector('#editCv .tabEditCv[style*="order: ' + (currentOrder-100) + '"]');
 
             if (currentSection !== null && currentTab !== null && previousSection !== null && previousTab !== null) {
-                let url = "index.php?action=changeSectionOrder&value=down&currentOrder=" + currentOrder + "&ownerId=" + ownerId;
+                let url = "index.php?action=changeSectionOrder&value=down&currentOrder=" + parsedCurrentOrder + "&ownerId=" + ownerId;
 
                 ajaxGet(url, function(response) {
-                    if (response.length > 0 && response !== "false") {
-                        currentSection.style.order = currentOrder - 1;
-                        previousSection.style.order = currentOrder;
-                        currentTab.style.order = currentOrder - 1;
+                    if (response.length > 0 && response === "true") {
+                        currentSection.style.order = parsedCurrentOrder - 1;
+                        previousSection.style.order = parsedCurrentOrder;
+                        currentTab.style.order = currentOrder - 100;
                         previousTab.style.order = currentOrder;
                     }
                 });
@@ -307,7 +383,7 @@ function addEventPreview(inputFile, index) {
                 if (e.currentTarget.files[0].size < 6000000) {
                     let reader = new FileReader();
                     reader.addEventListener(
-                        'load', function(e) {console.log(index, previews, previews[index], previews[index].childNodes[1]);
+                        'load', function(e) {
                             previews[index].childNodes[1].src = e.currentTarget.result;
                             sections[index].style.backgroundImage = "url('" + e.currentTarget.result + "')";
                             sectionsValues[index]['newValues']['backgroundCover'] = "url('" + e.currentTarget.result + "')";
@@ -402,7 +478,7 @@ function addEventBoolHeightAuto (input, index) {
 
 function addEventBoolHeightValue (input, index) {
     input.addEventListener(
-        'change', function(e) {
+        'input', function(e) {
             sections[index].style.minHeight = inputsEditHeightValue[index].value + 'vh';
             sections[index].childNodes[1].style.minHeight = inputsEditHeightValue[index].value + 'vh';
             sectionsValues[index]['newValues']['heightValue'] = inputsEditHeightValue[index].value + 'vh';
@@ -618,6 +694,10 @@ function newElem(data) {
         elem.textContent = data['textContent'];
     }
 
+    if (data['innerHTML']) {
+        elem.innerHTML = data['innerHTML'];
+    }
+
     if (data['id']) {
         elem.id = data['id'];
     }
@@ -723,11 +803,29 @@ function getNewElemTab(idSection, order) {
         }, 
         'elemStyle': {
             'style': ['order'], 
-            'values': [(order+1)]
+            'values': [(order+1) + '00']
         }, 
         'childs': [document.createTextNode(""), elemP, divChevrons]
     });
     tabs.push(elemTab);
+
+    return elemTab;
+}
+
+function getNewElemTabBlocks(idSection, order) {
+    let elemTab = newElem({
+        'type': 'div', 
+        'classes': ['tabEditBlock', 'belongToSection' + idSection], 
+        'elemAttributes': {
+            'attribute': ['idsection'], 
+            'values': [idSection]
+        }, 
+        'elemStyle': {
+            'style': ['order'], 
+            'values': [(order+1) + '50']
+        }
+    });
+    blocksTabsBlock.push(elemTab);
 
     return elemTab;
 }
@@ -1259,6 +1357,21 @@ function getNewElemSaveSection() {
     });
 }
 
+function getNewElemAddNewBlock() {
+    let elemButton = newElem({
+        'type': 'button', 
+        'classes': ['addNewBlock'], 
+        'textContent': 'Ajouter un nouveau bloc'
+    });
+    buttonsAddNewBlock.push(elemButton);
+
+    return newElem({
+        'type': 'div', 
+        'classes': ['blockAddNewBlock'], 
+        'childs': [elemButton]
+    });
+}
+
 function getNewElemDeleteSection() {
     let elemButton = newElem({
         'type': 'button', 
@@ -1285,6 +1398,7 @@ function getNewElemTabContent(order) {
             getNewElemEditHeight(), 
             getNewElemEditAlign(order), 
             getNewElemSaveSection(), 
+            getNewElemAddNewBlock(), 
             getNewElemDeleteSection()
         ]
     });
@@ -1309,12 +1423,14 @@ function addAllEventForNewSection(index) {
     addEventEditHorizontalAlign(formEditHorizontalAlign[index].elements['horizontalValue' + index], index);
     addEventEditVerticalAlign(formEditVerticalAlign[index].elements['verticalValue' + index], index);
     addEventSaveSection(buttonsSave[index], index);
+    addEventAddNewBlock(buttonsAddNewBlock[index], index);
     addEventDeleteSection(buttonsDelete[index], index);
 }
 
 function getElemsForNewSection(idSection, order) {
     let elemSection = getNewElemSection(parseInt(order));
     let elemTab = getNewElemTab(idSection, parseInt(order));
+    let elemTabBlocks = getNewElemTabBlocks(idSection, parseInt(order));
     let elemTabContent = getNewElemTabContent(parseInt(order));
     let elemLink = getNewElemLink(parseInt(order));
 
@@ -1330,13 +1446,13 @@ function getElemsForNewSection(idSection, order) {
     return {
         'elemSection': elemSection, 
         'elemTab': elemTab, 
+        'elemTabBlocks': elemTabBlocks, 
         'elemTabContent': elemTabContent, 
         'elemLink': elemLink
     };
 }
 
 const navbarLinkList = document.querySelector('#navbarCv > ul');
-const linkListLastChild = document.querySelector('#navbarCv > ul > li:last-of-type');
 
 if (btnAddSection !== null) {
     btnAddSection.addEventListener(
@@ -1349,8 +1465,9 @@ if (btnAddSection !== null) {
                     response = JSON.parse(response);
                     let elemsNewSection = getElemsForNewSection(response['idSection'], response['order']);
                     blockTabs.insertBefore(elemsNewSection['elemTab'], btnAddSection);
+                    blockTabs.insertBefore(elemsNewSection['elemTabBlocks'], btnAddSection);
                     blockTabsContent.appendChild(elemsNewSection['elemTabContent']);
-                    navbarLinkList.insertBefore(elemsNewSection['elemLink'], linkListLastChild);
+                    navbarLinkList.appendChild(elemsNewSection['elemLink']);
                     blockSection.appendChild(elemsNewSection['elemSection']);
     
                     if (sections.length < 15) {
@@ -1387,10 +1504,845 @@ if (buttonsDelete !== null && buttonsDelete.length > 0) {
     }
 }
 
+/*__________________________________________________________*/
+/*__________________________________________________________*/
+/*__________________________________________________________*/
+//                       BLOCKS STUFF
+/*__________________________________________________________*/
+/*__________________________________________________________*/
+/*__________________________________________________________*/
+
+/*________________________________________*/
+//       TOGGLE TAB MENU BLOCK CONTENT
+/*________________________________________*/
+const tabsBlock = nodeListToArray(document.querySelectorAll('.tabEditBlock > div'));
+const tabsBlockContent = nodeListToArray(document.querySelectorAll('.contentTabEditBlock'));
+let focusedTabBlock = null;
+
+function addEventToggleTabBlock(tab, index) {
+    tab.addEventListener(
+        'click', function() {
+            if (!focusedTabBlock) {
+                // set the focus on tab
+                tab.classList.add('focusedTab');
+                focusedTabBlock = tab;
+                // display tabBlock content
+                if (displayedTabContent !== null) {
+                    toggleTabContent(displayedTabContent);
+                }
+                toggleTabContent(tabsBlockContent[index]);
+                displayedTabContent = tabsBlockContent[index];
+            } else if (tab === focusedTabBlock) {
+                // unset the focus on tabBlock
+                tab.classList.remove('focusedTab');
+                focusedTabBlock = null;
+                // unset the focus on tabSection
+                focusedTab.classList.remove('focusedTab');
+                focusedTab = null;
+                // hide content tab edit section
+                toggleTabContent(displayedTabContent);
+                displayedTabContent = null;
+                // hide blockTabBlock
+                displayedBlockTabBlocks.style.display = "none";
+                displayedBlockTabBlocks = null;
+            } else {
+                // unset previous focus, set new
+                focusedTabBlock.classList.remove('focusedTab');
+                tab.classList.add('focusedTab');
+                focusedTabBlock = tab;
+                // hide previous content tab, display new
+                toggleTabContent(displayedTabContent);
+                toggleTabContent(tabsBlockContent[index]);
+                displayedTabContent = tabsBlockContent[index];
+            }
+        }
+    );
+}
+
+if (tabsBlock !== null && tabsBlock.length > 0) {
+    for (let i = 0; i < tabsBlock.length; i++) {
+        addEventToggleTabBlock(tabsBlock[i], i);
+    }
+}
+
+/*________________________________________*/
+//              BLOCKS SIZE
+/*________________________________________*/
+const inputsEditBlockSize = nodeListToArray(document.querySelectorAll('.blockEditSize input'));
+
+function addEventEditBlockSize(input, index) {
+    input.addEventListener(
+        'input', function(e) {
+            let newSize = sizeIntValueToString(e.currentTarget.value);
+
+            if (newSize !== blocksValues[index]['newValues']['size']) {
+                let classSize = 'block' + ucFirst(newSize);
+                let classToRemove = 'block' + ucFirst(blocksValues[index]['newValues']['size']);
+
+                blocks[index].classList.remove(classToRemove);
+                blocks[index].classList.add(classSize);
+
+                blocksValues[index]['newValues']['size'] = newSize;
+            }
+        }
+    );
+}
+
+function sizeIntValueToString(value = 0) {
+    if (value == 1) {
+        return 'small';
+    } else if (value == 2) {
+        return 'medium';
+    } else {
+        return 'large';
+    }
+}
+
+function sizeStringValueToInt(value = null) {
+    if (value === 'small') {
+        return 1;
+    } else if (value === 'medium') {
+        return 2;
+    } else {
+        return 3;
+    }
+}
+
+if (inputsEditBlockSize && inputsEditBlockSize.length > 0) {
+    for (let i = 0; i < inputsEditBlockSize.length; i++) {
+        addEventEditBlockSize(inputsEditBlockSize[i], i);
+    }
+}
+
+/*________________________________________*/
+//              BLOCKS STYLE
+/*________________________________________*/
+const inputsEditBlockBackOpacity = nodeListToArray(document.querySelectorAll('.editBackgroundOpacity input'));
+const inputsEditBlockBackColor = nodeListToArray(document.querySelectorAll('.editBackgroundColor input'));
+
+function addEventEditBlockBackColor(input, index) {
+    input.addEventListener(
+        'input', function(e) {
+            let rgbObject = hexToRgb(e.currentTarget.value);
+            let rgbValue = rgbObject.r + ", " + rgbObject.g + ", " + rgbObject.b;
+            
+            if (rgbValue !== blocksValues[index]['newValues']['color']) {
+                let newBackColor = 'rgba(' + rgbValue + ', ' + blocksValues[index]['newValues']['opacity'] + ')';
+                blocks[index].style.backgroundColor = newBackColor;
+                blocksValues[index]['newValues']['color'] = rgbValue;
+            }
+        }
+    );
+}
+
+function addEventEditBlockBackOpacity(input, index) {
+    input.addEventListener(
+        'input', function(e) {
+            if (e.currentTarget.value !== blocksValues[index]['newValues']['opacity']) {
+                let newBackColor = 'rgba(' + blocksValues[index]['newValues']['color'] + ', ' + e.currentTarget.value + ')';
+                blocks[index].style.backgroundColor = newBackColor;
+                blocksValues[index]['newValues']['opacity'] = e.currentTarget.value;
+            }
+        }
+    );
+}
+
+if (inputsEditBlockBackColor && inputsEditBlockBackColor.length > 0) {
+    for (let i = 0; i < inputsEditBlockBackColor.length; i++) {
+        // set current value on input color
+        if (blocks[i].getAttribute('backColor')) {
+            let result = blocks[i].getAttribute('backColor').split(", ");
+            inputsEditBlockBackColor[i].value = rgbToHex(parseInt(result[0]), parseInt(result[1]), parseInt(result[2]));
+        }
+        // add event
+        addEventEditBlockBackColor(inputsEditBlockBackColor[i], i);
+    }
+}
+
+if (inputsEditBlockBackOpacity && inputsEditBlockBackOpacity.length > 0) {
+    for (let i = 0; i < inputsEditBlockBackOpacity.length; i++) {
+        addEventEditBlockBackOpacity(inputsEditBlockBackOpacity[i], i);
+    }
+}
+
+/*________________________________________*/
+//              BLOCKS BORDER
+/*________________________________________*/
+const inputsEditBlockBorderWidth = nodeListToArray(document.querySelectorAll('.editBorderWidth input'));
+const inputsEditBlockBorderRadius = nodeListToArray(document.querySelectorAll('.editBorderRadius input'));
+const inputsEditBlockBorderColor = nodeListToArray(document.querySelectorAll('.editBorderColor input'));
+
+function addEventEditBlockBorderColor(input, index) {
+    input.addEventListener(
+        'input', function(e) {
+            let rgbObject = hexToRgb(e.currentTarget.value);
+            let rgbValue = rgbObject.r + ", " + rgbObject.g + ", " + rgbObject.b;
+            
+            if (rgbValue !== blocksValues[index]['newValues']['borderColor']) {
+                let newBorderColor = 'rgb(' + rgbValue + ')';
+                blocks[index].style.borderColor = newBorderColor;
+                blocksValues[index]['newValues']['borderColor'] = rgbValue;
+            }
+        }
+    );
+}
+
+function addEventEditBlockBorderWidth(input, index) {
+    input.addEventListener(
+        'input', function(e) {
+            if (e.currentTarget.value !== blocksValues[index]['newValues']['borderWidth']) {
+                blocks[index].style.borderWidth = e.currentTarget.value + "px";
+                blocksValues[index]['newValues']['borderWidth'] = e.currentTarget.value;
+            }
+        }
+    );
+}
+
+function addEventEditBlockBorderRadius(input, index) {
+    input.addEventListener(
+        'input', function(e) {
+            if (e.currentTarget.value !== blocksValues[index]['newValues']['borderRadius']) {
+                blocks[index].style.borderRadius = e.currentTarget.value + "px";
+                blocksValues[index]['newValues']['borderRadius'] = e.currentTarget.value;
+            }
+        }
+    );
+}
+
+if (inputsEditBlockBorderColor && inputsEditBlockBorderColor.length > 0) {
+    for (let i = 0; i < inputsEditBlockBorderColor.length; i++) {
+        // set current value on input color
+        if (blocks[i].getAttribute('borderColor')) {
+            let result = blocks[i].getAttribute('borderColor').split(", ");
+            inputsEditBlockBorderColor[i].value = rgbToHex(parseInt(result[0]), parseInt(result[1]), parseInt(result[2]));
+        }
+        // add event
+        addEventEditBlockBorderColor(inputsEditBlockBorderColor[i], i);
+    }
+}
+
+if (inputsEditBlockBorderWidth && inputsEditBlockBorderWidth.length > 0) {
+    for (let i = 0; i < inputsEditBlockBorderWidth.length; i++) {
+        addEventEditBlockBorderWidth(inputsEditBlockBorderWidth[i], i);
+    }
+}
+
+if (inputsEditBlockBorderRadius && inputsEditBlockBorderRadius.length > 0) {
+    for (let i = 0; i < inputsEditBlockBorderRadius.length; i++) {
+        addEventEditBlockBorderRadius(inputsEditBlockBorderRadius[i], i);
+    }
+}
+
+/*_____________________________*/
+//        SAVE BLOCKS
+/*_____________________________*/
+let blocksValues = [];
+let buttonsSaveBlock = nodeListToArray(document.querySelectorAll('.saveBlockChange'));
+let elemWaitBlock = nodeListToArray(document.querySelectorAll('.savingBlock'));
+let elemSaveBlockSuccess = nodeListToArray(document.querySelectorAll('.saveBlockSuccess'));
+let elemSaveBlockFailure = nodeListToArray(document.querySelectorAll('.saveBlockFailure'));
+
+for (let i = 0; i < blocks.length; i++) {
+    // setup array blocks values
+    blocksValues.push(
+        {
+            'values': getBlockValues(i), 
+            'newValues': getBlockValues(i)
+        }
+    );
+}
+
+function getBlockValues(index) {
+    let rgbObjectBackColor = hexToRgb(inputsEditBlockBackColor[index].value);
+    let backColorValue = rgbObjectBackColor.r + ", " + rgbObjectBackColor.g + ", " + rgbObjectBackColor.b;
+    let rgbObjectBorderColor = hexToRgb(inputsEditBlockBorderColor[index].value);
+    let borderColorValue = rgbObjectBorderColor.r + ", " + rgbObjectBorderColor.g + ", " + rgbObjectBorderColor.b;
+
+    return {
+        'size': sizeIntValueToString(inputsEditBlockSize[index].value), 
+        'color': backColorValue, 
+        'opacity': inputsEditBlockBackOpacity[index].value, 
+        'borderWidth': inputsEditBlockBorderWidth[index].value, 
+        'borderColor': borderColorValue, 
+        'borderRadius': inputsEditBlockBorderRadius[index].value
+    }
+}
+
+function getBlockData(currValue, newValue, index) {
+    let data = new FormData();
+    data.append('idBlock', blocks[index].getAttribute('idBlock'));
+
+    if (currValue['size'] !== newValue['size']) {
+        data.append('size', newValue['size']);
+    }
+
+    if (currValue['color'] !== newValue['color']) {
+        data.append('color', newValue['color']);
+    }
+
+    if (currValue['opacity'] !== newValue['opacity']) {
+        data.append('opacity', newValue['opacity']);
+    }
+
+    if (currValue['borderWidth'] !== newValue['borderWidth']) {
+        data.append('borderWidth', newValue['borderWidth']);
+    }
+
+    if (currValue['borderColor'] !== newValue['borderColor']) {
+        data.append('borderColor', newValue['borderColor']);
+    }
+
+    if (currValue['borderRadius'] !== newValue['borderRadius']) {
+        data.append('borderRadius', newValue['borderRadius']);
+    }
+
+    return data;
+}
+
+function saveBlockValues(index) {
+    let data = getBlockData(blocksValues[index]['values'], blocksValues[index]['newValues'], index);
+    let url = 'index.php?action=updateCvBlock';
+    buttonsSaveBlock[index].classList.add('hide');
+    elemWaitBlock[index].classList.remove('hide');
+    let timeout = null;
+
+    ajaxPost(url, data, function(response) {
+        if (response.length > 0 && response === 'true') {
+            elemWaitBlock[index].classList.add('hide');
+            addEventQuickCloseSaveBlockResult(elemSaveBlockSuccess[index], index, timeout, 'success');
+            elemSaveBlockSuccess[index].classList.remove('hide');
+
+            timeout = setTimeout(() => {
+                elemSaveBlockSuccess[index].classList.add('hide');
+                buttonsSaveBlock[index].classList.remove('hide');
+            }, 3000);
+
+            // save new values
+            blocksValues[index]['values'] = getBlockValues(index);
+        } else {
+            elemWaitBlock[index].classList.add('hide');
+            addEventQuickCloseSaveBlockResult(elemSaveBlockFailure[index], index, timeout, 'failure');
+            elemSaveBlockFailure[index].classList.remove('hide');
+
+            timeout = setTimeout(() => {
+                elemSaveBlockFailure[index].classList.add('hide');
+                buttonsSaveBlock[index].classList.remove('hide');
+            }, 5000);
+        }
+    });
+}
+
+function addEventQuickCloseSaveBlockResult(elem, index, timeout, info) {
+    elem.addEventListener(
+        'click', function() {
+            clearTimeout(timeout);
+
+            if (info === "success") {
+                elemSaveBlockSuccess[index].classList.add('hide');
+                buttonsSaveBlock[index].classList.remove('hide');
+            } else {
+                elemSaveBlockFailure[index].classList.add('hide');
+                buttonsSaveBlock[index].classList.remove('hide');
+            }
+        }
+    , {'once':true});
+}
+
+function addEventSaveBlock(input, index) {
+    input.addEventListener(
+        'click', function() {
+            saveBlockValues(index);
+        }
+    );
+}
+
+if (buttonsSaveBlock !== null && buttonsSaveBlock.length > 0) {
+    for (let i = 0; i < buttonsSaveBlock.length; i++) {
+        addEventSaveBlock(buttonsSaveBlock[i], i);
+    }
+}
+
+/*_____________________________*/
+//    BUTTON DELETE SECTION
+/*_____________________________*/
+let buttonsDeleteBlock = nodeListToArray(document.querySelectorAll('.deleteBlock'));
+
+function addEventDeleteBlock(input, index) {
+    input.addEventListener(
+        'click', function() {
+            let url = 'index.php?action=deleteBlock&ownerId=' + ownerId + '&blockId=' + blocks[index].getAttribute('idBlock');
+            linkDeleteBlock.href = url;
+            modal.style.display = "flex";
+            modalDeleteBlock.style.display = "flex";
+            displayedModal = modalDeleteBlock;
+        }
+    );
+}
+
+if (buttonsDeleteBlock !== null && buttonsDeleteBlock.length > 0) {
+    for (let i = 0; i < buttonsDeleteBlock.length; i++) {
+        addEventDeleteBlock(buttonsDeleteBlock[i], i);
+    }
+}
+
+/*_____________________________*/
+//    EDIT TABS BLOCK ORDER
+/*_____________________________*/
+let chevronsBlockUp = nodeListToArray(document.querySelectorAll('.editBlockOrder .fa-chevron-up'));
+let chevronsBlockDown = nodeListToArray(document.querySelectorAll('.editBlockOrder .fa-chevron-down'));
+
+function addEventOrderBlockUp(input, index) {
+    input.addEventListener(
+        'click', function(e) {
+            e.stopPropagation();
+            let idSection = blocks[index].getAttribute('idSection');
+            let idBlock = e.target.parentNode.parentNode.getAttribute('idBlock');
+            let currentOrder = parseInt(e.target.parentNode.parentNode.style.order);
+
+            let currentTab = document.querySelector('#editCv .belongToSection' + idSection + ' > div[style*="order: ' + currentOrder + '"]');
+            let currentBlock = document.querySelector('#editCv .cvBlock[idBlock="' + idBlock + '"]');
+            let nextTab = document.querySelector('#editCv .belongToSection' + idSection + ' > div[style*="order: ' + (currentOrder+1) + '"]');
+            if (!nextTab) {
+                return;
+            }
+            let idNextBlock = nextTab.getAttribute('idBlock');
+            let nextBlock = document.querySelector('#editCv .cvBlock[idBlock="' + idNextBlock + '"]');
+            
+            if (currentBlock !== null && currentTab !== null && nextBlock !== null && nextTab !== null) {
+                let url = "index.php?action=changeCvBlockOrder&value=up&currentOrder=" + currentOrder + "&idOwner=" + ownerId + "&idSection=" + idSection;
+
+                ajaxGet(url, function(response) {
+                    if (response.length > 0 && response === "true") {
+                        currentBlock.style.order = (currentOrder + 1);
+                        nextBlock.style.order = currentOrder;
+                        currentTab.style.order = (currentOrder + 1);
+                        nextTab.style.order = currentOrder;
+                    }
+                });
+            }
+        }
+    );
+}
+
+function addEventOrderBlockDown(input, index) {
+    input.addEventListener(
+        'click', function(e) {
+            e.stopPropagation();
+            let idSection = blocks[index].getAttribute('idSection');
+            let idBlock = e.target.parentNode.parentNode.getAttribute('idBlock');
+            let currentOrder = parseInt(e.target.parentNode.parentNode.style.order);
+
+            let currentTab = document.querySelector('#editCv .belongToSection' + idSection + ' > div[style*="order: ' + currentOrder + '"]');
+            let currentBlock = document.querySelector('#editCv .cvBlock[idBlock="' + idBlock + '"]');
+            let previousTab = document.querySelector('#editCv .belongToSection' + idSection + ' > div[style*="order: ' + (currentOrder-1) + '"]');
+            if (!previousTab) {
+                return;
+            }
+            let idPreviousBlock = previousTab.getAttribute('idBlock');
+            let previousBlock = document.querySelector('#editCv .cvBlock[idBlock="' + idPreviousBlock + '"]');
+
+            if (currentBlock !== null && currentTab !== null && previousBlock !== null && previousTab !== null) {
+                let url = "index.php?action=changeCvBlockOrder&value=down&currentOrder=" + currentOrder + "&idOwner=" + ownerId + "&idSection=" + idSection;
+
+                ajaxGet(url, function(response) {
+                    if (response.length > 0 && response === "true") {
+                        currentBlock.style.order = currentOrder - 1;
+                        previousBlock.style.order = currentOrder;
+                        currentTab.style.order = currentOrder - 1;
+                        previousTab.style.order = currentOrder;
+                    }
+                });
+            }
+        }
+    );
+}
+
+if (chevronsBlockUp !== null && chevronsBlockUp.length > 0) {
+    for (let i = 0; i < chevronsBlockUp.length; i++) {
+        addEventOrderBlockDown(chevronsBlockUp[i], i);
+    }
+}
+
+if (chevronsBlockDown !== null && chevronsBlockDown.length > 0) {
+    for (let i = 0; i < chevronsBlockDown.length; i++) {
+        addEventOrderBlockUp(chevronsBlockDown[i], i);
+    }
+}
+
+/*_____________________________*/
+//         ADD BLOCK
+/*_____________________________*/
+let buttonsAddNewBlock = nodeListToArray(document.querySelectorAll('.addNewBlock'));
+
+function getNewBlock(idBlock, idSection, order) {
+    let newBlock = newElem({
+        'type': 'div', 
+        'classes': ['cvBlock', 'blockLarge'], 
+        'elemStyle': {
+            'style': ['order', 'backgroundColor'], 
+            'values': [order, 'rgba(0, 0, 0, 0.5)']
+        }, 
+        'elemAttributes': {
+            'attribute': ['idblock', 'idsection'], 
+            'values': [idBlock, idSection]
+        }, 
+        'innerHTML': '<p>Nouveau bloc</p>'
+    });
+    blocks.push(newBlock);
+
+    return newBlock;
+}
+
+function getNewTabBlock(idBlock, order) {
+    let elemChevronUp = newElem({
+        'type': 'i', 
+        'classes': ['fas', 'fa-chevron-up']
+    });
+    chevronsBlockUp.push(elemChevronUp);
+
+    let elemChevronDown = newElem({
+        'type': 'i', 
+        'classes': ['fas', 'fa-chevron-down']
+    });
+    chevronsBlockDown.push(elemChevronDown);
+
+    let divChevrons = newElem({
+        'type': 'div', 
+        'classes': ['editBlockOrder'], 
+        'childs': [elemChevronUp, elemChevronDown]
+    });
+
+    let elemP = newElem({
+        'type': 'p', 
+        'textContent': 'Bloc ' + order
+    });
+
+    let elemTab = newElem({
+        'type': 'div', 
+        'elemAttributes': {
+            'attribute': ['idblock'], 
+            'values': [idBlock]
+        }, 
+        'elemStyle': {
+            'style': ['order'], 
+            'values': [order]
+        }, 
+        'childs': [document.createTextNode(""), elemP, divChevrons]
+    });
+    tabsBlock.push(elemTab);
+
+    return elemTab;
+}
+
+function getElemEditBlockContent(idBlock) {
+    let elemButton = newElem({
+        'type': 'button', 
+        'elemAttributes': {
+            'attribute': ['idblock'], 
+            'values': [idBlock]
+        }, 
+        'textContent': 'Modifier le contenu du bloc'
+    });
+    inputsEditBlockContent.push(elemButton);
+
+    let elemSpan = newElem({
+        'type': 'span', 
+        'classes': ['orang'], 
+        'textContent': 'Contenu'
+    });
+
+    return newElem({
+        'type': 'div', 
+        'classes': ['blockEditBlockContent'], 
+        'childs': [elemSpan, elemButton]
+    });
+}
+
+function getElemEditBlockSize() {
+    let elemInput = newElem({
+        'type': 'input', 
+        'elemAttributes': {
+            'attribute': ['type', 'min', 'max', 'step', 'value'], 
+            'values': ['range', 1, 3, 1, 3]
+        }
+    });
+    inputsEditBlockSize.push(elemInput);
+
+    let elemSpan = newElem({
+        'type': 'span', 
+        'classes': ['orang'], 
+        'textContent': 'Taille du bloc'
+    });
+
+    let elemP = newElem({
+        'type': 'p', 
+        'childs': [elemSpan, elemInput]
+    });
+
+    return newElem({
+        'type': 'div', 
+        'classes': ['blockEditSize'], 
+        'childs': [elemP]
+    });
+}
+
+function getElemEditBlockBackground() {
+    let elemInput1 = newElem({
+        'type': 'input', 
+        'elemAttributes': {
+            'attribute': ['type'], 
+            'values': ['color']
+        }
+    });
+    inputsEditBlockBackColor.push(elemInput1);
+
+    let elemLabel1 = newElem({
+        'type': 'label', 
+        'textContent': 'Couleur'
+    });
+
+    let elemP1 = newElem({
+        'type': 'p', 
+        'classes': ['editBackgroundColor'], 
+        'childs': [elemLabel1, elemInput1]
+    });
+
+    let elemInput2 = newElem({
+        'type': 'input', 
+        'elemAttributes': {
+            'attribute': ['type', 'min', 'max', 'step', 'value'], 
+            'values': ['range', 0, 1, 0.1, 0.5]
+        }
+    });
+    inputsEditBlockBackOpacity.push(elemInput2);
+
+    let elemLabel2 = newElem({
+        'type': 'label', 
+        'textContent': 'Transparence'
+    });
+
+    let elemP2 = newElem({
+        'type': 'p', 
+        'classes': ['editBackgroundOpacity'], 
+        'childs': [elemLabel2, elemInput2]
+    });
+
+    let elemSpan = newElem({
+        'type': 'span', 
+        'classes': ['orang'], 
+        'textContent': 'Apparence du fond'
+    });
+
+    return newElem({
+        'type': 'div', 
+        'childs': [elemSpan, elemP2, elemP1]
+    });
+}
+
+function getElemEditBlockBorder() {
+    let elemInput1 = newElem({
+        'type': 'input', 
+        'elemAttributes': {
+            'attribute': ['type'], 
+            'values': ['color']
+        }
+    });
+    inputsEditBlockBorderColor.push(elemInput1);
+
+    let elemLabel1 = newElem({
+        'type': 'label', 
+        'textContent': 'Couleur'
+    });
+
+    let elemP1 = newElem({
+        'type': 'p', 
+        'classes': ['editBorderColor'], 
+        'childs': [elemLabel1, elemInput1]
+    });
+
+    let elemInput2 = newElem({
+        'type': 'input', 
+        'elemAttributes': {
+            'attribute': ['type', 'min', 'max', 'step', 'value'], 
+            'values': ['range', 0, 25, 1, 0]
+        }
+    });
+    inputsEditBlockBorderRadius.push(elemInput2);
+
+    let elemLabel2 = newElem({
+        'type': 'label', 
+        'textContent': 'Arrondie des coins'
+    });
+
+    let elemP2 = newElem({
+        'type': 'p', 
+        'classes': ['editBorderRadius'], 
+        'childs': [elemLabel2, elemInput2]
+    });
+
+    let elemInput3 = newElem({
+        'type': 'input', 
+        'elemAttributes': {
+            'attribute': ['type', 'min', 'max', 'step', 'value'], 
+            'values': ['range', 0, 5, 1, 0]
+        }
+    });
+    inputsEditBlockBorderWidth.push(elemInput3);
+
+    let elemLabel3 = newElem({
+        'type': 'label', 
+        'textContent': 'Taille'
+    });
+
+    let elemP3 = newElem({
+        'type': 'p', 
+        'classes': ['editBorderWidth'], 
+        'childs': [elemLabel3, elemInput3]
+    });
+
+    let elemSpan = newElem({
+        'type': 'span', 
+        'classes': ['orang'], 
+        'textContent': 'Bordure du bloc'
+    });
+
+    return newElem({
+        'type': 'div', 
+        'classes': ['blockEditBackgroundBorder'], 
+        'childs': [elemSpan, elemP3, elemP2, elemP1]
+    });
+}
+
+function getElemSaveBlock() {
+    let elemP = newElem({
+        'type': 'p', 
+        'classes': ['saveBlockFailure', 'red', 'hide'], 
+        'textContent': 'Certaines modifications n\'ont pas pu être enregistrées, réessayez ou rechargez la page'
+    });
+    elemSaveBlockFailure.push(elemP);
+
+    let elemI = newElem({
+        'type': 'i', 
+        'classes': ['fas', 'fa-check', 'saveBlockSuccess', 'green', 'hide']
+    });
+    elemSaveBlockSuccess.push(elemI);
+
+    let elemSpan = newElem({
+        'type': 'span', 
+        'classes': ['savingBlock', 'orang', 'hide'], 
+        'textContent': '. . .'
+    });
+    elemWaitBlock.push(elemSpan);
+
+    let elemButton = newElem({
+        'type': 'button', 
+        'classes': ['saveBlockChange'], 
+        'textContent': 'Enregistrer les modifications'
+    });
+    buttonsSaveBlock.push(elemButton);
+
+    return newElem({
+        'type': 'div', 
+        'classes': ['blockSaveBlock'], 
+        'childs': [elemButton, elemSpan, elemI, elemP]
+    });
+}
+
+function getElemDeleteBlock() {
+    let elemButton = newElem({
+        'type': 'button', 
+        'classes': ['deleteBlock', 'red'], 
+        'textContent': 'Supprimer le bloc'
+    });
+    buttonsDeleteBlock.push(elemButton);
+
+    return newElem({
+        'type': 'div', 
+        'classes': ['blockDeleteBlock'], 
+        'childs': [elemButton]
+    });
+}
+
+function getNewTabContentBlock(idBlock) {
+    let tabContentBlock = newElem({
+        'type': 'div', 
+        'classes': ['contentTabEditBlock', 'hide'], 
+        'childs': [
+            getElemEditBlockContent(idBlock), 
+            getElemEditBlockSize(), 
+            getElemEditBlockBackground(), 
+            getElemEditBlockBorder(), 
+            getElemSaveBlock(), 
+            getElemDeleteBlock()
+        ]
+    });
+    tabsBlockContent.push(tabContentBlock);
+
+    return tabContentBlock;
+}
+
+function addAllEventForNewBlock(index) {
+    addEventOrderBlockDown(chevronsBlockUp[index], index);
+    addEventOrderBlockUp(chevronsBlockDown[index], index);
+    addEventToggleTabBlock(tabsBlock[index], index);
+    addEventEditBlockContent(inputsEditBlockContent[index], index);
+    addEventEditBlockSize(inputsEditBlockSize[index], index);
+    addEventEditBlockBackColor(inputsEditBlockBackColor[index], index);
+    addEventEditBlockBackOpacity(inputsEditBlockBackOpacity[index], index);
+    addEventEditBlockBorderColor(inputsEditBlockBorderColor[index], index);
+    addEventEditBlockBorderWidth(inputsEditBlockBorderWidth[index], index);
+    addEventEditBlockBorderRadius(inputsEditBlockBorderRadius[index], index);
+    addEventSaveBlock(buttonsSaveBlock[index], index);
+    addEventDeleteBlock(buttonsDeleteBlock[index], index);
+}
+
+function addEventAddNewBlock(input, index) {
+    input.addEventListener(
+        'click', function() {
+            input.classList.add('hide');
+            let idSection = tabs[index].getAttribute('idSection');
+            let url = 'index.php?action=addNewCvBlock&idOwner=' + ownerId + '&idSection=' + idSection;
+            
+            ajaxGet(url, function(response) {
+                if (response.length > 0 && response !== 'false') {
+                    response = JSON.parse(response);
+                    let idnewBlock = response.idBlock;
+                    let countBlock = response['countBlock'];
+
+                    let newBlock = getNewBlock(idnewBlock, idSection, countBlock);
+                    let newBlockTab = getNewTabBlock(idnewBlock, countBlock);
+                    let newBlockTabContent = getNewTabContentBlock(idnewBlock);
+                    let indexBlock = blocks.length - 1;
+                    addAllEventForNewBlock(indexBlock);
+
+                    blocksValues.push({
+                        'values': getBlockValues(indexBlock), 
+                        'newValues': getBlockValues(indexBlock)
+                    });
+
+                    sections[index].childNodes[1].appendChild(newBlock);
+                    blocksTabsBlock[index].appendChild(newBlockTab);
+                    blockTabsContent.appendChild(newBlockTabContent);
+
+                    if (blocks.length < 6) {
+                        input.classList.remove('hide');
+                    }
+                }
+            });
+        }
+    );
+}
+
+if (buttonsAddNewBlock !== null && buttonsAddNewBlock.length > 0) {
+    for (let i = 0; i < buttonsAddNewBlock.length; i++) {
+        addEventAddNewBlock(buttonsAddNewBlock[i], i);
+    }
+}
+
 /*_____________________________*/
 //           MODAL
 /*_____________________________*/
-const modal = document.getElementById('modal');
+let modal = document.getElementById('modal');
 const buttonsCloseModal = document.querySelectorAll('.closeModal');
 let displayedModal = null;
 
@@ -1408,4 +2360,40 @@ for (let i = 0; i < buttonsCloseModal.length; i++) {
 }
 
 const modalDeleteSection = document.getElementById('confirmDeleteSection');
-const linkDeleteSection = document.getElementById('linkDeleteModal');
+const modalDeleteBlock = document.getElementById('confirmDeleteBlock');
+const linkDeleteSection = document.getElementById('linkDeleteInModal');
+const linkDeleteBlock = document.getElementById('linkDeleteBlockInModal');
+
+/*________________________________________*/
+//              BLOCKS CONTENT
+/*________________________________________*/
+const inputsEditBlockContent = nodeListToArray(document.querySelectorAll('.blockEditBlockContent button'));
+const modalTinyMce = document.getElementById('modalTinyMce');
+const linkConfirmTinyMce = document.getElementById('linkConfirmTinyMce');
+
+function addEventEditBlockContent(input, index) {
+    input.addEventListener(
+        'click', function(e) {
+            e.preventDefault();
+            modal.style.display = 'flex';
+            if (modalTinyMce.classList.contains('blockSmall')) {
+                modalTinyMce.classList.remove('blockSmall');
+            } else if (modalTinyMce.classList.contains('blockMedium')) {
+                modalTinyMce.classList.remove('blockMedium');
+            } else if (modalTinyMce.classList.contains('blockLarge')) {
+                modalTinyMce.classList.remove('blockLarge');
+            }
+            modalTinyMce.classList.add('block' + ucFirst(blocksValues[index]['newValues']['size']));
+            modalTinyMce.style.display = 'flex';
+            displayedModal = modalTinyMce;
+            modalTinyMce.action = 'index.php?action=updateCvBlockContent&idBlock=' + blocks[index].getAttribute('idBlock') + '&idOwner=' + ownerId;
+            tinyMCE.get('tinyMCEtextarea').setContent(blocks[index].innerHTML);
+        }
+    );
+}
+
+if (inputsEditBlockContent !== null && inputsEditBlockContent.length > 0) {
+    for (let i = 0; i < inputsEditBlockContent.length; i++) {
+        addEventEditBlockContent(inputsEditBlockContent[i], i);
+    }
+}

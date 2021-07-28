@@ -205,12 +205,18 @@ class CvBlock
         if ($blockOrder > 0) {
             $blockStyle = 'order: ' . $blockOrder . ';';
 
-            if ($this->getBlockBackgroundColor()) {
+            if ($this->getBlockBackgroundColor() && $this->getBlockOpacity()) {
                 $blockStyle .= 'background-color:rgba(' . $this->getBlockBackgroundColor() . ', ' . $this->getBlockOpacity() . ');';
+            } else {
+                $blockStyle .= 'background-color:rgba(0, 0, 0, ' . $this->getBlockOpacity() . ');';
             }
 
-            if ($this->getBlockBorderWidth() && $this->getBlockBorderWidth() > 0 && $this->getBlockBorderColor()) {
-                $blockStyle .= 'border:solid ' . $this->getBlockBorderWidth() . 'px rgb(' . $this->getBlockBorderColor() . ');';
+            if ($this->getBlockBorderWidth()) {
+                $blockStyle .= 'border-width: ' . $this->getBlockBorderWidth() . 'px;';
+            }
+
+            if ($this->getBlockBorderColor()) {
+                $blockStyle .= 'border-color: rgb(' . $this->getBlockBorderColor() . ');';
             }
 
             if ($this->getBlockBorderRadius() && $this->getBlockBorderRadius() > 0) {

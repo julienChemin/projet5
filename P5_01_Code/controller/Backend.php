@@ -288,7 +288,7 @@ class Backend extends Controller
             switch ($_GET['elem']) {
                 case 'user' :
                     if (!empty($_GET['userName']) && !empty($_GET['schoolName']) && $UserManager->pseudoExists($_GET['userName']) 
-                    && ($_SESSION['school'] === ALL_SCHOOL || ($_SESSION['school'] === $_GET['schoolName'] && ($_SESSION['grade'] === ADMIN || $_SESSION['grade'] === MODERATOR)))) {
+                    && ($_SESSION['school'] === ALL_SCHOOL)) {
                         if ($UserManager->deleteUser($_GET, new SchoolManager())) {
                             $this->redirection();
                         } else {

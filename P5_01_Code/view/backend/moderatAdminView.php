@@ -31,7 +31,6 @@
                         <li><i class="fas fa-user-plus"></i>Passer en administrateur</li>
                         <li><i class="fas fa-user-minus"></i>Rétrograder le compte</li>
                         <li><i class="fas fa-user-times"></i>Retirer le compte de l'établissement scolaire</li>
-                        <li><i class="fas fa-times"></i>Supprimer le compte</li>
                     </ul>
                 </div>
                 <table> 
@@ -85,8 +84,7 @@
                                     <td>
                                         <i class="fas fa-user-plus toAdmin" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>"></i> - 
                                         <i class="fas fa-user-minus toNormalUser" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>"></i> - 
-                                        <i class="fas fa-user-times toLeaveSchool" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i> - 
-                                        <i class="fas fa-times toDelete" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i>
+                                        <i class="fas fa-user-times toLeaveSchool" userpseudo="<?=$user->getPseudo()?>" schoolname="<?=$school->getName()?>" ></i>
                                     </td>
                                 </tr>
                                 <?php

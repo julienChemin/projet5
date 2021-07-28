@@ -1,5 +1,5 @@
 WEBMASTER
-    -> pseudo : julien chemin | password : admin
+    -> pseudo : Artschools | password : ***
     
 ____________________________________________________________
 

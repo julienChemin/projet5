@@ -116,6 +116,13 @@
     overflow: hidden;
     min-height: 15px;
     padding: 5px;
+    border-style: solid;
+    border-width: 0px;
+    border-color: black;
+}
+.cvBlock img{
+    max-width: 100%;
+    height: auto;
 }
 .cvBlock ul li{
     list-style-type: none;
@@ -147,8 +154,8 @@
 
 @media all and (max-width:600px) {
     .blockSmall{
-        min-width: 45%;
-        max-width: 45%;
+        min-width: 46%;
+        max-width: 46%;
     }
     .blockMedium{
         min-width: 70%;

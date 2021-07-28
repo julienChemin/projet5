@@ -45,8 +45,8 @@ class CvBlockManager extends AbstractManager
         }
     }
 
-    public function setBlock(int $idSection, int $idAuthor, string $content = null, string $blockSize = 'blockLarge', 
-    string $blockBackgroundColor = null, float $blockOpacity = 1, int $blockBorderWidth = null, string $blockBorderColor = null, 
+    public function setBlock(int $idSection, int $idAuthor, string $content = null, string $blockSize = 'large', 
+    string $blockBackgroundColor = null, float $blockOpacity = 0, int $blockBorderWidth = null, string $blockBorderColor = null, 
     int $blockBorderRadius = null)
     {
         $blockOrder = $this->getCountBlocks($idSection) + 1;
@@ -92,12 +92,12 @@ class CvBlockManager extends AbstractManager
             }
     
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
-    public function changBlockOrder(string $direction, int $idSection, int $currentOrder)
+    public function changeBlockOrder(string $direction, int $idSection, int $currentOrder)
     {
         switch ($direction) {
             case 'up':
@@ -110,6 +110,71 @@ class CvBlockManager extends AbstractManager
 
             default:
                 return 'false';
+        }
+    }
+
+    public function updateWholeBlock(CvBlock $block, array $values)
+    {
+        // update blockSize
+        if (isset($values['size'])) {
+            if (!$this->updateBlock($block->getId(), 'blockSize', $values['size'])) {
+                return false;
+            }
+        }
+
+        // update background color
+        if (isset($values['color'])) {
+            if (!$this->updateBlock($block->getId(), 'blockBackgroundColor', $values['color'])) {
+                return false;
+            }
+        }
+
+        // update background opacity
+        if (isset($values['opacity'])) {
+            if (!$this->updateBlock($block->getId(), 'blockOpacity', $values['opacity'])) {
+                return false;
+            }
+        }
+
+        // update border width
+        if (isset($values['borderWidth'])) {
+            if (!$this->updateBlock($block->getId(), 'blockBorderWidth', $values['borderWidth'])) {
+                return false;
+            }
+        }
+
+        // update border color
+        if (isset($values['borderColor'])) {
+            if (!$this->updateBlock($block->getId(), 'blockBorderColor', $values['borderColor'])) {
+                return false;
+            }
+        }
+
+        // update border radius
+        if (isset($values['borderRadius'])) {
+            if (!$this->updateBlock($block->getId(), 'blockBorderRadius', $values['borderRadius'])) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function getCountBlocks(int $idSection = null)
+    {
+        if ($idSection) {
+            $q = $this->sql(
+                'SELECT COUNT(*) 
+                FROM ' . static::$BLOCK_TABLE_NAME . ' 
+                WHERE idSection = :idSection', 
+                [':idSection' => $idSection]
+            );
+            $result = $q->fetch();
+            $q->closeCursor();
+
+            return intval($result[0]);
+        } else {
+            return 0;
         }
     }
 
@@ -146,39 +211,21 @@ class CvBlockManager extends AbstractManager
     ----------------------------------- PRIVATE FUNCTION ------------------------------------
     -------------------------------------------------------------------------------------*/
 
-    private function getblocksAboveOrderX(int $idBlock, int $order)
+    private function getblocksAboveOrderX(int $idSection, int $order)
     {
-        if (!empty($idBlock) && $idBlock > 0 && !empty($order) && $order > 0) {
+        if (!empty($idSection) && $idSection > 0 && !empty($order) && $order > 0) {
             $q = $this->sql(
                 'SELECT ' . static::$BLOCK_TABLE_CHAMPS . ' 
                 FROM ' . static::$BLOCK_TABLE_NAME . ' 
-                WHERE id = :idBlock AND blockOrder > :blockOrder 
+                WHERE idSection = :idSection AND blockOrder > :blockOrder 
                 ORDER BY blockOrder', 
-                [':idBlock' => $idBlock, ':blockOrder' => $order]
+                [':idSection' => $idSection, ':blockOrder' => $order]
             );
     
-            $result = $q->fetchAll(\PDO::FETCH_CLASS, static::$OBJECT_TYPE);
+            $result = $q->fetchAll(\PDO::FETCH_CLASS, static::$BLOCK_OBJECT_TYPE);
             $q->closeCursor();
     
             return $result;
-        }
-    }
-
-    private function getCountBlocks(int $idSection = null)
-    {
-        if ($idSection) {
-            $q = $this->sql(
-                'SELECT COUNT(*) 
-                FROM ' . static::$BLOCK_TABLE_NAME . ' 
-                WHERE idSection = :idSection', 
-                [':idSection' => $idSection]
-            );
-            $result = $q->fetch();
-            $q->closeCursor();
-
-            return intval($result[0]);
-        } else {
-            return 0;
         }
     }
 

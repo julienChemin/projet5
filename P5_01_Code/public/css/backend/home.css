@@ -58,6 +58,7 @@
 }
 .posts{
     position: relative;
+    overflow: hidden;
 }
 .itemHomeAdmin{
     display: flex;

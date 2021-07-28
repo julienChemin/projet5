@@ -1,4 +1,5 @@
 gitignore/*
+./Account and log.txt
 public/images/dl/*
 public/images/profileContent/*
 public/images/reports/*

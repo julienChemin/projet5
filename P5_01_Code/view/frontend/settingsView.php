@@ -67,26 +67,63 @@
                 <span></span>
            </div>
 
-           <div class="fullWidth">
-                <h3 class="orang">Établissement scolaire</h3>
-                <?php
-                if ($data['user']->getSchool() === NO_SCHOOL) {
-                    ?>
-                    <p>
-                        <span>Vous ne faite parti d'aucun établissement scolaire</span><button id="editSchool" inputNeeded="text" elem="joinSchool">Rejoindre un établissement</button>
-                    </p>
-                    <?php
-                } else {
-                    ?>
-                    <p>
-                        Établissement actuel : <span><?=$data['user']->getSchool()?></span><button id="editSchool" inputNeeded="text" elem="leaveSchool">Quitter l'établissement</button>
-                    </p>
-                    <?php
-                }
+           <?php
+            if (!$data['user']->getIsAdmin()) {
                 ?>
-                <span></span>
-           </div>
+                <div class="fullWidth">
+                    <h3 class="orang">Établissement scolaire</h3>
+                    <?php
+                    if ($data['user']->getSchool() === NO_SCHOOL) {
+                        ?>
+                        <p>
+                            <span>Vous ne faite parti d'aucun établissement scolaire</span><button id="editSchool" inputNeeded="text" elem="joinSchool">Rejoindre un établissement</button>
+                        </p>
+                        <?php
+                    } else {
+                        ?>
+                        <p>
+                            Établissement actuel : <span><?=$data['user']->getSchool()?></span><button id="editSchool" inputNeeded="text" elem="leaveSchool">Quitter l'établissement</button>
+                        </p>
+                        <?php
+                    }
+                    ?>
+                    <span></span>
+                </div>
+                <?php
+            }
+           ?>
         </div>
+
+        <?php
+        if (!$data['user']->getIsAdmin() && !$data['user']->getIsModerator() && $data['user']->getIsActive()) {
+            ?>
+            <h2>Paramètres Cv</h2>
+
+            <div id="cvSettings" class="blockStyleTwo">
+                <div class="fullWidth">
+                    <?php
+                    if (!$data['cvInfo']->getShortLink()) {
+                        echo '<p>Votre Cv n\'est pas disponible en ligne tant que vous n\'avez pas défini d\'adresse</p>';
+
+                        echo '<div class="orang">';
+                            echo '<p>Vous n\'avez pas défini d\'adresse pour votre Cv</p>';
+                            echo '<span>(Le lien ne doit contenir que des chiffres, des lettres et des underscores. 2 à 20 caractères)</span>';
+                            echo '<button id="editShortLink" inputNeeded="text" elem="cvShortLink">Définir</button>';
+                        echo'</div>';
+                    } else {
+                        echo '<div>';
+                            echo '<span>artschools.fr/</span><span class="orang">' . $data['cvInfo']->getShortLink() . '</span>';
+                            echo '<button id="editShortLink" inputNeeded="text" elem="cvShortLink">Modifier</button>';
+                            echo '<p>Le lien ne doit contenir que des chiffres, des lettres et des underscores. 2 à 20 caractères</p>';
+                        echo'</div>';
+                    }
+                    ?>
+                    <span></span>
+                </div>
+            </div>
+            <?php
+        }
+        ?>
     </div>
 </section>
 <div id="modal">
@@ -97,9 +134,10 @@
             <label for="textValue"></label>
             <input type="text" name="textValue" id="textValue">
         </p>
+
         <p>
-            <input type="submit" name="submit" value="Valider">
             <input type="button" name="cancel" value="Annuler">
+            <input type="submit" name="submit" value="Valider">
         </p>
     </form>
 </div>

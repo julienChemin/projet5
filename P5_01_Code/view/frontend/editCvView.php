@@ -11,7 +11,7 @@ $cvInfo = $data['cvInfo'];
             if ($cvInfo['sections'] && count($cvInfo['sections']) > 0) {
                 foreach ($cvInfo['sections'] as $section) {
                     ?>
-                    <div class="tabEditCv" idSection="<?=$section->getId()?>" style="order: <?=$section->getSectionOrder()?>;">
+                    <div class="tabEditCv" idSection="<?=$section->getId()?>" style="order: <?=$section->getSectionOrder()?>00;">
                         <p><?=$section->getName()?></p>
 
                         <div class="editSectionOrder">
@@ -20,8 +20,24 @@ $cvInfo = $data['cvInfo'];
                         </div>
                     </div>
 
-                    <!-- TODO add blocktab -->
                     <?php
+                    echo '<div class="tabEditBlock belongToSection'.$section->getId().'" idSection="'.$section->getId().'" style="order: '.$section->getSectionOrder().'50;">';
+
+                    if ($cvInfo['blocks'][$section->getId()] && count($cvInfo['blocks'][$section->getId()]) > 0) {
+                        foreach ($cvInfo['blocks'][$section->getId()] as $block) {
+                            ?>
+                            <div style="order: <?=$block->getBlockOrder()?>;" idBlock="<?=$block->getId()?>">
+                                <p>Bloc <?=$block->getBlockOrder()?></p>
+
+                                <div class="editBlockOrder">
+                                    <i class="fas fa-chevron-up"></i>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <?php
+                        }
+                    }
+                    echo '</div>';
                 }
             }
 
@@ -175,11 +191,108 @@ $cvInfo = $data['cvInfo'];
                             </p>
                         </div>
 
+                        <?php
+                        if ($cvInfo['blocks'][$section->getId()] && count($cvInfo['blocks'][$section->getId()]) < 6) {
+                            ?>
+                            <div class="blockAddNewBlock">
+                                <button class="addNewBlock">Ajouter un nouveau bloc</button>
+                            </div>
+                            <?php
+                        }
+                        ?>
+                        
+
                         <div class="blockDeleteSection">
                             <button class="deleteSection red">Supprimer la section</button>
                         </div>
                     </div>
                     <?php
+                }
+            }
+
+            // content menu edit block
+            if ($cvInfo['sections'] && count($cvInfo['sections']) > 0) {
+                for ($i = 0; $i < count($cvInfo['sections']); $i++) {
+                    $section = $cvInfo['sections'][$i];
+
+                    if ($cvInfo['blocks'][$section->getId()] && count($cvInfo['blocks'][$section->getId()]) > 0) {
+                        for ($j = 0; $j < count($cvInfo['blocks'][$section->getId()]); $j++) {
+                            $block = $cvInfo['blocks'][$section->getId()][$j];
+                            ?>
+                            <div class="contentTabEditBlock hide">
+                                <div class="blockEditBlockContent">
+                                    <span class="orang">Contenu</span>
+                                    <button idBlock="<?=$block->getId()?>">Modifier le contenu du bloc</button>
+                                </div>
+
+                                <div class="blockEditSize">
+                                    <p>
+                                        <?php 
+                                        if ($block->getBlockSize() === 'large') {
+                                            $blockSize = 3;
+                                        } else if ($block->getBlockSize() === 'medium') {
+                                            $blockSize = 2;
+                                        } else {
+                                            $blockSize = 1;
+                                        }
+                                        ?>
+
+                                        <span class="orang">Taille du bloc</span>
+                                        <input type="range" min="1" max="3" step="1" value="<?=$blockSize?>">
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <span class="orang">Apparence du fond</span>
+
+                                    <p class="editBackgroundOpacity">
+                                        <label>Transparence</label>
+                                        <input type="range" min="0" max="1" step="0.1" value="<?=$block->getBlockOpacity()?>">
+                                    </p>
+
+                                    <p class="editBackgroundColor">
+                                        <label>Couleur</label>
+                                        <input type="color">
+                                    </p>
+                                </div>
+
+                                <div class="blockEditBackgroundBorder">
+                                    <span class="orang">Bordure du bloc</span>
+
+                                    <p class="editBorderWidth">
+                                        <?php $blockWidth = !$block->getBlockBorderWidth() ? 0 : $block->getBlockBorderWidth() ?>
+                                        <label>Taille</label>
+                                        <input type="range" min="0" max="5" step="1" value="<?=$blockWidth?>">
+                                    </p>
+
+                                    <p class="editBorderRadius">
+                                        <?php $blockRadius = !$block->getBlockBorderRadius() ? 0 : $block->getBlockBorderRadius() ?>
+                                        <label>Arrondie des coins</label>
+                                        <input type="range" min="0" max="25" step="1" value="<?=$blockRadius?>">
+                                    </p>
+
+                                    <p class="editBorderColor">
+                                        <label>Couleur</label>
+                                        <input type="color">
+                                    </p>
+                                </div>
+        
+                                <div class="blockSaveBlock">
+                                    <button class="saveBlockChange">Enregistrer les modifications</button>
+                                    <span class="savingBlock orang hide">. . .</span>
+                                    <i class="fas fa-check saveBlockSuccess green hide"></i>
+                                    <p class="saveBlockFailure red hide">
+                                        Certaines modifications n'ont pas pu être enregistrées, réessayez ou rechargez la page
+                                    </p>
+                                </div>
+        
+                                <div class="blockDeleteBlock">
+                                    <button class="deleteBlock red">Supprimer le bloc</button>
+                                </div>
+                            </div>
+                            <?php
+                        }
+                    }
                 }
             }
             ?>
@@ -220,7 +333,7 @@ $cvInfo = $data['cvInfo'];
                 if ($cvInfo['blocks'][$section->getId()] && count($cvInfo['blocks'][$section->getId()]) > 0) {
                     foreach ($cvInfo['blocks'][$section->getId()] as $block) {
                         ?>
-                        <div class="cvBlock <?=$block->getBlockClasses()?>" style="<?=$block->getBlockStyle()?>">
+                        <div class="cvBlock <?=$block->getBlockClasses()?>" style="<?=$block->getBlockStyle()?>" backColor="<?=$block->getBlockBackgroundColor()?>" borderColor="<?=$block->getBlockBorderColor()?>" idBlock="<?=$block->getId()?>" idSection="<?=$section->getId()?>">
                             <?=$block->getContent()?>
                         </div>
                         <?php
@@ -238,18 +351,36 @@ $cvInfo = $data['cvInfo'];
 <div id="modal">
     <div id="confirmDeleteSection">
         <p>
-            Supprimer définitivement la section <span id="nameSectionToDelete"></span> ainsi que tous son contenu ?
+            Supprimer définitivement la section ainsi que tous son contenu ?
             <br><br>
             <span class="orang">la page va s'actualiser lors de la suppression</span>
         </p>
 
         <div>
             <span class="closeModal">Annuler</span>
-            <button><a href="" id="linkDeleteModal" title="Supprimer la section">Confirmer</a></button>
+            <button><a href="" id="linkDeleteInModal" title="Supprimer la section">Confirmer</a></button>
         </div>
     </div>
 
-    <div id="manageBlockSection">
+    <div id="confirmDeleteBlock">
+        <p>
+            Supprimer définitivement le bloc ainsi que tous son contenu ?
+            <br><br>
+            <span class="orang">la page va s'actualiser lors de la suppression</span>
+        </p>
 
+        <div>
+            <span class="closeModal">Annuler</span>
+            <button><a href="" id="linkDeleteBlockInModal" title="Supprimer le bloc">Confirmer</a></button>
+        </div>
     </div>
+
+    <form id="modalTinyMce" method="POST" action="">
+        <textarea id="tinyMCEtextarea" name="tinyMCEtextarea"></textarea>
+
+        <div>
+            <span class="closeModal">Annuler</span>
+            <input type="submit" value="Confirmer"></button>
+        </div>
+    </form>
 </div>

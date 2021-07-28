@@ -168,8 +168,8 @@ try {
                 $Frontend->toggleLikePost();
             break;
 
-            case 'updateUserInfo' :
-                $Frontend->updateUserInfo();
+            case 'updateUserSettings' :
+                $Frontend->updateUserSettings();
             break;
 
             case 'report' :
@@ -248,6 +248,14 @@ try {
                 $Frontend->deleteSection();
             break;
 
+            case 'updateCvBlockContent' :
+                $Frontend->updateCvBlockContent();
+            break;
+
+            case 'deleteBlock' :
+                $Frontend->deleteBlock();
+            break;
+
             case 'portfolio' :
                 $Frontend->portfolio();
             break;
@@ -278,6 +286,14 @@ try {
 
             case 'updateCvBlock' :
                 $Frontend->updateCvBlock();
+            break;
+
+            case 'changeCvBlockOrder' :
+                $Frontend->changeCvBlockOrder();
+            break;
+
+            case 'addNewCvBlock' :
+                $Frontend->addNewCvBlock();
             break;
 
             default :

@@ -2,6 +2,8 @@
 namespace Chemin\ArtSchools\Model;
 use Chemin\ArtSchools\Model\Controller;
 
+use function PHPSTORM_META\type;
+
 class Frontend extends Controller
 {
     public static $SIDE = 'frontend';
@@ -48,10 +50,9 @@ class Frontend extends Controller
     {
         //check url
         $url = explode('/', $_SERVER['PHP_SELF']);
-        $url = $url[count($url) - 1];
-        if ($url !== static::$INDEX) {
-            //$url is school name or user name, try to redirect to school/user profile
-            $this->homeRedirection($url);
+        $shortLink = $url[count($url) - 1];
+        if ($shortLink !== static::$INDEX) {
+            $this->homeRedirection($shortLink);
         } else {
             //home
             $PostsManager = new PostsManager();
@@ -128,9 +129,16 @@ class Frontend extends Controller
     {
         if (!empty($_SESSION)) {
             $UserManager = new UserManager();
+            $CvManager = new CvManager();
+
             $user = $UserManager->getUserByPseudo($_SESSION['pseudo']);
             $contractInfo = $this->getUserContractInfo($user, new ContractManager('user', $UserManager));
-            RenderView::render('template.php', 'frontend/settingsView.php', ['user' => $user, 'contractInfo' => $contractInfo, 'option' => ['settings']]);
+            $cvInfo = $CvManager->getCvInfo($user->getId());
+
+            RenderView::render('template.php', 'frontend/settingsView.php', [
+                'user' => $user, 'contractInfo' => $contractInfo, 'cvInfo' => $cvInfo, 
+                'option' => ['settings']
+            ]);
         } else {
             $this->redirection('index.php?action=signUp');
         }
@@ -905,7 +913,7 @@ class Frontend extends Controller
 
             if (!empty($reply) && ($_SESSION['school'] === ALL_SCHOOL || $school->getId() === $reply->getIdSchool()) 
             && ($reply->getIdAuthor() === $user->getId() || ($user->getIsAdmin() || $user->getIsModerator()))
-            && $content = $ForumCategoryManager->moveImgAndUpdateContent($_POST['tinyMCEtextarea'], 'public/images/forum', 15))
+            && $content = $ForumCategoryManager->moveImgAndUpdateContent($_POST['tinyMCEtextarea'], 'public/images/forum', 20))
             {
                 if ($_SESSION['school'] === ALL_SCHOOL) {
                     $SchoolManager = new SchoolManager();
@@ -982,7 +990,7 @@ class Frontend extends Controller
                     RenderView::render('template.php', 'frontend/editCvView.php',
                         [
                             'cvOwner' => $cvOwner, 'cvOwnerSchool' => $cvOwnerSchool, 'cvInfo' => $cvInfo, 
-                            'option' => ['editCv']
+                            'option' => ['tinyMCE', 'editCv']
                         ]
                     );
                 } else {
@@ -996,7 +1004,7 @@ class Frontend extends Controller
         }
     }
 
-    public function DeleteSection()
+    public function deleteSection()
     {
         if (!empty($_SESSION['id']) && !empty($_GET['ownerId']) && !empty($_GET['sectionId']) 
         && ($_SESSION['id'] == $_GET['ownerId'] || $_SESSION['school'] === ALL_SCHOOL)) {
@@ -1006,6 +1014,48 @@ class Frontend extends Controller
             if ($section && $section->getIdAuthor() == $_GET['ownerId']) {
                 $CvManager->deleteSection($section);
                 header('Location: index.php?action=editCv&userId=' . $section->getIdAuthor());
+            } else {
+                $this->accessDenied();
+            }
+        } else {
+            $this->accessDenied();
+        }
+    }
+
+    public function updateCvBlockContent()
+    {
+        if (!empty($_SESSION['id']) && !empty($_GET['idOwner']) && !empty($_GET['idBlock']) 
+        && ($this->checkForScriptInsertion($_POST)) 
+        && ($_SESSION['id'] == $_GET['idOwner'] || $_SESSION['school'] === ALL_SCHOOL)) {
+            $CvManager = new CvManager();
+            $block = $CvManager->getBlock($_GET['idBlock']);
+
+            $oldImgEntries = $CvManager->extractFilePath($CvManager->checkForImgEntries($block->getContent()));
+            $newImgEntries = $CvManager->extractFilePath($CvManager->checkForImgEntries($_POST['tinyMCEtextarea']));
+            $CvManager->checkUpdatedElemContent($oldImgEntries, $newImgEntries);
+
+            if ($block && $block->getIdAuthor() == $_GET['idOwner']) {
+                $content = $CvManager->moveImgAndUpdateContent($_POST['tinyMCEtextarea'], 'public/images/cv', 8);
+                $CvManager->updateBlock($block->getId(), 'content', $content);
+                header('Location: index.php?action=editCv&userId=' . $block->getIdAuthor());
+            } else {
+                $this->accessDenied();
+            }
+        } else {
+            $this->accessDenied();
+        }
+    }
+
+    public function deleteBlock()
+    {
+        if (!empty($_SESSION['id']) && !empty($_GET['ownerId']) && !empty($_GET['blockId']) 
+        && ($_SESSION['id'] == $_GET['ownerId'] || $_SESSION['school'] === ALL_SCHOOL)) {
+            $CvManager = new CvManager();
+            $block = $CvManager->getBlock($_GET['blockId']);
+
+            if ($block && $block->getIdAuthor() == $_GET['ownerId']) {
+                $CvManager->deleteBlock($block);
+                header('Location: index.php?action=editCv&userId=' . $block->getIdAuthor());
             } else {
                 $this->accessDenied();
             }
@@ -1262,10 +1312,10 @@ class Frontend extends Controller
         }
     }
 
-    public function updateUserInfo()
+    public function updateUserSettings()
     {
         $UserManager = new UserManager();
-        $arrAcceptedValue = ['pseudo', 'firstName', 'lastName', 'mail', 'school'];
+        $arrAcceptedValue = ['pseudo', 'firstName', 'lastName', 'mail', 'school', 'cvShortLink'];
         if (!empty($_SESSION['id']) && !empty($_POST['elem']) && $UserManager->checkForScriptInsertion($_POST) 
         && in_array($_POST['elem'], $arrAcceptedValue) && $user = $UserManager->getOneById($_SESSION['id'])) {
             $method = 'updateUser' . ucfirst($_POST['elem']);
@@ -1379,16 +1429,15 @@ class Frontend extends Controller
         && in_array($_GET['value'], $acceptedValue) && !empty($_GET['currentOrder'])
         && ($_SESSION['id'] == $_GET['ownerId'] || $_SESSION['school'] === ALL_SCHOOL)) {
             $CvManager = new CvManager();
-
             echo $CvManager->changeSectionOrder($_GET['value'], intval($_SESSION['id']), intval($_GET['currentOrder']));
         } else {
             echo 'false';
         }
     }
 
-    public function updateCvBlock()//TODO
+    public function updateCvBlock()
     {
-        if (!$this->checkForScriptInsertion($_POST) || empty($_GET['elem']) || empty($_POST['elemValue']) || empty($_POST['elemId'])) {
+        if (!$this->checkForScriptInsertion($_POST) || empty($_POST['idBlock'])) {
             echo 'false';
             return;
         }
@@ -1402,27 +1451,54 @@ class Frontend extends Controller
         }
 
         $CvManager = new CvManager();
-        $cvBlock = $CvManager->getBlock($_POST['elemId']);
+        $cvBlock = $CvManager->getBlock($_POST['idBlock']);
 
         if ($user->getId() !== $cvBlock->getIdAuthor() && $_SESSION['school'] !== ALL_SCHOOL) {
             echo 'false';
             return;
         }
 
-        if (!empty($_POST['isBool']) && $_POST['isBool'] === 'true') {
-            $isBool = true;
-            $elemValue = $_POST['elemValue'] === 'true' ? true : false;
-        } else {
-            $isBool = false;
-            $elemValue = $_POST['elemValue'];
-        }
-
-        if (!$CvManager->updateBlock($cvBlock->getId(), $_GET['elem'], $elemValue, $isBool)) {
+        if (!$CvManager->updateWholeBlock($cvBlock, $_POST)) {
             echo 'false';
             return;
         }
 
         echo 'true';
+    }
+
+    public function changeCvBlockOrder()
+    {
+        $acceptedValue = ['up', 'down'];
+
+        if (!empty($_SESSION['id']) && !empty($_GET['idOwner']) && !empty($_GET['value']) 
+        && in_array($_GET['value'], $acceptedValue) && !empty($_GET['currentOrder']) && !empty($_GET['idSection'])
+        && ($_SESSION['id'] == $_GET['idOwner'] || $_SESSION['school'] === ALL_SCHOOL)) {
+            $CvManager = new CvManager();
+            echo $CvManager->changeBlockOrder($_GET['value'], intval($_GET['idSection']), intval($_GET['currentOrder']));
+        } else {
+            echo 'false';
+        }
+    }
+
+    public function addNewCvBlock()
+    {
+        if (!empty($_SESSION['id']) && !empty($_GET['idOwner']) && !empty($_GET['idSection'])
+        && ($_SESSION['id'] == $_GET['idOwner'] || $_SESSION['school'] === ALL_SCHOOL)) {
+            $CvManager = new CvManager();
+            $section = $CvManager->getSection(intval($_GET['idSection']), false);
+            $amountBlockInThisSection = $CvManager->getCountBlocks(intval($_GET['idSection']));
+            $maxBlockInSection = 6;
+
+            if ($section && $section->getIdAuthor() == $_GET['idOwner'] && $amountBlockInThisSection < $maxBlockInSection) {
+                $idNewBlock = $CvManager->setBlock($_GET['idSection'], $_GET['idOwner'], '<p>Nouveau bloc</p>', 'large', null, 0.5);
+                $amountBlockInThisSection++;
+                echo json_encode(['idBlock' => $idNewBlock, 'countBlock' => $amountBlockInThisSection]);
+            } else {
+                echo 'false';
+            }
+        } else {
+            echo 'false';
+        }
     }
 
     /*-------------------------------------------------------------------------------------
@@ -1502,14 +1578,13 @@ class Frontend extends Controller
     }
 
     /*------------------------------ home / sign in ------------------------------*/
-    private function homeRedirection(string $url)
+    private function homeRedirection(string $shortLink)
     {
-        $UserManager = new UserManager();
-        $SchoolManager = new SchoolManager();
-        if ($user = $UserManager->getUserByPseudo($url)) {
-            header('Location: ../index.php?action=userProfile&userId=' . $user->getId());
-        } elseif ($SchoolManager->nameExists($url)) {
-            header('Location: ../index.php?action=schoolProfile&school=' . $url);
+        $CvManager = new CvManager();
+        $cvInfo = $CvManager->getCvInfoByShortLink($shortLink);
+
+        if ($cvInfo && $cvInfo->getIdUser()) {
+            header('Location: ../index.php?action=cv&userId=' . $cvInfo->getIdUser());
         } else {
             header('Location: ../index.php');
         }
@@ -2002,6 +2077,21 @@ class Frontend extends Controller
         } else {
             return 'false';
         }
+    }
+
+    private function updateUserCvShortLink(User $user, UserManager $UserManager)
+    {
+        $CvManager = new CvManager();
+        $regexShortLink = '/^[\w]{2,20}$/';
+
+        if (!empty($_POST['textValue']) && preg_match($regexShortLink, $_POST['textValue']) 
+        && !$cvInfo = $CvManager->getCvInfoByShortLink($_POST['textValue'])) {
+            $CvManager->updateCv($user->getId(), 'shortLink', $_POST['textValue']);
+            $CvManager->updateCv($user->getId(), 'isOnline', true, true);
+            return 'true';
+        }
+
+        return 'false';
     }
 
     private function userTryToLeaveSchool(User $user, UserManager $UserManager, SchoolManager $SchoolManager, HistoryManager $HistoryManager, string $schoolToLeave)

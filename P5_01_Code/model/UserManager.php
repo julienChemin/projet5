@@ -362,9 +362,11 @@ class UserManager extends AbstractManager
     {
         $HistoryManager = new HistoryManager();
         $PostsManager = new PostsManager();
+        $Cvmanager = new CvManager();
         $user = $this->getUserByPseudo($GET['userName']);
         $school = $SchoolManager->getSchoolByName($GET['schoolName']);
         $posts = $PostsManager->getPostsByAuthor($user->getId());
+        
         if ($school && $user && !$user->getIsAdmin()) {
             //nb active account -1 if account is active and not moderator 
             if ($user->getIsActive() && !$user->getIsModerator()) {
@@ -373,6 +375,12 @@ class UserManager extends AbstractManager
             //delete posts
             foreach ($posts as $post) {
                 $PostsManager->deletePost($post->getId());
+            }
+            // delete cv
+            $cvInfo = $Cvmanager->getCvInfo($user->getId());
+            
+            if ($cvInfo) {
+                $Cvmanager->deleteCv($user->getId());
             }
             //delete PP, banner and then account
             $this->deleteFile($user->getProfileBanner())->deleteFile($user->getProfilePicture());

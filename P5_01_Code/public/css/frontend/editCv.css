@@ -36,13 +36,14 @@
 #editCv #tabsEditCv{
     display: flex;
     flex-direction: column;
+    align-items: flex-end;
     flex-wrap: nowrap;
     min-width: max-content;
     max-height: 75vh;
     transition: 0.3s linear;
     overflow-y: scroll;
 }
-#editCv #tabsEditCv > div{
+#editCv #tabsEditCv .tabEditCv{
     width: 120px;
     min-height: 40px;
     height: 40px;
@@ -57,15 +58,45 @@
     border: solid 1px #161617;
     overflow: hidden;
 }
-#editCv #tabsEditCv > .tabEditCv:hover{
+#editCv #tabsEditCv .tabEditCv:hover{
     background-color: #161617;
+}
+#editCv #tabsEditCv .tabEditBlock{
+    width: 100px;
+    height: auto;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    cursor: pointer;
+    word-wrap: break-word;
+    word-break: break-all;
+    background-color: #262627;
+    border: solid 1px #CF8B3F;
+    border-top: none;
+    overflow: hidden;
+}
+#editCv #tabsEditCv .tabEditBlock > div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    min-height: 40px;
+    height: 40px;
+    padding: 2px;
+}
+#editCv #tabsEditCv .tabEditBlock > div:hover{
+    background-color: #161617;
+}
+#editCv #tabsEditCv .tabEditBlock > div > p{
+    margin-left: 5px;
 }
 #editCv #tabsEditCv .focusedTab{
     background-color: #161617;
     border-color: #CF8B3F;
     color: #CF8B3F;
 }
-.editSectionOrder{
+.editSectionOrder, .editBlockOrder{
     width: 20px;
     height: 40px;
     display: none;
@@ -74,10 +105,10 @@
     align-items: center;
     margin-right: 5px;
 }
-#editCv #tabsEditCv > div:hover .editSectionOrder{
+#editCv #tabsEditCv > div:hover .editSectionOrder, #editCv #tabsEditCv .tabEditBlock > div:hover .editBlockOrder{
     display: flex;
 }
-.editSectionOrder i{
+.editSectionOrder i, .editBlockOrder i{
     width: 100%;
     height: 40%;
     background-color: #161617;
@@ -86,7 +117,7 @@
     cursor: pointer;
     color: #CF8B3F;
 }
-.editSectionOrder i:hover{
+.editSectionOrder i:hover, .editBlockOrder i:hover{
     border: solid 1px #CF8B3F;
 }
 #editCv #tabsEditCv #tabAddSection{
@@ -211,8 +242,17 @@
     border-color: red;
 }
 
+/* BLOCK-OPTION -> background border*/
+.editBorderWidth{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 /* MODAL */
-#modal #confirmDeleteSection{
+#modal #confirmDeleteSection, #modal #confirmDeleteBlock{
+    display: none;
     padding: 15px;
     width: auto;
     height: auto;
@@ -226,11 +266,27 @@
     width: 100%;
 }
 
-/* modal manage block section*/
-#modal #manageBlockSection{
-    width: 100%;
-    height: 100%;
+/* modal tiny mce*/
+#modal #modalTinyMce{
+    display: none;
+    flex-direction: column;
+    width: auto;
+    height: 80vh;
     position: relative;
+    padding: 5px;
+}
+#modal #modalTinyMce > div{
+    min-height: auto;
+    margin-bottom: 10px;
+}
+#modal #modalTinyMce > div:last-child{
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+#modal #modalTinyMce > .tox-tinymce{
+    height: 80%!important;
+    width: 100%!important;
 }
 
 /*====================================================================================================================================
@@ -252,6 +308,14 @@
     #buttonToggleMenuEditCv{
         width: 25px;
         height: 25px;
+    }
+
+    /* modal tiny mce*/
+    #modal #modalTinyMce{
+        height: 90vh;
+    }
+    #modal #modalTinyMce > .tox-tinymce{
+        height: 85%!important;
     }
 }
 
@@ -277,7 +341,7 @@
     #editCv #tabsEditCv > div{
         width: 100%;
     }
-    #editCv #tabsEditCv > div .editSectionOrder{
+    #editCv #tabsEditCv > div .editSectionOrder, #editCv #tabsEditCv > div .editBlockOrder{
         display: flex;
     }
     #menuEditCv #contentTabsEditCv{
@@ -291,5 +355,14 @@
     }
     #editCv .blockEditAlign > div > form > label{
         width: 75%;
+    }
+
+    /* modal tiny mce*/
+    #modal #modalTinyMce{
+        width: 100%;
+        height: 95vh;
+    }
+    #modal #modalTinyMce > .tox-tinymce{
+        height: 90%!important;
     }
 }

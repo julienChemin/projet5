@@ -41,12 +41,14 @@ function getLabel(elem = null)
             return "Êtes-vous sûr de vouloir quitter votre établissement scolaire ? Entrez le nom de votre établissement scolaire pour confirmer";
         case 'joinSchool' :
             return "Entrez le code fournit par votre établissement scolaire";
+        case 'cvShortLink' :
+            return "artschools.fr/";
         default :
             return 'Veuillez recharger la page';
     }
 }
 
-function getSuccesMessage(elem = null)
+function getSuccessMessage(elem = null)
 {
     let elemValue = '';
     elem === null ? elemValue = inputElem.value : elemValue = elem;
@@ -63,6 +65,8 @@ function getSuccesMessage(elem = null)
             return "Vous avez quitté votre établissement scolaire";
         case 'joinSchool' :
             return "Vous avez rejoint l'établissement scolaire";
+        case 'cvShortLink' :
+            return "Votre Cv est en ligne !";
         default :
             return 'Veuillez recharger la page';
     }
@@ -85,6 +89,8 @@ function getFailureMessage(elem = null)
             return "Certaines informations sont incorrectes, vous n'avez pas pu quitter votre établissement scolaire";
         case 'joinSchool' :
             return "Le code est incorrecte, ou l'établissement désigné n'a plus de places";
+        case 'cvShortLink' :
+            return "Le lien choisi est déjà utilisé par quelqu'un d'autre, ou n'est pas correct. Seuls les chiffres, les lettres et les underscores sont acceptés. 2 à 20 caractères";
         default :
             return 'Veuillez recharger la page';
     }
@@ -107,7 +113,7 @@ function openModal(btnClicked = null, blockInputToDisplay = null, label = null)
         spanResult = btnClicked.parentNode.nextElementSibling;
         // setup label content and get success/failure msg
         label.textContent = getLabel();
-        successMsg = getSuccesMessage();
+        successMsg = getSuccessMessage();
         failureMsg = getFailureMessage();
         // special treatment for some value which is togglable and have to call the same function
         checkInputElemTogglableValue();
@@ -136,7 +142,7 @@ function frontEditing(elem = null)
     if (elem !== null) {
         if (elem === 'pseudo' || elem === 'firstName' || elem === 'lastName' || elem === 'mail') {
             spanResult.previousElementSibling.childNodes[1].textContent = form.elements.textValue.value;
-        } else if (elem === 'school') {
+        } else {
             window.location.reload();
         }
     }
@@ -160,7 +166,7 @@ btnSubmit.addEventListener(
     'click', function(e){
         e.preventDefault();
         let data = new FormData(form);
-        ajaxPost('index.php?action=updateUserInfo', data, function(response){
+        ajaxPost('index.php?action=updateUserSettings', data, function(response){
             // clear previous message
             if (timeout !== null) {
                 clearTimeout(timeout);
